@@ -1,28 +1,14 @@
-import {
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Paper,
-    Radio,
-    RadioGroup,
-    Select,
-    TextField
-} from "@mui/material";
+import {CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField} from "@mui/material";
 import styled from "@emotion/styled";
 import {object, string} from "yup";
 import {
-    setActividadEconomica, setCliente,
+    setActividadEconomica,
+    setCliente,
     setCodigoCliente,
-    setEmailCliente,
-    setTipoCliente
+    setEmailCliente
 } from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import TipoClienteNinguno from "../../components/Registro/TipoClienteNinguno";
 import Autocomplete from "@mui/material/Autocomplete";
 import {SinActividadesProps} from "../../../../interfaces";
 import {PerfilProps} from "../../../../base/models/loginModel";
@@ -102,6 +88,7 @@ export const DatosTransaccionComercial = ({actividadEconomica, user}: DatosTrans
                         <Select
                             label="Actividad Económica"
                             value={factura.actividadEconomica}
+                            defaultValue={factura.actividadEconomica}
                             onChange={(e) => dispatch(setActividadEconomica(e.target.value))}
                             size={'small'}
                         >
@@ -127,6 +114,7 @@ export const DatosTransaccionComercial = ({actividadEconomica, user}: DatosTrans
                             setOpen(false);
                         }}
                         size={"small"}
+                        defaultValue={null}
                         isOptionEqualToValue={(option, value) => option.codigoCliente === factura.codigoCliente}
                         getOptionLabel={(option) =>
                             `${option.numeroDocumento}${option.complemento || ''} - ${option.razonSocial} - ${option.tipoDocumentoIdentidad.descripcion}`}
