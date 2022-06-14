@@ -5,6 +5,7 @@ import {Box, styled} from '@mui/system'
 const CardRoot = styled(Card)(() => ({
     height: '100%',
     padding: '15px 15px',
+    overflow: 'inherit', // Cambio realizado para mostrar los hidden selects
 })) as typeof Card
 
 interface CardTitleProps {

@@ -1314,6 +1314,11 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
+multiselect-react-dropdown@^2.0.22:
+  version "2.0.22"
+  resolved "https://registry.yarnpkg.com/multiselect-react-dropdown/-/multiselect-react-dropdown-2.0.22.tgz#9eddcb75ff74e29ca0c4ae1a4b40c538b7b24c46"
+  integrity sha512-Oc6Y/Rl1U3XSyp2Hb5utTvqtHeFTMJf5+PHrmxvk06yT02KLivqXUhmqsmDnLfMZm3UC6Hnh4NnpoNxj/z+5gg==
+
 nanoclone@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/nanoclone/-/nanoclone-0.2.1.tgz#dd4090f8f1a110d26bb32c49ed2f5b9235209ed4"
