@@ -49,8 +49,9 @@ const Footer: FC<any> = () => {
                     <FooterContent>
                         <Span sx={{m: "auto"}}></Span>
                         <Paragraph sx={{m: 0}}>
-                            Desarrollado por &nbsp;
-                            <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">INTEGRATE</a>
+                            ISI.INVOICE es un producto de &nbsp;
+                            <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">INTEGRATE Soluciones Informáticas</a> <br/>
+                            Plantilla <a href="http://matx-react.ui-lib.com/">MatX</a>
                         </Paragraph>
                     </FooterContent>
                 </AppFooter>

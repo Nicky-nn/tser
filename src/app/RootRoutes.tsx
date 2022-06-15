@@ -1,5 +1,5 @@
 import {Navigate} from "react-router-dom";
-import dashboardRoutes from "./view/dashboard/DashboardRoutes";
+import dashboardRoutes from "./base/view/dashboard/DashboardRoutes";
 
 interface RouteProps {
     path: string;

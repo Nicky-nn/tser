@@ -13,7 +13,7 @@ const BrandRoot = styled(Box)(({theme}) => ({
 const StyledSpan = styled(Span)(({theme, mode}) => ({
     fontSize: 18,
     marginLeft: '.5rem',
-    display: mode === 'compact' ? 'none' : 'block',
+    display: mode === 'compact' ? 'none' : 'block'
 }))
 
 const Brand = ({children}: { children: JSX.Element }) => {
@@ -24,9 +24,9 @@ const Brand = ({children}: { children: JSX.Element }) => {
     return (
         <BrandRoot>
             <Box display="flex" alignItems="center">
-                <MatxLogo/>
+                <img src="/assets/images/logo_dark.png" style={{height: 30}} alt=""/>
                 <StyledSpan mode={mode} className="sidenavHoverShow">
-                    ISIPASS
+                    ISI.INVOICE
                 </StyledSpan>
             </Box>
             <Box

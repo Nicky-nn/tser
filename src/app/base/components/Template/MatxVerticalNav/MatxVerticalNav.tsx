@@ -6,7 +6,7 @@ import {ButtonBase} from '@mui/material'
 import MatxVerticalNavExpansionPanel from './MatxVerticalNavExpansionPanel'
 import useSettings from "../../../hooks/useSettings";
 import Icon from '@mui/material/Icon';
-import {NavigationProps} from "../../../navigations";
+import {NavigationProps} from "../../../../navigations";
 
 const ListLabel = styled(Paragraph)(({theme, mode}: any): any => ({
     fontSize: '12px',

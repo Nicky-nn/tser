@@ -104,8 +104,9 @@ const JwtLogin = () => {
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                         <JustifyBox p={4} height="100%">
                             <IMG
-                                src="/assets/images/isipass.jpg"
-                                alt=""
+                                src="/assets/images/logo-isiinvoice.png"
+                                alt="Gestión de ventas y servicios"
+                                style={{paddingTop: '20px'}}
                             />
                         </JustifyBox>
                     </Grid>

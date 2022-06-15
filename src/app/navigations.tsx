@@ -21,7 +21,7 @@ export const navigations: NavigationProps[] = [
     },
     {
         name: 'SEGURIDAD',
-        label: 'SEGURIDAD',
+        label: 'TRANSACCIONES',
         type: 'label',
     },
     {
@@ -36,7 +36,7 @@ export const navigations: NavigationProps[] = [
         ]
     },
     {
-        name: 'Session/Auth',
+        name: 'Productos',
         icon: 'security',
         children: [
             {
@@ -63,13 +63,13 @@ export const navigations: NavigationProps[] = [
     },
     {
         name: 'Components',
-        label: 'Components',
+        label: 'Inventario',
         type: 'label',
     },
     {
-        name: 'Components',
+        name: 'Inventario',
         icon: 'favorite',
-        badge: {value: '30+', color: 'secondary'},
+        badge: {value: '', color: 'secondary'},
         children: [
             {
                 name: 'Auto Complete',
@@ -144,7 +144,7 @@ export const navigations: NavigationProps[] = [
         ],
     },
     {
-        name: 'Charts',
+        name: 'Informes',
         icon: 'trending_up',
 
         children: [
@@ -156,7 +156,7 @@ export const navigations: NavigationProps[] = [
         ],
     },
     {
-        name: 'Documentation',
+        name: 'Documentación',
         icon: 'launch',
         type: 'extLink',
         path: 'http://demos.ui-lib.com/matx-react-doc/',
