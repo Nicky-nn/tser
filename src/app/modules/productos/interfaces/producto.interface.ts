@@ -1,6 +1,13 @@
+import {SucursalProps} from "../../../interfaces";
+
 export interface ImagenProps {
     altText: string
     url: string
+}
+
+export interface UnidadMedidaProps {
+    codigoClasificador: number
+    descripcion: string
 }
 
 export interface SinProductoServicioProps {
@@ -13,4 +20,15 @@ export interface SinProductoServicioProps {
 export interface ProductoPrecioRangoProps {
     precioVarianteMaximo: number
     precioVarianteMinimo: number
+}
+
+export interface OpcionesVarianteProps {
+    nombre: string
+    valor: string
+}
+
+export interface ItemInventarioProp {
+    sucursal: SucursalProps
+    costo: number
+    stock: number
 }

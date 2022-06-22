@@ -1,15 +1,13 @@
 import {ClienteProps} from "../../../base/api/cliente.api";
+import {ProductoVarianteProps} from "../../productos/api/producto.api";
 
-export interface FacturaDetalleProps {
-    cantidad: number
-    codigoProducto: string
-    codigoProductoSin: string
-    descripcion: string
-    montoDescuento: number
-    numeroImei: string
-    numeroSerie: string
-    precioUnitario: number
-    unidadMedida: number
+export interface FacturaDetalleProps extends ProductoVarianteProps{
+    inputCantidad: number
+    inputPrecio: number
+    inputDescuento: number
+    inputMotivoDescuento: number
+    detalleExtra: string
+    subtotal: number
 }
 
 export interface FacturaInputProps {
@@ -26,6 +24,9 @@ export interface FacturaInputProps {
     montoGiftCard?: number | null
     numeroTarjeta?: string | null
     tipoCambio: number | null
+    montoPagar: number
+    inputMontoPagar: number
+    inputVuelto: number
 }
 
 /**
@@ -40,9 +41,12 @@ export const FacturaInitialValues: FacturaInputProps = {
     codigoMoneda: 1,
     descuentoAdicional: 0,
     detalle: [] as FacturaDetalleProps[],
-    detalleExtra: null,
+    detalleExtra: '',
     emailCliente: null,
     montoGiftCard: 0,
     numeroTarjeta: null,
-    tipoCambio: 1
+    tipoCambio: 1,
+    montoPagar: 0,
+    inputMontoPagar: 0,
+    inputVuelto: 0
 }

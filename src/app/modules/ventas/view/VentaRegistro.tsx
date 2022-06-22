@@ -12,6 +12,9 @@ import {useAppSelector} from "../../../hooks";
 import AuthContext from "../../../base/contexts/JWTAuthContext";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
+import VentaTotales from "./registro/VentaTotales";
+import MetodosPago from "./registro/MetodosPago";
+import FacturaDetalleExtra from "./registro/FacturaDetalleExtra";
 
 const Container = styled('div')(({theme}) => ({
     margin: '30px',
@@ -63,27 +66,23 @@ const VentaRegistro = () => {
             </div>
             <form noValidate onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
-                    <Grid item lg={8} md={8} xs={12}>
+                    <Grid item lg={7} md={7} xs={12}>
                         <DatosTransaccionComercial
                             actividadEconomica={clasificadores.sinActividades}
                             user={user!}
                         />
                     </Grid>
-                    <Grid item lg={4} md={4} xs={12}>
-                        <DatosCliente/>
+                    <Grid item lg={5} md={5} xs={12}>
+                        <FacturaDetalleExtra/>
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
                         <DetalleTransaccionComercial/>
                     </Grid>
-                    <Grid item lg={8} md={8} xs={12}>
-                        <SimpleCard title="Método de págo">
-                            hola form 2
-                        </SimpleCard>
+                    <Grid item lg={6} md={6} xs={12}>
+                        <MetodosPago />
                     </Grid>
-                    <Grid item lg={4} md={4} xs={12}>
-                        <SimpleCard title="Totales">
-                            hola form 2
-                        </SimpleCard>
+                    <Grid item lg={6} md={6} xs={12}>
+                        <VentaTotales />
                     </Grid>
                 </Grid>
             </form>

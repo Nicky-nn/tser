@@ -3,7 +3,7 @@
 import {gql, GraphQLClient} from "graphql-request";
 import {ClasificadorProps, SinActividadesProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductoProps} from "./producto.api";
+import {ProductoProps, ProductoVarianteProps} from "./producto.api";
 
 export interface FacturaProps {
     sinTipoMetodoPago: ClasificadorProps[],
@@ -15,36 +15,39 @@ export interface FacturaProps {
 const productoQuery = (query: string) => gql`
     query PRODUCTOS_BUSQUEDA {
         fcvProductoBusqueda(query: "${query}") {
+            codigoProducto
             titulo
-            descripcion
-            seguimientoInventario
-            rangoPrecios {
-                precioVarianteMaximo
-                precioVarianteMinimo
+            nombre
+            codigoBarras
+            precio
+            precioComparacion
+            inventario{
+                stock
             }
-            variante{
-                codigoProducto
+            unidadMedida{
+                codigoClasificador
+                descripcion
+            }
+            producto{
+                _id
                 titulo
-                nombre
-                disponibleParaVenta
-                codigoBarras
-                precio
-                precioComparacion
-                imagen{
+                rangoPrecios{
+                    precioVarianteMaximo
+                    precioVarianteMinimo
+                }
+                tipoProducto
+                totalVariantes
+                seguimientoInventario
+                imagenDestacada{
                     altText
                     url
-                }
-                cantidadVendible
-                unidadMedida{
-                    codigoClasificador
-                    descripcion
                 }
             }
         }
     }
 `
 
-export const fetchProductoBusqueda = async (query: string): Promise<ProductoProps[]> => {
+export const fetchProductoBusqueda = async (query: string): Promise<ProductoVarianteProps[]> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header

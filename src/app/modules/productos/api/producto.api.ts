@@ -2,11 +2,18 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {SinUnidadMedidaProps} from "../../sin/interfaces/sin.interface";
-import {ImagenProps, ProductoPrecioRangoProps, SinProductoServicioProps} from "../interfaces/producto.interface";
+import {
+    ImagenProps,
+    ItemInventarioProp,
+    OpcionesVarianteProps,
+    ProductoPrecioRangoProps,
+    SinProductoServicioProps,
+    UnidadMedidaProps
+} from "../interfaces/producto.interface";
 
 export interface ProductoVarianteProps {
     codigoProducto: string // identificador o codigo unico
+    producto?: ProductoProps
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
     disponibleParaVenta: boolean
@@ -14,9 +21,10 @@ export interface ProductoVarianteProps {
     precio: number
     precioComparacion: number
     imagen?: ImagenProps
-    cantidadVendible: number
+    opcionesVariante: Array<OpcionesVarianteProps>
+    inventario: Array<ItemInventarioProp>
     peso: number
-    unidadMedida: SinUnidadMedidaProps
+    unidadMedida: UnidadMedidaProps
 }
 
 export interface ProductoProps {
