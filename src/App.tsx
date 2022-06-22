@@ -6,6 +6,7 @@ import {store} from "./app/store/store";
 import {SettingsProvider} from "./app/base/contexts/SettingsContext";
 import MatxTheme from "./app/base/components/Template/MatxTheme/MatxTheme";
 import {AuthProvider} from "./app/base/contexts/JWTAuthContext";
+import {ConfirmProvider} from "material-ui-confirm";
 
 function App() {
     const all_pages = useRoutes(AllPages())
@@ -14,7 +15,15 @@ function App() {
         <Provider store={store}>
             <SettingsProvider>
                 <MatxTheme>
-                    <AuthProvider>{all_pages}</AuthProvider>
+                    <ConfirmProvider
+                        defaultOptions={{
+                            title: '¿Esta seguro?',
+                            confirmationText: 'Confirmar',
+                            cancellationText: 'Cancelar',
+                        }}
+                    >
+                        <AuthProvider>{all_pages}</AuthProvider>
+                    </ConfirmProvider>
                 </MatxTheme>
             </SettingsProvider>
         </Provider>

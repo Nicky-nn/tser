@@ -7,11 +7,13 @@ import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput
 import InputNumber from "rc-input-number";
 import {DescuentoAdicionalDialog} from "./ventaTotales/DescuentoAdicionalDialog";
 import {
-    setDeleteItem,
     setFacturaDescuentoAdicional,
-    setFacturaInputMontoPagar, setFacturaMontoPagar
+    setFacturaInputMontoPagar,
+    setFacturaMontoPagar
 } from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
+import {useConfirm} from "material-ui-confirm";
+import {composeFactura} from "../../utils/composeFactura";
 
 interface OwnProps {
 }
@@ -25,6 +27,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     const subTotal: number = factura.detalle.reduce((acc, cur) => acc + (cur.inputCantidad * cur.inputPrecio) - cur.inputDescuento, 0) || 0;
     const handleFocus = (event: any) => event.target.select();
     const dispatch = useDispatch();
+    const confirm = useConfirm();
     const handleDescuentoAdicional = (event: any) => {
         setOpenDescuentoAdicional(true);
     }
@@ -35,6 +38,17 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             dispatch(setFacturaMontoPagar())
         }
     };
+
+    const handeRealizarPago = () => {
+        confirm({description: '¿Confirma que desea generar el documento?', confirmationButtonProps: {autoFocus: true}})
+            .then(() => {
+                console.log('aprobado')
+                const facturaInput = composeFactura(factura)
+            })
+            .catch(() => {
+                console.log('cancelado')
+            });
+    }
     return (
         <>
             <SimpleCard title="Cálculo de los totales" Icon={<Home/>}>
@@ -130,7 +144,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Button variant="contained" fullWidth={true} color="success" startIcon={<Paid/>}>
+                        <Button variant="contained" onClick={handeRealizarPago} fullWidth={true} color="success"
+                                startIcon={<Paid/>}>
                             REALIZAR PAGO
                         </Button>
                     </Grid>

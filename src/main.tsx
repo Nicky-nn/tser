@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <BrowserRouter>
                 <CssBaseline/>
                 <App/>
-                <ToastContainer limit={3} />
+                <ToastContainer limit={3}/>
             </BrowserRouter>
         </StyledEngineProvider>
     </React.StrictMode>

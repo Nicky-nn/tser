@@ -6,12 +6,10 @@ import {FacturaProps, fetchFacturaParams} from "../api/factura.api";
 import {selectFactura} from "../slices/facturacion/factura.slice";
 import {FormikProps, useFormik} from "formik";
 import {FacturaInputProps} from "../interfaces/factura";
-import DatosCliente from "./registro/DatosCliente";
 import {DetalleTransaccionComercial} from "./registro/DetalleTransaccionComercial";
 import {useAppSelector} from "../../../hooks";
 import AuthContext from "../../../base/contexts/JWTAuthContext";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
-import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
 import VentaTotales from "./registro/VentaTotales";
 import MetodosPago from "./registro/MetodosPago";
 import FacturaDetalleExtra from "./registro/FacturaDetalleExtra";
@@ -79,10 +77,10 @@ const VentaRegistro = () => {
                         <DetalleTransaccionComercial/>
                     </Grid>
                     <Grid item lg={6} md={6} xs={12}>
-                        <MetodosPago />
+                        <MetodosPago/>
                     </Grid>
                     <Grid item lg={6} md={6} xs={12}>
-                        <VentaTotales />
+                        <VentaTotales/>
                     </Grid>
                 </Grid>
             </form>

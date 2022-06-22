@@ -1,8 +1,17 @@
-import React, {FunctionComponent, useRef} from 'react';
-import {Home} from "@mui/icons-material";
+import React, {FunctionComponent, useState} from 'react';
+import {Delete, DocumentScanner, Home, KeyboardArrowDown} from "@mui/icons-material";
 import {useAppSelector} from "../../../../hooks";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {Editor} from "@tinymce/tinymce-react";
+import parse from 'html-react-parser';
+import {Box, Button, Divider} from "@mui/material";
+import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/SimpleMenu";
+import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
+import {
+    setFacturaDescuentoAdicional,
+    setFacturaDetalleExtra,
+    setFacturaMontoPagar
+} from "../../slices/facturacion/factura.slice";
+import {useDispatch} from "react-redux";
 
 interface OwnProps {
 }
@@ -11,31 +20,62 @@ type Props = OwnProps;
 
 const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
     const factura = useAppSelector(state => state.factura);
-    const editorRef: any = useRef(null);
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
+    const [openDetalleExtra, setOpenDetalleExtra] = useState(false);
+    const dispatch = useDispatch();
+    const handleDetalleExtra = (event: any) => {
+        setOpenDetalleExtra(true);
+    }
+    const handleCloseDetalleExtra = (newValue?: string) => {
+        setOpenDetalleExtra(false);
+        if (newValue) {
+            dispatch(setFacturaDetalleExtra(newValue))
         }
     };
     return (
         <>
             <SimpleCard title="Detalle Extra" Icon={<Home/>}>
-                <Editor
-                    apiKey='niud727ae46xgl3s5morxk4v03hq6rrv7lpkvustyt2ilp2k'
-                    onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue="<p>This is the initial content of the editor.</p>"
-                    init={{
-                        height: 'auto',
-                        menubar: true,
-                        plugins: ['table','template'],
-                        toolbar: 'undo redo |' +
-                            'bold italic | alignleft aligncenter ' +
-                            'alignright alignjustify |' +
-                            'removeformat',
-                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                />
-                <button onClick={log}>Log editor content</button>
+                <Box sx={{alignItems: 'right', textAlign: 'right'}}>
+                    <SimpleMenu
+                        menuButton={
+                            <>
+                                <Button
+                                    id="demo-customized-button"
+                                    aria-haspopup="true"
+                                    variant="contained"
+                                    disableElevation
+                                    size={'small'}
+                                    endIcon={<KeyboardArrowDown/>}
+                                >
+                                    Opciones
+                                </Button>
+                            </>
+
+                        }
+                    >
+                        <StyledMenuItem onClick={handleDetalleExtra}>
+                            <DocumentScanner/>Crear / Editar
+                        </StyledMenuItem>
+                        <Divider sx={{my: 0.5}}/>
+                        <StyledMenuItem onClick={() => dispatch(setFacturaDetalleExtra(null))}>
+                            <Delete/>Eliminar
+                        </StyledMenuItem>
+                    </SimpleMenu>
+                    <FacturaDetalleExtraDialog
+                        id="ringtone-menu"
+                        keepMounted
+                        open={openDetalleExtra}
+                        onClose={handleCloseDetalleExtra}
+                        value={factura.detalleExtra || ''}
+                    />
+                </Box>
+
+                <Divider sx={{my: 1, mt: 1}}/>
+                <div>
+                    {
+                        factura.detalleExtra ? parse(factura.detalleExtra || 'no se ha encontrado ') : 'SIN DETALLE EXTRA'
+                    }
+                </div>
+
             </SimpleCard>
         </>
     );

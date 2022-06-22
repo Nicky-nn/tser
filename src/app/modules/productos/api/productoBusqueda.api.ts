@@ -35,6 +35,10 @@ const productoQuery = (query: string) => gql`
                     precioVarianteMaximo
                     precioVarianteMinimo
                 }
+                sinProductoServicio{
+                    codigoActividad
+                    codigoProducto
+                }
                 tipoProducto
                 totalVariantes
                 seguimientoInventario

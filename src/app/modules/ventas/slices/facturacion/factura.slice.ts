@@ -70,6 +70,9 @@ export const facturaSlice = createSlice({
             const subTotal: number = state.detalle.reduce((acc, cur) => acc + (cur.inputCantidad * cur.inputPrecio) - cur.inputDescuento, 0) || 0;
             const total = subTotal - state.descuentoAdicional - (state.montoGiftCard || 0)
             state.montoPagar = total
+        },
+        setFacturaDetalleExtra: (state, action) => {
+            state.detalleExtra = action.payload
         }
     },
 });
@@ -90,7 +93,8 @@ export const {
     setFacturaMetodoPago,
     setFacturaNroTarjeta,
     setFacturaInputMontoPagar,
-    setFacturaMontoPagar
+    setFacturaMontoPagar,
+    setFacturaDetalleExtra
 } = facturaSlice.actions;
 
 export default facturaSlice.reducer;
