@@ -12,7 +12,7 @@ import {
     facturaReset,
     setFacturaDescuentoAdicional,
     setFacturaInputMontoPagar,
-    setFacturaMontoPagar, setResetFactura
+    setFacturaMontoPagar
 } from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
 import {useModal} from "mui-modal-provider";
