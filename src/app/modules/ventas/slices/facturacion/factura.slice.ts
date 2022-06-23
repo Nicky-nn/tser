@@ -13,6 +13,7 @@ export const facturaSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
+        facturaReset: () => initialState,
         setFactura: (state, action) => {
             state = action.payload;
         },
@@ -31,9 +32,6 @@ export const facturaSlice = createSlice({
         },
         setEmailCliente: (state, action) => {
             state.emailCliente = action.payload;
-        },
-        resetFactura: (state) => {
-            state = FacturaInitialValues;
         },
         setDetalleFactura: (state, action) => {
             state.detalle.push({
@@ -79,8 +77,8 @@ export const facturaSlice = createSlice({
 
 export const selectFactura = (state: RootState) => state.factura;
 export const {
+    facturaReset,
     setActividadEconomica,
-    resetFactura,
     setFactura,
     setTipoCliente,
     setCodigoCliente,

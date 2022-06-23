@@ -1,12 +1,11 @@
 import {FacturaInputProps} from "../interfaces/factura";
 
-export const composeFactura = (fcv: FacturaInputProps) => {
+export const composeFactura = (fcv: FacturaInputProps): any => {
     const input = {
         codigoCliente: fcv.cliente.codigoCliente,
         actividadEconomica: fcv.actividadEconomica,
         codigoMetodoPago: fcv.codigoMetodoPago,
         descuentoAdicional: fcv.descuentoAdicional,
-        numeroTarjeta: fcv.numeroTarjeta,
         detalleExtra: fcv.detalleExtra,
         emailCliente: fcv.cliente.email,
         detalle: fcv.detalle.map(item => ({
@@ -14,11 +13,11 @@ export const composeFactura = (fcv: FacturaInputProps) => {
             codigoProducto: item.codigoProducto,
             descripcion: item.nombre,
             cantidad: item.inputCantidad,
-            unidadMedida: item.unidadMedida.codigoClasificador,
+            unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
             precioUnitario: item.inputPrecio,
             montoDescuento: item.inputDescuento
         }))
     }
-    console.log(input)
+    console.log('INPUT', input)
     return input
 }

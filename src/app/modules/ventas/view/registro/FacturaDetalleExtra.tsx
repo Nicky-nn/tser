@@ -6,11 +6,7 @@ import parse from 'html-react-parser';
 import {Box, Button, Divider} from "@mui/material";
 import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/SimpleMenu";
 import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
-import {
-    setFacturaDescuentoAdicional,
-    setFacturaDetalleExtra,
-    setFacturaMontoPagar
-} from "../../slices/facturacion/factura.slice";
+import {setFacturaDetalleExtra} from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
 
 interface OwnProps {
