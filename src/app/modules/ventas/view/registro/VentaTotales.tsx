@@ -15,9 +15,9 @@ import {
     setFacturaMontoPagar
 } from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
-import {useModal} from "mui-modal-provider";
-import ConfirmationDialog from "../../../../base/components/Dialog/ConfirmationDialog";
-import {composeFactura} from "../../utils/composeFactura";
+import {composeFactura, composeFacturaValidator} from "../../utils/composeFactura";
+import Swal from 'sweetalert2';
+import {swalConfirm, swalErrorMsg, swalException} from "../../../../utils/swal";
 import {fetchFacturaCreate} from "../../api/facturaCreate.api";
 import {openInNewTab} from "../../../../utils/helper";
 
@@ -33,7 +33,6 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
         const subTotal: number = factura.detalle.reduce((acc, cur) => acc + (cur.inputCantidad * cur.inputPrecio) - cur.inputDescuento, 0) || 0;
         const handleFocus = (event: any) => event.target.select();
         const dispatch = useDispatch();
-        const {showModal} = useModal();
         const handleDescuentoAdicional = (event: any) => {
             setOpenDescuentoAdicional(true);
         }
@@ -44,25 +43,36 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                 dispatch(setFacturaMontoPagar())
             }
         };
-        const handeRealizarPago = () => {
+        const handeRealizarPago = async () => {
             const inputFactura = composeFactura(factura)
-            const modal = showModal(ConfirmationDialog, {
-                fullWidth: true,
-                maxWidth: 'xs',
-                title: '¿Esta seguro?',
-                description: 'Confirma que desea generar el documento fiscal',
-                onConfirm: async (event, setLoading) => {
-                    const data: any = await fetchFacturaCreate(inputFactura).catch(err => {
-                        console.log(err)
-                    })
-                    dispatch(facturaReset())
-                    modal.hide();
-                    openInNewTab(data.representacionGrafica.pdf)
-                },
-                onCancel: () => {
-                    modal.hide();
-                },
+            const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
+                swalErrorMsg(err.message)
             })
+            if (validator) {
+                Swal.fire({
+                    ...swalConfirm,
+                    text: '¿Confirma que desea emitir el documento fiscal?',
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                        return fetchFacturaCreate(inputFactura)
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        const {value}: any = result
+                        dispatch(facturaReset())
+
+                        openInNewTab(value.representacionGrafica.pdf)
+                        Swal.fire({
+                            title: `Documento generado correctamente`,
+                            text: `${value.representacionGrafica.pdf}`,
+                        }).then()
+                    }
+                }).catch(err => {
+                    swalException(err)
+                })
+            }
         }
         return (
             <>

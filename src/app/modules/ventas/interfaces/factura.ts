@@ -1,7 +1,22 @@
 import {ClienteProps} from "../../../base/api/cliente.api";
 import {ProductoVarianteProps} from "../../productos/api/producto.api";
+import {
+    SinActividadesProps,
+    SinCufdProps,
+    SinCuisProps,
+    SinMotivoAnulacionProps,
+    SinProductoServicioProps,
+    SinTipoDocumentoSectorProps,
+    SinTipoEmisionProps,
+    SinTipoFacturaProps,
+    SinTipoMetodoPagoProps,
+    SinTipoMonedaProps,
+    SinUnidadMedidaProps
+} from "../../sin/interfaces/sin.interface";
+import {PuntoVentaProps} from "../../puntoVenta/interfaces/puntoVenta";
+import {SucursalProps} from "../../sucursal/interfaces/sucursal";
 
-export interface FacturaDetalleProps extends ProductoVarianteProps{
+export interface FacturaDetalleProps extends ProductoVarianteProps {
     inputCantidad: number
     inputPrecio: number
     inputDescuento: number
@@ -49,4 +64,68 @@ export const FacturaInitialValues: FacturaInputProps = {
     montoPagar: 0,
     inputMontoPagar: 0,
     inputVuelto: 0
+}
+
+export interface RepresentacionGraficaProps {
+    pdf: string
+    rollo: string
+    xml: string
+}
+
+export interface DetalleFacturaProps {
+    actividadEconomica: SinActividadesProps
+    cantidad: number
+    descripcion: string
+    detalleExtra: string
+    montoDescuento: number
+    nroItem: number
+    numeroImei: string
+    numeroSerie: string
+    precioUnitario: number
+    producto: string
+    productoServicio: SinProductoServicioProps
+    subTotal: number
+    unidadMedida: SinUnidadMedidaProps
+}
+
+export interface FacturaProps {
+    _id: string,
+    cafc: string,
+    cliente: ClienteProps,
+    codigoRecepcion: String,
+    createdAt: string,
+    cuf: String,
+    cufd: SinCufdProps,
+    cuis: SinCuisProps,
+    descuentoAdicional: number,
+    detalle: DetalleFacturaProps[]
+    detalleExtra: string
+    documentoSector: SinTipoDocumentoSectorProps
+    eventoSignificativo: any
+    fechaEmision: string
+    leyenda: string
+    metodoPago: SinTipoMetodoPagoProps
+    moneda: SinTipoMonedaProps
+    montoGiftCard: number
+    montoTotal: number
+    montoTotalLiteral: number
+    montoTotalMoneda: number
+    montoTotalSujetoIva: number
+    motivoAnulacion: SinMotivoAnulacionProps
+    nitEmisor: string
+    numeroFactura: number
+    numeroTarjeta: string
+    puntoVenta: PuntoVentaProps
+    razonSocialEmisor: string
+    representacionGrafica: RepresentacionGraficaProps
+    state: string
+    subLeyenda: string
+    sucursal: SucursalProps
+    tipoCambio: number
+    tipoEmision: SinTipoEmisionProps
+    tipoFactura: SinTipoFacturaProps
+    updatedAt: string
+    usuario: string
+    usucre: string
+    usumod: string
 }

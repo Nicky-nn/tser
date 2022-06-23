@@ -32,6 +32,11 @@ export const navigations: NavigationProps[] = [
                 name: 'Registrar Venta',
                 iconText: 'VE',
                 path: '/ventas/registro',
+            },
+            {
+                name: 'Gestión de Ventas',
+                iconText: 'VEGE',
+                path: '/ventas/gestion',
             }
         ]
     },

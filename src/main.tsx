@@ -4,6 +4,7 @@ import App from './App'
 import './index.css'
 import 'react-toastify/dist/ReactToastify.css';
 import 'rc-input-number/assets/index.css'
+import '@sweetalert2/theme-material-ui/material-ui.min.css'
 import {CssBaseline, StyledEngineProvider} from "@mui/material";
 import {BrowserRouter} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
