@@ -664,6 +664,11 @@
     prop-types "^15.6.2"
     tinymce "^6.0.0 || ^5.5.1"
 
+"@trautmann/react-material-table@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@trautmann/react-material-table/-/react-material-table-2.0.1.tgz#1ea89b953055b326c59ab47676862710dbf87bc4"
+  integrity sha512-mW6WMNy+NXyVRsmH5vn3c8FmcS2rSkNWn/7trRERcs6A2q9Ye3qD7wKrTCoNPyBDIf8H6tIR/36fYNXY67rX9g==
+
 "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
@@ -1438,10 +1443,10 @@ loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-material-react-table@^0.13.3:
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.13.3.tgz#0305d41a6f600834bc07efe67a17efb5fb20dddc"
-  integrity sha512-OiYHl3RvbaRMsJTZMduXlPjVCz77gFFl2lc23Cb2m6M2ympMOCGbuZ37UTiHnwEOb8sDqbxGTUmTrSXZKCkLUg==
+material-react-table@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.14.1.tgz#edf6bec89045a16adcab570f8e760bac48d041eb"
+  integrity sha512-tS17K000ojUq94U6uTT7P/bL0Xpfm1Qa81oIfTYPQcXxPnfcW344aoEo18wF6kuBZDikiPVRU72xhEV47gM4PQ==
   dependencies:
     "@tanstack/match-sorter-utils" "^8.0.0-alpha.83"
     "@tanstack/react-table" "^8.0.0-beta.9"

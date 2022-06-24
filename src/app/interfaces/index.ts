@@ -23,3 +23,19 @@ export interface SucursalProps {
     departamento: ClaDepartamentoProps
     municipio: string
 }
+
+/**
+ * Estados suscritos para el ciclo de vida del registro
+ */
+export const apiEstado = {
+    elaborado: 'ELABORADO',
+    aprobado: 'APROBADO',
+    validada: 'VALIDADA',
+    completado: 'COMPLETADO',
+    finalizado: 'FINALIZADO',
+    pendiente: 'PENDIENTE',
+    observado: 'OBSERVADO',
+    paqueteObservado: 'OBSERVADA',
+    anulado: 'ANULADO',
+    eliminado: 'ELIMINADO',
+}

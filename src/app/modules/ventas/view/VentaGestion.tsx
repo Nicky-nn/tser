@@ -1,14 +1,16 @@
 import React, {FC, useEffect, useState} from 'react';
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
-import {Button, Divider, Grid, IconButton} from "@mui/material";
+import {Grid, IconButton} from "@mui/material";
 import {Box, styled} from "@mui/system";
-import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
+import MaterialReactTable, {MRT_Cell, MRT_ColumnDef, MRT_TableInstance} from 'material-react-table';
 import {FacturaProps} from "../interfaces/factura";
 import {fetchFacturaListado} from "../api/factura.listado.api";
 import {swalException} from "../../../utils/swal";
-import {Delete, FileOpen, LayersClear, MenuOpen, PictureAsPdf, Visibility} from "@mui/icons-material";
+import {FileOpen, LayersClear, MenuOpen, PictureAsPdf, Visibility} from "@mui/icons-material";
 import SimpleMenu, {StyledMenuItem} from "../../../base/components/MyMenu/SimpleMenu";
 import {openInNewTab} from "../../../utils/helper";
+import {apiEstado} from "../../../interfaces";
+import {numberWithCommas} from "../../../base/components/MyInputs/NumberInput";
 
 const Container = styled('div')(({theme}) => ({
     margin: '30px',
@@ -31,6 +33,14 @@ const tableColumns: MRT_ColumnDef[] = [
     {
         header: 'Importe',
         id: 'montoTotal',
+        muiTableBodyCellProps: {
+            align: 'center',
+        },
+        Cell: ({cell}: any) => (
+            <span>{numberWithCommas(cell.getValue(), {})}</span>
+        ),
+        size: 50,
+        enableColumnFilter: false
     },
     {
         header: 'Nro. Factura',
@@ -43,11 +53,26 @@ const tableColumns: MRT_ColumnDef[] = [
     {
         header: 'Razon Social',
         id: 'razonSocial',
+        maxSize: 160,
+        minSize: 100,
+        size: 10
     },
     {
-        header: 'Usuario',
-        id: 'usucre',
-    },
+        header: 'Estado',
+        id: 'state',
+        Cell: ({cell}: any) => (
+            <Box
+                sx={(theme) => ({
+                    fontWeight: 'bolder',
+                    color:
+                        cell.getValue() === apiEstado.validada ? theme.palette.success.dark :
+                            cell.getValue() === apiEstado.pendiente ? theme.palette.warning.dark : theme.palette.error.dark,
+                })}
+            >
+                {cell.getValue()}
+            </Box>
+        ),
+    }
 ];
 
 const VentaGestion: FC<any> = () => {

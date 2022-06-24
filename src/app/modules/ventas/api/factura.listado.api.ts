@@ -15,6 +15,7 @@ const query = gql`
     query LISTADO {
         facturaCompraVentaAll(
             reverse: true,
+            limit: 100
         ) {
             docs {
                 _id
@@ -121,6 +122,7 @@ const query = gql`
                     xml
                     rollo
                 }
+                state
                 usucre
             }
         }
