@@ -19,7 +19,7 @@ const CardTitle: FC<PropsWithChildren<CardTitleProps>> = styled('div')(({subtitl
 }))
 
 export interface SimpleCardProps {
-    title: string
+    title?: string
     subtitle?: string
     Icon?: JSX.Element
     children: ReactNode
@@ -28,9 +28,10 @@ export interface SimpleCardProps {
 const SimpleCard: FC<SimpleCardProps> = ({children, title, subtitle, Icon}: SimpleCardProps) => {
     return (
         <CardRoot elevation={6}>
-            <CardTitle subtitle={subtitle}>
+            {title && <CardTitle subtitle={subtitle}>
                 {title}
             </CardTitle>
+            }
             {subtitle && <Box sx={{mb: 2}}>{subtitle}</Box>}
             {children}
         </CardRoot>

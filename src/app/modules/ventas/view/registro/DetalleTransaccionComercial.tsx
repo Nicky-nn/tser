@@ -8,6 +8,7 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
+    Stack,
     TextField,
     Typography
 } from "@mui/material";
@@ -29,6 +30,7 @@ import {toast} from "react-toastify";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import InputNumber from 'rc-input-number';
 import {FacturaDetalleProps} from "../../interfaces/factura";
+import AgregarArticuloDialog from "./AgregarArticuloDialog";
 
 const data: any = []
 
@@ -37,6 +39,7 @@ export const DetalleTransaccionComercial: FC = () => {
     const factura = useAppSelector(state => state.factura);
     const dispatch = useDispatch();
     const [open, setOpen] = useState<boolean>(false);
+    const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false);
     const [productos, setProductos] = useState<ProductoVarianteProps[]>([]);
     const loading = open && productos.length === 0;
     const handleFocus = (event: any) => event.target.select();
@@ -64,7 +67,7 @@ export const DetalleTransaccionComercial: FC = () => {
     }, [open]);
 
     const handleChange = async (event: any, newInput: any) => {
-        if(newInput){
+        if (newInput) {
             // Verificamos si ya existe el producto
             const producto = factura.detalle.find(d => d.codigoProducto === newInput.codigoProducto);
             if (!producto) {
@@ -105,15 +108,23 @@ export const DetalleTransaccionComercial: FC = () => {
         }
     }
     const handleDelete = (item: FacturaDetalleProps) => {
-        if(item){
+        if (item) {
             dispatch(setDeleteItem(item));
             dispatch(setFacturaMontoPagar())
         }
     }
+
+    const handleCloseAgregarArticulo = (newProduct: any) => {
+        setOpenAgregarArticulo(false);
+        if (newProduct) {
+            console.log(newProduct)
+        }
+    }
+
     return <>
-        <SimpleCard title="Detalle transacción comercial">
-            <Grid container spacing={0}>
-                <Grid item xs={12} md={10}>
+        <SimpleCard title="Productos">
+            <Grid container spacing={1}>
+                <Grid item xs={12} lg={6} sm={12}>
                     <Autocomplete
                         id="productos"
                         open={open}
@@ -145,12 +156,19 @@ export const DetalleTransaccionComercial: FC = () => {
                             />
                         )}
                         sx={{
-                            marginBottom: '20px',
+                            width: '100%',
                         }}
                     />
                 </Grid>
-                <Grid item xs={12} md={2}>
-                    <Button variant="outlined">Explorar Productos</Button>
+                <Grid item xs={12} md={6}>
+                    <Stack
+                        direction={{xs: 'column', sm: 'row'}}
+                        spacing={1}
+                    >
+                        <Button variant="outlined">Explorar Productos</Button>
+                        <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">Producto
+                            Personalizado</Button>
+                    </Stack>
                 </Grid>
                 <Grid item xs={12}>
                     <div className="responsive-table" style={{marginTop: 20}}>
@@ -231,7 +249,8 @@ export const DetalleTransaccionComercial: FC = () => {
                                                 formatter={numberWithCommas}
                                             />
                                         </td>
-                                        <td data-label="SUB-TOTAL" style={{textAlign: 'right', backgroundColor: '#fafafa'}}>
+                                        <td data-label="SUB-TOTAL"
+                                            style={{textAlign: 'right', backgroundColor: '#fafafa'}}>
                                             <Typography variant="subtitle1" gutterBottom component="div">
                                                 <strong>{numberWithCommas((item.inputCantidad * item.inputPrecio - item.inputDescuento), {})}</strong>
                                             </Typography>
@@ -255,6 +274,15 @@ export const DetalleTransaccionComercial: FC = () => {
                 </Grid>
             </Grid>
         </SimpleCard>
+        <AgregarArticuloDialog
+            id={'agregarArticulo'}
+            keepMounted
+            open={openAgregarArticulo}
+            onClose={(newProduct: any) => {
+                handleChange(null, newProduct)
+                setOpenAgregarArticulo(false)
+            }}
+        />
     </>
 }
 

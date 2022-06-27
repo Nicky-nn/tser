@@ -7,6 +7,7 @@ const BreadcrumbRoot = styled('div')(() => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
+    marginBottom: '10px !important'
 }))
 
 const BreadcrumbName = styled('h4')(() => ({
@@ -54,7 +55,7 @@ const Breadcrumb: FC<any> = ({ routeSegments }: any) => {
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    position: 'relative'
+                    position: 'relative',
                 }}
             >
                 <NavLink to="/">

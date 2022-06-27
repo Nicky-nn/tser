@@ -6,7 +6,6 @@ import {store} from "./app/store/store";
 import {SettingsProvider} from "./app/base/contexts/SettingsContext";
 import MatxTheme from "./app/base/components/Template/MatxTheme/MatxTheme";
 import {AuthProvider} from "./app/base/contexts/JWTAuthContext";
-import ModalProvider from "mui-modal-provider";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 
 function App() {
@@ -19,13 +18,10 @@ function App() {
         <Provider store={store}>
             <SettingsProvider>
                 <MatxTheme>
-                    <ModalProvider>
-                        <ApolloProvider client={client}>
+                    <ApolloProvider client={client}>
+                        <AuthProvider>{all_pages}</AuthProvider>
+                    </ApolloProvider>
 
-                            <AuthProvider>{all_pages}</AuthProvider>
-                        </ApolloProvider>
-
-                    </ModalProvider>
                 </MatxTheme>
             </SettingsProvider>
         </Provider>

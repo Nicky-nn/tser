@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useState} from 'react';
-import {Delete, DocumentScanner, Home, KeyboardArrowDown} from "@mui/icons-material";
+import {Delete, DocumentScanner, KeyboardArrowDown} from "@mui/icons-material";
 import {useAppSelector} from "../../../../hooks";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import parse from 'html-react-parser';
@@ -8,6 +8,7 @@ import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/Sim
 import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
 import {setFacturaDetalleExtra} from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
+import {Editor} from "@tinymce/tinymce-react";
 
 interface OwnProps {
 }
@@ -27,52 +28,43 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
             dispatch(setFacturaDetalleExtra(newValue))
         }
     };
+
+
     return (
         <>
-            <SimpleCard title="Detalle Extra" Icon={<Home/>}>
-                <Box sx={{alignItems: 'right', textAlign: 'right'}}>
-                    <SimpleMenu
-                        menuButton={
-                            <>
-                                <Button
-                                    id="demo-customized-button"
-                                    aria-haspopup="true"
-                                    variant="contained"
-                                    disableElevation
-                                    size={'small'}
-                                    endIcon={<KeyboardArrowDown/>}
-                                >
-                                    Opciones
-                                </Button>
-                            </>
-
-                        }
-                    >
-                        <StyledMenuItem onClick={handleDetalleExtra}>
-                            <DocumentScanner/>Crear / Editar
-                        </StyledMenuItem>
-                        <Divider sx={{my: 0.5}}/>
-                        <StyledMenuItem onClick={() => dispatch(setFacturaDetalleExtra(null))}>
-                            <Delete/>Eliminar
-                        </StyledMenuItem>
-                    </SimpleMenu>
-                    <FacturaDetalleExtraDialog
-                        id="ringtone-menu"
-                        keepMounted
-                        open={openDetalleExtra}
-                        onClose={handleCloseDetalleExtra}
+            <SimpleCard title="Detalle Extra">
+                <Box sx={{alignItems: 'right', textAlign: 'left'}}>
+                    <Editor
+                        apiKey='niud727ae46xgl3s5morxk4v03hq6rrv7lpkvustyt2ilp2k'
                         value={factura.detalleExtra || ''}
+                        onInit={(evt, editor) => {
+                            console.log(editor.getContent({format: 'text'}));
+                        }}
+                        onEditorChange={(newValue, editor) => {
+                            dispatch(setFacturaDetalleExtra(editor.getContent()))
+                            console.log(editor.getContent({format: 'text'}));
+                        }}
+                        init={{
+                            plugins: 'table template code',
+                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | table | template | code',
+                            menubar: false,
+                            table_default_attributes: {
+                                border: '0'
+                            },
+                            min_height: 150,
+                            height: 150,
+                            max_height: 500,
+                        }}
                     />
                 </Box>
-
-                <Divider sx={{my: 1, mt: 1}}/>
-                <div>
-                    {
-                        factura.detalleExtra ? parse(factura.detalleExtra || 'no se ha encontrado ') : 'SIN DETALLE EXTRA'
-                    }
-                </div>
-
             </SimpleCard>
+            <FacturaDetalleExtraDialog
+                id="ringtone-menu"
+                keepMounted
+                open={openDetalleExtra}
+                onClose={handleCloseDetalleExtra}
+                value={factura.detalleExtra || ''}
+            />
         </>
     );
 };

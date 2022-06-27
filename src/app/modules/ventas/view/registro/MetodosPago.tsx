@@ -5,7 +5,7 @@ import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {
     Divider,
     FormControl,
-    FormControlLabel,
+    FormControlLabel, FormLabel,
     InputLabel,
     OutlinedInput,
     Radio,
@@ -46,9 +46,9 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
     }
     return (
         <>
-            <Stack spacing={2}>
-                <SimpleCard title="Métodos de pago" Icon={<Home/>}>
+            <Stack spacing={2} pt={2}>
                     <FormControl>
+                        <FormLabel id="demo-radio-buttons-group-label">Método de págo</FormLabel>
                         <RadioGroup
                             row
                             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -59,14 +59,12 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
                             <FormControlLabel value="1" control={<Radio/>} label="Efectivo"/>
                             <FormControlLabel value="2" control={<Radio/>} label="Tarjeta"/>
                         </RadioGroup>
-                    </FormControl> <br/>
+                    </FormControl>
                     {
                         factura.codigoMetodoPago === 2 && (
                             <>
-                                <Divider/>
                                 <FormControl
                                     fullWidth
-                                    style={{marginTop: 25}}
                                     size={"small"}
                                 >
                                     <InputLabel htmlFor="formatted-text-mask-input">Ingrese el Número de
@@ -84,8 +82,6 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
                             </>
                         )
                     }
-                </SimpleCard>
-                <DatosCliente/>
             </Stack>
         </>
     );

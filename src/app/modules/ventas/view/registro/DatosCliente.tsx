@@ -13,7 +13,6 @@ const DatosCliente: FunctionComponent<Props> = (props) => {
     const factura = useAppSelector(state => state.factura);
     return (
         <>
-            <SimpleCard title="Datos del cliente" Icon={<Home/>}>
                 <List>
                     <ListItem style={{padding: 0}}>
                         <ListItemText>
@@ -27,16 +26,10 @@ const DatosCliente: FunctionComponent<Props> = (props) => {
                     </ListItem>
                     <ListItem style={{padding: 0}}>
                         <ListItemText>
-                            <strong>Cod. Cliente:</strong>&nbsp;&nbsp; {factura.cliente?.codigoCliente || ''}
-                        </ListItemText>
-                    </ListItem>
-                    <ListItem style={{padding: 0}}>
-                        <ListItemText>
                             <strong>Correo:</strong>&nbsp;&nbsp; {factura.emailCliente || ''}
                         </ListItemText>
                     </ListItem>
                 </List>
-            </SimpleCard>
         </>
     );
 };

@@ -1,8 +1,8 @@
 import React, {FC, useEffect, useState} from 'react';
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
-import {Grid, IconButton} from "@mui/material";
+import {Grid, IconButton, Typography} from "@mui/material";
 import {Box, styled} from "@mui/system";
-import MaterialReactTable, {MRT_Cell, MRT_ColumnDef, MRT_TableInstance} from 'material-react-table';
+import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
 import {FacturaProps} from "../interfaces/factura";
 import {fetchFacturaListado} from "../api/factura.listado.api";
 import {swalException} from "../../../utils/swal";
@@ -11,6 +11,8 @@ import SimpleMenu, {StyledMenuItem} from "../../../base/components/MyMenu/Simple
 import {openInNewTab} from "../../../utils/helper";
 import {apiEstado} from "../../../interfaces";
 import {numberWithCommas} from "../../../base/components/MyInputs/NumberInput";
+import {HtmlTooltip} from "../../../base/components/Tooltip/HtmlTooltip";
+import AnularDocumentoDialog from "./VentaGestion/AnularDocumentoDialog";
 
 const Container = styled('div')(({theme}) => ({
     margin: '30px',
@@ -79,19 +81,21 @@ const VentaGestion: FC<any> = () => {
     const [remoteData, setRemoteData] = useState<FacturaProps[]>([]);
     const [columns, setColumns] = useState(tableColumns);
     const [isLoading, setIsLoading] = useState(false);
+    const [openAnularDocumento, setOpenAnularDocumento] = useState(false);
+    const [factura, setFactura] = useState<FacturaProps | null>(null);
+    const fetchData = async () => {
+        setIsLoading(true);
+        const response: any = await fetchFacturaListado().catch((err: Error) => swalException(err));
+        const data = response.facturaCompraVentaAll.docs;
+        setRemoteData(data.map((d: any) => ({
+            ...d,
+            nit: d.cliente.numeroDocumento,
+            razonSocial: d.cliente.razonSocial
+        })));
+        setIsLoading(false);
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            const response: any = await fetchFacturaListado().catch((err: Error) => swalException(err));
-            const data = response.facturaCompraVentaAll.docs;
-            setRemoteData(data.map((d: any) => ({
-                ...d,
-                nit: d.cliente.numeroDocumento,
-                razonSocial: d.cliente.razonSocial
-            })));
-            setIsLoading(false);
-        };
         fetchData().then();
     }, []);
     return (
@@ -130,9 +134,10 @@ const VentaGestion: FC<any> = () => {
                                         </>
                                     }
                                 >
-                                    <StyledMenuItem onClick={() => {
-                                        openInNewTab(row.original.representacionGrafica.pdf)
-                                        console.log('Pdf Medio Oficio', row.original);
+                                    <StyledMenuItem onClick={(e) => {
+                                        e.preventDefault()
+                                        setOpenAnularDocumento(true)
+                                        setFactura(row.original)
                                     }}>
                                         <LayersClear/> Anular Documento
                                     </StyledMenuItem>
@@ -153,13 +158,36 @@ const VentaGestion: FC<any> = () => {
                                 </SimpleMenu>
 
                                 <IconButton aria-label="auditoria">
-                                    <Visibility/>
+                                    <HtmlTooltip
+                                        placement="top-start"
+                                        title={
+                                            <>
+                                                <Typography color="inherit">Tooltip with HTML</Typography>
+                                                <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
+                                                {"It's very engaging. Right?"}
+                                            </>
+                                        }
+                                    >
+                                        <Visibility/>
+                                    </HtmlTooltip>
                                 </IconButton>
                             </div>
                         )}></MaterialReactTable>
                 </Grid>
             </Grid>
             <Box py="12px"/>
+            <AnularDocumentoDialog
+                id={'anularDocumentoDialgo'}
+                open={openAnularDocumento}
+                keepMounted
+                factura={factura}
+                onClose={async (val) => {
+                    if(val) {
+                        await fetchData().then()
+                    }
+                    setOpenAnularDocumento(false)
+                }}
+            />
         </Container>
     );
 };

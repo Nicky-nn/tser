@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+.breadcrumb {
+    margin-bottom: 15px !important;
+}
+
 .App-logo {
     height: 40vmin;
     pointer-events: none;
@@ -221,12 +225,40 @@ button {
     border-bottom: 1px solid #ff5252;
     color: #ff5252;
 }
-.swalError  .swal2-html-container {
+
+.swalError .swal2-html-container {
     color: #757575 !important;
     font-size: 1em !important;
     text-align: left;
 }
+
 .swalError .swal2-actions button.swal2-confirm {
     color: #ff5252 !important;
 }
+
 /***************** SWEET-ALERT*********************/
+
+.rdt_Table input[type=checkbox] {
+    transform: scale(1.6);
+}
+.rdt_Table {
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.rdt_Table .rdt_TableHeadRow {
+    border-top: 1px solid #DDDDDD;
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    border-radius: 7px 7px 0 0;
+    font-size: 1.25em;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+.rdt_Table .rdt_TableBody {
+    border-bottom: 1px solid #DDDDDD;
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+}
+.tox .tox-tinymce {
+    min-height: 150px !important;
+}

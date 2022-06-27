@@ -3,7 +3,7 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
   },
   "include": ["vite.config.ts"]
 }
