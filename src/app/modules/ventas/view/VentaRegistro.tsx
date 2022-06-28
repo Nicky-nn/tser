@@ -72,7 +72,6 @@ const VentaRegistro = () => {
                     <Grid item lg={12} md={12} xs={12}>
                         <FacturaDetalleExtra/>
                     </Grid>
-
                     <Grid item lg={12} md={12} xs={12}>
                         <DetalleTransaccionComercial/>
                     </Grid>

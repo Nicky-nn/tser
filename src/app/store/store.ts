@@ -1,9 +1,11 @@
 import {Action, configureStore, ThunkAction} from '@reduxjs/toolkit';
 import FacturaSlice from "../modules/ventas/slices/facturacion/factura.slice";
+import ProductoSlice from "../modules/productos/slices/productos/producto.slice";
 
 export const store = configureStore({
     reducer: {
         factura: FacturaSlice,
+        producto: ProductoSlice
     },
 });
 

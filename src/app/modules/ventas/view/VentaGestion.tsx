@@ -1,17 +1,16 @@
 import React, {FC, useEffect, useState} from 'react';
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
-import {Grid, IconButton, Typography} from "@mui/material";
+import {Grid, IconButton} from "@mui/material";
 import {Box, styled} from "@mui/system";
 import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
 import {FacturaProps} from "../interfaces/factura";
 import {fetchFacturaListado} from "../api/factura.listado.api";
 import {swalException} from "../../../utils/swal";
-import {FileOpen, LayersClear, MenuOpen, PictureAsPdf, Visibility} from "@mui/icons-material";
+import {FileOpen, LayersClear, MenuOpen, PictureAsPdf} from "@mui/icons-material";
 import SimpleMenu, {StyledMenuItem} from "../../../base/components/MyMenu/SimpleMenu";
 import {openInNewTab} from "../../../utils/helper";
 import {apiEstado} from "../../../interfaces";
 import {numberWithCommas} from "../../../base/components/MyInputs/NumberInput";
-import {HtmlTooltip} from "../../../base/components/Tooltip/HtmlTooltip";
 import AnularDocumentoDialog from "./VentaGestion/AnularDocumentoDialog";
 import AuditIconButton from "../../../base/components/Auditoria/AuditIconButton";
 
@@ -157,7 +156,7 @@ const VentaGestion: FC<any> = () => {
                                         <FileOpen/> Xml
                                     </StyledMenuItem>
                                 </SimpleMenu>
-                                <AuditIconButton row={row.original} />
+                                <AuditIconButton row={row.original}/>
                             </div>
                         )}></MaterialReactTable>
                 </Grid>
@@ -169,7 +168,7 @@ const VentaGestion: FC<any> = () => {
                 keepMounted
                 factura={factura}
                 onClose={async (val) => {
-                    if(val) {
+                    if (val) {
                         await fetchData().then()
                     }
                     setOpenAnularDocumento(false)
