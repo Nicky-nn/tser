@@ -170,6 +170,9 @@ button {
         border-bottom: 0;
     }
 }
+.responsive-table.tableAuditoria td {
+    padding: 5px 10px;
+}
 
 /************** PLUGIN RC-INPUT *****************/
 .rc-input-number {
@@ -236,11 +239,16 @@ button {
     color: #ff5252 !important;
 }
 
+.swal2-container {
+    z-index: 9999 !important;
+}
+
 /***************** SWEET-ALERT*********************/
 
 .rdt_Table input[type=checkbox] {
     transform: scale(1.6);
 }
+
 .rdt_Table {
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
@@ -254,11 +262,13 @@ button {
     padding-top: 15px;
     padding-bottom: 10px;
 }
+
 .rdt_Table .rdt_TableBody {
     border-bottom: 1px solid #DDDDDD;
     border-left: 1px solid #DDDDDD;
     border-right: 1px solid #DDDDDD;
 }
+
 .tox .tox-tinymce {
     min-height: 150px !important;
 }

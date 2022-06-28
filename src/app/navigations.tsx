@@ -42,7 +42,7 @@ export const navigations: NavigationProps[] = [
     },
     {
         name: 'Productos',
-        icon: 'security',
+        icon: 'inventory_sharp',
         children: [
             {
                 name: 'Gestion de Productos',
@@ -52,89 +52,19 @@ export const navigations: NavigationProps[] = [
         ],
     },
     {
-        name: 'Components',
-        label: 'Inventario',
-        type: 'label',
-    },
-    {
-        name: 'Inventario',
-        icon: 'favorite',
+        name: 'Clientes',
+        icon: 'person_sharp',
         badge: {value: '', color: 'secondary'},
         children: [
             {
-                name: 'Auto Complete',
-                path: '/material/autocomplete',
-                iconText: 'A',
-            },
-            {
-                name: 'Buttons',
-                path: '/material/buttons',
-                iconText: 'B',
-            },
-            {
-                name: 'Checkbox',
-                path: '/material/checkbox',
-                iconText: 'C',
-            },
-            {
-                name: 'Dialog',
-                path: '/material/dialog',
-                iconText: 'D',
-            },
-            {
-                name: 'Expansion Panel',
-                path: '/material/expansion-panel',
-                iconText: 'E',
-            },
-            {
-                name: 'Form',
-                path: '/material/form',
-                iconText: 'F',
-            },
-            {
-                name: 'Icons',
-                path: '/material/icons',
-                iconText: 'I',
-            },
-            {
-                name: 'Menu',
-                path: '/material/menu',
-                iconText: 'M',
-            },
-            {
-                name: 'Progress',
-                path: '/material/progress',
-                iconText: 'P',
-            },
-            {
-                name: 'Radio',
-                path: '/material/radio',
-                iconText: 'R',
-            },
-            {
-                name: 'Switch',
-                path: '/material/switch',
-                iconText: 'S',
-            },
-            {
-                name: 'Slider',
-                path: '/material/slider',
-                iconText: 'S',
-            },
-            {
-                name: 'Snackbar',
-                path: '/material/snackbar',
-                iconText: 'S',
-            },
-            {
-                name: 'Table',
-                path: '/material/table',
-                iconText: 'T',
-            },
+                name: 'Gestión de clientes',
+                path: '/clientes/gestion',
+                iconText: 'GC',
+            }
         ],
     },
     {
-        name: 'Informes',
+        name: 'Reportes',
         icon: 'trending_up',
 
         children: [

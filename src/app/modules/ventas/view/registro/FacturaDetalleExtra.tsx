@@ -1,14 +1,12 @@
 import React, {FunctionComponent, useState} from 'react';
-import {Delete, DocumentScanner, KeyboardArrowDown} from "@mui/icons-material";
 import {useAppSelector} from "../../../../hooks";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import parse from 'html-react-parser';
-import {Box, Button, Divider} from "@mui/material";
-import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/SimpleMenu";
+import {Box} from "@mui/material";
 import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
 import {setFacturaDetalleExtra} from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
 import {Editor} from "@tinymce/tinymce-react";
+import {TINYMCE_TEMPLATES} from "../../../../interfaces/tinimce.template";
 
 interface OwnProps {
 }
@@ -51,9 +49,10 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                             table_default_attributes: {
                                 border: '0'
                             },
-                            min_height: 150,
-                            height: 150,
+                            min_height: 250,
+                            height: 250,
                             max_height: 500,
+                            templates: TINYMCE_TEMPLATES,
                         }}
                     />
                 </Box>

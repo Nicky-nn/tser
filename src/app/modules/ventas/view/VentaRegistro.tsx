@@ -1,5 +1,5 @@
 import {Box, styled} from '@mui/system'
-import {Chip, Divider, Grid} from "@mui/material";
+import {Divider, Grid} from "@mui/material";
 import {DatosTransaccionComercial} from "./registro/DatosTransaccionComercial";
 import React, {useContext, useEffect, useState} from "react";
 import {FacturaProps, fetchFacturaParams} from "../api/factura.api";
@@ -14,7 +14,6 @@ import VentaTotales from "./registro/VentaTotales";
 import MetodosPago from "./registro/MetodosPago";
 import FacturaDetalleExtra from "./registro/FacturaDetalleExtra";
 import DatosActividadEconomica from "./registro/DatosActividadEconomica";
-import DatosCliente from "./registro/DatosCliente";
 import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
 
 const Container = styled('div')(({theme}) => ({
@@ -68,7 +67,7 @@ const VentaRegistro = () => {
             <form noValidate onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item lg={12} md={12} xs={12}>
-                        <DatosActividadEconomica />
+                        <DatosActividadEconomica/>
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
                         <FacturaDetalleExtra/>
@@ -80,7 +79,7 @@ const VentaRegistro = () => {
                     <Grid item lg={7} md={12} xs={12}>
                         <SimpleCard title={'Cliente / Método de págo'}>
                             <DatosTransaccionComercial user={user!}/>
-                            <Divider />
+                            <Divider/>
                             <MetodosPago/>
                         </SimpleCard>
                     </Grid>

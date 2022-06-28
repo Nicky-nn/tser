@@ -17,7 +17,11 @@ import {fetchSinMotivoAnulacion} from "../../../sin/api/sinMotivoAnulacion.api";
 import {FacturaProps} from "../../interfaces/factura";
 import {LoadingButton} from "@mui/lab";
 import {fetchFacturaAnular} from "../../api/facturaAnular.api";
-import {swalException} from "../../../../utils/swal";
+import {swalConfirm, swalException} from "../../../../utils/swal";
+import Swal from "sweetalert2";
+import {fetchFacturaCreate} from "../../api/facturaCreate.api";
+import {facturaReset} from "../../slices/facturacion/factura.slice";
+import {openInNewTab} from "../../../../utils/helper";
 
 interface OwnProps {
     id: string;
@@ -70,16 +74,27 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
             aux = false
         }
         if (aux) {
-            setLoading(true)
-            const input = {id: factura?._id, codigoMotivo: value.codigoMotivo};
-            await fetchFacturaAnular(factura?._id || '', value.codigoMotivo).then(res => {
-                onClose(true)
-                setLoading(false)
+            Swal.fire({
+                ...swalConfirm,
+                html: '¿Confirma que desea anular el documento? <br> este proceso no se podra revertir',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    setLoading(true)
+                    const input = {id: factura?._id, codigoMotivo: value.codigoMotivo};
+                    return fetchFacturaAnular(factura?._id || '', value.codigoMotivo)
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                console.log(result)
+                if (result.isConfirmed) {
+                    toast.success('Documento Anulado correctamente')
+                    onClose(true)
+                    setLoading(false)
+                }
             }).catch(err => {
                 swalException(err)
-                onClose()
                 setLoading(false)
-            });
+            })
         }
     };
 

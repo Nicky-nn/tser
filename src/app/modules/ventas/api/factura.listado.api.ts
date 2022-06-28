@@ -124,6 +124,9 @@ const query = gql`
                 }
                 state
                 usucre
+                createdAt
+                usumod
+                updatedAt
             }
         }
     }

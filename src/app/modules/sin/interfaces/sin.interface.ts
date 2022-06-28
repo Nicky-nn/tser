@@ -6,6 +6,10 @@ export interface SinTipoDocumentoSectorProps {
     codigoClasificador: number
     descripcion: string
 }
+export interface SinTipoDocumentoIdentidadProps {
+    codigoClasificador: number
+    descripcion: string
+}
 export interface SinTipoMetodoPagoProps {
     codigoClasificador: number
     descripcion: string

@@ -13,6 +13,7 @@ import {apiEstado} from "../../../interfaces";
 import {numberWithCommas} from "../../../base/components/MyInputs/NumberInput";
 import {HtmlTooltip} from "../../../base/components/Tooltip/HtmlTooltip";
 import AnularDocumentoDialog from "./VentaGestion/AnularDocumentoDialog";
+import AuditIconButton from "../../../base/components/Auditoria/AuditIconButton";
 
 const Container = styled('div')(({theme}) => ({
     margin: '30px',
@@ -156,21 +157,7 @@ const VentaGestion: FC<any> = () => {
                                         <FileOpen/> Xml
                                     </StyledMenuItem>
                                 </SimpleMenu>
-
-                                <IconButton aria-label="auditoria">
-                                    <HtmlTooltip
-                                        placement="top-start"
-                                        title={
-                                            <>
-                                                <Typography color="inherit">Tooltip with HTML</Typography>
-                                                <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
-                                                {"It's very engaging. Right?"}
-                                            </>
-                                        }
-                                    >
-                                        <Visibility/>
-                                    </HtmlTooltip>
-                                </IconButton>
+                                <AuditIconButton row={row.original} />
                             </div>
                         )}></MaterialReactTable>
                 </Grid>

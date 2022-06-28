@@ -2,13 +2,15 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../models/paramsModel";
+import {AuditoriaProps} from "../../interfaces";
 
 export interface SinTipoDocumentoIdentidad {
     codigoClasificador: string;
     descripcion: string;
 }
 
-export interface ClienteProps {
+export interface ClienteProps extends AuditoriaProps {
+    _id: string,
     apellidos: string,
     codigoCliente: string,
     complemento: string,

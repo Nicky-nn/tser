@@ -6,6 +6,7 @@ import ventasRoutes from "../modules/ventas/VentasRoutes";
 import sessionRoutes from "../base/view/sessions/SessionRoutes";
 import NotFound from "../base/view/sessions/NotFound";
 import productosRoutes from "../modules/productos/ProductosRoutes";
+import clientesRoutes from "../modules/clientes/ClientesRoutes";
 
 export const AllPages = () => {
     const allRoutes = [
@@ -15,7 +16,7 @@ export const AllPages = () => {
                     <MatxLayout/>
                 </AuthGuard>
             ),
-            children: [...dashboardRoutes, ...ventasRoutes, ...productosRoutes],
+            children: [...dashboardRoutes, ...ventasRoutes, ...productosRoutes, ...clientesRoutes],
         },
         ...sessionRoutes,
         {
