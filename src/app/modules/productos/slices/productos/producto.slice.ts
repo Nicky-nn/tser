@@ -1,15 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from "../../../../store/store";
-import {FacturaInitialValues} from "../../../ventas/interfaces/factura";
-
-interface ProductoInputProps {
-}
+import {ProductoInitialValues, ProductoInputProps} from "../../interfaces/producto.interface";
 
 export interface ProductoState {
     producto: ProductoInputProps;
 }
 
-const initialState: ProductoInputProps = FacturaInitialValues
+const initialState: ProductoInputProps = ProductoInitialValues
 
 export const productoSlice = createSlice({
     name: 'producto',

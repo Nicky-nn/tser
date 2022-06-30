@@ -3,6 +3,7 @@ import SimpleContainer from "../../../base/components/Container/SimpleContainer"
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import {Grid} from "@mui/material";
 import Homologacion from "./registro/ProductoHomologacion";
+import ProductoPrecio from "./registro/ProductoPrecio";
 
 interface OwnProps {
 }
@@ -28,7 +29,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                             <Homologacion/>
                         </Grid>
                         <Grid item lg={12}>
-                            fasfs
+                            <ProductoPrecio />
                         </Grid>
                     </Grid>
                 </Grid>
