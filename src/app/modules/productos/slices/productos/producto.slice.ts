@@ -2,10 +2,6 @@ import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from "../../../../store/store";
 import {ProductoInitialValues, ProductoInputProps} from "../../interfaces/producto.interface";
 
-export interface ProductoState {
-    producto: ProductoInputProps;
-}
-
 const initialState: ProductoInputProps = ProductoInitialValues
 
 export const productoSlice = createSlice({
@@ -16,14 +12,26 @@ export const productoSlice = createSlice({
         productoReset: () => initialState,
         setProducto: (state, action) => {
             state = action.payload;
+        },
+        setOpcionesProducto: (state, action) => {
+            state.opcionesProducto = action.payload
+        },
+        setVarianteUnica: (state, action) => {
+            state.varianteUnica = action.payload
+        },
+        setVariantesProducto: (state, action) => {
+            state.variantes = action.payload
         }
     },
 });
 
-export const selectProducto = (state: RootState) => state.producto;
+export const selectProducto = (state: RootState): ProductoInputProps => state.producto;
 export const {
     productoReset,
-    setProducto
+    setProducto,
+    setVarianteUnica,
+    setOpcionesProducto,
+    setVariantesProducto
 } = productoSlice.actions;
 
 export default productoSlice.reducer;

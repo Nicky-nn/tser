@@ -2,50 +2,7 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {
-    ImagenProps,
-    ItemInventarioProp,
-    OpcionesVarianteProps,
-    ProductoPrecioRangoProps,
-    SinProductoServicioProps,
-    UnidadMedidaProps
-} from "../interfaces/producto.interface";
-
-export interface ProductoVarianteProps {
-    codigoProducto: string // identificador o codigo unico
-    producto?: ProductoProps
-    titulo: string // nombre propio
-    nombre: string // nombre producto + titulo
-    disponibleParaVenta: boolean
-    codigoBarras: string | null
-    precio: number
-    precioComparacion: number
-    imagen?: ImagenProps
-    opcionesVariante: Array<OpcionesVarianteProps>
-    inventario: Array<ItemInventarioProp>
-    peso: number
-    unidadMedida: UnidadMedidaProps
-}
-
-export interface ProductoProps {
-    sinProductoServicio: SinProductoServicioProps
-    titulo: string
-    descripcion: string
-    descripcionHtml: string
-    rangoPrecios: ProductoPrecioRangoProps
-    tipoProducto: string | null
-    totalVariantes: number
-    seguimientoInventario: boolean
-    imagenDestacada?: ImagenProps // url de la imagen
-    varianteUnica: boolean // si solo tienen una sola variante
-    proveedor: string | null // nombre del proveedor si vale el caso
-    variante: ProductoVarianteProps[]
-    usucre: string
-    createdAt?: Date
-    usumod?: string
-    updatedAt?: Date
-    estado?: string
-}
+import {ProductoInputProps} from "../interfaces/producto.interface";
 
 
 const query = gql`
@@ -66,7 +23,7 @@ const query = gql`
     }
 `
 
-export const fetchProductoListado = async (): Promise<ProductoProps> => {
+export const fetchProductoListado = async (): Promise<ProductoInputProps> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header

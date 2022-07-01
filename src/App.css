@@ -122,12 +122,14 @@ button {
     text-align: left;
     text-transform: uppercase;
 }
+.responsive-table .table-dense td, .responsive-table .table-dense th {
+    padding: 0.45em;
+}
 
 @media screen and (max-width: 600px) {
     .responsive-table table {
         border: 0;
     }
-
     .responsive-table table caption {
         font-size: 1.3em;
     }

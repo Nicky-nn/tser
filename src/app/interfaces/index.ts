@@ -9,21 +9,6 @@ export interface SinActividadesProps {
     descripcion: string;
 }
 
-export interface ClaDepartamentoProps {
-    codigo: number
-    codigoPais: number
-    sigla: string
-    departamento: string
-}
-
-export interface SucursalProps {
-    codigo: number
-    direccion: string
-    telefono: string
-    departamento: ClaDepartamentoProps
-    municipio: string
-}
-
 /**
  * Estados suscritos para el ciclo de vida del registro
  */

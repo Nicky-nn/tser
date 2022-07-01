@@ -4,6 +4,8 @@ import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb"
 import {Grid} from "@mui/material";
 import Homologacion from "./registro/ProductoHomologacion";
 import ProductoPrecio from "./registro/ProductoPrecio";
+import ProductoOpciones from "./registro/ProductoOpciones";
+import ProductoVariantes from "./registro/ProductoVariantes";
 
 interface OwnProps {
 }
@@ -30,6 +32,12 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                         </Grid>
                         <Grid item lg={12}>
                             <ProductoPrecio />
+                        </Grid>
+                        <Grid item lg={12}>
+                            <ProductoOpciones />
+                        </Grid>
+                        <Grid item lg={12}>
+                            <ProductoVariantes />
                         </Grid>
                     </Grid>
                 </Grid>

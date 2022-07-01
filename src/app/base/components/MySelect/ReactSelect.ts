@@ -1,13 +1,11 @@
-import Select, {GroupBase, StylesConfig} from 'react-select'
+import Select, {StylesConfig} from 'react-select'
 
 export const ReactSelect = Select;
 
 
-export const reactSelectCustomStyles: StylesConfig<number, false, GroupBase<number>> | undefined = {
-    menu: () => ({
-        zIndex: 2
+export const reactSelectStyles: StylesConfig<any> | undefined = {
+    menuPortal: base => ({
+        ...base,
+        zIndex: 9999
     }),
-    menuList: () => ({
-        overflowY: "auto"
-    })
 };
