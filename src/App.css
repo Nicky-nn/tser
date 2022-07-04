@@ -1,3 +1,10 @@
+:root {
+    --space: -0.1rem;
+    --space-xs: calc(var(--space) / 3);
+    --space-sm: calc(var(--space) / 2);
+    --space-md: calc(var(--space) * 2);
+}
+
 .App {
     text-align: center;
 }
@@ -273,4 +280,12 @@ button {
 
 .tox .tox-tinymce {
     min-height: 150px !important;
+}
+
+.asideSidebarFixed {
+    --offset: var(--space);
+    align-self: start;
+    position: sticky;
+    z-index: 6 !important;
+    top: var(--offset);
 }

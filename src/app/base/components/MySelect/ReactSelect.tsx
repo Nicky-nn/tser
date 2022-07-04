@@ -8,4 +8,8 @@ export const reactSelectStyles: StylesConfig<any> | undefined = {
         ...base,
         zIndex: 9999
     }),
+    placeholder: (base) => ({
+        ...base,
+        color: '#a4a4a4'
+    }),
 };

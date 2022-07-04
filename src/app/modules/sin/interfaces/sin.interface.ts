@@ -1,19 +1,23 @@
 export interface SinUnidadMedidaProps {
-    codigoClasificador: number
+    codigoClasificador: string
     descripcion: string
 }
+
 export interface SinTipoDocumentoSectorProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinTipoDocumentoIdentidadProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinTipoMetodoPagoProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinMotivoAnulacionProps {
     codigoClasificador: number
     descripcion: string
@@ -23,23 +27,36 @@ export interface SinTipoMonedaProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinTipoPuntoVentaProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinTipoEmisionProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinTipoFacturaProps {
     codigoClasificador: number
     descripcion: string
 }
+
 export interface SinActividadesProps {
     codigoCaeb: string
     descripcion: string
     tipoActividad: string
 }
+
+export interface SinActividadesPorDocumentoSector {
+    codigoActividad: string,
+    codigoDocumentoSector: number,
+    tipoDocumentoSector: string,
+    actividadEconomica: string,
+    tipoActividad: string,
+}
+
 export interface SinProductoServicioProps {
     codigoActividad: string
     codigoProducto: string

@@ -2,7 +2,7 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {SucursalProps} from "../../sucursal/interfaces/sucursal";
+import {SucursalProps} from "../interfaces/sucursal";
 
 const query = gql`
     query SUCURSALES {
@@ -20,7 +20,7 @@ const query = gql`
     }
 `
 
-export const fetchSucursales = async (): Promise<SucursalProps> => {
+export const apiSucursales = async (): Promise<SucursalProps[]> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header

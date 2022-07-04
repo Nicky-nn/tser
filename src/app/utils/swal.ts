@@ -1,4 +1,4 @@
-import Swal, {SweetAlertOptions} from "sweetalert2";
+import Swal, {SweetAlertOptions, SweetAlertResult} from "sweetalert2";
 
 interface Props extends SweetAlertOptions<any, any> {
     title?: string,
@@ -37,4 +37,24 @@ export const swalException = (e: Error) => {
         allowOutsideClick: false,
         html: e.message,
     }).then()
+}
+
+/**
+ * @description Dialog de confirmación devuelve un Promise en then
+ * @param title
+ * @param text
+ */
+export const swalConfirmDialog = (
+    {
+        title = 'Confirmación',
+        text = 'Confirma que desea realizar la acción'
+    }: { title?: string, text?: string }): Promise<SweetAlertResult<any>> => {
+    return Swal.fire({
+        title,
+        text,
+        showCancelButton: true,
+        allowOutsideClick: false,
+        confirmButtonText: 'Si, Confirmar',
+        cancelButtonText: 'Cancelar'
+    })
 }

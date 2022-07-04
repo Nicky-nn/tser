@@ -2,6 +2,8 @@
  * @description console.log condicional al estado .env
  * @param args
  */
+import {customAlphabet} from "nanoid";
+
 export const logg = (...args: any) => {
     if (import.meta.env.MODE !== 'production') {
         console.log(...args);
@@ -35,4 +37,34 @@ export const cartesianProduct = (arr: [[]]) => {
             return a.concat(b)
         }, [])
     }, [[]])
+}
+
+/**
+ * Verifica si un valor esta vacio
+ * @param value
+ */
+export const isEmptyValue = (value: any): boolean => {
+    if (typeof value === 'string') {
+        return value.trim() === ''
+    }
+    switch (value) {
+        case null:
+        case false:
+        case {}:
+        case []:
+        case undefined:
+        case typeof value === 'undefined':
+            return true
+        default:
+            return false
+    }
+}
+
+/**
+ * GENERAMOS CADENA ALEATORIA STRING SOLO ALFABETICO
+ * @param lng
+ */
+export const genRandomString = (lng = 5): string => {
+    const nanoidd = customAlphabet('abcdefghijkmnpqrtwxyz', lng)
+    return nanoidd()
 }

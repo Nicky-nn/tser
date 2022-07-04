@@ -1,6 +1,13 @@
-import {ImagenProps} from "../../../base/interfaces/base";
-import {SinProductoServicioProps, SinUnidadMedidaProps} from "../../sin/interfaces/sin.interface";
+import {ImagenProps, TipoProductoProps} from "../../../base/interfaces/base";
+import {
+    SinActividadesPorDocumentoSector,
+    SinProductoServicioProps,
+    SinUnidadMedidaProps
+} from "../../sin/interfaces/sin.interface";
 import {InventarioProps} from "./inventario.interface";
+import {SucursalProps} from "../../sucursal/interfaces/sucursal";
+import {genRandomString} from "../../../utils/helper";
+import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
 
 export interface ProductoVarianteProps {
     codigoProducto: string // identificador o codigo unico
@@ -37,72 +44,81 @@ export interface ProductoProps {
     estado?: string
 }
 
+export interface ProductoVarianteInventarioProps {
+    sucursal: SucursalProps,
+    stock: number
+}
+
 export interface ProductoVarianteInputProps {
+    id: string
     codigoProducto: string // identificador o codigo unico
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
     disponibleParaVenta: boolean
     codigoBarras: string | null
     precio: number
-    precioComparacion: number
+    precioComparacion?: number
     costo: number
-    inventario: {
-        codigoSucursal: number | undefined,
-        stock: number | undefined
-    }
-    peso: number
-    codigoUnidadMedida: number
+    incluirCantidadInventario: boolean,
+    habilitarStock: boolean, // Si se habilita, se introduce cantidad en stock
+    inventario: ProductoVarianteInventarioProps[]
+    peso?: number
+    unidadMedida: SinUnidadMedidaProps | null
+}
+
+export interface OpcionesProductoProps {
+    id: number,
+    nombre: string
+    valores: [String]
 }
 
 export interface ProductoInputProps {
-    codigoProductoSin: string | null,
+    actividadEconomica: SinActividadesPorDocumentoSector | undefined,
+    sinProductoServicio: SinProductoServicioProps | undefined,
     titulo: string,
     descripcion: string,
     descripcionHtml: string,
     varianteUnica: boolean
-    varianteDefault: {
-        codigoProducto: string | undefined
-        titulo: string,
-        disponibleParaVenta: boolean,
-        codigoBarras?: string,
-        precio: number | undefined,
-        precioComparacion: number | undefined
-        costo: number | undefined
-        cantidadVendible: number | undefined,
-        codigoUnidadMedida: number | undefined,
-        inventario: {
-            codigoSucursal: number | undefined,
-            stock: number | undefined
-        }
-    }
-    opcionesProducto: Array<{
-        id: number,
-        nombre: string
-        valores: [String] | []
-    }>
+    variante: ProductoVarianteInputProps
+    opcionesProducto: Array<OpcionesProductoProps>
+    tipoProducto: TipoProductoProps | null,
+    tipoProductoPersonalizado: string,
     variantes: ProductoVarianteInputProps[]
+    proveedor: ProveedorProps | null
 }
 
-export const ProductoInitialValues: ProductoInputProps = {
-    codigoProductoSin: null,
+/**
+ * Valores iniciales para una variante
+ */
+export const ProductoVarianteInitialValues = {
+    id: genRandomString(5),
+    codigoProducto: 'COD1',
     titulo: '',
+    nombre: '',
+    disponibleParaVenta: true,
+    codigoBarras: '',
+    precio: 350,
+    precioComparacion: 0,
+    costo: 300,
+    incluirCantidadInventario: true,
+    habilitarStock: true,
+    inventario: [],
+    unidadMedida: null,
+}
+/**
+ * valores iniciales para un nuevo producto
+ */
+export const ProductoInitialValues: ProductoInputProps = {
+    actividadEconomica: undefined,
+    sinProductoServicio: undefined,
+    titulo: 'Instalacion ISIPASS V1.1',
     descripcion: '',
     descripcionHtml: '<span></span>',
     varianteUnica: false,
-    varianteDefault: {
-        codigoProducto: undefined,
-        titulo: '',
-        disponibleParaVenta: true,
-        precio: undefined,
-        precioComparacion: undefined,
-        costo: undefined,
-        cantidadVendible: 100,
-        codigoUnidadMedida: undefined,
-        inventario: {
-            codigoSucursal: undefined,
-            stock: undefined
-        }
-    },
+    variante: ProductoVarianteInitialValues,
     opcionesProducto: [],
-    variantes: []
+    tipoProducto: null,
+    tipoProductoPersonalizado: '',
+    variantes: [],
+    proveedor: null
 }
