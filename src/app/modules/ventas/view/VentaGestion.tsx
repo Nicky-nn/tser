@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useMemo, useState} from 'react';
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import {Grid, IconButton} from "@mui/material";
 import {Box, styled} from "@mui/system";
@@ -79,7 +79,7 @@ const tableColumns: MRT_ColumnDef[] = [
 
 const VentaGestion: FC<any> = () => {
     const [remoteData, setRemoteData] = useState<FacturaProps[]>([]);
-    const [columns, setColumns] = useState(tableColumns);
+    const columns = useMemo(() => tableColumns, [])
     const [isLoading, setIsLoading] = useState(false);
     const [openAnularDocumento, setOpenAnularDocumento] = useState(false);
     const [factura, setFactura] = useState<FacturaProps | null>(null);
@@ -158,7 +158,7 @@ const VentaGestion: FC<any> = () => {
                                 </SimpleMenu>
                                 <AuditIconButton row={row.original}/>
                             </div>
-                        )}></MaterialReactTable>
+                        )} />
                 </Grid>
             </Grid>
             <Box py="12px"/>

@@ -53,8 +53,31 @@ export const swalConfirmDialog = (
         title,
         text,
         showCancelButton: true,
-        allowOutsideClick: false,
         confirmButtonText: 'Si, Confirmar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+    })
+}
+
+/**
+ * @description Confirmación para datos asincronos, usado para api rest, debe usar preConfirm(), y then
+ * @param title
+ * @param text
+ * @param preConfirm, funcion que retorna los datos del fetch
+ */
+export const swalAsyncConfirmDialog = async (
+    {
+        title = 'Confirmación',
+        text = 'Confirma que desea realizar la acción',
+        preConfirm
+    }: { title?: string, text?: string, preConfirm:({...props}: any) => any }): Promise<SweetAlertResult<Awaited<any>>> => {
+    return Swal.fire({
+        title,
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        backdrop: true,
+        text,
+        showLoaderOnConfirm: true,
+        preConfirm,
+        allowOutsideClick: () => !Swal.isLoading()
     })
 }

@@ -16,7 +16,7 @@ const gqlQuery = gql`
                 totalPages
             }
             docs{
-                codigo
+                _id
                 descripcion
                 codigoParent
             }

@@ -88,14 +88,10 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={prod.varianteUnica}
+                                            checked={!prod.varianteUnica}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                if (!e.target.checked) {
-                                                    // clear opciones y variantes
-                                                    dispatch(setProdOpciones([]))
-                                                    dispatch(setProdVariantes([]))
-                                                }
-                                                dispatch(setVarianteUnica(e.target.checked))
+                                                // clear opciones y variantes
+                                                dispatch(setVarianteUnica(!e.target.checked))
                                             }}
                                         />
                                     }
@@ -104,7 +100,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                         </FormControl>
                     </Grid>
                     {
-                        prod.varianteUnica &&
+                        !prod.varianteUnica &&
                         (
                             <Grid item lg={12} md={12} xs={12}>
                                 <Button size={"small"} onClick={() => {

@@ -21,11 +21,9 @@ function App() {
                     <ApolloProvider client={client}>
                         <AuthProvider>{all_pages}</AuthProvider>
                     </ApolloProvider>
-
                 </MatxTheme>
             </SettingsProvider>
         </Provider>
-
     )
 }
 

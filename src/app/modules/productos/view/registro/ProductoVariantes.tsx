@@ -76,7 +76,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
     return (
         <>
             {
-                prod.varianteUnica && (
+                !prod.varianteUnica && (
                     <>
                         <SimpleCard title={'Variantes de productos'}>
                             <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>

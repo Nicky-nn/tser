@@ -4,7 +4,7 @@ export interface ImagenProps {
 }
 
 export interface TipoProductoProps {
-    codigo: string
+    _id: string
     descripcion: string
     codigoParent: string
 }

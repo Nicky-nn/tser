@@ -53,7 +53,7 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                             }}
                             options={tiposProducto}
                             isClearable={true}
-                            getOptionValue={(ps) => ps.codigo}
+                            getOptionValue={(ps) => ps._id}
                             getOptionLabel={(ps) => `${ps.descripcion}`}
                         />
                     </FormControl>

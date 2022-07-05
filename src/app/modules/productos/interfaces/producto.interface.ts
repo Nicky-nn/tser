@@ -69,7 +69,7 @@ export interface ProductoVarianteInputProps {
 export interface OpcionesProductoProps {
     id: number,
     nombre: string
-    valores: [String]
+    valores: string[]
 }
 
 export interface ProductoInputProps {
@@ -114,11 +114,41 @@ export const ProductoInitialValues: ProductoInputProps = {
     titulo: 'Instalacion ISIPASS V1.1',
     descripcion: '',
     descripcionHtml: '<span></span>',
-    varianteUnica: false,
+    varianteUnica: true,
     variante: ProductoVarianteInitialValues,
     opcionesProducto: [],
     tipoProducto: null,
     tipoProductoPersonalizado: '',
     variantes: [],
     proveedor: null
+}
+
+
+export interface ProductoVarianteApiProps {
+    id: string
+    codigoProducto: string
+    titulo: string
+    precio: number
+    precioComparacion: number
+    costo: number
+    incluirCantidadInventario: boolean
+    habilitarStock: boolean
+    codigoUnidadMedida: number
+    inventario: { codigoSucursal: number, stock: number | null }
+}
+/**
+ * Interface que nos permite registrar el producto, se usa para las apis
+ */
+export interface ProductoInputApiProps {
+    codigoActividad: string,
+    codigoProductoSin: string,
+    titulo: string,
+    descripcion: string
+    descripcionHtml: string
+    opcionesProducto:OpcionesProductoProps[],
+    codigoTipoProducto: string | null
+    tipoProductoPersonalizado: string | null
+    varianteUnica: boolean
+    codigoProveedor: string | null
+    variantes:ProductoVarianteApiProps[]
 }
