@@ -24,6 +24,10 @@ export const swalErrorMsg = (msg: string | Array<any>) => {
     }).then()
 }
 
+export const swalSuccessMsg = (msg: string) => {
+
+}
+
 /**
  * Custmom error para excepciones
  * @param e
