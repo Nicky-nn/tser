@@ -15,7 +15,6 @@ import {selectProducto} from "../slices/productos/producto.slice";
 import {productoRegistroValidator} from "../validator/productoRegistroValidator";
 import {notError} from "../../../utils/notification";
 import {productoComposeService} from "../services/ProductoComposeService";
-import Swal from "sweetalert2";
 import {apiProductoRegistro} from "../api/productoRegistro.api";
 
 interface OwnProps {
@@ -34,8 +33,8 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
             const apiInput = productoComposeService(prod)
             await swalAsyncConfirmDialog({
                 preConfirm: async () => {
-                    const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}) )
-                    if(resp.error){
+                    const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}))
+                    if (resp.error) {
                         swalException(resp.error)
                         return false
                     }
@@ -44,7 +43,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
             }).then(resp => {
                 if (resp.isConfirmed) {
                     swalErrorMsg('REgistro satisfactorio')
-                }else {
+                } else {
                     swalException(resp.value)
                 }
             })
@@ -69,8 +68,9 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                     spacing={{xs: 1, sm: 1, md: 1, xl: 1}}
                     justifyContent="flex-end"
                 >
-                    <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={handleSave}>Guardar
-                        Producto</Button>
+                    <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={handleSave}>
+                        Guardar Producto
+                    </Button>
                 </Stack>
             </Paper>
 
