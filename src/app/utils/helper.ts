@@ -40,24 +40,16 @@ export const cartesianProduct = (arr: [[]]) => {
 }
 
 /**
- * Verifica si un valor esta vacio
+ * @description true = vacio, false = no vacio
  * @param value
  */
 export const isEmptyValue = (value: any): boolean => {
+    const matches = [null, false, undefined, '', {}, [] ]
     if (typeof value === 'string') {
-        return value.trim() === ''
-    }
-    switch (value) {
-        case null:
-        case false:
-        case {}:
-        case []:
-        case undefined:
-        case typeof value === 'undefined':
+        if (value.trim() === '')
             return true
-        default:
-            return false
     }
+    return matches.includes(value)
 }
 
 /**
