@@ -29,7 +29,7 @@ export const swalSuccessMsg = (msg: string) => {
 }
 
 /**
- * Custmom error para excepciones
+ * Custom error para excepciones
  * @param e
  */
 export const swalException = (e: Error) => {
