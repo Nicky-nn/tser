@@ -53,11 +53,13 @@ export const PAGE_INFO_DEFAULT: PageInfoProps = {
 export interface PageProps {
     limit: number,
     page: number,
+    reverse: boolean,
     query?: string
 }
 
 export const PAGE_DEFAULT: PageProps = {
     limit: 10,
     page: 1,
+    reverse: true,
     query: ""
 }

@@ -1,130 +1,140 @@
-import React, {FunctionComponent} from 'react';
-import {Button, IconButton, InputAdornment, Stack, TextField, Typography} from "@mui/material";
-import {
-    FileDownload,
-    FileOpen,
-    LayersClear,
-    MenuOpen,
-    PictureAsPdf,
-    Search,
-    UploadFile,
-    Visibility
-} from "@mui/icons-material";
-import DataTable, {TableColumn} from "react-data-table-component";
+import React, {FunctionComponent, useEffect, useMemo, useState} from 'react';
+import {Chip, IconButton} from "@mui/material";
+import {Edit} from "@mui/icons-material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/SimpleMenu";
-import {openInNewTab} from "../../../../utils/helper";
-import {HtmlTooltip} from "../../../../base/components/Tooltip/HtmlTooltip";
+import {ProductoProps} from "../../interfaces/producto.interface";
+import {PAGE_DEFAULT, PAGE_INFO_DEFAULT, PageProps} from "../../../../interfaces";
+import {swalException} from "../../../../utils/swal";
+import {apiProductos} from "../../api/producto.api";
+import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
+import type {PaginationState,} from '@tanstack/react-table';
+import {sumBy} from "lodash";
+import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
+import {useNavigate} from "react-router-dom";
+import {productosRouteMap} from "../../ProductosRoutesMap";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const columns: TableColumn<any>[] = [
-    {
-        name: 'Title',
-        sortable: true,
-        selector: (row: any) => row.title,
-        width: '120px'
-    },
-    {
-        name: 'Year',
-        selector: (row: any) => row.year,
-    },
-    {
-        name: 'Acciones',
-        cell: (row: any) => (<>
-            <SimpleMenu
-                menuButton={
-                    <>
-                        <IconButton aria-label="delete">
-                            <MenuOpen/>
-                        </IconButton>
-                    </>
-                }
-            >
-                <StyledMenuItem onClick={() => {
-                    openInNewTab(row.original.representacionGrafica.pdf)
-                    console.log('Pdf Medio Oficio', row.original);
-                }}>
-                    <LayersClear/> Anular Documento
-                </StyledMenuItem>
-
-                <StyledMenuItem onClick={() => {
-                    openInNewTab(row.original.representacionGrafica.pdf)
-                    console.log('Pdf Medio Oficio', row.original);
-                }}>
-                    <PictureAsPdf/> Pdf Medio Oficio
-                </StyledMenuItem>
-
-                <StyledMenuItem onClick={() => {
-                    openInNewTab(row.original.representacionGrafica.xml)
-                    console.log('Pdf Medio Oficio', row.original);
-                }}>
-                    <FileOpen/> Xml
-                </StyledMenuItem>
-            </SimpleMenu>
-            <IconButton aria-label="auditoria">
-                <HtmlTooltip
-                    placement="top-start"
-                    title={
-                        <>
-                            <Typography color="inherit">Tooltip with HTML</Typography>
-                            <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
-                            {"It's very engaging. Right?"}
-                        </>
-                    }
-                >
-                    <Visibility/>
-                </HtmlTooltip>
-            </IconButton>
-        </>),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-    },
-];
-
-const data = [
-    {
-        id: 1,
-        title: 'Beetlejuice',
-        year: '1988',
-    },
-    {
-        id: 2,
-        title: 'Ghostbusters',
-        year: '1984',
-    },
-]
-
 const ProductosListado: FunctionComponent<Props> = (props) => {
+    const navigate = useNavigate()
+    const [data, setData] = useState<ProductoProps[]>([]);
+    const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefetching, setIsRefetching] = useState(false);
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: PAGE_INFO_DEFAULT.page,
+        pageSize: PAGE_INFO_DEFAULT.limit
+    });
+    const [rowCount, setRowCount] = useState(0);
+    const [pageInfo, setPageInfo] = useState<PageProps>(PAGE_DEFAULT);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!data.length) {
+                setIsLoading(true);
+            } else {
+                setIsRefetching(true);
+            }
+            const resp = await apiProductos(pageInfo).catch((err: Error) => swalException(err));
+            if (resp) {
+                setData(resp.docs)
+                setRowCount(resp.pageInfo.totalDocs)
+                setIsLoading(false)
+                setIsRefetching(false);
+            }
+        };
+        fetchData().then();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        pagination.pageIndex,
+        pagination.pageSize,
+    ]);
+    const columns = useMemo(
+        () =>
+            [
+                {
+                    accessorKey: 'titulo',
+                    header: 'PRODUCTO',
+                }, {
+                accessorFn: (row) => (<Chip label={row.state} color={"success"}/>),
+                id: 'state',
+                header: 'ESTADO',
+            }, {
+                accessorFn: (row) => {
+                    if (row.incluirCantidad) {
+                        const cantidad = sumBy(row.variantes, (item) => {
+                            return sumBy(item.inventario, (inv) => inv.stock)
+                        })
+                        if (!row.varianteUnica) {
+                            return <Chip label={`${cantidad} items para ${row.variantes.length}`} color={"default"}/>
+                        }
+                        return <Chip label={`${cantidad} items`} color={"default"}/>
+                    }
+                    return <Chip label={"Stock Ilimitado"} color={"secondary"}/>
+                },
+                id: 'inventario',
+                header: 'INVENTARIO',
+            }, {
+                accessorKey: 'tipo',
+                id: 'tipo',
+                header: 'TIPO',
+            }, {
+                accessorKey: 'proveedor',
+                id: 'proveedor',
+                header: 'PROVEEDOR',
+            },
+                //column definitions...
+            ] as MRT_ColumnDef<ProductoProps>[],
+        [],
+    );
 
     return (<>
         <SimpleCard>
-            <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} sx={{marginBottom: 1}}>
-                <TextField
-                    label="Filtrar Produtos"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search/>
-                            </InputAdornment>
-                        ),
-                    }}
-                    variant="outlined"
-                    size={'small'}
-                />
-                <Button size={'small'} variant="outlined" startIcon={<UploadFile/>}>Proveedor</Button>
-                <Button size={'small'} variant="outlined" startIcon={<FileDownload/>}>Estado</Button>
-            </Stack>
-            <DataTable
+            <MaterialReactTable
                 columns={columns}
                 data={data}
-                selectableRows
-                dense
-                pagination
+                manualPagination
+                muiTableToolbarAlertBannerProps={
+                    isError
+                        ? {
+                            color: 'error',
+                            children: 'Error loading data',
+                        }
+                        : undefined
+                }
+                onPaginationChange={setPagination}
+                rowCount={rowCount}
+                state={{
+                    isLoading,
+                    pagination,
+                    showAlertBanner: isError,
+                    showProgressBars: isRefetching,
+                    density: 'compact',
+                    showGlobalFilter: true
+                }}
+                enableDensityToggle={false}
+                positionGlobalFilter={'left'}
+                muiSearchTextFieldProps={{
+                    variant: 'outlined',
+                    placeholder: 'Ingrese',
+                    label: 'Busqueda',
+                    InputLabelProps: {shrink: true},
+                    size: 'small'
+                }}
+                enableRowActions
+                positionActionsColumn={'last'}
+                renderRowActions={({row}) => (
+                    <div style={{display: 'flex', flexWrap: 'nowrap', gap: '0.5rem'}}>
+                        <IconButton onClick={() => navigate(`${productosRouteMap.modificar}/${row.original._id}`)}
+                                    color={'primary'} aria-label="delete">
+                            <Edit/>
+                        </IconButton>
+                        <AuditIconButton row={row.original}/>
+                    </div>
+                )}
             />
         </SimpleCard>
     </>);

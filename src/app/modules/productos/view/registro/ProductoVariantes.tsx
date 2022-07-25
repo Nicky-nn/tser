@@ -95,6 +95,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                         </SimpleCard>
                         <PrecioInventarioVariantesDialog
                             variante={variante}
+                            incluirCantidad={prod.incluirCantidad}
                             id={'editVariante'}
                             keepMounted={false}
                             open={openDialog}

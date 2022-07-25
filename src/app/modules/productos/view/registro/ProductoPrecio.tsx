@@ -2,7 +2,7 @@ import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProdVariante} from "../../slices/productos/producto.slice";
+import {selectProducto, setProducto, setProdVariante} from "../../slices/productos/producto.slice";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {handleSelect} from "../../../../utils/helper";
@@ -17,6 +17,7 @@ import {SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
+import {ProductoVarianteInputProps} from "../../interfaces/producto.interface";
 
 interface OwnProps {
 }
@@ -34,6 +35,56 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
             sucursal: item,
             stock: 0
         }))
+    }
+    // Reset de las cantidades por sucursal
+    const resetVariantesStock = (variantes: ProductoVarianteInputProps[], codSucursal: 'ALL' | number, stock = 0) => {
+        return variantes.map((value) => {
+            return {
+                ...value,
+                inventario: value.inventario.map(value1 => {
+                    if (codSucursal !== 'ALL') {
+                        return {...value1, stock}
+                    } else {
+                        if (value1.sucursal.codigo === parseInt(codSucursal)) {
+                            return {...value1, stock}
+                        }
+                        return {...value1}
+                    }
+                })
+            }
+        })
+    }
+    // Reset de la variante default, tambien actualiza los stocks por codigo sucursal
+    const resetVarianteStock = (variante: ProductoVarianteInputProps, codSucursal: 'ALL' | number, stock = 0) => {
+        return {
+            ...variante,
+            inventario: variante.inventario.map(value => {
+                if (codSucursal !== 'ALL') {
+                    return {...value, stock}
+                } else {
+                    if (value.sucursal.codigo === parseInt(codSucursal)) {
+                        return {...value, stock}
+                    }
+                    return {...value}
+                }
+            })
+        }
+    }
+
+    // Reset de las unidades de medida, tambien actualizar las unidades de medida de las variantes
+    const resetUnidadMedida = (variante: ProductoVarianteInputProps, variantes: ProductoVarianteInputProps[], unidadMedida: SinUnidadMedidaProps) => {
+        return {
+            variante: {
+                ...variante,
+                unidadMedida
+            },
+            variantes: variantes.map((value) => {
+                return {
+                    ...value,
+                    unidadMedida
+                }
+            })
+        }
     }
 
     const fetchSucursales = async () => {
@@ -65,6 +116,8 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
         fetchSucursales().then()
         fetchUnidadesMedida().then()
     }, []);
+
+
     return (
         <SimpleCard title={'Precio - Inventario'}>
             <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
@@ -80,9 +133,11 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             placeholder={'Seleccione la unidad de medida'}
                             value={prod.variante.unidadMedida}
                             onChange={async (val: any) => {
-                                dispatch(setProdVariante({
-                                    ...prod.variante,
-                                    unidadMedida: val
+                                const unidadMedida = resetUnidadMedida(prod.variante, prod.variantes, val)
+                                dispatch(setProducto({
+                                    ...prod,
+                                    variante: unidadMedida.variante,
+                                    variantes: unidadMedida.variantes
                                 }))
                             }}
                             options={unidadesMedida}
@@ -187,13 +242,13 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={prod.variante.incluirCantidadInventario}
+                                    checked={prod.incluirCantidad}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                        dispatch(setProdVariante({
-                                            ...prod.variante,
-                                            incluirCantidadInventario: e.target.checked,
-                                            habilitarStock: true,
-                                            inventario: resetInventario(sucursales)
+                                        dispatch(setProducto({
+                                            ...prod,
+                                            incluirCantidad: e.target.checked,
+                                            variante: resetVarianteStock(prod.variante, "ALL"),
+                                            variantes: resetVariantesStock(prod.variantes, 'ALL')
                                         }))
 
                                     }}
@@ -202,7 +257,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             label="¿Incluir cantidad al inventario?"/>
                     </FormControl>
                     {
-                        prod.variante.incluirCantidadInventario && (
+                        prod.incluirCantidad && (
                             <>
                                 <br/>
                                 <FormControl>
@@ -247,7 +302,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                                         </td>
                                         <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                             {
-                                                prod.variante.incluirCantidadInventario ?
+                                                prod.incluirCantidad ?
                                                     (
                                                         <FormControl fullWidth component={'div'}>
                                                             <MyInputLabel shrink>Cantidad</MyInputLabel>
@@ -256,15 +311,16 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                                                                 placeholder={'0.00'}
                                                                 value={prod.variante.inventario[s.sucursal.codigo].stock}
                                                                 onFocus={handleSelect}
-                                                                onChange={(precioComparacion: number) => {
+                                                                onChange={(stock: number) => {
                                                                     const newArray = [...prod.variante.inventario];
                                                                     newArray[index] = {
                                                                         sucursal: s.sucursal,
-                                                                        stock: precioComparacion
+                                                                        stock
                                                                     }
-                                                                    dispatch(setProdVariante({
-                                                                        ...prod.variante,
-                                                                        inventario: newArray
+                                                                    dispatch(setProducto({
+                                                                        ...prod,
+                                                                        variante: resetVarianteStock(prod.variante, s.sucursal.codigo, stock),
+                                                                        variantes: resetVariantesStock(prod.variantes, s.sucursal.codigo, stock)
                                                                     }))
                                                                 }}
                                                                 formatter={numberWithCommas}

@@ -35,13 +35,15 @@ export interface ProductoProps {
     seguimientoInventario: boolean
     imagenDestacada?: ImagenProps // url de la imagen
     varianteUnica: boolean // si solo tienen una sola variante
+    incluirCantidad: boolean // si se tiene cantidad en inventario
     proveedor: string | null // nombre del proveedor si vale el caso
     variantes: ProductoVarianteProps[]
+    inventario: Array<InventarioProps>
     usucre: string
     createdAt?: Date
     usumod?: string
     updatedAt?: Date
-    estado?: string
+    state?: string
 }
 
 export interface ProductoVarianteInventarioProps {
@@ -79,6 +81,7 @@ export interface ProductoInputProps {
     descripcion: string,
     descripcionHtml: string,
     varianteUnica: boolean
+    incluirCantidad: boolean,
     variante: ProductoVarianteInputProps
     opcionesProducto: Array<OpcionesProductoProps>
     tipoProducto: TipoProductoProps | null,
@@ -115,6 +118,7 @@ export const ProductoInitialValues: ProductoInputProps = {
     descripcion: '',
     descripcionHtml: '<span></span>',
     varianteUnica: true,
+    incluirCantidad: true,
     variante: ProductoVarianteInitialValues,
     opcionesProducto: [],
     tipoProducto: null,

@@ -14,9 +14,7 @@ export const productoSlice = createSlice({
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
         productoReset: () => initialState,
-        setProducto: (state: any, action) => {
-            state = action.payload;
-        },
+        setProducto: (state, action) => action.payload,
         setActividadEconomica: (state, action) => {
             state.actividadEconomica = action.payload
         },
@@ -31,6 +29,11 @@ export const productoSlice = createSlice({
         },
         setProdOpciones: (state, action) => {
             state.opcionesProducto = action.payload
+        },
+        setIncluirCantidad: (state, action) => {
+            state.incluirCantidad = action.payload
+            state.opcionesProducto = []
+            state.variantes = []
         },
         setVarianteUnica: (state, action) => {
             state.varianteUnica = action.payload

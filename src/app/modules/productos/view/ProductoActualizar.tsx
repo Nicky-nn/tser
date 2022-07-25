@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useEffect} from 'react';
 import SimpleContainer from "../../../base/components/Container/SimpleContainer";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import {Button, CssBaseline, Grid, Paper, Stack} from "@mui/material";
@@ -8,25 +8,53 @@ import ProductoOpciones from "./registro/ProductoOpciones";
 import ProductoVariantes from "./registro/ProductoVariantes";
 import ProductoClasificador from "./registro/ProductoClasificador";
 import ProductoProveedor from "./registro/ProductoProveedor";
-import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
-import {Save} from "@mui/icons-material";
+import {swalAsyncConfirmDialog, swalClose, swalException, swalLoading} from "../../../utils/swal";
+import {Description, Save} from "@mui/icons-material";
 import {useAppSelector} from "../../../hooks";
 import {selectProducto} from "../slices/productos/producto.slice";
 import {productoRegistroValidator} from "../validator/productoRegistroValidator";
-import {notError, notSuccess} from "../../../utils/notification";
+import {notDanger, notError, notSuccess} from "../../../utils/notification";
 import {productoComposeService} from "../services/ProductoComposeService";
-import {apiProductoRegistro} from "../api/productoRegistro.api";
-import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {isEmptyValue} from "../../../utils/helper";
+import {apiProductoPorId} from "../api/productoPorId.api";
+import {apiProductoModificar} from "../api/productoModificar.api";
+import {productosRouteMap} from "../ProductosRoutesMap";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const ProductoRegistro: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
+const ProductoActualizar: FunctionComponent<Props> = (props) => {
+    const {id}: { id?: string } = useParams();
     const navigate = useNavigate()
+    const prod = useAppSelector(selectProducto)
+    const fetchProductoPorId = async (id: string) => {
+        swalLoading()
+        const response: any = await apiProductoPorId(id).catch((err: Error) => swalException(err));
+        swalClose()
+        const data = response?.fcvProducto;
+        if (data) {
+
+        } else {
+            notDanger('No se ha podido encontrar datos del producto')
+            navigate(-1)
+        }
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (!isEmptyValue(id)) {
+                await fetchProductoPorId(id!).then()
+            } else {
+                notDanger('Require codigo del producto')
+                navigate(-1)
+            }
+        })()
+    }, []);
+
+    // GUARDAMOS LOS CAMBIOS
     const handleSave = async () => {
         // Reglas de validacion
         const val = await productoRegistroValidator(prod)
@@ -36,7 +64,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
             const apiInput = productoComposeService(prod)
             await swalAsyncConfirmDialog({
                 preConfirm: async () => {
-                    const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}))
+                    const resp: any = await apiProductoModificar(apiInput).catch(err => ({error: err}))
                     if (resp.error) {
                         swalException(resp.error)
                         return false
@@ -47,7 +75,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                 if (resp.isConfirmed) {
                     notSuccess()
                     console.log(resp.value)
-                    navigate(`/productos/modificar/${resp.value._id}`, {replace: true})
                 }
                 if (resp.isDenied) {
                     swalException(resp.value)
@@ -62,7 +89,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                 <Breadcrumb
                     routeSegments={[
                         {name: 'Productos', path: '/productos/gestion'},
-                        {name: 'Nuevo Producto'},
+                        {name: 'Modificar Producto'},
                     ]}
                 />
             </div>
@@ -72,11 +99,16 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                 <Stack
                     direction={{xs: 'column', sm: 'row'}}
                     style={{marginTop: 2}}
-                    spacing={{xs: 1, sm: 1, md: 1, xl: 1}}
+                    spacing={{xs: -2, sm: 0, md: 1, xl: 0}}
                     justifyContent="flex-end"
                 >
+                    <Button color={'primary'} startIcon={<Description/>} variant={"contained"}
+                            onClick={() => navigate(productosRouteMap.nuevo)}>
+                        Nuevo Producto
+                    </Button>&nbsp;
+
                     <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={handleSave}>
-                        Guardar Producto
+                        Guardar Cambios
                     </Button>
                 </Stack>
             </Paper>
@@ -113,4 +145,4 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
     );
 };
 
-export default ProductoRegistro;
+export default ProductoActualizar;

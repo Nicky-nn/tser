@@ -4,7 +4,7 @@ import {Visibility} from "@mui/icons-material";
 import {AuditoriaProps} from "../../../interfaces";
 
 interface OwnProps {
-    row: AuditoriaProps
+    row: AuditoriaProps | any
 }
 
 type Props = OwnProps;
@@ -27,7 +27,7 @@ const AuditIconButton: FunctionComponent<Props> = ({row}: Props) => {
         <>
             <Tooltip title="Auditoria" placement="top" leaveDelay={10}>
                 <IconButton onClick={handleClick}>
-                    <Visibility/>
+                    <Visibility color={'warning'}/>
                 </IconButton>
             </Tooltip>
 
@@ -54,6 +54,7 @@ const AuditIconButton: FunctionComponent<Props> = ({row}: Props) => {
                 >
                     <div className="responsive-table tableAuditoria">
                         <table>
+                            <caption>AUDITORIA</caption>
                             <tbody>
                             <tr>
                                 <td><strong>Usucre</strong></td>

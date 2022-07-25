@@ -3,7 +3,7 @@
 import {gql, GraphQLClient} from "graphql-request";
 import {ClasificadorProps, SinActividadesProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductoProps, ProductoVarianteProps} from "./producto.api";
+import {ProductoVarianteProps} from "../interfaces/producto.interface";
 
 export interface FacturaProps {
     sinTipoMetodoPago: ClasificadorProps[],

@@ -73,7 +73,7 @@ export const swalAsyncConfirmDialog = async (
         title = 'Confirmación',
         text = 'Confirma que desea realizar la acción',
         preConfirm
-    }: { title?: string, text?: string, preConfirm:({...props}: any) => any }): Promise<SweetAlertResult<Awaited<any>>> => {
+    }: { title?: string, text?: string, preConfirm: ({...props}: any) => any }): Promise<SweetAlertResult<Awaited<any>>> => {
     return Swal.fire({
         title,
         showCancelButton: true,
@@ -84,4 +84,23 @@ export const swalAsyncConfirmDialog = async (
         preConfirm,
         allowOutsideClick: () => !Swal.isLoading()
     })
+}
+/**
+ * Creamos una carga de loading
+ */
+export const swalLoading = (): void => {
+    Swal.fire({
+        timer: 15000,
+        timerProgressBar: true,
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    }).then();
+}
+/**
+ * Cerramos algun dialog abierto
+ */
+export const swalClose = () => {
+    Swal.close()
 }

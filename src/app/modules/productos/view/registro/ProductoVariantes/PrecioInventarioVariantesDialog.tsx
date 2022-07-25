@@ -26,6 +26,7 @@ import {notError} from "../../../../../utils/notification";
 
 interface OwnProps {
     variante: ProductoVarianteInputProps;
+    incluirCantidad: boolean
     id: string;
     keepMounted: boolean;
     open: boolean;
@@ -35,7 +36,7 @@ interface OwnProps {
 type Props = OwnProps;
 
 const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props) => {
-    const {variante, onClose, open, ...other} = props
+    const {variante, incluirCantidad, onClose, open, ...other} = props
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const [data, setData] = useState<ProductoVarianteInputProps>(variante);
 
@@ -202,7 +203,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                             </td>
                                             <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                                 {
-                                                    variante.incluirCantidadInventario ?
+                                                     incluirCantidad ?
                                                         (
                                                             <FormControl fullWidth component={'div'}>
                                                                 <MyInputLabel shrink>Cantidad</MyInputLabel>
