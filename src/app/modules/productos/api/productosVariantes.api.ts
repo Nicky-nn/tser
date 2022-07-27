@@ -2,44 +2,32 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductoInputProps, ProductoProps} from "../interfaces/producto.interface";
+import {ProductosVariantesProps} from "../interfaces/producto.interface";
 
-
-const query = gql`
-    query FCV_PRODUCTO($id: ID!) {
-        fcvProducto(id: $id) {
+const reqQuery = gql`
+    query PRODUCTOS_VARIANTES($codigoActividad: String, $query: String) {
+        fcvProductosVariantes(codigoActividad: $codigoActividad, query: $query) {
             _id
-            sinProductoServicio {
+            titulo
+            descripcion
+            incluirCantidad
+            sinProductoServicio{
                 codigoActividad
                 codigoProducto
                 descripcionProducto
             }
-            titulo
-            descripcion
-            descripcionHtml
-            incluirCantidad
+            varianteUnica
             verificarStock
-            opcionesProducto {
+            opcionesProducto{
                 nombre
                 valores
-                id
             }
-            tipoProducto {
-                _id
-                descripcion
-                codigoParent
-            }
-            totalVariantes
-            imagenDestacada {
-                altText
-                url
-            }
-            varianteUnica
-            proveedor {
+            proveedor{
                 codigo
                 nombre
+                razonSocial
             }
-            variantes {
+            variantes{
                 id
                 codigoProducto
                 titulo
@@ -47,17 +35,16 @@ const query = gql`
                 codigoBarras
                 precio
                 precioComparacion
-                costo
-                imagen {
+                imagen{
                     altText
                     url
                 }
-                unidadMedida {
+                unidadMedida{
                     codigoClasificador
                     descripcion
                 }
                 inventario {
-                    sucursal {
+                    sucursal{
                         codigo
                     }
                     stock
@@ -67,12 +54,13 @@ const query = gql`
     }
 `
 
-export const apiProductoPorId = async (id: string): Promise<ProductoProps> => {
+export const apiProductosVariantes = async (codigoActividad: string, query: string): Promise<ProductosVariantesProps[]> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
+    console.log('buscando')
 
-    const data: any = await client.request(query, {id})
-    return data.fcvProducto;
+    const data: any = await client.request(reqQuery, {codigoActividad, query})
+    return data?.fcvProductosVariantes || [];
 }

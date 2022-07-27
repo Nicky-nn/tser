@@ -17,12 +17,15 @@ import {SinUnidadMedidaProps} from "../../../../sin/interfaces/sin.interface";
 import {reactSelectStyles} from "../../../../../base/components/MySelect/ReactSelect";
 import {MyInputLabel} from "../../../../../base/components/MyInputs/MyInputLabel";
 import InputNumber from "rc-input-number";
-import {handleSelect, isEmptyValue} from "../../../../../utils/helper";
+import {genReplaceEmpty, handleSelect, isEmptyValue} from "../../../../../utils/helper";
 import {numberWithCommas} from "../../../../../base/components/MyInputs/NumberInput";
 import {apiSinUnidadMedida} from "../../../../sin/api/sinUnidadMedida.api";
 import {swalException} from "../../../../../utils/swal";
 import {ProductoVarianteInputProps} from "../../../interfaces/producto.interface";
 import {notError} from "../../../../../utils/notification";
+import {apiSucursales} from "../../../../sucursal/api/sucursales.api";
+import {setProdVariante} from "../../../slices/productos/producto.slice";
+import {SucursalProps} from "../../../../sucursal/interfaces/sucursal";
 
 interface OwnProps {
     variante: ProductoVarianteInputProps;
@@ -38,6 +41,7 @@ type Props = OwnProps;
 const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props) => {
     const {variante, incluirCantidad, onClose, open, ...other} = props
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
+    const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
     const [data, setData] = useState<ProductoVarianteInputProps>(variante);
 
     const fetchUnidadesMedida = async () => {
@@ -48,6 +52,20 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
             return []
         })
     }
+
+    const fetchSucursales = async () => {
+        try {
+            const sucursales = await apiSucursales()
+            if (sucursales.length > 0) {
+                setSucursales(sucursales)
+            } else {
+                throw new Error('No se ha podido cargar los datos de la sucursal, vuelva a intentar')
+            }
+        } catch (e: any) {
+            swalException(e)
+        }
+    }
+
     useEffect(() => {
         setData(variante)
     }, [open]);
@@ -71,6 +89,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
     }
 
     useEffect(() => {
+        fetchSucursales().then()
         fetchUnidadesMedida().then()
     }, []);
     return (
@@ -170,7 +189,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                         <FormControl fullWidth>
                             <TextField
                                 label="Código de Barras"
-                                value={data.codigoBarras}
+                                value={data.codigoBarras || ''}
                                 onChange={(e) => {
                                     setData({...data, codigoBarras: e.target.value})
                                 }}
@@ -195,11 +214,12 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                 </thead>
                                 <tbody>
                                 {
-                                    data.inventario.map((s, index: number) => (
-                                        <tr key={s.sucursal.codigo}>
-                                            <td data-label="COD">{s.sucursal.codigo}</td>
+                                    sucursales.length > 0 &&
+                                    sucursales.map((s, index: number) => (
+                                        <tr key={s.codigo}>
+                                            <td data-label="COD">{s.codigo}</td>
                                             <td data-label="SUCURSAL">
-                                                {s.sucursal.municipio} - {s.sucursal.direccion}
+                                                {s.municipio} - {s.direccion}
                                             </td>
                                             <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                                 {
@@ -210,12 +230,12 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                                                 <InputNumber
                                                                     min={0}
                                                                     placeholder={'0.00'}
-                                                                    value={data.inventario[s.sucursal.codigo].stock}
+                                                                    value={genReplaceEmpty(data.inventario[s.codigo]?.stock, 0)}
                                                                     onFocus={handleSelect}
                                                                     onChange={(precioComparacion: number) => {
                                                                         const newArray = [...data.inventario];
                                                                         newArray[index] = {
-                                                                            sucursal: s.sucursal,
+                                                                            sucursal: s,
                                                                             stock: precioComparacion
                                                                         }
                                                                         setData({...data, inventario: newArray})

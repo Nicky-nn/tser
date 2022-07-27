@@ -44,7 +44,7 @@ export const cartesianProduct = (arr: [[]]) => {
  * @param value
  */
 export const isEmptyValue = (value: any): boolean => {
-    const matches = [null, false, undefined, '', {}, [] ]
+    const matches = [null, false, undefined, '', {}, []]
     if (typeof value === 'string') {
         if (value.trim() === '')
             return true
@@ -59,4 +59,28 @@ export const isEmptyValue = (value: any): boolean => {
 export const genRandomString = (lng = 5): string => {
     const nanoidd = customAlphabet('abcdefghijkmnpqrtwxyz', lng)
     return nanoidd()
+}
+
+/**
+ * Verificamos el tipo de dato, parceamos y enviamos el dato correcto
+ * @param val
+ * @param replace
+ */
+export const genReplaceEmpty = (val: any, replace: any): any => {
+    if (val === undefined) return replace
+    if (val === null) return replace
+    if (typeof val === 'object') {
+        if (Object.keys(val).length === 0)
+            return replace
+    }
+    if (Array.isArray(val)) {
+        if (val.length === 0)
+            return replace
+    }
+
+    // Verificando si es string
+    if (typeof val === 'string' || val instanceof String) {
+        if (val.trim() === '') return replace
+    }
+    return val
 }

@@ -10,6 +10,7 @@ import InputNumber from "rc-input-number";
 import {DescuentoAdicionalDialog} from "./ventaTotales/DescuentoAdicionalDialog";
 import {
     facturaReset,
+    setFactura,
     setFacturaDescuentoAdicional,
     setFacturaInputMontoPagar,
     setFacturaMontoPagar
@@ -20,6 +21,7 @@ import Swal from 'sweetalert2';
 import {swalConfirm, swalErrorMsg, swalException} from "../../../../utils/swal";
 import {fetchFacturaCreate} from "../../api/facturaCreate.api";
 import {openInNewTab} from "../../../../utils/helper";
+import {FacturaResetValues} from "../../interfaces/factura";
 
 interface OwnProps {
 }
@@ -30,7 +32,6 @@ type Props = OwnProps;
 const VentaTotales: FunctionComponent<Props> = (props) => {
     const factura = useAppSelector(state => state.factura);
     const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false);
-    const subTotal: number = factura.detalle.reduce((acc, cur) => acc + (cur.inputCantidad * cur.inputPrecio) - cur.inputDescuento, 0) || 0;
     const handleFocus = (event: any) => event.target.select();
     const dispatch = useDispatch();
     const handleDescuentoAdicional = (event: any) => {
@@ -45,6 +46,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     };
     const handeRealizarPago = async () => {
         const inputFactura = composeFactura(factura)
+        console.log(inputFactura)
         const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
             swalErrorMsg(err.message)
         })
@@ -58,11 +60,12 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
-                console.log(result)
                 if (result.isConfirmed) {
                     const {value}: any = result
-                    dispatch(facturaReset())
-
+                    dispatch(setFactura({
+                        ...factura,
+                        ...FacturaResetValues
+                    }))
                     openInNewTab(value.representacionGrafica.pdf)
                     Swal.fire({
                         title: `Documento generado correctamente`,
@@ -81,7 +84,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <Typography variant="subtitle1" gutterBottom>
-                                      {numberWithCommas(subTotal || 0, {})}
+                                      {numberWithCommas(factura.montoSubTotal, {})}
                                   </Typography>
                               }
                     >
@@ -128,7 +131,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <Typography variant="subtitle1" gutterBottom>
-                                      {numberWithCommas(subTotal - factura.descuentoAdicional, {})}
+                                      {numberWithCommas(factura.montoSubTotal - factura.descuentoAdicional, {})}
                                   </Typography>
                               }
                     >
@@ -165,7 +168,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     <Grid item xs={12} md={5} lg={5}>
                         <small>Vuelto / Saldo</small>
                         <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-                            {"0.00"}
+                            {numberWithCommas(factura.inputVuelto, {})}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12}>

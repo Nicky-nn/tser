@@ -10,7 +10,6 @@ import {
     Grid,
     InputLabel,
     MenuItem,
-    Select,
     TextField
 } from "@mui/material";
 import {useFormik} from "formik";
@@ -20,6 +19,9 @@ import {SinTipoDocumentoIdentidadProps} from "../../../sin/interfaces/sin.interf
 import {toast} from "react-toastify";
 import {fetchClienteCreate} from "../../../clientes/api/clienteCreate.api";
 import {swalException} from "../../../../utils/swal";
+import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
+import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
+import Select, {Options} from "react-select";
 
 interface OwnProps {
     id: string;
@@ -102,33 +104,30 @@ const NuevoClienteDialog: FunctionComponent<Props> = (props: Props) => {
                     <form>
                         <Grid container spacing={2}>
                             <Grid item lg={12} md={12} sm={12} xs={12} sx={{mt: 2}}>
-                                <FormControl size="small" fullWidth
-                                             error={clienteForm.touched.codigoTipoDocumentoIdentidad &&
-                                                 Boolean(clienteForm.errors.codigoTipoDocumentoIdentidad)}
-                                >
-                                    <InputLabel>Tipo Documento Identidad</InputLabel>
-                                    <Select
-                                        labelId="demo-select-small"
-                                        id="codigoTipoDocumentoIdentidad"
+                                <FormControl fullWidth>
+                                    <SelectInputLabel shrink>
+                                        Tipo Documento Identidad
+                                    </SelectInputLabel>
+                                    <Select<SinTipoDocumentoIdentidadProps>
+                                        styles={reactSelectStyles}
+                                        menuPosition={'fixed'}
                                         name="codigoTipoDocumentoIdentidad"
-                                        value={clienteForm.values.codigoTipoDocumentoIdentidad}
-                                        label="Tipo Documento Identidad"
-                                        onChange={clienteForm.handleChange}
-                                        onBlur={clienteForm.handleBlur}
-                                    >
-                                        {tiposDocumentoIdentidad.map(value =>
-                                            <MenuItem
-                                                key={value.codigoClasificador}
-                                                value={value.codigoClasificador}
-                                            >
-                                                {value.descripcion}
-                                            </MenuItem>)
+                                        placeholder={'Seleccione el tipo documento identidad'}
+                                        value={
+                                            tiposDocumentoIdentidad ? tiposDocumentoIdentidad.find(
+                                                option => option.codigoClasificador === clienteForm.values.codigoTipoDocumentoIdentidad
+                                            ) : null
                                         }
-                                    </Select>
-                                    <FormHelperText>{clienteForm.touched.codigoTipoDocumentoIdentidad &&
-                                        clienteForm.errors.codigoTipoDocumentoIdentidad}</FormHelperText>
+                                        onChange={(option: any) => clienteForm.setFieldValue('codigoTipoDocumentoIdentidad', option.codigoClasificador)}
+                                        onBlur={clienteForm.handleBlur}
+                                        isSearchable={false}
+                                        options={tiposDocumentoIdentidad}
+                                        getOptionValue={(item) => item.codigoClasificador.toString()}
+                                        getOptionLabel={(item) => `${item.descripcion}`}
+                                    />
                                 </FormControl>
                             </Grid>
+
                             <Grid item lg={12} md={12} xs={12}>
                                 <TextField
                                     id="razonSocial"

@@ -1,5 +1,4 @@
 import {ClienteProps} from "../../../base/api/cliente.api";
-import {ProductoVarianteProps} from "../../productos/api/producto.api";
 import {
     SinActividadesProps,
     SinCufdProps,
@@ -15,31 +14,39 @@ import {
 } from "../../sin/interfaces/sin.interface";
 import {PuntoVentaProps} from "../../puntoVenta/interfaces/puntoVenta";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
+import {ProductoVarianteProps} from "../../productos/interfaces/producto.interface";
 
-export interface FacturaDetalleProps extends ProductoVarianteProps {
-    inputCantidad: number
-    inputPrecio: number
-    inputDescuento: number
-    inputMotivoDescuento: number
+export interface FacturaDetalleInputProps extends ProductoVarianteProps{
+    verificarStock: boolean
+    codigoProductoSin: string
+    descripcion: string
+    numeroImei: string
+    numeroSerie: string
+    cantidad: number
+    montoDescuento: number
+    precioUnitario: number
     detalleExtra: string
     subtotal: number
+    incluirCantidad: boolean
 }
 
 export interface FacturaInputProps {
-    actividadEconomica: string
+    actividadEconomica: SinActividadesProps
     tipoCliente: 'N' | '99002' | '99003'
     cliente: ClienteProps,
     codigoCliente: string
+    codigoExcepcion: number | null,
     codigoMetodoPago: number
     codigoMoneda: number
     descuentoAdicional: number
-    detalle: FacturaDetalleProps[]
+    detalle: FacturaDetalleInputProps[]
     detalleExtra?: string | null
     emailCliente?: string | null
     montoGiftCard?: number | null
     numeroTarjeta?: string | null
     tipoCambio: number | null
     montoPagar: number
+    montoSubTotal: number
     inputMontoPagar: number
     inputVuelto: number
 }
@@ -48,28 +55,52 @@ export interface FacturaInputProps {
  * Valores iniciales del formulario
  */
 export const FacturaInitialValues: FacturaInputProps = {
-    actividadEconomica: '620000',
+    actividadEconomica: {} as SinActividadesProps,
     tipoCliente: 'N',
     cliente: {} as ClienteProps,
     codigoCliente: '',
+    codigoExcepcion: null,
     codigoMetodoPago: 1,
     codigoMoneda: 1,
     descuentoAdicional: 0,
-    detalle: [] as FacturaDetalleProps[],
+    detalle: [] as FacturaDetalleInputProps[],
     detalleExtra: '',
     emailCliente: null,
     montoGiftCard: 0,
     numeroTarjeta: null,
     tipoCambio: 1,
+    montoSubTotal: 0,
     montoPagar: 0,
     inputMontoPagar: 0,
     inputVuelto: 0
 }
 
+export const FacturaResetValues = {
+    tipoCliente: 'N',
+    cliente: {} as ClienteProps,
+    codigoCliente: '',
+    codigoExcepcion: null,
+    codigoMetodoPago: 1,
+    codigoMoneda: 1,
+    descuentoAdicional: 0,
+    detalle: [] as FacturaDetalleInputProps[],
+    detalleExtra: '',
+    emailCliente: null,
+    montoGiftCard: 0,
+    numeroTarjeta: null,
+    tipoCambio: 1,
+    montoSubTotal: 0,
+    montoPagar: 0,
+    inputMontoPagar: 0,
+    inputVuelto: 0
+}
+
+
 export interface RepresentacionGraficaProps {
     pdf: string
     rollo: string
     xml: string
+    sin: string
 }
 
 export interface DetalleFacturaProps {

@@ -69,7 +69,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                             return sumBy(item.inventario, (inv) => inv.stock)
                         })
                         if (!row.varianteUnica) {
-                            return <Chip label={`${cantidad} items para ${row.variantes.length}`} color={"default"}/>
+                            return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`} color={"default"}/>
                         }
                         return <Chip label={`${cantidad} items`} color={"default"}/>
                     }
@@ -97,6 +97,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                 columns={columns}
                 data={data}
                 manualPagination
+                onPaginationChange={setPagination}
                 muiTableToolbarAlertBannerProps={
                     isError
                         ? {
@@ -105,7 +106,6 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                         }
                         : undefined
                 }
-                onPaginationChange={setPagination}
                 rowCount={rowCount}
                 state={{
                     isLoading,

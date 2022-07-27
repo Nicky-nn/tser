@@ -21,5 +21,5 @@ export const fetchSinActividades = async (): Promise<SinActividadesProps[]> => {
     client.setHeader('authorization', `Bearer ${token}`)
 
     const data: any = await client.request(query)
-    return data.sinActividades;
+    return data.sinActividades || [];
 }

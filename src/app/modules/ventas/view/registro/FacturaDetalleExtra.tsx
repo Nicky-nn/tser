@@ -3,7 +3,7 @@ import {useAppSelector} from "../../../../hooks";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {Box} from "@mui/material";
 import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
-import {setFacturaDetalleExtra} from "../../slices/facturacion/factura.slice";
+import {setFactura} from "../../slices/facturacion/factura.slice";
 import {useDispatch} from "react-redux";
 import {Editor} from "@tinymce/tinymce-react";
 import {TINYMCE_TEMPLATES} from "../../../../interfaces/tinimce.template";
@@ -23,10 +23,9 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
     const handleCloseDetalleExtra = (newValue?: string) => {
         setOpenDetalleExtra(false);
         if (newValue) {
-            dispatch(setFacturaDetalleExtra(newValue))
+            dispatch(setFactura({...factura, detalleExtra: newValue}))
         }
     };
-
 
     return (
         <>
@@ -39,7 +38,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                             console.log(editor.getContent({format: 'text'}));
                         }}
                         onEditorChange={(newValue, editor) => {
-                            dispatch(setFacturaDetalleExtra(editor.getContent()))
+                            dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
                             console.log(editor.getContent({format: 'text'}));
                         }}
                         init={{
@@ -47,7 +46,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                             toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | table | template | code',
                             menubar: false,
                             table_default_attributes: {
-                                border: '0'
+                                border: 'none'
                             },
                             min_height: 250,
                             height: 250,

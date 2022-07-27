@@ -81,7 +81,7 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                                     name="nombre"
                                     label="Ingrese el nuevo tipo de producto"
                                     size="small"
-                                    value={prod.tipoProductoPersonalizado}
+                                    value={prod.tipoProductoPersonalizado || ''}
                                     onChange={(e) => {
                                         dispatch(setProdTipoPersonalizado(e.target.value))
                                     }}

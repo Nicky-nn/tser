@@ -65,8 +65,6 @@ const query = gql`
                     precio
                     precioComparacion
                     costo
-                    incluirCantidadInventario
-                    habilitarStock
                     imagen {
                         altText
                         url

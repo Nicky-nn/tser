@@ -13,7 +13,7 @@ const DatosCliente: FunctionComponent<Props> = (props) => {
     const factura = useAppSelector(state => state.factura);
     return (
         <>
-                <List>
+                <List style={{marginTop: -5, marginLeft: 12, padding: 0}}>
                     <ListItem style={{padding: 0}}>
                         <ListItemText>
                             <strong>Nombre/Razón Social:</strong>&nbsp;&nbsp; {factura.cliente?.razonSocial || ''}

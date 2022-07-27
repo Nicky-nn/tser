@@ -1,6 +1,8 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {FacturaInitialValues, FacturaInputProps} from "../../interfaces/factura";
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {FacturaDetalleInputProps, FacturaInitialValues, FacturaInputProps} from "../../interfaces/factura";
 import {RootState} from "../../../../store/store";
+import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
+import {montoInputVuelto, montoPagarService, montoSubTotal} from "../../services/operacionesService";
 
 export interface FacturaState {
     factura: FacturaInputProps;
@@ -14,12 +16,12 @@ export const facturaSlice = createSlice({
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
         facturaReset: () => initialState,
-        setFactura: (state, action) => {
-            state = action.payload;
-        },
-        setActividadEconomica: (state, action) => {
-            state.actividadEconomica = action.payload;
-        },
+        setFactura: (state, action) => ({
+            ...action.payload,
+            montoSubTotal: montoSubTotal(action.payload),
+            montoPagar: montoPagarService(action.payload),
+            inputVuelto: montoInputVuelto(action.payload)
+        }),
         setTipoCliente: (state, action) => {
             state.tipoCliente = action.payload;
         },
@@ -33,26 +35,41 @@ export const facturaSlice = createSlice({
         setEmailCliente: (state, action) => {
             state.emailCliente = action.payload;
         },
-        setDetalleFactura: (state, action) => {
+        setDetalleFactura: (state, action: PayloadAction<ProductosVariantesProps>) => {
             state.detalle.push({
-                ...action.payload,
-                inputCantidad: 1,
-                inputPrecio: action.payload.precio,
-                inputDescuento: 0,
-                subtotal: 0,
+                ...action.payload.variantes,
+                verificarStock: action.payload.verificarStock,
+                incluirCantidad: action.payload.incluirCantidad,
+                codigoProductoSin: action.payload.sinProductoServicio.codigoProducto,
+                cantidad: 1,
+                precioUnitario: action.payload.variantes.precio,
+                montoDescuento: 0,
                 detalleExtra: '',
-            })
+                subtotal: 0,
+            } as FacturaDetalleInputProps)
+            state.montoSubTotal = montoSubTotal(state)
+            state.montoPagar = montoPagarService(state)
+            state.inputVuelto= montoInputVuelto(state)
         },
-        setItemModificado: (state, action) => {
+        setItemModificado: (state, action: PayloadAction<FacturaDetalleInputProps>) => {
             state.detalle = state.detalle.map(item => {
                 return item.codigoProducto === action.payload.codigoProducto ? action.payload : item
             })
+            state.montoSubTotal = montoSubTotal(state)
+            state.montoPagar = montoPagarService(state)
+            state.inputVuelto= montoInputVuelto(state)
         },
-        setDeleteItem: (state, action) => {
+        setDeleteItem: (state, action:PayloadAction<FacturaDetalleInputProps>) => {
             state.detalle = state.detalle.filter(item => item.codigoProducto !== action.payload.codigoProducto)
+            state.montoSubTotal = montoSubTotal(state)
+            state.montoPagar = montoPagarService(state)
+            state.inputVuelto= montoInputVuelto(state)
         },
         setFacturaDescuentoAdicional: (state, action) => {
             state.descuentoAdicional = action.payload
+            state.montoSubTotal = montoSubTotal(state)
+            state.montoPagar = montoPagarService(state)
+            state.inputVuelto= montoInputVuelto(state)
         },
         setFacturaMetodoPago: (state, action) => {
             state.codigoMetodoPago = parseInt(action.payload)
@@ -63,14 +80,12 @@ export const facturaSlice = createSlice({
         },
         setFacturaInputMontoPagar: (state, action) => {
             state.inputMontoPagar = action.payload
+            state.inputVuelto= montoInputVuelto(state)
         },
         setFacturaMontoPagar: (state) => {
-            const subTotal: number = state.detalle.reduce((acc, cur) => acc + (cur.inputCantidad * cur.inputPrecio) - cur.inputDescuento, 0) || 0;
-            const total = subTotal - state.descuentoAdicional - (state.montoGiftCard || 0)
-            state.montoPagar = total
-        },
-        setFacturaDetalleExtra: (state, action) => {
-            state.detalleExtra = action.payload
+            state.montoSubTotal = montoSubTotal(state)
+            state.montoPagar = montoPagarService(state)
+            state.inputVuelto= montoInputVuelto(state)
         }
     },
 });
@@ -78,9 +93,7 @@ export const facturaSlice = createSlice({
 export const selectFactura = (state: RootState) => state.factura;
 export const {
     facturaReset,
-    setActividadEconomica,
     setFactura,
-    setTipoCliente,
     setCodigoCliente,
     setEmailCliente,
     setCliente,
@@ -92,7 +105,6 @@ export const {
     setFacturaNroTarjeta,
     setFacturaInputMontoPagar,
     setFacturaMontoPagar,
-    setFacturaDetalleExtra
 } = facturaSlice.actions;
 
 export default facturaSlice.reducer;

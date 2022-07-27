@@ -50,5 +50,5 @@ export const fetchClientesList = async (): Promise<ClienteProps[]> => {
     client.setHeader('authorization', `Bearer ${token}`)
 
     const data: any = await client.request(clientesListadoQuery)
-    return data.clientesAll.docs;
+    return data.clientesAll.docs || [];
 }

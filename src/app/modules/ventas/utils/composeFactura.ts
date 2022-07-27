@@ -5,19 +5,19 @@ import { es } from 'yup-locales'
 export const composeFactura = (fcv: FacturaInputProps): any => {
     const input = {
         codigoCliente: fcv.cliente.codigoCliente,
-        actividadEconomica: fcv.actividadEconomica,
+        actividadEconomica: fcv.actividadEconomica.codigoCaeb,
         codigoMetodoPago: fcv.codigoMetodoPago,
         descuentoAdicional: fcv.descuentoAdicional,
         detalleExtra: fcv.detalleExtra,
         emailCliente: fcv.cliente.email,
         detalle: fcv.detalle.map(item => ({
-            codigoProductoSin: item.producto?.sinProductoServicio.codigoProducto,
+            codigoProductoSin: item.codigoProductoSin,
             codigoProducto: item.codigoProducto,
             descripcion: item.nombre,
-            cantidad: item.inputCantidad,
+            cantidad: item.cantidad,
             unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
-            precioUnitario: item.inputPrecio,
-            montoDescuento: item.inputDescuento
+            precioUnitario: item.precioUnitario,
+            montoDescuento: item.montoDescuento
         }))
     }
     if(fcv.numeroTarjeta){

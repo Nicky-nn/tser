@@ -11,15 +11,17 @@ import ProductoProveedor from "./registro/ProductoProveedor";
 import {swalAsyncConfirmDialog, swalClose, swalException, swalLoading} from "../../../utils/swal";
 import {Description, Save} from "@mui/icons-material";
 import {useAppSelector} from "../../../hooks";
-import {selectProducto} from "../slices/productos/producto.slice";
+import {selectProducto, setProducto} from "../slices/productos/producto.slice";
 import {productoRegistroValidator} from "../validator/productoRegistroValidator";
 import {notDanger, notError, notSuccess} from "../../../utils/notification";
-import {productoComposeService} from "../services/ProductoComposeService";
+import {productoComposeService, productoInputComposeService} from "../services/ProductoComposeService";
 import {useNavigate, useParams} from "react-router-dom";
 import {isEmptyValue} from "../../../utils/helper";
 import {apiProductoPorId} from "../api/productoPorId.api";
 import {apiProductoModificar} from "../api/productoModificar.api";
 import {productosRouteMap} from "../ProductosRoutesMap";
+import {fetchSinActividadesPorDocumentoSector} from "../../sin/api/sinActividadesPorDocumentoSector";
+import {useDispatch} from "react-redux";
 
 interface OwnProps {
 }
@@ -30,17 +32,31 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
     const {id}: { id?: string } = useParams();
     const navigate = useNavigate()
     const prod = useAppSelector(selectProducto)
+    const dispatch = useDispatch()
     const fetchProductoPorId = async (id: string) => {
-        swalLoading()
-        const response: any = await apiProductoPorId(id).catch((err: Error) => swalException(err));
-        swalClose()
-        const data = response?.fcvProducto;
-        if (data) {
+        try {
+            swalLoading()
+            const response = await apiProductoPorId(id);
+            swalClose()
+            if (response) {
+                const actividades = await fetchSinActividadesPorDocumentoSector()
+                    .then(async (data) => {
+                        if (data)
+                            return data.find(item => item.codigoActividad === response.sinProductoServicio.codigoActividad)
+                        throw new Error('Error en cargar los datos')
+                    })
+                const prodInput = productoInputComposeService(response, actividades!)
+                console.log(JSON.stringify(prodInput))
+                dispatch(setProducto(prodInput))
 
-        } else {
-            notDanger('No se ha podido encontrar datos del producto')
-            navigate(-1)
+            } else {
+                notDanger('No se ha podido encontrar datos del producto')
+                navigate(-1)
+            }
+        } catch (e: any) {
+            swalException(e)
         }
+
     }
 
     useEffect(() => {

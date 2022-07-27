@@ -10,40 +10,52 @@ import {genRandomString} from "../../../utils/helper";
 import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
 
 export interface ProductoVarianteProps {
+    id: string
     codigoProducto: string // identificador o codigo unico
-    producto?: ProductoProps
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
     disponibleParaVenta: boolean
     codigoBarras: string | null
     precio: number
+    costo: number
     precioComparacion: number
+    incluirStock: boolean // Si se
     imagen?: ImagenProps
     inventario: Array<InventarioProps>
     peso: number
     unidadMedida: SinUnidadMedidaProps
 }
 
-export interface ProductoProps {
+interface ProductoDefinitionProps {
     _id: string,
     sinProductoServicio: SinProductoServicioProps
     titulo: string
     descripcion: string
     descripcionHtml: string
-    tipoProducto: string | null
+    tipoProducto: TipoProductoProps | null
     totalVariantes: number
     seguimientoInventario: boolean
     imagenDestacada?: ImagenProps // url de la imagen
     varianteUnica: boolean // si solo tienen una sola variante
     incluirCantidad: boolean // si se tiene cantidad en inventario
-    proveedor: string | null // nombre del proveedor si vale el caso
-    variantes: ProductoVarianteProps[]
+    verificarStock: boolean // continuar venta si el stock esta agodao
+    proveedor: ProveedorProps | null // nombre del proveedor si vale el caso
+    opcionesProducto: Array<OpcionesProductoProps>
     inventario: Array<InventarioProps>
     usucre: string
     createdAt?: Date
     usumod?: string
     updatedAt?: Date
     state?: string
+}
+
+export interface ProductoProps extends ProductoDefinitionProps {
+    variantes: ProductoVarianteProps[]
+
+}
+
+export interface ProductosVariantesProps extends ProductoDefinitionProps {
+    variantes: ProductoVarianteProps
 }
 
 export interface ProductoVarianteInventarioProps {
@@ -61,8 +73,6 @@ export interface ProductoVarianteInputProps {
     precio: number
     precioComparacion?: number
     costo: number
-    incluirCantidadInventario: boolean,
-    habilitarStock: boolean, // Si se habilita, se introduce cantidad en stock
     inventario: ProductoVarianteInventarioProps[]
     peso?: number
     unidadMedida: SinUnidadMedidaProps | null
@@ -82,10 +92,11 @@ export interface ProductoInputProps {
     descripcionHtml: string,
     varianteUnica: boolean
     incluirCantidad: boolean,
+    verificarStock: boolean, // Continuar venta aun si el stock ha terminado
     variante: ProductoVarianteInputProps
     opcionesProducto: Array<OpcionesProductoProps>
     tipoProducto: TipoProductoProps | null,
-    tipoProductoPersonalizado: string,
+    tipoProductoPersonalizado: string | null,
     variantes: ProductoVarianteInputProps[]
     proveedor: ProveedorProps | null
 }
@@ -103,8 +114,6 @@ export const ProductoVarianteInitialValues = {
     precio: 350,
     precioComparacion: 0,
     costo: 300,
-    incluirCantidadInventario: true,
-    habilitarStock: true,
     inventario: [],
     unidadMedida: null,
 }
@@ -114,11 +123,12 @@ export const ProductoVarianteInitialValues = {
 export const ProductoInitialValues: ProductoInputProps = {
     actividadEconomica: undefined,
     sinProductoServicio: undefined,
-    titulo: 'Instalacion ISIPASS V1.1',
+    titulo: 'Instalación ISIPASS',
     descripcion: '',
     descripcionHtml: '<span></span>',
     varianteUnica: true,
     incluirCantidad: true,
+    verificarStock: true,
     variante: ProductoVarianteInitialValues,
     opcionesProducto: [],
     tipoProducto: null,
@@ -135,11 +145,10 @@ export interface ProductoVarianteApiProps {
     precio: number
     precioComparacion: number
     costo: number
-    incluirCantidadInventario: boolean
-    habilitarStock: boolean
     codigoUnidadMedida: number
     inventario: { codigoSucursal: number, stock: number | null }
 }
+
 /**
  * Interface que nos permite registrar el producto, se usa para las apis
  */
@@ -149,10 +158,11 @@ export interface ProductoInputApiProps {
     titulo: string,
     descripcion: string
     descripcionHtml: string
-    opcionesProducto:OpcionesProductoProps[],
+    opcionesProducto: OpcionesProductoProps[],
     codigoTipoProducto: string | null
     tipoProductoPersonalizado: string | null
     varianteUnica: boolean
+    incluirCantidad: boolean
     codigoProveedor: string | null
-    variantes:ProductoVarianteApiProps[]
+    variantes: ProductoVarianteApiProps[]
 }

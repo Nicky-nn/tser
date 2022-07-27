@@ -5,7 +5,7 @@ import {useAppSelector} from "../../../../hooks";
 import {selectProducto, setProducto, setProdVariante} from "../../slices/productos/producto.slice";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
-import {handleSelect} from "../../../../utils/helper";
+import {genReplaceEmpty, handleSelect} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 import {swalException} from "../../../../utils/swal";
 import {apiSucursales} from "../../../sucursal/api/sucursales.api";
@@ -26,14 +26,15 @@ type Props = OwnProps;
 
 const ProductoPrecio: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
+    const [isError, setError] = useState<any>(null);
     const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const dispatch = useDispatch()
 
     const resetInventario = (data: SucursalProps[]): Array<any> => {
         return sortBy(data, 'codigo').map(item => ({
-            sucursal: item,
-            stock: 0
+            sucursal: {codigo: item.codigo},
+            stock: genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo == item.codigo)?.stock, 0)
         }))
     }
     // Reset de las cantidades por sucursal
@@ -88,19 +89,24 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
     }
 
     const fetchSucursales = async () => {
-        await apiSucursales()
-            .then(async (data) => {
-                setSucursales(data)
-                const inventario = resetInventario(data)
-                dispatch(setProdVariante({
-                    ...prod.variante,
-                    inventario
-                }))
-            })
-            .catch(err => {
-                swalException(err);
-                return []
-            })
+        try {
+            const sucursales = await apiSucursales()
+            if (sucursales.length > 0) {
+                setSucursales(sucursales)
+                if (prod.variante.inventario.length === 0) {
+                    const inventario = resetInventario(sucursales)
+                    dispatch(setProdVariante({
+                        ...prod.variante,
+                        inventario
+                    }))
+                }
+            } else {
+                throw new Error('No se ha podido cargar los datos de la sucursal, vuelva a intentar')
+            }
+        } catch (e: any) {
+            swalException(e)
+            setError(e.message)
+        }
     }
 
     const fetchUnidadesMedida = async () => {
@@ -117,6 +123,9 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
         fetchUnidadesMedida().then()
     }, []);
 
+    if (isError) {
+        return <h1>Ocurrio un error</h1>
+    }
 
     return (
         <SimpleCard title={'Precio - Inventario'}>
@@ -225,7 +234,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                     <FormControl fullWidth>
                         <TextField
                             label="Código de Barras"
-                            value={prod.variante.codigoBarras}
+                            value={prod.variante.codigoBarras || ''}
                             onChange={(e) => {
                                 dispatch(setProdVariante({
                                     ...prod.variante,
@@ -237,6 +246,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         />
                     </FormControl>
                 </Grid>
+
                 <Grid item lg={8} md={12} xs={12}>
                     <FormControl>
                         <FormControlLabel
@@ -264,11 +274,11 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                checked={!prod.variante.habilitarStock}
+                                                checked={!prod.verificarStock}
                                                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                    dispatch(setProdVariante({
-                                                        ...prod.variante,
-                                                        habilitarStock: !e.target.checked
+                                                    dispatch(setProducto({
+                                                        ...prod,
+                                                        verificarStock: !e.target.checked
                                                     }))
                                                 }}
                                             />
@@ -294,11 +304,12 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             </thead>
                             <tbody>
                             {
-                                prod.variante.inventario.map((s, index: number) => (
-                                    <tr key={s.sucursal.codigo}>
-                                        <td data-label="COD">{s.sucursal.codigo}</td>
+                                sucursales.length > 0 &&
+                                sucursales.map((s, index: number) => (
+                                    <tr key={s.codigo}>
+                                        <td data-label="COD">{s.codigo}</td>
                                         <td data-label="SUCURSAL">
-                                            {s.sucursal.municipio} - {s.sucursal.direccion}
+                                            {s.municipio} - {s.direccion}
                                         </td>
                                         <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                             {
@@ -309,18 +320,13 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                                                             <InputNumber
                                                                 min={0}
                                                                 placeholder={'0.00'}
-                                                                value={prod.variante.inventario[s.sucursal.codigo].stock}
+                                                                value={genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo === s.codigo)?.stock, 0)}
                                                                 onFocus={handleSelect}
                                                                 onChange={(stock: number) => {
-                                                                    const newArray = [...prod.variante.inventario];
-                                                                    newArray[index] = {
-                                                                        sucursal: s.sucursal,
-                                                                        stock
-                                                                    }
                                                                     dispatch(setProducto({
                                                                         ...prod,
-                                                                        variante: resetVarianteStock(prod.variante, s.sucursal.codigo, stock),
-                                                                        variantes: resetVariantesStock(prod.variantes, s.sucursal.codigo, stock)
+                                                                        variante: resetVarianteStock(prod.variante, s.codigo, stock),
+                                                                        variantes: resetVariantesStock(prod.variantes, s.codigo, stock)
                                                                     }))
                                                                 }}
                                                                 formatter={numberWithCommas}
