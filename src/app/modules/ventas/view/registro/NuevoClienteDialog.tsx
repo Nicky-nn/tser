@@ -37,10 +37,10 @@ const NuevoClienteDialog: FunctionComponent<Props> = (props: Props) => {
     const [tiposDocumentoIdentidad, setTiposDocumentoIdentidad] = useState<SinTipoDocumentoIdentidadProps[]>([]);
     const clienteForm = useFormik({
         initialValues: {
-            razonSocial: 'Sofia',
-            numeroDocumento: '3352456',
+            razonSocial: '',
+            numeroDocumento: '',
             complemento: '',
-            email: 'vergara@gmail.com',
+            email: '',
             codigoTipoDocumentoIdentidad: 1,
             nombres: '',
             apellidos: ''

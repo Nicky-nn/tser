@@ -5,6 +5,7 @@ import {
     ProductoInputProps,
     ProductoVarianteInputProps
 } from "../../interfaces/producto.interface";
+import {genRandomString} from "../../../../utils/helper";
 
 const initialState: ProductoInputProps = ProductoInitialValues
 
@@ -13,7 +14,7 @@ export const productoSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
-        productoReset: () => initialState,
+        productoReset: () => ({...initialState, variante: {...initialState.variante, id: genRandomString(10)}}),
         setProducto: (state, action) => action.payload,
         setActividadEconomica: (state, action) => {
             state.actividadEconomica = action.payload

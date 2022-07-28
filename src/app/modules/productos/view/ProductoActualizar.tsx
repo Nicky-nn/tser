@@ -11,7 +11,7 @@ import ProductoProveedor from "./registro/ProductoProveedor";
 import {swalAsyncConfirmDialog, swalClose, swalException, swalLoading} from "../../../utils/swal";
 import {Description, Save} from "@mui/icons-material";
 import {useAppSelector} from "../../../hooks";
-import {selectProducto, setProducto} from "../slices/productos/producto.slice";
+import {productoReset, selectProducto, setProducto} from "../slices/productos/producto.slice";
 import {productoRegistroValidator} from "../validator/productoRegistroValidator";
 import {notDanger, notError, notSuccess} from "../../../utils/notification";
 import {productoComposeService, productoInputComposeService} from "../services/ProductoComposeService";
@@ -119,7 +119,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                     justifyContent="flex-end"
                 >
                     <Button color={'primary'} startIcon={<Description/>} variant={"contained"}
-                            onClick={() => navigate(productosRouteMap.nuevo)}>
+                            onClick={() => {dispatch(productoReset()); navigate(productosRouteMap.nuevo)} }>
                         Nuevo Producto
                     </Button>&nbsp;
 

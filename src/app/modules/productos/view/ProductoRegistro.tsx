@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useEffect} from 'react';
 import SimpleContainer from "../../../base/components/Container/SimpleContainer";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import {Button, CssBaseline, Grid, Paper, Stack} from "@mui/material";
@@ -11,13 +11,13 @@ import ProductoProveedor from "./registro/ProductoProveedor";
 import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
 import {Save} from "@mui/icons-material";
 import {useAppSelector} from "../../../hooks";
-import {selectProducto} from "../slices/productos/producto.slice";
+import {productoReset, selectProducto} from "../slices/productos/producto.slice";
 import {productoRegistroValidator} from "../validator/productoRegistroValidator";
 import {notError, notSuccess} from "../../../utils/notification";
 import {productoComposeService} from "../services/ProductoComposeService";
 import {apiProductoRegistro} from "../api/productoRegistro.api";
-import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
 
 interface OwnProps {
 }
@@ -26,6 +26,7 @@ type Props = OwnProps;
 
 const ProductoRegistro: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleSave = async () => {
         // Reglas de validacion
@@ -56,6 +57,9 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
             })
         }
     }
+    useEffect(() => {
+        dispatch(productoReset())
+    }, []);
     return (
         <SimpleContainer>
             <div className="breadcrumb">

@@ -63,7 +63,7 @@ export interface ProductoVarianteInventarioProps {
 }
 
 export interface ProductoVarianteInputProps {
-    id: string
+    id: string | null
     codigoProducto: string // identificador o codigo unico
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
@@ -78,7 +78,7 @@ export interface ProductoVarianteInputProps {
 }
 
 // SE USA CUANDO SE QUIERE REGISTRAR UN PRODUCTO TEMPORAL
-export interface ProductoVarianteInputTempProps extends ProductoVarianteInputProps{
+export interface ProductoVarianteInputTempProps extends ProductoVarianteInputProps {
     sinProductoServicio: SinProductoServicioProps
 }
 
@@ -109,15 +109,15 @@ export interface ProductoInputProps {
  * Valores iniciales para una variante
  */
 export const ProductoVarianteInitialValues = {
-    id: genRandomString(5),
-    codigoProducto: 'COD1',
+    id: null,
+    codigoProducto: '',
     titulo: '',
     nombre: '',
     disponibleParaVenta: true,
     codigoBarras: '',
-    precio: 350,
+    precio: 0,
     precioComparacion: 0,
-    costo: 300,
+    costo: 0,
     inventario: [],
     unidadMedida: null,
 }
@@ -127,7 +127,7 @@ export const ProductoVarianteInitialValues = {
 export const ProductoInitialValues: ProductoInputProps = {
     actividadEconomica: undefined,
     sinProductoServicio: undefined,
-    titulo: 'Instalación ISIPASS',
+    titulo: '',
     descripcion: '',
     descripcionHtml: '<span></span>',
     varianteUnica: true,
@@ -140,7 +140,6 @@ export const ProductoInitialValues: ProductoInputProps = {
     variantes: [],
     proveedor: null
 }
-
 
 export interface ProductoVarianteApiProps {
     id: string
