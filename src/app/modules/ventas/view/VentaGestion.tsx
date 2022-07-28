@@ -164,7 +164,6 @@ const VentaGestion: FC<any> = () => {
                             showAlertBanner: isError,
                             showProgressBars: isRefetching,
                             globalFilter,
-                            showGlobalFilter: true,
                             sorting
                         }}
                         initialState={{
@@ -186,6 +185,7 @@ const VentaGestion: FC<any> = () => {
                         onPaginationChange={setPagination}
                         rowCount={rowCount}
                         enableDensityToggle={false}
+                        enableGlobalFilter={false}
                         positionGlobalFilter={'left'}
                         muiSearchTextFieldProps={{
                             variant: 'outlined',
@@ -229,7 +229,13 @@ const VentaGestion: FC<any> = () => {
                                 </SimpleMenu>
                                 <AuditIconButton row={row.original}/>
                             </div>
-                        )}/>
+                        )}
+                        muiTableHeadCellFilterTextFieldProps={{
+                            sx: { m: '0.5rem 0', width: '95%' },
+                            variant: 'outlined',
+                            size: 'small'
+                        }}
+                    />
                 </Grid>
             </Grid>
             <Box py="12px"/>

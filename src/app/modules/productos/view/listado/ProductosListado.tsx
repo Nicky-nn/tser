@@ -2,122 +2,153 @@ import React, {FunctionComponent, useEffect, useMemo, useState} from 'react';
 import {Chip, IconButton} from "@mui/material";
 import {Edit} from "@mui/icons-material";
 import {ProductoProps} from "../../interfaces/producto.interface";
-import {PAGE_DEFAULT, PAGE_INFO_DEFAULT, PageProps} from "../../../../interfaces";
+import {PAGE_DEFAULT, PageProps} from "../../../../interfaces";
 import {swalException} from "../../../../utils/swal";
 import {apiProductos} from "../../api/producto.api";
 import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
-import type {PaginationState,} from '@tanstack/react-table';
+import type {ColumnFiltersState, PaginationState,} from '@tanstack/react-table';
+import {SortingState} from "@tanstack/react-table";
 import {sumBy} from "lodash";
 import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
 import {useNavigate} from "react-router-dom";
 import {productosRouteMap} from "../../ProductosRoutesMap";
 import {localization} from "../../../../utils/localization";
+import {genApiQuery, genReplaceEmpty} from "../../../../utils/helper";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
+const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
+    {
+        accessorKey: 'titulo',
+        header: 'Producto',
+    },
+    {
+        accessorFn: (row) => {
+            if (row.incluirCantidad) {
+                const cantidad = sumBy(row.variantes, (item) => {
+                    return sumBy(item.inventario, (inv) => inv.stock!)
+                })
+                if (!row.varianteUnica) {
+                    return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
+                                 color={"default"}/>
+                }
+                return <Chip label={`${cantidad} items`} color={"default"}/>
+            }
+            return <Chip size={'small'} label={"Stock Ilimitado"} color={"secondary"}/>
+        },
+        id: 'inventario',
+        header: 'Inventario',
+    }, {
+        id: 'tipoProducto.descripcion',
+        header: 'Tipo Producto',
+        accessorFn: (row) => genReplaceEmpty(row.tipoProducto?.descripcion, '')
+    }, {
+        accessorKey: 'proveedor',
+        id: 'proveedor',
+        header: 'Proveedor',
+    },
+    {
+        accessorFn: (row) => (<Chip size={'small'} label={row.state} color={"success"}/>),
+        id: 'state',
+        header: 'Estado',
+    },
+]
+
 const ProductosListado: FunctionComponent<Props> = (props) => {
     const navigate = useNavigate()
     const [data, setData] = useState<ProductoProps[]>([]);
-    const [isError, setIsError] = useState(false);
+
+    // ESTADO DATATABLE
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [isError, setIsError] = useState<any>(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isRefetching, setIsRefetching] = useState(false);
     const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: PAGE_INFO_DEFAULT.page,
-        pageSize: PAGE_INFO_DEFAULT.limit
+        pageIndex: PAGE_DEFAULT.page,
+        pageSize: PAGE_DEFAULT.limit
     });
     const [rowCount, setRowCount] = useState(0);
-    const [pageInfo, setPageInfo] = useState<PageProps>(PAGE_DEFAULT);
+    const [isRefetching, setIsRefetching] = useState(false);
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = useState('');
+    // FIN ESTADO DATATABLE
 
-    useEffect(() => {
-        const fetchData = async () => {
+    const fetchData = async () => {
+        try {
             if (!data.length) {
                 setIsLoading(true);
             } else {
                 setIsRefetching(true);
             }
-            const resp = await apiProductos(pageInfo).catch((err: Error) => swalException(err));
-            if (resp) {
-                setData(resp.docs)
-                setRowCount(resp.pageInfo.totalDocs)
-                setIsLoading(false)
-                setIsRefetching(false);
+            setIsLoading(true);
+            console.log(columnFilters)
+            const query = genApiQuery(columnFilters);
+            console.log(query)
+            const fetchPagination: PageProps = {
+                ...PAGE_DEFAULT,
+                page: pagination.pageIndex + 1,
+                limit: pagination.pageSize,
+                reverse: sorting.length <= 0,
+                query
             }
-        };
+            const {pageInfo, docs} = await apiProductos(fetchPagination);
+            setRowCount(pageInfo.totalDocs);
+            setData(docs);
+            setIsLoading(false);
+            setIsError(false);
+            setIsRefetching(false);
+        } catch (e: any) {
+            swalException(e)
+            setIsError(e.message)
+        }
+
+    }
+    useEffect(() => {
         fetchData().then();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         pagination.pageIndex,
         pagination.pageSize,
+        sorting,
+        globalFilter,
+        columnFilters
     ]);
-    const columns = useMemo(
-        () =>
-            [
-                {
-                    accessorKey: 'titulo',
-                    header: 'PRODUCTO',
-                },
-                {
-                    accessorFn: (row) => (<Chip label={row.state} color={"success"}/>),
-                    id: 'state',
-                    header: 'ESTADO',
-                }, {
-                accessorFn: (row) => {
-                    if (row.incluirCantidad) {
-                        const cantidad = sumBy(row.variantes, (item) => {
-                            return sumBy(item.inventario, (inv) => inv.stock)
-                        })
-                        if (!row.varianteUnica) {
-                            return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
-                                         color={"default"}/>
-                        }
-                        return <Chip label={`${cantidad} items`} color={"default"}/>
-                    }
-                    return <Chip label={"Stock Ilimitado"} color={"secondary"}/>
-                },
-                id: 'inventario',
-                header: 'INVENTARIO',
-            }, {
-                accessorKey: 'tipo',
-                id: 'tipo',
-                header: 'TIPO',
-            }, {
-                accessorKey: 'proveedor',
-                id: 'proveedor',
-                header: 'PROVEEDOR',
-            },
-                //column definitions...
-            ] as MRT_ColumnDef<ProductoProps>[],
-        [],
-    );
+    const columns = useMemo(() => tableColumns, []);
 
     return (<>
         <MaterialReactTable
             columns={columns}
             data={data}
-            manualPagination
-            onPaginationChange={setPagination}
-            localization={localization}
-            muiTableToolbarAlertBannerProps={
-                isError
-                    ? {
-                        color: 'error',
-                        children: 'Alert loading data',
-                    }
-                    : undefined
-            }
-            rowCount={rowCount}
             state={{
                 isLoading,
                 pagination,
                 showAlertBanner: isError,
                 showProgressBars: isRefetching,
                 density: 'compact',
-                showGlobalFilter: true
+                sorting,
+                columnFilters
             }}
+            manualPagination
+            manualSorting
+            onSortingChange={setSorting}
+            manualFiltering
+            onColumnFiltersChange={setColumnFilters}
+            onGlobalFilterChange={setGlobalFilter}
+            onPaginationChange={setPagination}
+            localization={localization}
+            muiTableToolbarAlertBannerProps={
+                isError
+                    ? {
+                        color: 'error',
+                        children: 'Error loading data',
+                    }
+                    : undefined
+            }
+            rowCount={rowCount}
+            enableRowNumbers={true}
             enableDensityToggle={false}
+            enableGlobalFilter={false}
             positionGlobalFilter={'left'}
             muiSearchTextFieldProps={{
                 variant: 'outlined',
@@ -136,6 +167,11 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                     <AuditIconButton row={row.original}/>
                 </div>
             )}
+            muiTableHeadCellFilterTextFieldProps={{
+                sx: {m: '0.5rem 0', width: '95%'},
+                variant: 'outlined',
+                size: 'small'
+            }}
         />
     </>);
 };

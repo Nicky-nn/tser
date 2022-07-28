@@ -59,7 +59,7 @@ export interface ProductosVariantesProps extends ProductoDefinitionProps {
 
 export interface ProductoVarianteInventarioProps {
     sucursal: SucursalProps,
-    stock: number | null
+    stock: number
 }
 
 export interface ProductoVarianteInputProps {
@@ -150,7 +150,7 @@ export interface ProductoVarianteApiProps {
     precioComparacion: number
     costo: number
     codigoUnidadMedida: number
-    inventario: { codigoSucursal: number, stock: number | null }
+    inventario: { codigoSucursal: number, stock: number }
 }
 
 /**

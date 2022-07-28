@@ -3,6 +3,7 @@
  * @param args
  */
 import {customAlphabet} from "nanoid";
+import {ColumnFiltersState} from "@tanstack/react-table";
 
 export const logg = (...args: any) => {
     if (import.meta.env.MODE !== 'production') {
@@ -94,3 +95,17 @@ export const genReplaceEmpty = (val: any, replace: any): any => {
 }
 
 export const handleFocus = (event: any) => event.target.select();
+
+/**
+ * Parseamos un array en formato query para envio de parametro query, a la api
+ * @param data
+ */
+export const genApiQuery = (data: ColumnFiltersState): string => {
+    if(data.length === 0)
+        return ''
+    const query: Array<string> = []
+    data.forEach((item) => {
+        query.push(`${item.id}=/${item.value}/i`)
+    });
+    return query.join('&')
+}

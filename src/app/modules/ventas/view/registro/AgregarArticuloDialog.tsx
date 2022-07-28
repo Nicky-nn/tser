@@ -48,7 +48,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
         titulo: '',
         inventario: [{
             sucursal: user.sucursal,
-            stock: null
+            stock: 0
         }],
         costo: 0,
         sinProductoServicio: {} as SinProductoServicioProps,
@@ -69,7 +69,6 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
 
 
     const handleOk = () => {
-        console.log(inputForm)
         let aux = true;
         if (inputForm.nombre.trim().length === 0) {
             toast('Debe ingresar nombre del producto', {type: "error"})

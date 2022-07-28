@@ -65,8 +65,8 @@ const JwtLogin = () => {
     const {login}: any = useAuth()
     const formik = useFormik({
         initialValues: {
-            shop: 'base.integrate.com.bo',
-            email: 'richi617@gmail.com',
+            shop: 'demo.isipass.com.bo',
+            email: 'ulric617@gmail.com',
             password: '6176816'
         },
         validationSchema,
@@ -83,6 +83,7 @@ const JwtLogin = () => {
             }
         },
     })
+    
     const [userInfo, setUserInfo]: any = useState({
         store: 'base.integrate.com.bo',
         email: 'richi617@gmail.com',
