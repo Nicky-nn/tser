@@ -1,6 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
 import {gql, GraphQLClient} from "graphql-request";
+import {SucursalProps} from "../../modules/sucursal/interfaces/sucursal";
+import {PuntoVentaProps} from "../../modules/puntoVenta/interfaces/puntoVenta";
+import {SinActividadesProps} from "../../modules/sin/interfaces/sin.interface";
 
 export interface PerfilProps {
     nombres: string
@@ -14,25 +17,9 @@ export interface PerfilProps {
     dominio: string[]
     tipo: 'SA' | 'ADMIN' | 'GUEST' | 'USER'
     vigente: string
-    sucursal: {
-        codigo: number
-        direccion: string
-        telefono: string
-        actividadEconomica: {
-            codigoCaeb: string
-            descripcion: string
-            tipoActividad: string
-        }[]
-    }
-    puntoVenta: {
-        codigo: number
-        tipoPuntoVenta: {
-            codigoClasificador: number
-            descripcion: string
-        }
-        nombre: string
-        descripcion: string
-    }
+    sucursal: SucursalProps
+    puntoVenta: PuntoVentaProps
+    actividadEconomica: SinActividadesProps
 }
 
 export interface UserProps {
@@ -57,19 +44,22 @@ const mutation = gql`
                 cargo
                 ci
                 correo
-                dominio
                 rol
                 sigla
+                dominio
                 tipo
+                vigente
                 sucursal {
-                    actividadEconomica {
-                        codigoCaeb
-                        descripcion
-                        tipoActividad
-                    }
                     codigo
                     direccion
                     telefono
+                    departamento {
+                        codigo
+                        codigoPais
+                        sigla
+                        departamento
+                    }
+                    direccion
                 }
                 puntoVenta {
                     codigo
@@ -80,7 +70,11 @@ const mutation = gql`
                         descripcion
                     }
                 }
-                vigente
+                actividadEconomica {
+                    codigoCaeb
+                    descripcion
+                    tipoActividad
+                }
             }
         }
     }

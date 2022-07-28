@@ -78,6 +78,7 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
                     onChange={(e) => dispatch(setEmailCliente(e.target.value))}
                 />
             </Grid>
+
             <Grid item lg={3} xs={12} md={3}>
                 <Button variant="outlined" fullWidth onClick={() => setNuevoCliente(true)} startIcon={<PersonAddAlt1Outlined/>}>Nuevo
                     Cliente</Button>

@@ -1,52 +1,60 @@
 // noinspection GraphQLUnresolvedReference
 
 import {gql, GraphQLClient} from "graphql-request";
-import {ClasificadorProps, SinActividadesProps} from "../../../interfaces";
+import {ClasificadorProps, PageInfoProps, PageProps, SinActividadesProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
+import {ProductoProps} from "../../productos/interfaces/producto.interface";
+import {FacturaProps} from "../interfaces/factura";
 
-export interface FacturaProps {
-    sinTipoMetodoPago: ClasificadorProps[],
-    sinUnidadMedida: ClasificadorProps[],
-    sinActividades: SinActividadesProps[],
+/**
+ * Respuesta de productos
+ */
+export interface ApiFacturaResponse {
+    docs: Array<FacturaProps>,
+    pageInfo: PageInfoProps
 }
 
 
 const query = gql`
-    query LISTADO {
-        facturaCompraVentaAll(
-            reverse: true,
-            limit: 100
-        ) {
+    query LISTADO($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
+        facturaCompraVentaAll(limit: $limit, reverse: $reverse, page: $page, query: $query) {
+            pageInfo {
+                hasNextPage
+                hasPrevPage
+                limit
+                page
+                totalDocs
+            }
             docs {
                 _id
                 nitEmisor
                 razonSocialEmisor
                 numeroFactura
-                tipoFactura{
+                tipoFactura {
                     codigoClasificador
                     descripcion
                 }
-                tipoEmision{
+                tipoEmision {
                     codigoClasificador
                     descripcion
                 }
                 cuf
-                cufd{
+                cufd {
                     codigo
                     codigoControl
                     direccion
                     fechaVigencia
                     fechaInicial
                 }
-                cuis{
+                cuis {
                     codigo
                     fechaVigencia
                 }
-                sucursal{
+                sucursal {
                     codigo
                     direccion
                     telefono
-                    departamento{
+                    departamento {
                         codigo
                         codigoPais
                         sigla
@@ -54,9 +62,9 @@ const query = gql`
                     }
                     municipio
                 }
-                puntoVenta{
+                puntoVenta {
                     codigo
-                    tipoPuntoVenta{
+                    tipoPuntoVenta {
                         codigoClasificador
                         descripcion
                     }
@@ -64,10 +72,10 @@ const query = gql`
                     descripcion
                 }
                 fechaEmision
-                cliente{
+                cliente {
                     razonSocial
                     codigoCliente
-                    tipoDocumentoIdentidad{
+                    tipoDocumentoIdentidad {
                         codigoClasificador
                         descripcion
                     }
@@ -77,29 +85,29 @@ const query = gql`
                     apellidos
                     email
                 }
-                metodoPago{
+                metodoPago {
                     codigoClasificador
                     descripcion
                 }
-                numeroTarjeta,
+                numeroTarjeta
                 montoTotal
                 montoGiftCard
                 montoTotalLiteral
                 montoTotalSujetoIva
-                moneda{
+                moneda {
                     codigoClasificador
                     descripcion
                 }
                 tipoCambio
                 montoGiftCard
-                detalle{
+                detalle {
                     nroItem
-                    actividadEconomica{
+                    actividadEconomica {
                         codigoCaeb
                         descripcion
                         tipoActividad
                     }
-                    productoServicio{
+                    productoServicio {
                         codigoActividad
                         codigoProducto
                         descripcionProducto
@@ -107,7 +115,7 @@ const query = gql`
                     producto
                     descripcion
                     cantidad
-                    unidadMedida{
+                    unidadMedida {
                         codigoClasificador
                         descripcion
                     }
@@ -117,7 +125,7 @@ const query = gql`
                     numeroImei
                     numeroSerie
                 }
-                representacionGrafica{
+                representacionGrafica {
                     pdf
                     xml
                     rollo
@@ -132,12 +140,12 @@ const query = gql`
     }
 `
 
-export const fetchFacturaListado = async (): Promise<FacturaProps> => {
+export const fetchFacturaListado = async (pageInfo: PageProps): Promise<ApiFacturaResponse> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data: any = await client.request(query)
-    return data;
+    const data: any = await client.request(query, pageInfo)
+    return data.facturaCompraVentaAll;
 }

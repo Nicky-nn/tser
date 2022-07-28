@@ -44,7 +44,15 @@ export const cartesianProduct = (arr: [[]]) => {
  * @param value
  */
 export const isEmptyValue = (value: any): boolean => {
-    const matches = [null, false, undefined, '', {}, []]
+    const matches = [null, false, undefined, '']
+    if (typeof value === 'object') {
+        if (Object.keys(value).length === 0)
+            return true
+    }
+    if (Array.isArray(value)) {
+        if (value.length === 0)
+            return true
+    }
     if (typeof value === 'string') {
         if (value.trim() === '')
             return true
@@ -84,3 +92,5 @@ export const genReplaceEmpty = (val: any, replace: any): any => {
     }
     return val
 }
+
+export const handleFocus = (event: any) => event.target.select();

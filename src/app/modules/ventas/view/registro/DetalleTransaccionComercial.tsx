@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import React, {FC, Fragment, useEffect, useState} from "react";
+import React, {FC, Fragment, useState} from "react";
 import {useAppSelector} from "../../../../hooks";
 import {useDispatch} from "react-redux";
 import {
@@ -33,7 +33,6 @@ import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelec
 import {apiProductosVariantes} from "../../../productos/api/productosVariantes.api";
 import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
 import {FacturaDetalleInputProps} from "../../interfaces/factura";
-import {SinActividadesProps} from "../../../sin/interfaces/sin.interface";
 
 const data: any = []
 
@@ -67,7 +66,6 @@ export const DetalleTransaccionComercial: FC = () => {
 
     const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
         try {
-            console.log(inputValue)
             const productos = await apiProductosVariantes(factura.actividadEconomica.codigoCaeb, inputValue)
             if (productos) return productos
             return []
@@ -108,8 +106,9 @@ export const DetalleTransaccionComercial: FC = () => {
                             spacing={1}
                         >
                             <Button variant="outlined">Explorar Productos</Button>
-                            <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">Producto
-                                Personalizado</Button>
+                            <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">
+                                Producto Personalizado
+                            </Button>
                         </Stack>
                     </Grid>
 
@@ -186,9 +185,12 @@ export const DetalleTransaccionComercial: FC = () => {
                                                     value={item.precioUnitario}
                                                     onFocus={handleFocus}
                                                     onChange={(precio: number) => {
-                                                        if (precio ) {
+                                                        if (precio) {
                                                             if (precio >= 0 && precio >= item.montoDescuento) {
-                                                                dispatch(setItemModificado({...item, precioUnitario: precio}));
+                                                                dispatch(setItemModificado({
+                                                                    ...item,
+                                                                    precioUnitario: precio
+                                                                }));
                                                                 dispatch(setFacturaMontoPagar())
                                                             } else {
                                                                 toast.warn('El precio no puede ser menor al descuento')
@@ -212,7 +214,7 @@ export const DetalleTransaccionComercial: FC = () => {
                                                                 toast.warn('El descuento no puede ser mayor al precio')
                                                             }
                                                         }
-                                                    } }
+                                                    }}
                                                     formatter={numberWithCommas}
                                                 />
                                             </td>
@@ -245,6 +247,7 @@ export const DetalleTransaccionComercial: FC = () => {
                 id={'agregarArticulo'}
                 keepMounted
                 open={openAgregarArticulo}
+                codigoActividad={factura.actividadEconomica.codigoCaeb}
                 onClose={(newProduct: any) => {
                     handleChange(newProduct)
                     setOpenAgregarArticulo(false)

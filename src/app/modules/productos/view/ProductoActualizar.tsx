@@ -43,7 +43,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                     .then(async (data) => {
                         if (data)
                             return data.find(item => item.codigoActividad === response.sinProductoServicio.codigoActividad)
-                        throw new Error('Error en cargar los datos')
+                        throw new Error('Alert en cargar los datos')
                     })
                 const prodInput = productoInputComposeService(response, actividades!)
                 console.log(JSON.stringify(prodInput))

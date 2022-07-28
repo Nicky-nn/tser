@@ -87,7 +87,7 @@ const NuevoClienteDialog: FunctionComponent<Props> = (props: Props) => {
             })
             // console.log(clienteForm.values)
         } else {
-            toast.error('Error en validacion de campos')
+            toast.error('Alert en validacion de campos')
         }
     }
 

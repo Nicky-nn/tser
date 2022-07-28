@@ -34,7 +34,6 @@ interface ProductoDefinitionProps {
     descripcionHtml: string
     tipoProducto: TipoProductoProps | null
     totalVariantes: number
-    seguimientoInventario: boolean
     imagenDestacada?: ImagenProps // url de la imagen
     varianteUnica: boolean // si solo tienen una sola variante
     incluirCantidad: boolean // si se tiene cantidad en inventario
@@ -60,7 +59,7 @@ export interface ProductosVariantesProps extends ProductoDefinitionProps {
 
 export interface ProductoVarianteInventarioProps {
     sucursal: SucursalProps,
-    stock: number
+    stock: number | null
 }
 
 export interface ProductoVarianteInputProps {
@@ -76,6 +75,11 @@ export interface ProductoVarianteInputProps {
     inventario: ProductoVarianteInventarioProps[]
     peso?: number
     unidadMedida: SinUnidadMedidaProps | null
+}
+
+// SE USA CUANDO SE QUIERE REGISTRAR UN PRODUCTO TEMPORAL
+export interface ProductoVarianteInputTempProps extends ProductoVarianteInputProps{
+    sinProductoServicio: SinProductoServicioProps
 }
 
 export interface OpcionesProductoProps {

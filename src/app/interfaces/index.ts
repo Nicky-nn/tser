@@ -59,7 +59,7 @@ export interface PageProps {
 
 export const PAGE_DEFAULT: PageProps = {
     limit: 10,
-    page: 1,
+    page: 0,
     reverse: true,
     query: ""
 }

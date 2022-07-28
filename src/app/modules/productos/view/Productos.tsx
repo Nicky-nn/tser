@@ -26,16 +26,15 @@ const Productos = () => {
             <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} justifyContent="right" sx={{marginBottom: 3}}>
                 <Button size={'small'} variant="outlined" startIcon={<UploadFile/>}>Importar</Button>
                 <Button size={'small'} variant="outlined" startIcon={<FileDownload/>}>Exportar</Button>
-                <Button size={'small'} variant="contained" component={RouterLink} to="/productos/nuevo" startIcon={<Newspaper/>} color={'success'}>Nuevo
+                <Button size={'small'} variant="contained" component={RouterLink} to="/productos/nuevo"
+                        startIcon={<Newspaper/>} color={'success'}>Nuevo
                     Producto</Button>
             </Stack>
-            <form noValidate>
-                <Grid container spacing={2}>
-                    <Grid item lg={12} md={12} xs={12}>
-                        <ProductosListado />
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid item lg={12} md={12} xs={12}>
+                    <ProductosListado/>
                 </Grid>
-            </form>
+            </Grid>
             <Box py="12px"/>
         </SimpleContainer>
     )

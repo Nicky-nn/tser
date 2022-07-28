@@ -19,9 +19,7 @@ import {LoadingButton} from "@mui/lab";
 import {fetchFacturaAnular} from "../../api/facturaAnular.api";
 import {swalConfirm, swalException} from "../../../../utils/swal";
 import Swal from "sweetalert2";
-import {fetchFacturaCreate} from "../../api/facturaCreate.api";
-import {facturaReset} from "../../slices/facturacion/factura.slice";
-import {openInNewTab} from "../../../../utils/helper";
+import {useMounted} from "../../../../hooks/useMounted";
 
 interface OwnProps {
     id: string;
@@ -35,6 +33,7 @@ type Props = OwnProps;
 
 const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
     const {onClose, open, factura, ...other} = props;
+    const isMounted = useMounted()
     const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([]);
     const [loading, setLoading] = useState(false);
     const initalValues: any = {
@@ -52,7 +51,6 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         const fetch = async (): Promise<void> => {
             await fetchSinMotivoAnulacion().then(res => {
-                console.log(res)
                 setMotivosAnulacion(res || [])
             });
         }

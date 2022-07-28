@@ -1,78 +1,149 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, InputLabel, TextField} from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    Grid,
+    InputLabel,
+    TextField
+} from "@mui/material";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {toast} from "react-toastify";
-import {nanoid} from "nanoid";
+import {genRandomString, genReplaceEmpty, handleFocus, isEmptyValue} from "../../../../utils/helper";
+import {apiProductoServicioUnidadMedida} from "../../../productos/api/productoServicioUnidadMedida.api";
+import AlertError from "../../../../base/components/Alert/AlertError";
+import {SinProductoServicioProps, SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
+import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
+import Select from "react-select";
+import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
+import {
+    ProductosVariantesProps,
+    ProductoVarianteInputTempProps
+} from "../../../productos/interfaces/producto.interface";
+import useAuth from "../../../../base/hooks/useAuth";
 
 interface OwnProps {
     id: string;
     keepMounted: boolean;
     open: boolean;
     onClose: (value?: any) => void;
+    codigoActividad: string
 }
 
 type Props = OwnProps;
 
+
 const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
-    const {onClose, open, ...other} = props;
-    const initalValues = {
+    const {onClose, codigoActividad, open, ...other} = props;
+    const {user} = useAuth()
+    const initialValues = {
+        id: genRandomString(5),
+        codigoProducto: genRandomString(10),
         nombre: '',
         precio: 0,
-        cantidad: 1
-    };
-    const [value, setValue] = useState(initalValues);
-    useEffect(() => {
-        if (open) {
-            setValue(initalValues)
-        }
+        titulo: '',
+        inventario: [{
+            sucursal: user.sucursal,
+            stock: null
+        }],
+        costo: 0,
+        sinProductoServicio: {} as SinProductoServicioProps,
+        unidadMedida: {} as SinUnidadMedidaProps,
+        precioComparacion: 0,
+        disponibleParaVenta: false,
+        codigoBarras: null
+    }
+    const [inputForm, setInputForm] = useState<ProductoVarianteInputTempProps>(initialValues);
+    const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
+    const [productosServicios, setProductosServicios] = useState<SinProductoServicioProps[]>([]);
 
-    }, [open]);
+    const [isError, setIsError] = useState(null);
 
     const handleCancel = () => {
         onClose();
     };
 
+
     const handleOk = () => {
+        console.log(inputForm)
         let aux = true;
-        if (value.nombre.trim().length === 0) {
+        if (inputForm.nombre.trim().length === 0) {
             toast('Debe ingresar nombre del producto', {type: "error"})
             aux = false
         }
-        if (value.precio === 0) {
+        if (inputForm.precio === 0) {
             toast('Precio debe ser mayor a 0', {type: "error"})
             aux = false
         }
-        if (value.cantidad === 0) {
-            toast('Cantidad minima es 1', {type: "error"})
+        if (isEmptyValue(inputForm.unidadMedida)) {
+            toast('Seleccione unidad de medida', {type: "error"})
+            aux = false
+        }
+        if (isEmptyValue(inputForm.sinProductoServicio)) {
+            toast('Seleccione producto para homologación', {type: "error"})
             aux = false
         }
         if (aux) {
-            const nuevoProducto = {
-                codigoProducto: nanoid(5),
-                titulo: value.nombre,
-                nombre: value.nombre,
-                precio: value.precio,
-                inputCantidad: value.cantidad,
-                inputPrecio: value.precio,
-                inputDescuento: 0,
-                inventario: [],
-                unidadMedida: {
-                    codigoClasificador: "57",
-                    descripcion: "Unidad (Bienes)"
-                },
-                producto: {
-                    titulo: value.nombre,
-                    sinProductoServicio: {
-                        codigoActividad: "620000",
-                        codigoProducto: "83131"
-                    }
-                },
-                seguimientoInventario: false
+            const nuevoDetalle: ProductosVariantesProps = {
+                usucre: user.nombres,
+                _id: inputForm.id,
+                sinProductoServicio: inputForm.sinProductoServicio,
+                titulo: inputForm.titulo,
+                descripcion: inputForm.nombre,
+                descripcionHtml: '<p></p>',
+                tipoProducto: null,
+                totalVariantes: 1,
+                varianteUnica: true,
+                incluirCantidad: false,
+                verificarStock: false,
+                proveedor: null,
+                opcionesProducto: [],
+                inventario: inputForm.inventario,
+                variantes: {
+                    id: inputForm.id,
+                    codigoProducto: inputForm.codigoProducto,
+                    titulo: inputForm.titulo,
+                    nombre: inputForm.nombre,
+                    disponibleParaVenta: inputForm.disponibleParaVenta,
+                    codigoBarras: null,
+                    precio: inputForm.precio,
+                    costo: inputForm.costo,
+                    precioComparacion: inputForm.precioComparacion!,
+                    incluirStock: false,
+                    inventario: inputForm.inventario,
+                    peso: 0,
+                    unidadMedida: inputForm.unidadMedida!
+                }
             }
-            onClose(nuevoProducto)
+            onClose(nuevoDetalle)
         }
     };
+
+
+    // Obtenemos los datos del producto homologado y unidades de medida
+    const fetchProductosServiciosUnidadesMedida = async (codigoActividad: string) => {
+        try {
+            const resp = await apiProductoServicioUnidadMedida(codigoActividad)
+            setUnidadesMedida(resp.sinUnidadMedida)
+            setProductosServicios(resp.sinProductoServicioPorActividad)
+            console.log(resp)
+        } catch (e: any) {
+            setIsError(e.message)
+        }
+    }
+    useEffect(() => {
+        fetchProductosServiciosUnidadesMedida(codigoActividad).then()
+    }, [codigoActividad]);
+
+    useEffect(() => {
+        if (open) {
+            setInputForm(initialValues)
+        }
+    }, [open]);
 
     return (
         <>
@@ -84,53 +155,100 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
             >
                 <DialogTitle>Agregar Producto Personalizado</DialogTitle>
                 <DialogContent dividers>
-                    <Grid container spacing={2}>
-                        <Grid item lg={12} md={12} sm={12} xs={12} sx={{mt: 2}}>
-                            <TextField
-                                id="nombre"
-                                label="Nombre Producto"
-                                multiline
-                                maxRows={4}
-                                size={'small'}
-                                fullWidth
-                                sx={{mb: 2}}
-                                value={value.nombre}
-                                onChange={(e) => {
-                                    setValue({...value, nombre: e.target.value})
-                                }}
-                            />
+                    {!isError ? (
+                        <Grid container spacing={2.5}>
+                            <Grid item lg={12} md={12} xs={12}>
+                                <FormControl fullWidth component={'div'}>
+                                    <SelectInputLabel shrink>
+                                        Tipo de Producto Homologado
+                                    </SelectInputLabel>
+                                    <Select<SinProductoServicioProps>
+                                        styles={reactSelectStyles}
+                                        menuPosition={'fixed'}
+                                        name="productoServicio"
+                                        placeholder={'Seleccione producto para homologación'}
+                                        value={genReplaceEmpty(inputForm.sinProductoServicio, null)}
+                                        onChange={(resp) => {
+                                            setInputForm({
+                                                ...inputForm,
+                                                sinProductoServicio: resp || {} as SinProductoServicioProps
+                                            })
+                                        }}
+                                        options={productosServicios}
+                                        getOptionValue={(ps) => ps.codigoProducto}
+                                        getOptionLabel={(ps) => `${ps.codigoProducto} - ${ps.descripcionProducto}`}
+                                    />
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item lg={12} md={12} xs={12}>
+                                <FormControl fullWidth component={'div'}>
+                                    <SelectInputLabel shrink>
+                                        Unidad Medida
+                                    </SelectInputLabel>
+                                    <Select<SinUnidadMedidaProps>
+                                        styles={reactSelectStyles}
+                                        menuPosition={'fixed'}
+                                        name="unidadMedida"
+                                        placeholder={'Seleccione la unidad de medida'}
+                                        value={genReplaceEmpty(inputForm.unidadMedida, null)}
+                                        onChange={(resp) => {
+                                            setInputForm({
+                                                ...inputForm,
+                                                unidadMedida: resp || {} as SinUnidadMedidaProps
+                                            })
+                                        }}
+                                        options={unidadesMedida}
+                                        getOptionValue={(ps) => ps.codigoClasificador}
+                                        getOptionLabel={(ps) => `${ps.codigoClasificador} - ${ps.descripcion}`}
+                                    />
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item lg={12} md={12} sm={12} xs={12}>
+                                <TextField
+                                    id="nombre"
+                                    label="Nombre / Descripción Producto"
+                                    multiline
+                                    minRows={3}
+                                    maxRows={6}
+                                    size={'small'}
+                                    fullWidth
+                                    value={inputForm.nombre}
+                                    onChange={(e) => {
+                                        setInputForm({
+                                            ...inputForm,
+                                            nombre: e.target.value,
+                                            titulo: e.target.value
+                                        })
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item lg={12} md={12} xs={12}>
+                                <InputLabel>
+                                    Precio
+                                </InputLabel>
+                                <InputNumber
+                                    min={0}
+                                    value={inputForm.precio}
+                                    onFocus={handleFocus}
+                                    onChange={(precio: number) => setInputForm({...inputForm, precio})}
+                                    formatter={numberWithCommas}
+                                    style={{width: '100%'}}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item lg={6} md={6} xs={12}>
-                            <InputLabel>
-                                Precio
-                            </InputLabel>
-                            <InputNumber
-                                min={0}
-                                value={value.precio}
-                                onChange={(e: number) => setValue({...value, precio: e})}
-                                formatter={numberWithCommas}
-                                style={{width: '100%'}}
-                            />
-                        </Grid>
-                        <Grid item lg={6} md={6} xs={12}>
-                            <InputLabel>
-                                Cantidad
-                            </InputLabel>
-                            <InputNumber
-                                min={1}
-                                value={value.cantidad}
-                                onChange={(e: number) => setValue({...value, cantidad: e})}
-                                formatter={numberWithCommas}
-                                style={{width: '100%'}}
-                            />
-                        </Grid>
-                    </Grid>
+                    ) : (<AlertError mensaje={isError}/>)}
+
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleCancel}>
+                <DialogActions sx={{mb: 1}}>
+                    <Button variant={'outlined'} color={'error'} autoFocus onClick={handleCancel}>
                         Cancelar
                     </Button>
-                    <Button onClick={handleOk} style={{marginRight: 15}}>Registrar</Button>
+                    <Button variant={'outlined'} onClick={handleOk}
+                            style={{marginRight: 18}}
+                    >Registrar</Button>
                 </DialogActions>
             </Dialog>
         </>

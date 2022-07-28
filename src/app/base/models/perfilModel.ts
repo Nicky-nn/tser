@@ -13,19 +13,22 @@ const query = gql`
             cargo
             ci
             correo
-            dominio
             rol
             sigla
+            dominio
             tipo
+            vigente
             sucursal {
-                actividadEconomica {
-                    codigoCaeb
-                    descripcion
-                    tipoActividad
-                }
                 codigo
                 direccion
                 telefono
+                departamento {
+                    codigo
+                    codigoPais
+                    sigla
+                    departamento
+                }
+                direccion
             }
             puntoVenta {
                 codigo
@@ -36,7 +39,11 @@ const query = gql`
                     descripcion
                 }
             }
-            vigente
+            actividadEconomica {
+                codigoCaeb
+                descripcion
+                tipoActividad
+            }
         }
     }
 `

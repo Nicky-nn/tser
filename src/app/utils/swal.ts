@@ -15,7 +15,7 @@ export const swalConfirm = {
 
 export const swalErrorMsg = (msg: string | Array<any>) => {
     Swal.fire({
-        title: 'Error!!',
+        title: 'Alert!!',
         width: 800,
         customClass: 'swalError',
         allowEscapeKey: false,
@@ -34,7 +34,7 @@ export const swalSuccessMsg = (msg: string) => {
  */
 export const swalException = (e: Error) => {
     Swal.fire({
-        title: 'Error!!',
+        title: 'Alert!!',
         width: 800,
         customClass: 'swalError',
         allowEscapeKey: false,

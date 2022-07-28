@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useEffect, useMemo, useState} from 'react';
 import {Chip, IconButton} from "@mui/material";
 import {Edit} from "@mui/icons-material";
-import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {ProductoProps} from "../../interfaces/producto.interface";
 import {PAGE_DEFAULT, PAGE_INFO_DEFAULT, PageProps} from "../../../../interfaces";
 import {swalException} from "../../../../utils/swal";
@@ -12,6 +11,7 @@ import {sumBy} from "lodash";
 import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
 import {useNavigate} from "react-router-dom";
 import {productosRouteMap} from "../../ProductosRoutesMap";
+import {localization} from "../../../../utils/localization";
 
 interface OwnProps {
 }
@@ -58,18 +58,20 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                 {
                     accessorKey: 'titulo',
                     header: 'PRODUCTO',
+                },
+                {
+                    accessorFn: (row) => (<Chip label={row.state} color={"success"}/>),
+                    id: 'state',
+                    header: 'ESTADO',
                 }, {
-                accessorFn: (row) => (<Chip label={row.state} color={"success"}/>),
-                id: 'state',
-                header: 'ESTADO',
-            }, {
                 accessorFn: (row) => {
                     if (row.incluirCantidad) {
                         const cantidad = sumBy(row.variantes, (item) => {
                             return sumBy(item.inventario, (inv) => inv.stock)
                         })
                         if (!row.varianteUnica) {
-                            return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`} color={"default"}/>
+                            return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
+                                         color={"default"}/>
                         }
                         return <Chip label={`${cantidad} items`} color={"default"}/>
                     }
@@ -92,51 +94,49 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     );
 
     return (<>
-        <SimpleCard>
-            <MaterialReactTable
-                columns={columns}
-                data={data}
-                manualPagination
-                onPaginationChange={setPagination}
-                muiTableToolbarAlertBannerProps={
-                    isError
-                        ? {
-                            color: 'error',
-                            children: 'Error loading data',
-                        }
-                        : undefined
-                }
-                rowCount={rowCount}
-                state={{
-                    isLoading,
-                    pagination,
-                    showAlertBanner: isError,
-                    showProgressBars: isRefetching,
-                    density: 'compact',
-                    showGlobalFilter: true
-                }}
-                enableDensityToggle={false}
-                positionGlobalFilter={'left'}
-                muiSearchTextFieldProps={{
-                    variant: 'outlined',
-                    placeholder: 'Ingrese',
-                    label: 'Busqueda',
-                    InputLabelProps: {shrink: true},
-                    size: 'small'
-                }}
-                enableRowActions
-                positionActionsColumn={'last'}
-                renderRowActions={({row}) => (
-                    <div style={{display: 'flex', flexWrap: 'nowrap', gap: '0.5rem'}}>
-                        <IconButton onClick={() => navigate(`${productosRouteMap.modificar}/${row.original._id}`)}
-                                    color={'primary'} aria-label="delete">
-                            <Edit/>
-                        </IconButton>
-                        <AuditIconButton row={row.original}/>
-                    </div>
-                )}
-            />
-        </SimpleCard>
+        <MaterialReactTable
+            columns={columns}
+            data={data}
+            manualPagination
+            onPaginationChange={setPagination}
+            localization={localization}
+            muiTableToolbarAlertBannerProps={
+                isError
+                    ? {
+                        color: 'error',
+                        children: 'Alert loading data',
+                    }
+                    : undefined
+            }
+            rowCount={rowCount}
+            state={{
+                isLoading,
+                pagination,
+                showAlertBanner: isError,
+                showProgressBars: isRefetching,
+                density: 'compact',
+                showGlobalFilter: true
+            }}
+            enableDensityToggle={false}
+            positionGlobalFilter={'left'}
+            muiSearchTextFieldProps={{
+                variant: 'outlined',
+                placeholder: 'Busqueda',
+                InputLabelProps: {shrink: true},
+                size: 'small',
+            }}
+            enableRowActions
+            positionActionsColumn={'last'}
+            renderRowActions={({row}) => (
+                <div style={{display: 'flex', flexWrap: 'nowrap', gap: '0.5rem'}}>
+                    <IconButton onClick={() => navigate(`${productosRouteMap.modificar}/${row.original._id}`)}
+                                color={'primary'} aria-label="delete">
+                        <Edit/>
+                    </IconButton>
+                    <AuditIconButton row={row.original}/>
+                </div>
+            )}
+        />
     </>);
 };
 

@@ -8,12 +8,12 @@ import {AccessToken} from "../models/paramsModel";
 type InitialStateProps = {
     isAuthenticated: boolean,
     isInitialised: boolean,
-    user: PerfilProps | null,
+    user: PerfilProps,
 }
 const initialState: InitialStateProps = {
     isAuthenticated: false,
     isInitialised: false,
-    user: null,
+    user: {} as PerfilProps,
 }
 
 const isValidToken = (accessToken: string) => {
