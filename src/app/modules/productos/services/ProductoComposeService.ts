@@ -26,7 +26,9 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
             precioComparacion: v.precioComparacion!,
             costo: v.costo,
             codigoUnidadMedida: parseInt(v.unidadMedida?.codigoClasificador!),
-            inventario: <any>v.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock}))
+            inventario: <any>v.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
+            verificarStock: v.verificarStock,
+            incluirCantidad: v.incluirCantidad
         })
     } else {
         // MULTIPLES VARIANTES
@@ -39,7 +41,9 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
                 precioComparacion: item.precioComparacion!,
                 costo: item.costo,
                 codigoUnidadMedida: parseInt(item.unidadMedida?.codigoClasificador!),
-                inventario: <any>item.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock}))
+                inventario: <any>item.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
+                verificarStock: item.verificarStock,
+                incluirCantidad: item.incluirCantidad
             })
         })
     }
@@ -54,7 +58,6 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
         codigoTipoProducto: prod.tipoProducto?._id || null,
         tipoProductoPersonalizado: prod.tipoProductoPersonalizado ? prod.tipoProductoPersonalizado.trim() : null,
         varianteUnica: prod.varianteUnica,
-        incluirCantidad: prod.incluirCantidad,
         codigoProveedor: prod.proveedor?.codigo || null,
         variantes
     }
@@ -75,7 +78,9 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
         costo: inputVariante.costo,
         inventario: inputVariante.inventario,
         peso: inputVariante.peso,
-        unidadMedida: inputVariante.unidadMedida
+        unidadMedida: inputVariante.unidadMedida,
+        incluirCantidad: inputVariante.incluirCantidad,
+        verificarStock: inputVariante.verificarStock
     }
 
     if (!prod.varianteUnica) {
@@ -89,11 +94,13 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
             precio: value.precio,
             precioComparacion: value.precioComparacion,
             costo: value.costo,
-            incluirCantidadInventario: prod.incluirCantidad,
-            habilitarStock: prod.incluirCantidad,
+            incluirCantidadInventario: value.incluirCantidad,
+            habilitarStock: value.incluirCantidad,
             inventario: value.inventario,
             peso: value.peso,
-            unidadMedida: value.unidadMedida
+            unidadMedida: value.unidadMedida,
+            incluirCantidad: value.incluirCantidad,
+            verificarStock: value.verificarStock
         }))
     }
     return {
@@ -104,8 +111,6 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
         descripcionHtml: prod.descripcionHtml,
         varianteUnica: prod.varianteUnica,
         varianteUnicaTemp: prod.varianteUnica,
-        incluirCantidad: prod.incluirCantidad,
-        verificarStock: prod.verificarStock,
         variante,
         opcionesProducto: prod.varianteUnica ? [] : prod.opcionesProducto,
         tipoProducto: prod.tipoProducto,

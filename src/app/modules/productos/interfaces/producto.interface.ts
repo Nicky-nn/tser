@@ -6,7 +6,6 @@ import {
 } from "../../sin/interfaces/sin.interface";
 import {InventarioProps} from "./inventario.interface";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
-import {genRandomString} from "../../../utils/helper";
 import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
 
 export interface ProductoVarianteProps {
@@ -19,7 +18,8 @@ export interface ProductoVarianteProps {
     precio: number
     costo: number
     precioComparacion: number
-    incluirStock: boolean // Si se
+    incluirCantidad: boolean, // Incluye cantidad por cada item producto
+    verificarStock: boolean, // Continuar venta aun si el stock ha terminado
     imagen?: ImagenProps
     inventario: Array<InventarioProps>
     peso: number
@@ -36,8 +36,6 @@ interface ProductoDefinitionProps {
     totalVariantes: number
     imagenDestacada?: ImagenProps // url de la imagen
     varianteUnica: boolean // si solo tienen una sola variante
-    incluirCantidad: boolean // si se tiene cantidad en inventario
-    verificarStock: boolean // continuar venta si el stock esta agodao
     proveedor: ProveedorProps | null // nombre del proveedor si vale el caso
     opcionesProducto: Array<OpcionesProductoProps>
     inventario: Array<InventarioProps>
@@ -71,6 +69,8 @@ export interface ProductoVarianteInputProps {
     codigoBarras: string | null
     precio: number
     precioComparacion?: number
+    incluirCantidad: boolean, // Incluye cantidad por cada item producto
+    verificarStock: boolean, // Continuar venta aun si el stock ha terminado
     costo: number
     inventario: ProductoVarianteInventarioProps[]
     peso?: number
@@ -96,8 +96,6 @@ export interface ProductoInputProps {
     descripcionHtml: string,
     varianteUnica: boolean
     varianteUnicaTemp: boolean
-    incluirCantidad: boolean,
-    verificarStock: boolean, // Continuar venta aun si el stock ha terminado
     variante: ProductoVarianteInputProps
     opcionesProducto: Array<OpcionesProductoProps>
     tipoProducto: TipoProductoProps | null,
@@ -118,6 +116,8 @@ export const ProductoVarianteInitialValues = {
     disponibleParaVenta: true,
     codigoBarras: '',
     precio: 0,
+    incluirCantidad: true,
+    verificarStock: true,
     precioComparacion: 0,
     costo: 0,
     inventario: [],
@@ -134,8 +134,6 @@ export const ProductoInitialValues: ProductoInputProps = {
     descripcionHtml: '<span></span>',
     varianteUnica: true,
     varianteUnicaTemp: true,
-    incluirCantidad: true,
-    verificarStock: true,
     variante: ProductoVarianteInitialValues,
     opcionesProducto: [],
     tipoProducto: null,
@@ -152,6 +150,8 @@ export interface ProductoVarianteApiProps {
     precio: number
     precioComparacion: number
     costo: number
+    incluirCantidad: boolean,
+    verificarStock: boolean,
     codigoUnidadMedida: number
     inventario: { codigoSucursal: number, stock: number }
 }
@@ -169,7 +169,6 @@ export interface ProductoInputApiProps {
     codigoTipoProducto: string | null
     tipoProductoPersonalizado: string | null
     varianteUnica: boolean
-    incluirCantidad: boolean
     codigoProveedor: string | null
     variantes: ProductoVarianteApiProps[]
 }

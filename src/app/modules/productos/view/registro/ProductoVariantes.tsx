@@ -1,6 +1,6 @@
 import {FunctionComponent, useState} from 'react';
 import {Grid, IconButton} from "@mui/material";
-import {selectProducto, setProdVariantes} from "../../slices/productos/producto.slice";
+import {selectProducto, setProducto} from "../../slices/productos/producto.slice";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
 import {ProductoVarianteInitialValues, ProductoVarianteInputProps} from "../../interfaces/producto.interface";
@@ -57,7 +57,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                             await swalConfirmDialog({}).then(resp => {
                                 if (resp.isConfirmed) {
                                     const newVariantes = prod.variantes.filter(v => v.id !== row.id)
-                                    dispatch(setProdVariantes(newVariantes))
+                                    dispatch(setProducto({...prod, variantes: newVariantes}))
                                 }
                             })
                         } else {
@@ -95,7 +95,6 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                         </SimpleCard>
                         <PrecioInventarioVariantesDialog
                             variante={variante}
-                            incluirCantidad={prod.incluirCantidad}
                             id={'editVariante'}
                             keepMounted={false}
                             open={openDialog}
@@ -106,7 +105,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                                             return data
                                         return v
                                     })
-                                    dispatch(setProdVariantes(newVariantes))
+                                    dispatch(setProducto({...prod, variantes: newVariantes}))
                                 }
                                 setOpenDialog(false)
                             }}

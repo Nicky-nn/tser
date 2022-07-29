@@ -12,14 +12,13 @@ import {
 } from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProdOpciones, setProducto, setProdVariantes} from "../../slices/productos/producto.slice";
+import {selectProducto, setProdOpciones, setProducto} from "../../slices/productos/producto.slice";
 import ProductoAdicionarOpcionDialog from "./ProductoOpciones/ProductoAdicionarOpcionDialog";
 import {useDispatch} from "react-redux";
 import {swalConfirmDialog, swalErrorMsg} from "../../../../utils/swal";
 import {arrayMove, List} from "react-movable";
 import {OpcionesProductoProps, ProductoVarianteInputProps} from "../../interfaces/producto.interface";
 import {Delete, Edit} from "@mui/icons-material";
-import {toast} from "react-toastify";
 import {cartesianProduct, genRandomString} from "../../../../utils/helper";
 import {notError} from "../../../../utils/notification";
 
@@ -47,7 +46,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
 
         // Generamos las nuevas opciones y variantes
         dispatch(setProdOpciones(opciones))
-        dispatch(setProdVariantes(variantes))
+        dispatch(setProducto({...prod, variantes}))
     }
     // Eliminamos un determinado valor del item
     const eliminarValor = async (opcion: OpcionesProductoProps, valor: string) => {

@@ -1,17 +1,15 @@
-import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
-import {Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography} from "@mui/material";
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {FormControl, FormHelperText, Grid} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProducto, setProdVariante} from "../../slices/productos/producto.slice";
+import {selectProducto, setProducto} from "../../slices/productos/producto.slice";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
-import {genReplaceEmpty, handleSelect} from "../../../../utils/helper";
+import {handleSelect} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 import {swalException} from "../../../../utils/swal";
-import {apiSucursales} from "../../../sucursal/api/sucursales.api";
 import {SucursalProps} from "../../../sucursal/interfaces/sucursal";
 import {useDispatch} from "react-redux";
-import {sortBy} from "lodash";
 import {apiSinUnidadMedida} from "../../../sin/api/sinUnidadMedida.api";
 import {SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
@@ -30,13 +28,6 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
     const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const dispatch = useDispatch()
-
-    const resetInventario = (data: SucursalProps[]): Array<any> => {
-        return sortBy(data, 'codigo').map(item => ({
-            sucursal: {codigo: item.codigo},
-            stock: genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo == item.codigo)?.stock, 0)
-        }))
-    }
 
     // Reset de las unidades de medida, tambien actualizar las unidades de medida de las variantes
     const resetUnidadMedida = (variante: ProductoVarianteInputProps, variantes: ProductoVarianteInputProps[], unidadMedida: SinUnidadMedidaProps) => {
@@ -108,9 +99,10 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             value={prod.variante.precio}
                             onFocus={handleSelect}
                             onChange={(precio: number) => {
-                                dispatch(setProdVariante({
-                                    ...prod.variante,
-                                    precio
+                                dispatch(setProducto({
+                                    ...prod,
+                                    variante: {...prod.variante, precio},
+                                    variantes: prod.variantes.map(vs => ({...vs, precio}))
                                 }))
                             }}
                             formatter={numberWithCommas}
@@ -127,9 +119,10 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             value={prod.variante.precioComparacion}
                             onFocus={handleSelect}
                             onChange={(precioComparacion: number) => {
-                                dispatch(setProdVariante({
-                                    ...prod.variante,
-                                    precioComparacion
+                                dispatch(setProducto({
+                                    ...prod,
+                                    variante: {...prod.variante, precioComparacion},
+                                    variantes: prod.variantes.map(vs => ({...vs, precioComparacion}))
                                 }))
                             }}
                             formatter={numberWithCommas}
@@ -146,9 +139,10 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             value={prod.variante.costo}
                             onFocus={handleSelect}
                             onChange={(costo: number) => {
-                                dispatch(setProdVariante({
-                                    ...prod.variante,
-                                    costo
+                                dispatch(setProducto({
+                                    ...prod,
+                                    variante: {...prod.variante, costo},
+                                    variantes: prod.variantes.map(vs => ({...vs, costo}))
                                 }))
                             }}
                             formatter={numberWithCommas}

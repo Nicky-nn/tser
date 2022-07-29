@@ -31,17 +31,6 @@ export const productoSlice = createSlice({
         setProdOpciones: (state, action) => {
             state.opcionesProducto = action.payload
         },
-        setIncluirCantidad: (state, action) => {
-            state.incluirCantidad = action.payload
-            state.opcionesProducto = []
-            state.variantes = []
-        },
-        setProdVariante: (state, action: PayloadAction<ProductoVarianteInputProps>) => {
-            state.variante = action.payload
-        },
-        setProdVariantes: (state, action) => {
-            state.variantes = action.payload
-        },
         setProdTipo: (state, action) => {
             state.tipoProducto = action.payload
         },
@@ -63,8 +52,6 @@ export const {
     setCodigoProductoSin,
     setNombreProducto,
     setDescripcionProducto,
-    setProdVariante,
-    setProdVariantes,
     setProdTipo,
     setProdTipoPersonalizado,
     setProdProveedor

@@ -51,7 +51,6 @@ const query = gql`
                     url
                 }
                 varianteUnica
-                incluirCantidad
                 proveedor {
                     codigo
                     nombre
@@ -65,6 +64,8 @@ const query = gql`
                     precio
                     precioComparacion
                     costo
+                    incluirCantidad
+                    verificarStock
                     imagen {
                         altText
                         url
