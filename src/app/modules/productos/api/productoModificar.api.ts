@@ -5,8 +5,9 @@ import {AccessToken} from "../../../base/models/paramsModel";
 import {ProductoInputApiProps, ProductoProps} from "../interfaces/producto.interface";
 
 const gqlQuery = gql`
-    mutation PRODUCTOS_REGISTRO($input: FcvProductoInput!) {
-        fcvProductoRegistro(
+    mutation PRODUCTOS_REGISTRO($id: ID!, $input: FcvProductoInput!) {
+        fcvProductoActualizar(
+            id: $id
             input: $input
         ) {
             _id
@@ -47,8 +48,6 @@ const gqlQuery = gql`
                 precio
                 precioComparacion
                 costo
-                incluirCantidadInventario
-                habilitarStock
                 imagen {
                     altText
                     url
@@ -68,11 +67,11 @@ const gqlQuery = gql`
     }
 `
 
-export const apiProductoModificar = async (input: ProductoInputApiProps): Promise<ProductoProps> => {
+export const apiProductoModificar = async (id: string, input: ProductoInputApiProps): Promise<ProductoProps> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
-    const data: any = await client.request(gqlQuery, {input})
-    return data.fcvProductoRegistro
+    const data: any = await client.request(gqlQuery, {id, input})
+    return data.fcvProductoActualizar
 }

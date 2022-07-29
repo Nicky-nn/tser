@@ -46,7 +46,6 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                         throw new Error('Alert en cargar los datos')
                     })
                 const prodInput = productoInputComposeService(response, actividades!)
-                console.log(JSON.stringify(prodInput))
                 dispatch(setProducto(prodInput))
 
             } else {
@@ -73,6 +72,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
     // GUARDAMOS LOS CAMBIOS
     const handleSave = async () => {
         // Reglas de validacion
+        console.log(prod)
         const val = await productoRegistroValidator(prod)
         if (val.length > 0) {
             notError(val.join('<br>'))
@@ -80,7 +80,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
             const apiInput = productoComposeService(prod)
             await swalAsyncConfirmDialog({
                 preConfirm: async () => {
-                    const resp: any = await apiProductoModificar(apiInput).catch(err => ({error: err}))
+                    const resp: any = await apiProductoModificar(id!, apiInput).catch(err => ({error: err}))
                     if (resp.error) {
                         swalException(resp.error)
                         return false

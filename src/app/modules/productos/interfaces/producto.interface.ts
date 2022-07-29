@@ -63,7 +63,7 @@ export interface ProductoVarianteInventarioProps {
 }
 
 export interface ProductoVarianteInputProps {
-    id: string | null
+    id: string
     codigoProducto: string // identificador o codigo unico
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
@@ -109,7 +109,7 @@ export interface ProductoInputProps {
  * Valores iniciales para una variante
  */
 export const ProductoVarianteInitialValues = {
-    id: null,
+    id: '',
     codigoProducto: '',
     titulo: '',
     nombre: '',

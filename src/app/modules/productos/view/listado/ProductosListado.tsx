@@ -83,9 +83,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                 setIsRefetching(true);
             }
             setIsLoading(true);
-            console.log(columnFilters)
             const query = genApiQuery(columnFilters);
-            console.log(query)
             const fetchPagination: PageProps = {
                 ...PAGE_DEFAULT,
                 page: pagination.pageIndex + 1,
