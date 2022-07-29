@@ -37,7 +37,10 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
                 }
                 return <Chip label={`${cantidad} items`} color={"default"}/>
             }
-            return <Chip size={'small'} label={"Stock Ilimitado"} color={"secondary"}/>
+            if(!row.varianteUnica) {
+                return <Chip size={'small'} label={`No medido para ${row.variantes.length} variantes`} color={"warning"}/>
+            }
+            return <Chip size={'small'} label={"No medido"} color={"warning"}/>
         },
         id: 'inventario',
         header: 'Inventario',

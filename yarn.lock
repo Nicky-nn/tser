@@ -565,14 +565,7 @@
   dependencies:
     remove-accents "0.4.2"
 
-"@tanstack/react-table@8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.4.0.tgz#08fb9c3d061602fb79b3ceef10e2a65c142ad9ed"
-  integrity sha512-w70IEaAduCnGnnw9EqPG6wrJGLgwbO7G6E/91JfpoGw8SO2LM0QixhIZXYT+ISTuAA2YnW5kVwOKyXIZBwOc1Q==
-  dependencies:
-    "@tanstack/table-core" "8.4.0"
-
-"@tanstack/react-table@^8.5.2":
+"@tanstack/react-table@8.5.2", "@tanstack/react-table@^8.5.2":
   version "8.5.2"
   resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.2.tgz#1e547649b8f057eddbe769b04612914a2efa5d09"
   integrity sha512-CbNOay5FZHjU5EKiqik+Q8/gkUJfzH07KzYnnpGyqbfeocGZZckDblw7YwGMQ5/8Y0jgmobTYrMSqd27wtPdrA==
@@ -586,11 +579,6 @@
   dependencies:
     "@reach/observe-rect" "^1.1.0"
     "@tanstack/virtual-core" "3.0.0-beta.13"
-
-"@tanstack/table-core@8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.4.0.tgz#4224b090c39d2f66b09bfa24f85b94c3a3b73899"
-  integrity sha512-ZVk1TbJ/J8T5buvPgd0nfP5627gffCPvnYRAqmvAiSPv9EYtx2x6ixQhgDeU/TJPWd04S76B/0CwDab7Cj64/A==
 
 "@tanstack/table-core@8.5.2":
   version "8.5.2"
@@ -1779,13 +1767,13 @@ magic-string@^0.26.2:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-react-table@^0.30.0:
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.30.0.tgz#eff51ec23733ff060467b16c08b3dc79892b98bc"
-  integrity sha512-OzJ1KYL3WhwJA/F1H2lWXqlpIqjNeAU+FHtEFFpBON4C/fNT/mnvWwcNh3MD0WbWrKSsEVSnaOj4YOFAnEZ6Lw==
+material-react-table@^0.30.2:
+  version "0.30.2"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.30.2.tgz#e3f2c6b44a3b947bb475ffc23ea3306ef261d5e3"
+  integrity sha512-CwCK1ALOkFjrT9QpeYgj3w6HJNPMKYIkdWuBaZ0hStKoGg6OiBe7RXwV4exdFFAUzeyMkgb+aDlGH9h/UyATMg==
   dependencies:
     "@tanstack/match-sorter-utils" "8.1.1"
-    "@tanstack/react-table" "8.4.0"
+    "@tanstack/react-table" "8.5.2"
     "@tanstack/react-virtual" "^3.0.0-beta.13"
 
 memoize-one@^5.0.0:

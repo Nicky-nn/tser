@@ -36,11 +36,6 @@ export const productoSlice = createSlice({
             state.opcionesProducto = []
             state.variantes = []
         },
-        setVarianteUnica: (state, action) => {
-            state.varianteUnica = action.payload
-            state.opcionesProducto = []
-            state.variantes = []
-        },
         setProdVariante: (state, action: PayloadAction<ProductoVarianteInputProps>) => {
             state.variante = action.payload
         },
@@ -63,7 +58,6 @@ export const selectProducto = (state: RootState): ProductoInputProps => state.pr
 export const {
     productoReset,
     setProducto,
-    setVarianteUnica,
     setProdOpciones,
     setActividadEconomica,
     setCodigoProductoSin,

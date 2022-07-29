@@ -18,6 +18,7 @@ import {productoComposeService} from "../services/ProductoComposeService";
 import {apiProductoRegistro} from "../api/productoRegistro.api";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
+import ProductoInventario from "./ProductoInventario/ProductoInventario";
 
 interface OwnProps {
 }
@@ -93,6 +94,9 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
                             <ProductoPrecio/>
+                        </Grid>
+                        <Grid item lg={12} md={12} xs={12}>
+                            <ProductoInventario/>
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
                             <ProductoOpciones/>

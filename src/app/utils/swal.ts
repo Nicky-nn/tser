@@ -48,14 +48,14 @@ export const swalException = (e: Error) => {
  * @param title
  * @param text
  */
-export const swalConfirmDialog = (
+export const swalConfirmDialog = async (
     {
         title = 'Confirmación',
         text = 'Confirma que desea realizar la acción'
     }: { title?: string, text?: string }): Promise<SweetAlertResult<any>> => {
     return Swal.fire({
         title,
-        text,
+        html:text,
         showCancelButton: true,
         confirmButtonText: 'Si, Confirmar',
         cancelButtonText: 'Cancelar',
@@ -78,6 +78,7 @@ export const swalAsyncConfirmDialog = async (
         title,
         showCancelButton: true,
         confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
         backdrop: true,
         text,
         showLoaderOnConfirm: true,

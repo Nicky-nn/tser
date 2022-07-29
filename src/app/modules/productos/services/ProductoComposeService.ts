@@ -103,6 +103,7 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
         descripcion: prod.descripcion,
         descripcionHtml: prod.descripcionHtml,
         varianteUnica: prod.varianteUnica,
+        varianteUnicaTemp: prod.varianteUnica,
         incluirCantidad: prod.incluirCantidad,
         verificarStock: prod.verificarStock,
         variante,
@@ -110,6 +111,7 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
         tipoProducto: prod.tipoProducto,
         tipoProductoPersonalizado: null,
         variantes,
+        variantesTemp: variantes,
         proveedor: prod.proveedor
     }
 }

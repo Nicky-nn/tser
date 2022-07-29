@@ -1,34 +1,23 @@
-import React, {ChangeEvent, FunctionComponent, useState} from 'react';
-import {
-    Button,
-    Checkbox,
-    Chip,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    Grid,
-    IconButton,
-    Tooltip
-} from "@mui/material";
+import React, {FunctionComponent, useState} from 'react';
+import {Button, Chip, Grid, IconButton, Tooltip} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProdOpciones, setProducto, setProdVariantes} from "../../slices/productos/producto.slice";
-import ProductoAdicionarOpcionDialog from "./ProductoOpciones/ProductoAdicionarOpcionDialog";
+import {selectProducto, setProdOpciones, setProdVariantes} from "../../slices/productos/producto.slice";
 import {useDispatch} from "react-redux";
 import {swalConfirmDialog, swalErrorMsg} from "../../../../utils/swal";
 import {arrayMove, List} from "react-movable";
 import {OpcionesProductoProps, ProductoVarianteInputProps} from "../../interfaces/producto.interface";
 import {Delete, Edit} from "@mui/icons-material";
-import {toast} from "react-toastify";
 import {cartesianProduct, genRandomString} from "../../../../utils/helper";
 import {notError} from "../../../../utils/notification";
+import ProductoAdicionarOpcionDialog from "../registro/ProductoOpciones/ProductoAdicionarOpcionDialog";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const ProductoOpciones: FunctionComponent<Props> = (props) => {
+const ProductoActualizarOpciones: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
     const [openProductOpcion, setOpenProductOpcion] = useState<boolean>(false);
     const dispatch = useDispatch();
@@ -83,23 +72,6 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
         <>
             <SimpleCard title={'OPCIONES'}>
                 <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
-                    <Grid item lg={12} md={12} xs={12}>
-                        <FormControl>
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={!prod.varianteUnica}
-                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                // clear opciones y variantes
-                                                dispatch(setProducto({...prod, varianteUnica: !e.target.checked}))
-                                            }}
-                                        />
-                                    }
-                                    label="Este producto tiene opciones, como talla y color"/>
-                            </FormGroup>
-                        </FormControl>
-                    </Grid>
                     {
                         !prod.varianteUnica &&
                         (
@@ -215,4 +187,4 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
     );
 };
 
-export default ProductoOpciones;
+export default ProductoActualizarOpciones;

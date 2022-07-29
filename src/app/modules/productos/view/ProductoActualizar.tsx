@@ -22,6 +22,8 @@ import {apiProductoModificar} from "../api/productoModificar.api";
 import {productosRouteMap} from "../ProductosRoutesMap";
 import {fetchSinActividadesPorDocumentoSector} from "../../sin/api/sinActividadesPorDocumentoSector";
 import {useDispatch} from "react-redux";
+import ProductoInventario from "./ProductoInventario/ProductoInventario";
+import ProductoActualizarOpciones from "./actualizar/ProductoActualizarOpciones";
 
 interface OwnProps {
 }
@@ -119,7 +121,10 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                     justifyContent="flex-end"
                 >
                     <Button color={'primary'} startIcon={<Description/>} variant={"contained"}
-                            onClick={() => {dispatch(productoReset()); navigate(productosRouteMap.nuevo)} }>
+                            onClick={() => {
+                                dispatch(productoReset());
+                                navigate(productosRouteMap.nuevo)
+                            }}>
                         Nuevo Producto
                     </Button>&nbsp;
 
@@ -135,17 +140,28 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                         <Grid item lg={12} md={12} xs={12}>
                             <Homologacion/>
                         </Grid>
+                        {prod.varianteUnicaTemp && (
+                            <>
+                                <Grid item lg={12} md={12} xs={12}>
+                                    <ProductoPrecio/>
+                                </Grid>
+                                <Grid item lg={12} md={12} xs={12}>
+                                    <ProductoInventario/>
+                                </Grid>
+                            </>
+                        )}
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoPrecio/>
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            <ProductoOpciones/>
+                            {
+                                prod.variantesTemp.length > 1 ? (<ProductoActualizarOpciones/>) : (<ProductoOpciones/>)
+                            }
+
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
                             <ProductoVariantes/>
                         </Grid>
                     </Grid>
                 </Grid>
+
                 <Grid item lg={4} md={4} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item lg={12} md={12} xs={12}>
@@ -156,6 +172,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                         </Grid>
                     </Grid>
                 </Grid>
+
             </Grid>
         </SimpleContainer>
     );

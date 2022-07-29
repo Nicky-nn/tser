@@ -95,6 +95,7 @@ export interface ProductoInputProps {
     descripcion: string,
     descripcionHtml: string,
     varianteUnica: boolean
+    varianteUnicaTemp: boolean
     incluirCantidad: boolean,
     verificarStock: boolean, // Continuar venta aun si el stock ha terminado
     variante: ProductoVarianteInputProps
@@ -102,6 +103,7 @@ export interface ProductoInputProps {
     tipoProducto: TipoProductoProps | null,
     tipoProductoPersonalizado: string | null,
     variantes: ProductoVarianteInputProps[]
+    variantesTemp: ProductoVarianteInputProps[] // Se usa para modificaciones, guardar historial
     proveedor: ProveedorProps | null
 }
 
@@ -131,6 +133,7 @@ export const ProductoInitialValues: ProductoInputProps = {
     descripcion: '',
     descripcionHtml: '<span></span>',
     varianteUnica: true,
+    varianteUnicaTemp: true,
     incluirCantidad: true,
     verificarStock: true,
     variante: ProductoVarianteInitialValues,
@@ -138,6 +141,7 @@ export const ProductoInitialValues: ProductoInputProps = {
     tipoProducto: null,
     tipoProductoPersonalizado: '',
     variantes: [],
+    variantesTemp: [],
     proveedor: null
 }
 
