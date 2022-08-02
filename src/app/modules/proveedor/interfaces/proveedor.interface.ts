@@ -1,4 +1,5 @@
 export interface ProveedorProps {
+    _id: string
     codigo: string,
     nombre: string,
     direccion: string,
@@ -21,4 +22,14 @@ export interface ProveedorInputProp {
     contacto: string,
     correo: string,
     telefono: string,
+}
+
+export const PROVEEDOR_INITIAL_VALUES: ProveedorInputProp = {
+    codigo: '',
+    nombre: '',
+    direccion: '',
+    ciudad: '',
+    contacto: '',
+    correo: '',
+    telefono: ''
 }

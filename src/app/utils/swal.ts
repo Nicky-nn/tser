@@ -67,7 +67,7 @@ export const swalConfirmDialog = async (
  * @description Confirmación para datos asincronos, usado para api rest, debe usar preConfirm(), y then
  * @param title
  * @param text
- * @param preConfirm, funcion que retorna los datos del fetch
+ * @param preConfirm, función que retorna los datos del fetch, return api.save()
  */
 export const swalAsyncConfirmDialog = async (
     {
@@ -84,7 +84,7 @@ export const swalAsyncConfirmDialog = async (
         text,
         showLoaderOnConfirm: true,
         preConfirm,
-        allowOutsideClick: () => !Swal.isLoading()
+        // allowOutsideClick: () => !Swal.isLoading()
     })
 }
 /**

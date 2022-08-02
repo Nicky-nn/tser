@@ -1,46 +1,19 @@
 import React, {FunctionComponent} from 'react';
-import {FormikProps, useFormik} from "formik";
+import {FormikProps} from "formik";
 import {ProveedorInputProp} from "../interfaces/proveedor.interface";
 import {Grid, TextField} from "@mui/material";
-import {genRandomString} from "../../../utils/helper";
-import {object, string} from "yup";
 
 interface OwnProps {
-    onFormSubmit?: (value?: ProveedorInputProp) => void;
+    formik: FormikProps<ProveedorInputProp>
 }
 
 type Props = OwnProps;
 
-const validationSchema = object({
-    codigo: string().email('Enter a valid email').required('Código es requerido'),
-    nombre: string().required('Nombre Proveedor es requerido'),
-    direccion: string().required('Dirección es requerido'),
-    ciudad: string().required('Ciudad / Ubicación es requerido'),
-    contacto: string().required('Nombre de contacto es requerido'),
-    correo: string().email('Ingrese Correo válido').required('Correo es requerido'),
-    telefono: string()
-});
-
 const ProveedorForm: FunctionComponent<Props> = (props) => {
-    const formik: FormikProps<ProveedorInputProp> = useFormik<ProveedorInputProp>({
-        initialValues: {
-            codigo: genRandomString().toUpperCase(),
-            nombre: '',
-            direccion: '',
-            ciudad: '',
-            contacto: '',
-            correo: '',
-            telefono: ''
-        },
-        validationSchema,
-        onSubmit: (values) => {
-            console.log(values);
-        }
-    });
-
+    const {formik} = props
     return (<>
-        <form noValidate onSubmit={formik.handleSubmit}>
-            <Grid container spacing={1}>
+        <form noValidate>
+            <Grid container spacing={2}>
                 <Grid item xs={12} md={4} lg={4}>
                     <TextField
                         name="codigo"
@@ -75,9 +48,23 @@ const ProveedorForm: FunctionComponent<Props> = (props) => {
                         fullWidth
                         value={formik.values.ciudad}
                         onChange={formik.handleChange}
+                        required
                         onBlur={formik.handleBlur}
                         error={formik.touched.ciudad && Boolean(formik.errors.ciudad)}
                         helperText={formik.touched.ciudad && formik.errors.ciudad}
+                    />
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <TextField
+                        name="direccion"
+                        label="Dirección"
+                        size="small"
+                        fullWidth
+                        value={formik.values.direccion}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.direccion && Boolean(formik.errors.direccion)}
+                        helperText={formik.touched.direccion && formik.errors.direccion}
                     />
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>

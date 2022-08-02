@@ -1,33 +1,36 @@
 import React, {FunctionComponent, useEffect} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import {PROVEEDOR_INITIAL_VALUES, ProveedorInputProp} from "../interfaces/proveedor.interface";
-import ProveedorForm from "./ProveedorForm";
+import {
+    TIPO_PRODUCTO_INITIAL_VALUES,
+    TipoProductoInputProp
+} from "../interfaces/tipoProducto.interface";
 import {FormikProps, useFormik} from "formik";
 import {genRandomString} from "../../../utils/helper";
 import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
-import {apiProveedorRegistro} from "../api/proveedorRegistro.api";
 import {notSuccess} from "../../../utils/notification";
-import {proveedorRegistroValidationSchema} from "../validator/proveedorRegistro.validator";
+import {tipoProductoRegistroValidationSchema} from "../validator/tipoProductoRegistro.validator";
+import {apiTipoProductoRegistro} from "../api/tipoProductoRegistro.api";
+import TipoProductoForm from "./TipoProductoForm";
 
 interface OwnProps {
     id: string;
     keepMounted: boolean;
     open: boolean;
-    onClose: (value?: ProveedorInputProp) => void;
+    onClose: (value?: TipoProductoInputProp) => void;
 }
 
 type Props = OwnProps;
 
-const ProveedorRegistro: FunctionComponent<Props> = (props) => {
+const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
     const {onClose, open, ...other} = props
 
-    const formik: FormikProps<ProveedorInputProp> = useFormik<ProveedorInputProp>({
-        initialValues: PROVEEDOR_INITIAL_VALUES,
-        validationSchema: proveedorRegistroValidationSchema,
+    const formik: FormikProps<TipoProductoInputProp> = useFormik<TipoProductoInputProp>({
+        initialValues: TIPO_PRODUCTO_INITIAL_VALUES,
+        validationSchema: tipoProductoRegistroValidationSchema,
         onSubmit: async (values) => {
             await swalAsyncConfirmDialog({
                 preConfirm: () => {
-                    return apiProveedorRegistro(values)
+                    return apiTipoProductoRegistro(values)
                         .catch(err => {
                             swalException(err)
                             return false
@@ -49,7 +52,6 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
 
     useEffect(() => {
         formik.resetForm()
-        formik.setFieldValue('codigo', genRandomString().toUpperCase())
     }, [open]);
 
     return (
@@ -59,9 +61,9 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
             open={open}
             {...other}
         >
-            <DialogTitle>Registrar nuevo Proveedor</DialogTitle>
+            <DialogTitle>Registrar nuevo clasificador de productos</DialogTitle>
             <DialogContent dividers>
-                <ProveedorForm formik={formik}/>
+                <TipoProductoForm formik={formik}/>
             </DialogContent>
             <DialogActions>
                 <Button autoFocus color={'error'} size={'small'} variant={'contained'} onClick={handleCancel}>
@@ -79,4 +81,4 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
     )
 };
 
-export default ProveedorRegistro;
+export default TipoProductoDialogRegistro;

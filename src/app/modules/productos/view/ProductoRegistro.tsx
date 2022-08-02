@@ -49,7 +49,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
             }).then(resp => {
                 if (resp.isConfirmed) {
                     notSuccess()
-                    console.log(resp.value)
                     navigate(`/productos/modificar/${resp.value._id}`, {replace: true})
                 }
                 if (resp.isDenied) {

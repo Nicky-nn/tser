@@ -27,20 +27,15 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
     },
     {
         accessorFn: (row) => {
-            if (row.incluirCantidad) {
-                const cantidad = sumBy(row.variantes, (item) => {
-                    return sumBy(item.inventario, (inv) => inv.stock!)
-                })
-                if (!row.varianteUnica) {
-                    return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
-                                 color={"default"}/>
-                }
-                return <Chip label={`${cantidad} items`} color={"default"}/>
+            const cantidad = sumBy(row.variantes, (item) => {
+                return sumBy(item.inventario, (inv) => inv.stock!)
+            })
+            if (!row.varianteUnica) {
+                return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
+                             color={"info"}/>
             }
-            if(!row.varianteUnica) {
-                return <Chip size={'small'} label={`No medido para ${row.variantes.length} variantes`} color={"warning"}/>
-            }
-            return <Chip size={'small'} label={"No medido"} color={"warning"}/>
+            return <Chip label={`${cantidad} items`} color={"default"}/>
+
         },
         id: 'inventario',
         header: 'Inventario',
@@ -52,6 +47,7 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
         accessorKey: 'proveedor',
         id: 'proveedor',
         header: 'Proveedor',
+        accessorFn: (row) => (<span>{row.proveedor?.nombre}</span>),
     },
     {
         accessorFn: (row) => (<Chip size={'small'} label={row.state} color={"success"}/>),

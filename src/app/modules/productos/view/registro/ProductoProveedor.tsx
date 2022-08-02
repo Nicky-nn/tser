@@ -24,7 +24,7 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
     const dispatch = useDispatch()
     const [openDialog, setOpenDialog] = useState(false);
 
-    const {data: proveedores} = useQuery<ProveedorProps[], Error>(['proveedores'], () => {
+    const {data: proveedores} = useQuery<ProveedorProps[], Error>(['proveedores', openDialog], () => {
         return apiProveedores()
     })
 
@@ -58,8 +58,8 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                         id={'proveedorRegistroDialog'}
                         keepMounted={false}
                         open={openDialog}
-                        onClose={(data?: ProveedorInputProp) => {
-                            console.log(data)
+                        onClose={(value?: ProveedorInputProp) => {
+                            console.log(value)
                             setOpenDialog(false)
                         }}
                     />

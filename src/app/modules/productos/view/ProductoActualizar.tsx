@@ -74,7 +74,6 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
     // GUARDAMOS LOS CAMBIOS
     const handleSave = async () => {
         // Reglas de validacion
-        console.log(prod)
         const val = await productoRegistroValidator(prod)
         if (val.length > 0) {
             notError(val.join('<br>'))

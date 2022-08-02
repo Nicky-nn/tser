@@ -16,6 +16,7 @@ const gqlQuery = gql`
                 totalPages
             }
             docs {
+                _id
                 codigo
                 nombre
                 direccion

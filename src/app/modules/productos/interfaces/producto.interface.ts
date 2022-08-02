@@ -1,4 +1,4 @@
-import {ImagenProps, TipoProductoProps} from "../../../base/interfaces/base";
+import {ImagenProps} from "../../../base/interfaces/base";
 import {
     SinActividadesPorDocumentoSector,
     SinProductoServicioProps,
@@ -7,6 +7,7 @@ import {
 import {InventarioProps} from "./inventario.interface";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
 import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
+import {TipoProductoProps} from "../../tipoProducto/interfaces/tipoProducto.interface";
 
 export interface ProductoVarianteProps {
     id: string
