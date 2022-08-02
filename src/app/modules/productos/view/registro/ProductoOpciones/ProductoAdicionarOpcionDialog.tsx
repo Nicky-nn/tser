@@ -5,11 +5,14 @@ import {OPCIONES_PRODUCTO} from "../../../utils/clasificadores";
 import {reactSelectStyles} from "../../../../../base/components/MySelect/ReactSelect";
 import {SelectInputLabel} from "../../../../../base/components/ReactSelect/SelectInputLabel";
 import {OnChangeValue} from "react-select";
+import {OpcionesProductoProps} from "../../../interfaces/producto.interface";
+import {genRandomString, genReplaceEmpty, isEmptyValue} from "../../../../../utils/helper";
 
 interface OwnProps {
     id: string;
     keepMounted: boolean;
     open: boolean;
+    opcion?: OpcionesProductoProps,
     onClose: (value?: any) => void;
 }
 
@@ -25,14 +28,26 @@ interface SelectOption {
 }
 
 const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
-    const {onClose, open, ...other} = props;
+    const {onClose, open, opcion, ...other} = props;
     const [tipo, setTipo] = useState<OnChangeValue<SelectOption, false>>(null);
     const [valor, setValor] = useState<OnChangeValue<SelectOption, true>>([]);
+    const [idValor, setIdValor] = useState<string | null>(null);
 
     useEffect(() => {
         if (open) {
-            setTipo(null)
-            setValor([])
+            if (!isEmptyValue(opcion)) {
+                setTipo({value: opcion?.nombre!, label: opcion?.nombre!})
+                setValor(
+                    opcion!.valores!.map((item: string) => {
+                            return {label: item!, value: item!};
+                        }
+                    ));
+                setIdValor(opcion!.id!)
+            } else {
+                setTipo(null)
+                setValor([])
+                setIdValor(null)
+            }
         }
     }, [open]);
 
@@ -47,7 +62,11 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
 
     // REGISTRO Y VALIDACION DE DATOS
     const handleSubmit = async () => {
-        onClose({nombre: tipo?.value, valores: valor.map(v => v.value)})
+        onClose({
+            id: genReplaceEmpty(idValor, genRandomString()),
+            nombre: tipo?.value,
+            valores: valor.map(v => v.value)
+        })
     }
 
     const handleChangeValor = (

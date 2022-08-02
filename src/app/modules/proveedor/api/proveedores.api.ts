@@ -6,13 +6,28 @@ import {ProveedorProps} from "../interfaces/proveedor.interface";
 
 const gqlQuery = gql`
     query PROVEEDORES {
-        proveedores(limit: 1000, page: 1, reverse: true){
-            docs{
+        proveedores(limit: 1000, page: 1, reverse:true) {
+            pageInfo {
+                hasNextPage
+                hasPrevPage
+                totalDocs
+                limit
+                page
+                totalPages
+            }
+            docs {
                 codigo
                 nombre
-                razonSocial
-                nit
                 direccion
+                ciudad
+                contacto
+                correo
+                telefono
+                state
+                createdAt
+                updatedAt
+                usucre
+                usumod
             }
         }
     }

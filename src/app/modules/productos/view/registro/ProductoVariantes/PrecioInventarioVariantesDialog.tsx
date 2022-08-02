@@ -209,7 +209,8 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                         />
                                     </FormControl>
                                 </Grid>
-                                <Grid item lg={8} md={8} xs={12}>
+
+                                <Grid item lg={6} md={6} xs={12}>
                                     <FormControl>
                                         <FormControlLabel
                                             control={
@@ -223,6 +224,24 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                             label="¿Incluir cantidad al inventario?"/>
                                     </FormControl>
                                 </Grid>
+                                {
+                                    data.incluirCantidad && (
+                                        <Grid item lg={6} md={6} xs={12}>
+                                            <FormControl>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={!data.verificarStock}
+                                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                                setData({...data, verificarStock: !e.target.checked})
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="¿Continuar venta aun si el item este agotado?"/>
+                                            </FormControl>
+                                        </Grid>
+                                    )
+                                }
 
                                 <Grid item lg={12} md={12} xs={12}>
                                     <Typography variant="subtitle2" gutterBottom>

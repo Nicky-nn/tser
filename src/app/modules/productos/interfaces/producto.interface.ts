@@ -83,14 +83,14 @@ export interface ProductoVarianteInputTempProps extends ProductoVarianteInputPro
 }
 
 export interface OpcionesProductoProps {
-    id: number,
+    id: string,
     nombre: string
     valores: string[]
 }
 
 export interface ProductoInputProps {
-    actividadEconomica: SinActividadesPorDocumentoSector | undefined,
-    sinProductoServicio: SinProductoServicioProps | undefined,
+    actividadEconomica: SinActividadesPorDocumentoSector | null,
+    sinProductoServicio: SinProductoServicioProps | null,
     titulo: string,
     descripcion: string,
     descripcionHtml: string,
@@ -127,8 +127,8 @@ export const ProductoVarianteInitialValues = {
  * valores iniciales para un nuevo producto
  */
 export const ProductoInitialValues: ProductoInputProps = {
-    actividadEconomica: undefined,
-    sinProductoServicio: undefined,
+    actividadEconomica: null,
+    sinProductoServicio: null,
     titulo: '',
     descripcion: '',
     descripcionHtml: '<span></span>',

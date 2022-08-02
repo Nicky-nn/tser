@@ -17,8 +17,6 @@ const query = gql`
             titulo
             descripcion
             descripcionHtml
-            incluirCantidad
-            verificarStock
             opcionesProducto {
                 nombre
                 valores
@@ -48,6 +46,8 @@ const query = gql`
                 precio
                 precioComparacion
                 costo
+                incluirCantidad
+                verificarStock
                 imagen {
                     altText
                     url

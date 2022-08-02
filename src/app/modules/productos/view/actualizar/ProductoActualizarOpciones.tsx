@@ -2,7 +2,7 @@ import React, {FunctionComponent, useState} from 'react';
 import {Button, Chip, Grid, IconButton, Tooltip} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProdOpciones, setProdVariantes} from "../../slices/productos/producto.slice";
+import {selectProducto, setProdOpciones} from "../../slices/productos/producto.slice";
 import {useDispatch} from "react-redux";
 import {swalConfirmDialog, swalErrorMsg} from "../../../../utils/swal";
 import {arrayMove, List} from "react-movable";
@@ -36,7 +36,7 @@ const ProductoActualizarOpciones: FunctionComponent<Props> = (props) => {
 
         // Generamos las nuevas opciones y variantes
         dispatch(setProdOpciones(opciones))
-        dispatch(setProdVariantes(variantes))
+        // dispatch(setProdVariantes(variantes))
     }
     // Eliminamos un determinado valor del item
     const eliminarValor = async (opcion: OpcionesProductoProps, valor: string) => {

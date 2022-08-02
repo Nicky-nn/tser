@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
+import React, {ChangeEvent, FunctionComponent} from 'react';
 import {Checkbox, FormControl, FormControlLabel, Grid, TextField, Typography} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
@@ -7,71 +7,42 @@ import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {genReplaceEmpty, handleSelect, isEmptyValue} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
-import {swalException} from "../../../../utils/swal";
 import {apiSucursales} from "../../../sucursal/api/sucursales.api";
 import {SucursalProps} from "../../../sucursal/interfaces/sucursal";
 import {useDispatch} from "react-redux";
 import {sortBy} from "lodash";
-import {apiSinUnidadMedida} from "../../../sin/api/sinUnidadMedida.api";
-import {SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
+import {useQuery} from "@tanstack/react-query";
 
 interface OwnProps {
+
 }
 
 type Props = OwnProps;
 
 const ProductoInventario: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
-    const [isError, setError] = useState<any>(null);
-    const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
-    const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const dispatch = useDispatch()
 
-    const resetInventario = (data: SucursalProps[]): Array<any> => {
-        return sortBy(data, 'codigo').map(item => ({
-            sucursal: {codigo: item.codigo},
-            stock: genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo == item.codigo)?.stock, 0)
+    const crearInventario = (data: SucursalProps[]): Array<any> => {
+        return sortBy(data, 'codigo').map(sucursal => ({
+            sucursal,
+            stock: genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo == sucursal.codigo)?.stock, 0)
         }))
     }
 
-    const fetchSucursales = async () => {
-        try {
-            const sucursales = await apiSucursales()
-            if (sucursales.length > 0) {
-                setSucursales(sucursales)
-                if (prod.variante.inventario.length === 0) {
-                    const inventario = resetInventario(sucursales)
-                    dispatch(setProducto({
-                        ...prod,
-                        variante: {...prod.variante, inventario}
-                    }))
-                }
-            } else {
-                throw new Error('No se ha podido cargar los datos de la sucursal, vuelva a intentar')
+    const {data: sucursales} = useQuery<SucursalProps[], Error>(['sucursales', prod], async () => {
+        const data = await apiSucursales()
+        if (data.length > 0) {
+            if (prod.variante.inventario.length === 0) {
+                const inventario = crearInventario(data)
+                dispatch(setProducto({
+                    ...prod,
+                    variante: {...prod.variante, inventario}
+                }))
             }
-        } catch (e: any) {
-            swalException(e)
-            setError(e.message)
         }
-    }
-
-    const fetchUnidadesMedida = async () => {
-        await apiSinUnidadMedida().then((data) => {
-            setUnidadesMedida(data)
-        }).catch(err => {
-            swalException(err)
-            return []
-        })
-    }
-
-    useEffect(() => {
-        fetchSucursales().then()
-        fetchUnidadesMedida().then()
-    }, []);
-
-    if (isError) {
-        return <h1>Ocurrio un error</h1>
-    }
+        return data || []
+    }, {keepPreviousData: true})
 
     return (
         <SimpleCard title={'INVENTARIO'}>
@@ -84,7 +55,11 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                             onChange={(e) => {
                                 dispatch(setProducto({
                                     ...prod,
-                                    variante: {...prod.variante, codigoProducto: e.target.value}
+                                    variante: {...prod.variante, codigoProducto: e.target.value},
+                                    variantes: prod.variantes.map((vs, index) => ({
+                                        ...vs,
+                                        codigoProducto: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
+                                    }))
                                 }))
                             }}
                             variant="outlined"
@@ -102,6 +77,10 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                 dispatch(setProducto({
                                     ...prod,
                                     variante: {...prod.variante, codigoBarras: e.target.value},
+                                    variantes: prod.variantes.map((vs, index) => ({
+                                        ...vs,
+                                        codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value || ''
+                                    }))
                                 }))
                             }}
                             variant="outlined"
@@ -173,7 +152,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                             </thead>
                             <tbody>
                             {
-                                sucursales.length > 0 &&
+                                sucursales &&
                                 sucursales.map((s, index: number) => (
                                     <tr key={s.codigo}>
                                         <td data-label="COD">{s.codigo}</td>

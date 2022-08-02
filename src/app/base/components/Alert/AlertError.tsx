@@ -19,7 +19,7 @@ const AlertError: FunctionComponent<Props> = (props) => {
             <Container>
                 <Grid container spacing={0} mt={2}>
                     <Grid item lg={12} md={12} xs={12}>
-                        <Alert severity="error">
+                        <Alert severity={tipo}>
                             <AlertTitle>{alertTitle}</AlertTitle>
                             {mensaje}
                         </Alert>

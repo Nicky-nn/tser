@@ -1,15 +1,18 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {FormControl, Grid} from "@mui/material";
+import React, {FunctionComponent, useState} from 'react';
+import {Button, FormControl, Grid} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {selectProducto, setProdProveedor} from "../../slices/productos/producto.slice";
-import {swalException} from "../../../../utils/swal";
+import {selectProducto, setProdProveedor, setProducto} from "../../slices/productos/producto.slice";
 import {useAppSelector} from "../../../../hooks";
 import {useDispatch} from "react-redux";
-import {ProveedorProps} from "../../../proveedor/interfaces/proveedor.interface";
+import {ProveedorInputProp, ProveedorProps} from "../../../proveedor/interfaces/proveedor.interface";
 import {apiProveedores} from "../../../proveedor/api/proveedores.api";
+import {useQuery} from "@tanstack/react-query";
+import {ProductoVarianteInputProps} from "../../interfaces/producto.interface";
+import PrecioInventarioVariantesDialog from "./ProductoVariantes/PrecioInventarioVariantesDialog";
+import ProveedorRegistroDialog from "../../../proveedor/view/ProveedorRegistroDialog";
 
 interface OwnProps {
 }
@@ -19,22 +22,15 @@ type Props = OwnProps;
 const ProductoProveedor: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
     const dispatch = useDispatch()
-    const [proveedores, setProveedores] = useState<ProveedorProps[]>([]);
-    const fetchTipoProducto = async () => {
-        await apiProveedores().then(async (data) => {
-            setProveedores(data)
-        }).catch(err => {
-            swalException(err);
-            return []
-        })
-    }
-    useEffect(() => {
-        fetchTipoProducto().then()
-    }, []);
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const {data: proveedores} = useQuery<ProveedorProps[], Error>(['proveedores'], () => {
+        return apiProveedores()
+    })
 
     return (
         <SimpleCard title={'Proveedor'}>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
                 <Grid item lg={12} md={12} xs={12}>
                     <FormControl fullWidth>
                         <SelectInputLabel shrink>
@@ -52,9 +48,21 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                             options={proveedores}
                             isClearable={true}
                             getOptionValue={(ps) => ps.codigo}
-                            getOptionLabel={(ps) => `${ps.nombre}`}
+                            getOptionLabel={(ps) => `${ps.codigo} - ${ps.nombre}`}
                         />
                     </FormControl>
+                </Grid>
+                <Grid item lg={12} md={12} xs={12} textAlign={'right'}>
+                    <Button variant={'outlined'} onClick={() => setOpenDialog(true)} size={'small'}>Nuevo Proveedor</Button>
+                    <ProveedorRegistroDialog
+                        id={'proveedorRegistroDialog'}
+                        keepMounted={false}
+                        open={openDialog}
+                        onClose={(data?: ProveedorInputProp) => {
+                            console.log(data)
+                            setOpenDialog(false)
+                        }}
+                    />
                 </Grid>
             </Grid>
         </SimpleCard>

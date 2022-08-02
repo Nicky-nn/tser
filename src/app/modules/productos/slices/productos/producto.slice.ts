@@ -1,10 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from "../../../../store/store";
-import {
-    ProductoInitialValues,
-    ProductoInputProps,
-    ProductoVarianteInputProps
-} from "../../interfaces/producto.interface";
+import {ProductoInitialValues, ProductoInputProps} from "../../interfaces/producto.interface";
 import {genRandomString} from "../../../../utils/helper";
 
 const initialState: ProductoInputProps = ProductoInitialValues
@@ -16,15 +12,6 @@ export const productoSlice = createSlice({
     reducers: {
         productoReset: () => ({...initialState, variante: {...initialState.variante, id: genRandomString(10)}}),
         setProducto: (state, action) => action.payload,
-        setActividadEconomica: (state, action) => {
-            state.actividadEconomica = action.payload
-        },
-        setCodigoProductoSin: (state, action) => {
-            state.sinProductoServicio = action.payload
-        },
-        setNombreProducto: (state, action) => {
-            state.titulo = action.payload
-        },
         setDescripcionProducto: (state, action) => {
             state.descripcion = action.payload
         },
@@ -48,9 +35,6 @@ export const {
     productoReset,
     setProducto,
     setProdOpciones,
-    setActividadEconomica,
-    setCodigoProductoSin,
-    setNombreProducto,
     setDescripcionProducto,
     setProdTipo,
     setProdTipoPersonalizado,

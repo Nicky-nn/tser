@@ -151,9 +151,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                             </>
                         )}
                         <Grid item lg={12} md={12} xs={12}>
-                            {
-                                prod.variantesTemp.length > 1 ? (<ProductoActualizarOpciones/>) : (<ProductoOpciones/>)
-                            }
+                            <ProductoOpciones/>
 
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>

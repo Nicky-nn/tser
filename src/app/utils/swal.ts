@@ -13,10 +13,11 @@ export const swalConfirm = {
     showLoaderOnConfirm: true,
 }
 
-export const swalErrorMsg = (msg: string | Array<any>) => {
+export const swalErrorMsg = (msg: string | Array<any>, size: 'sm' | 'md' | 'lg' = 'lg') => {
+    const width = size === 'sm' ? 450 : size === 'md' ? 600 : size === 'lg' ? 800 : 450
     Swal.fire({
-        title: 'Alert!!',
-        width: 800,
+        title: 'Alerta!!',
+        width,
         customClass: 'swalError',
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -55,7 +56,7 @@ export const swalConfirmDialog = async (
     }: { title?: string, text?: string }): Promise<SweetAlertResult<any>> => {
     return Swal.fire({
         title,
-        html:text,
+        html: text,
         showCancelButton: true,
         confirmButtonText: 'Si, Confirmar',
         cancelButtonText: 'Cancelar',

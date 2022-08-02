@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {FormControl, FormHelperText, Grid} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {useAppSelector} from "../../../../hooks";
@@ -7,15 +7,13 @@ import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {handleSelect} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
-import {swalException} from "../../../../utils/swal";
-import {SucursalProps} from "../../../sucursal/interfaces/sucursal";
 import {useDispatch} from "react-redux";
 import {apiSinUnidadMedida} from "../../../sin/api/sinUnidadMedida.api";
 import {SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {ProductoVarianteInputProps} from "../../interfaces/producto.interface";
+import {useQuery} from "@tanstack/react-query";
 
 interface OwnProps {
 }
@@ -25,38 +23,11 @@ type Props = OwnProps;
 const ProductoPrecio: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
     const [isError, setError] = useState<any>(null);
-    const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
-    const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const dispatch = useDispatch()
 
-    // Reset de las unidades de medida, tambien actualizar las unidades de medida de las variantes
-    const resetUnidadMedida = (variante: ProductoVarianteInputProps, variantes: ProductoVarianteInputProps[], unidadMedida: SinUnidadMedidaProps) => {
-        return {
-            variante: {
-                ...variante,
-                unidadMedida
-            },
-            variantes: variantes.map((value) => {
-                return {
-                    ...value,
-                    unidadMedida
-                }
-            })
-        }
-    }
-
-    const fetchUnidadesMedida = async () => {
-        await apiSinUnidadMedida().then((data) => {
-            setUnidadesMedida(data)
-        }).catch(err => {
-            swalException(err)
-            return []
-        })
-    }
-
-    useEffect(() => {
-        fetchUnidadesMedida().then()
-    }, []);
+    const {data: unidadesMedida} = useQuery<SinUnidadMedidaProps[], Error>(['unidadesMedida'], () => {
+        return apiSinUnidadMedida()
+    })
 
     if (isError) {
         return <h1>Ocurrio un error</h1>
@@ -76,12 +47,17 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                             name="unidadMedida"
                             placeholder={'Seleccione la unidad de medida'}
                             value={prod.variante.unidadMedida}
-                            onChange={async (val: any) => {
-                                const unidadMedida = resetUnidadMedida(prod.variante, prod.variantes, val)
+                            onChange={async (unidadMedida: any) => {
+                                // const unidadMedida = resetUnidadMedida(prod.variante, prod.variantes, val)
                                 dispatch(setProducto({
                                     ...prod,
-                                    variante: unidadMedida.variante,
-                                    variantes: unidadMedida.variantes
+                                    variante: {...prod.variante, unidadMedida},
+                                    variantes: prod.variantes.map((value) => {
+                                        return {
+                                            ...value,
+                                            unidadMedida
+                                        }
+                                    })
                                 }))
                             }}
                             options={unidadesMedida}
@@ -135,6 +111,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         <MyInputLabel shrink>Costo</MyInputLabel>
                         <InputNumber
                             min={0}
+                            max={prod.variante.precio - 1}
                             placeholder={'0.00'}
                             value={prod.variante.costo}
                             onFocus={handleSelect}

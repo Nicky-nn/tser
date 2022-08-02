@@ -29,6 +29,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
     const prod = useAppSelector(selectProducto)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
     const handleSave = async () => {
         // Reglas de validacion
         const val = await productoRegistroValidator(prod)
@@ -61,6 +62,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
     useEffect(() => {
         dispatch(productoReset())
     }, []);
+
     return (
         <SimpleContainer>
             <div className="breadcrumb">
