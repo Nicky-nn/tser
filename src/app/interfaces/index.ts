@@ -3,12 +3,6 @@ export interface ClasificadorProps {
     descripcion: string;
 }
 
-export interface SinActividadesProps {
-    codigoCaeb: string;
-    tipoActividad: string;
-    descripcion: string;
-}
-
 /**
  * Estados suscritos para el ciclo de vida del registro
  */

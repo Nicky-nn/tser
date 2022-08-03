@@ -9,7 +9,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
         codigoMetodoPago: fcv.codigoMetodoPago,
         descuentoAdicional: fcv.descuentoAdicional,
         detalleExtra: fcv.detalleExtra,
-        emailCliente: fcv.cliente.email,
+        emailCliente: fcv.emailCliente,
         detalle: fcv.detalle.map(item => ({
             codigoProductoSin: item.codigoProductoSin,
             codigoProducto: item.codigoProducto,

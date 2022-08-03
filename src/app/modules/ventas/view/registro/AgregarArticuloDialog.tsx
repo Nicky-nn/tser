@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
-import {toast} from "react-toastify";
 import {genRandomString, genReplaceEmpty, handleFocus, isEmptyValue} from "../../../../utils/helper";
 import {apiProductoServicioUnidadMedida} from "../../../productos/api/productoServicioUnidadMedida.api";
 import AlertError from "../../../../base/components/Alert/AlertError";
@@ -25,6 +24,7 @@ import {
     ProductoVarianteInputTempProps
 } from "../../../productos/interfaces/producto.interface";
 import useAuth from "../../../../base/hooks/useAuth";
+import {notError} from "../../../../utils/notification";
 
 interface OwnProps {
     id: string;
@@ -40,9 +40,11 @@ type Props = OwnProps;
 const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
     const {onClose, codigoActividad, open, ...other} = props;
     const {user} = useAuth()
-    const initialValues = {
+    const initialValues: ProductoVarianteInputTempProps = {
+        incluirCantidad: false,
+        verificarStock: false,
         id: genRandomString(5),
-        codigoProducto: genRandomString(10),
+        codigoProducto: genRandomString(10).toUpperCase(),
         nombre: '',
         precio: 0,
         titulo: '',
@@ -69,24 +71,19 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
 
 
     const handleOk = () => {
-        let aux = true;
-        if (inputForm.nombre.trim().length === 0) {
-            toast('Debe ingresar nombre del producto', {type: "error"})
-            aux = false
-        }
-        if (inputForm.precio === 0) {
-            toast('Precio debe ser mayor a 0', {type: "error"})
-            aux = false
-        }
-        if (isEmptyValue(inputForm.unidadMedida)) {
-            toast('Seleccione unidad de medida', {type: "error"})
-            aux = false
-        }
-        if (isEmptyValue(inputForm.sinProductoServicio)) {
-            toast('Seleccione producto para homologación', {type: "error"})
-            aux = false
-        }
-        if (aux) {
+        try {
+            if (inputForm.nombre.trim().length === 0) {
+                throw new Error('Debe ingresar nombre del producto')
+            }
+            if (inputForm.precio === 0) {
+                throw new Error('Precio debe ser mayor a 0')
+            }
+            if (isEmptyValue(inputForm.unidadMedida)) {
+                throw new Error('Seleccione unidad de medida')
+            }
+            if (isEmptyValue(inputForm.sinProductoServicio)) {
+                throw new Error('Seleccione producto para homologación')
+            }
             const nuevoDetalle: ProductosVariantesProps = {
                 usucre: user.nombres,
                 _id: inputForm.id,
@@ -97,8 +94,6 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                 tipoProducto: null,
                 totalVariantes: 1,
                 varianteUnica: true,
-                incluirCantidad: false,
-                verificarStock: false,
                 proveedor: null,
                 opcionesProducto: [],
                 inventario: inputForm.inventario,
@@ -112,13 +107,16 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                     precio: inputForm.precio,
                     costo: inputForm.costo,
                     precioComparacion: inputForm.precioComparacion!,
-                    incluirStock: false,
                     inventario: inputForm.inventario,
                     peso: 0,
-                    unidadMedida: inputForm.unidadMedida!
+                    unidadMedida: inputForm.unidadMedida!,
+                    incluirCantidad: false,
+                    verificarStock: false
                 }
             }
             onClose(nuevoDetalle)
+        } catch (e: any) {
+            notError(e.message)
         }
     };
 
@@ -129,11 +127,12 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
             const resp = await apiProductoServicioUnidadMedida(codigoActividad)
             setUnidadesMedida(resp.sinUnidadMedida)
             setProductosServicios(resp.sinProductoServicioPorActividad)
-            console.log(resp)
         } catch (e: any) {
             setIsError(e.message)
         }
     }
+
+
     useEffect(() => {
         fetchProductosServiciosUnidadesMedida(codigoActividad).then()
     }, [codigoActividad]);
@@ -242,10 +241,10 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
 
                 </DialogContent>
                 <DialogActions sx={{mb: 1}}>
-                    <Button variant={'outlined'} color={'error'} autoFocus onClick={handleCancel}>
+                    <Button variant={'contained'} size={'small'} color={'error'} autoFocus onClick={handleCancel}>
                         Cancelar
                     </Button>
-                    <Button variant={'outlined'} onClick={handleOk}
+                    <Button variant={'contained'} size={'small'} onClick={handleOk}
                             style={{marginRight: 18}}
                     >Registrar</Button>
                 </DialogActions>

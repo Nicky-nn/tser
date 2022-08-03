@@ -12,6 +12,7 @@ import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectIn
 import AsyncSelect from "react-select/async";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {swalException} from "../../../../utils/swal";
+import {genReplaceEmpty} from "../../../../utils/helper";
 
 interface FilmOptionType {
     codigoCaeb: string;
@@ -36,7 +37,6 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
             return []
         } catch (e: any) {
             swalException(e)
-            console.log(e.message)
             return [];
         }
     }
@@ -57,6 +57,7 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
                         placeholder={'Seleccione Cliente'}
                         loadOptions={fetchClientes}
                         isClearable={true}
+                        value={genReplaceEmpty(factura.cliente, null) }
                         getOptionValue={(item) => item.codigoCliente}
                         getOptionLabel={(item) => `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial} - ${item.tipoDocumentoIdentidad.descripcion}`}
                         onChange={(cliente: any) => {

@@ -15,6 +15,7 @@ import MetodosPago from "./registro/MetodosPago";
 import FacturaDetalleExtra from "./registro/FacturaDetalleExtra";
 import DatosActividadEconomica from "./registro/DatosActividadEconomica";
 import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
+import useAuth from "../../../base/hooks/useAuth";
 
 const Container = styled('div')(({theme}) => ({
     margin: '30px',
@@ -31,21 +32,7 @@ const Container = styled('div')(({theme}) => ({
 
 const VentaRegistro = () => {
     const factura = useAppSelector(selectFactura)
-    const {user} = useContext(AuthContext)
-    const [clasificadores, setClasificadores] = useState<FacturaProps>({
-        sinActividades: [],
-        sinTipoMetodoPago: [],
-        sinUnidadMedida: []
-    });
-
-    useEffect(() => {
-        const fetch = async (): Promise<void> => {
-            await fetchFacturaParams().then(res => {
-                setClasificadores(res)
-            });
-        }
-        fetch().then()
-    }, []);
+    const {user} = useAuth()
 
     const formik: FormikProps<FacturaInputProps> = useFormik<FacturaInputProps>({
         initialValues: factura,

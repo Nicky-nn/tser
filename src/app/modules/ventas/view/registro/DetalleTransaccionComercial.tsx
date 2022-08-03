@@ -33,6 +33,8 @@ import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelec
 import {apiProductosVariantes} from "../../../productos/api/productosVariantes.api";
 import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
 import {FacturaDetalleInputProps} from "../../interfaces/factura";
+import {notDanger} from "../../../../utils/notification";
+import {genReplaceEmpty} from "../../../../utils/helper";
 
 const data: any = []
 
@@ -43,14 +45,13 @@ export const DetalleTransaccionComercial: FC = () => {
     const handleFocus = (event: any) => event.target.select();
 
     const handleChange = async (newInput: ProductosVariantesProps) => {
-        console.log(newInput)
         if (newInput) {
             // Verificamos si ya existe el producto
             const producto = factura.detalle.find(d => d.codigoProducto === newInput.variantes.codigoProducto);
             if (!producto) {
                 dispatch(setDetalleFactura(newInput));
             } else {
-                toast.warn('El producto ya se adicionó')
+                notDanger('El producto ya se adicionó')
             }
         }
     }
@@ -71,7 +72,6 @@ export const DetalleTransaccionComercial: FC = () => {
             return []
         } catch (e: any) {
             swalException(e)
-            console.log(e.message)
             return [];
         }
     }
@@ -89,10 +89,11 @@ export const DetalleTransaccionComercial: FC = () => {
                                 defaultOptions
                                 styles={reactSelectStyles}
                                 menuPosition={'fixed'}
-                                name="actividadEconomica"
+                                name="productosServicios"
                                 placeholder={'Seleccione producto'}
                                 loadOptions={cargarVariantesProductos}
                                 isClearable={true}
+                                value={null}
                                 getOptionValue={(item) => item.variantes.codigoProducto}
                                 getOptionLabel={(item) => `${item.variantes.codigoProducto} - ${item.variantes.nombre}`}
                                 onChange={(val: any) => handleChange(val)}
@@ -109,6 +110,16 @@ export const DetalleTransaccionComercial: FC = () => {
                             <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">
                                 Producto Personalizado
                             </Button>
+                            <AgregarArticuloDialog
+                                id={'agregarArticulo'}
+                                keepMounted
+                                open={openAgregarArticulo}
+                                codigoActividad={factura.actividadEconomica.codigoCaeb}
+                                onClose={(newProduct: any) => {
+                                    handleChange(newProduct).then()
+                                    setOpenAgregarArticulo(false)
+                                }}
+                            />
                         </Stack>
                     </Grid>
 
@@ -243,16 +254,6 @@ export const DetalleTransaccionComercial: FC = () => {
                     </Grid>
                 </Grid>
             </SimpleCard>
-            <AgregarArticuloDialog
-                id={'agregarArticulo'}
-                keepMounted
-                open={openAgregarArticulo}
-                codigoActividad={factura.actividadEconomica.codigoCaeb}
-                onClose={(newProduct: any) => {
-                    handleChange(newProduct)
-                    setOpenAgregarArticulo(false)
-                }}
-            />
         </>
     }
     return <><h1>Error al cargar Actividad Económicas</h1></>

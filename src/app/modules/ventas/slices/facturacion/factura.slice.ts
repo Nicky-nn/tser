@@ -38,8 +38,6 @@ export const facturaSlice = createSlice({
         setDetalleFactura: (state, action: PayloadAction<ProductosVariantesProps>) => {
             state.detalle.push({
                 ...action.payload.variantes,
-                verificarStock: action.payload.verificarStock,
-                incluirCantidad: action.payload.incluirCantidad,
                 codigoProductoSin: action.payload.sinProductoServicio.codigoProducto,
                 cantidad: 1,
                 precioUnitario: action.payload.variantes.precio,

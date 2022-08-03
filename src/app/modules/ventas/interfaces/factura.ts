@@ -1,5 +1,6 @@
 import {ClienteProps} from "../../../base/api/cliente.api";
 import {
+    SinActividadesPorDocumentoSector,
     SinActividadesProps,
     SinCufdProps,
     SinCuisProps,

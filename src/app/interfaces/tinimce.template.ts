@@ -15,7 +15,6 @@ export const TINYMCE_TEMPLATES = [
                 </tr>
                 <tr>
             </tbody>
-        </table>
-        `
+        </table>`
     }
 ]

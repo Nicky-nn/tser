@@ -32,6 +32,14 @@ const Container = styled('div')(({theme}) => ({
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     {
+        header: 'Nro. Factura',
+        accessorKey: 'numeroFactura',
+        size: 50,
+        muiTableBodyCellProps: {
+            align: 'center',
+        }
+    },
+    {
         accessorKey: 'fechaEmision',
         header: 'Fecha Emisión',
         id: 'fechaEmision',
@@ -49,11 +57,6 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
         enableColumnFilter: false
     },
     {
-        header: 'Nro. Factura',
-        accessorKey: 'numeroFactura',
-        size: 10
-    },
-    {
         id: 'cliente.numeroDocumento',
         header: 'Nro. Documento',
         accessorFn: (row) => (
@@ -66,8 +69,8 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
         header: 'Razon Social',
         id: 'razonSocial',
         accessorFn: (row) => (<span>{row.cliente.razonSocial}</span>),
-        maxSize: 160,
-        minSize: 100,
+        maxSize: 80,
+        minSize: 20,
         size: 10
     },
     {

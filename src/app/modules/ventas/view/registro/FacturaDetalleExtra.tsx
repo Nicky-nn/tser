@@ -39,7 +39,6 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                         }}
                         onEditorChange={(newValue, editor) => {
                             dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
-                            console.log(editor.getContent({format: 'text'}));
                         }}
                         init={{
                             plugins: 'table template code',

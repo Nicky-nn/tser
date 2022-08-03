@@ -10,14 +10,12 @@ const reqQuery = gql`
             _id
             titulo
             descripcion
-            incluirCantidad
             sinProductoServicio{
                 codigoActividad
                 codigoProducto
                 descripcionProducto
             }
             varianteUnica
-            verificarStock
             opcionesProducto{
                 nombre
                 valores
@@ -25,7 +23,6 @@ const reqQuery = gql`
             proveedor{
                 codigo
                 nombre
-                razonSocial
             }
             variantes{
                 id
@@ -33,6 +30,8 @@ const reqQuery = gql`
                 titulo
                 nombre
                 codigoBarras
+                incluirCantidad
+                verificarStock
                 precio
                 precioComparacion
                 imagen{

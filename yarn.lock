@@ -604,30 +604,30 @@
     "@types/use-sync-external-store" "^0.0.3"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-table@8.5.2", "@tanstack/react-table@^8.5.2":
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.2.tgz#1e547649b8f057eddbe769b04612914a2efa5d09"
-  integrity sha512-CbNOay5FZHjU5EKiqik+Q8/gkUJfzH07KzYnnpGyqbfeocGZZckDblw7YwGMQ5/8Y0jgmobTYrMSqd27wtPdrA==
+"@tanstack/react-table@8.5.5", "@tanstack/react-table@^8.5.5":
+  version "8.5.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.5.tgz#061ec485f96e678aaf544d6ebac96b96e2902b92"
+  integrity sha512-3uE150rvw1ibx5veC69MA4eaeiDgGh1bIqAY4gp9SR5THNzGqM8KSGPLlgPjcr31jlHdXkU0NpzMeVwWC0NAxQ==
   dependencies:
-    "@tanstack/table-core" "8.5.2"
+    "@tanstack/table-core" "8.5.5"
 
-"@tanstack/react-virtual@^3.0.0-beta.13":
-  version "3.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.0.0-beta.13.tgz#4bcba7c6886e59336e2457382f68341d46746721"
-  integrity sha512-FDyKbo3ncoOR1rsEURQJ5U+inUV7YC7lcP02Tw5N7oAz/DKWm/uifvWYM7MW0eKSyNCrVPJvlDrgdg0vb7f22Q==
+"@tanstack/react-virtual@^3.0.0-beta.14":
+  version "3.0.0-beta.14"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.0.0-beta.14.tgz#4765bd72b3b94d098a6edb1a36f51f1819cc6fd9"
+  integrity sha512-khIS0ZjRaAxLjZx2VLTde4P8BuaQ/8dxoGdFk+vFFkZdJyXMRSHXLCp8ZnVshyMT/t6SovN+4BMfNZnV1jb1Yg==
   dependencies:
     "@reach/observe-rect" "^1.1.0"
-    "@tanstack/virtual-core" "3.0.0-beta.13"
+    "@tanstack/virtual-core" "3.0.0-beta.14"
 
-"@tanstack/table-core@8.5.2":
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.5.2.tgz#097d88131bdf72eca0d4554270922e250e944a92"
-  integrity sha512-uhmhqeSNL2un0ssO5fZFtuwgvloBZdc2NFu8Rodzp4uPc1LfEWPhvrfoG9/L7FLRHC2ImlkmQgpVOakNZk9zgQ==
+"@tanstack/table-core@8.5.5":
+  version "8.5.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.5.5.tgz#ffb334244a8d7efa696b321661c5892cc2a69502"
+  integrity sha512-p5YBvhw+R3CIj/Wg4sZxe3Lsp1Fk1PATRFWTdKaADldG9XWiGDhr3e0IeyVkUoBwcJzf6paXzZK6gSb3++lSKA==
 
-"@tanstack/virtual-core@3.0.0-beta.13":
-  version "3.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.0.0-beta.13.tgz#c5029dfc633ede616306b7490728cf60586bc38f"
-  integrity sha512-T7ZwIYYeQEiq0KKYLr0GMQsr4U2VaHXzna3PgooJTh91bEFwDU7bol/1GixCDqLOs+CkjRoVjFdSIo25jgzhnw==
+"@tanstack/virtual-core@3.0.0-beta.14":
+  version "3.0.0-beta.14"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.0.0-beta.14.tgz#5be33feab2a369061eef4f8f82467b7c7342564e"
+  integrity sha512-xtt1J6Z1v5BXv2s23DAaVdma6LsJJmuI8bj87xdWkMnKPE/jlW5zGGN/PHuZrCz/v8QPbjbru0oxq/uBTtXSXA==
   dependencies:
     "@reach/observe-rect" "^1.1.0"
 
@@ -1821,14 +1821,14 @@ magic-string@^0.26.2:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-react-table@^0.31.1:
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.31.1.tgz#e9636cc37a039128ce2329b3ca5c0b1a0ca32d12"
-  integrity sha512-Kfky+3dJBQRzkPpX+SGHcPoIa2mwYByuhGzzOusg/mFP/o9yHW79HIcq/wMSzbwsaLsxWc0tIa5piY/LYBVDcg==
+material-react-table@^0.32.2:
+  version "0.32.2"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-0.32.2.tgz#11eee9d1010d342fdbd2803172a73900c96836ed"
+  integrity sha512-bWmUSxk8uclbvuvzzRfnxPDn21PoYlJLU/I4mH47u/D4VC8vJxbMEM9MtbbR9Atms/dG0PWY7ALwkN60Ra2GWA==
   dependencies:
     "@tanstack/match-sorter-utils" "8.1.1"
-    "@tanstack/react-table" "8.5.2"
-    "@tanstack/react-virtual" "^3.0.0-beta.13"
+    "@tanstack/react-table" "8.5.5"
+    "@tanstack/react-virtual" "^3.0.0-beta.14"
 
 memoize-one@^5.0.0:
   version "5.2.1"
