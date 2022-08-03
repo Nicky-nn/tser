@@ -4,15 +4,16 @@ import {useDispatch} from "react-redux";
 import React, {useState} from "react";
 import {PerfilProps} from "../../../../base/models/loginModel";
 import {useAppSelector} from "../../../../hooks";
-import {ClienteProps, fetchClientesList} from "../../../../base/api/cliente.api";
+import {fetchClientesList} from "../../../../base/api/cliente.api";
 import DatosCliente from "./DatosCliente";
 import {PersonAddAlt1Outlined} from "@mui/icons-material";
-import NuevoClienteDialog from "./NuevoClienteDialog";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import AsyncSelect from "react-select/async";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {swalException} from "../../../../utils/swal";
 import {genReplaceEmpty} from "../../../../utils/helper";
+import ClienteRegistroDialog from "../../../clientes/view/ClienteRegistroDialog";
+import {ClienteProps} from "../../../clientes/interfaces/cliente";
 
 interface FilmOptionType {
     codigoCaeb: string;
@@ -57,7 +58,7 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
                         placeholder={'Seleccione Cliente'}
                         loadOptions={fetchClientes}
                         isClearable={true}
-                        value={genReplaceEmpty(factura.cliente, null) }
+                        value={genReplaceEmpty(factura.cliente, null)}
                         getOptionValue={(item) => item.codigoCliente}
                         getOptionLabel={(item) => `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial} - ${item.tipoDocumentoIdentidad.descripcion}`}
                         onChange={(cliente: any) => {
@@ -81,21 +82,22 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
             </Grid>
 
             <Grid item lg={3} xs={12} md={3}>
-                <Button variant="outlined" fullWidth onClick={() => setNuevoCliente(true)} startIcon={<PersonAddAlt1Outlined/>}>Nuevo
+                <Button variant="outlined" fullWidth onClick={() => setNuevoCliente(true)}
+                        startIcon={<PersonAddAlt1Outlined/>}>Nuevo
                     Cliente</Button>
             </Grid>
             <Grid item lg={12}>
                 <DatosCliente/>
             </Grid>
         </Grid>
-        <NuevoClienteDialog
+        <ClienteRegistroDialog
             id={'nuevoClienteDialog'}
             keepMounted
             open={openNuevoCliente}
-            onClose={(e) => {
-                if (e) {
-                    dispatch(setCliente(e));
-                    dispatch(setCodigoCliente(e.codigoCliente))
+            onClose={(value?: ClienteProps) => {
+                if (value) {
+                    dispatch(setCliente(value));
+                    dispatch(setCodigoCliente(value.codigoCliente))
                     setNuevoCliente(false)
                 } else {
                     setNuevoCliente(false)

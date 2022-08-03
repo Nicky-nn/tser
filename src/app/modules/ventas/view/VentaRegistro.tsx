@@ -1,14 +1,12 @@
 import {Box, styled} from '@mui/system'
 import {Divider, Grid} from "@mui/material";
 import {DatosTransaccionComercial} from "./registro/DatosTransaccionComercial";
-import React, {useContext, useEffect, useState} from "react";
-import {FacturaProps, fetchFacturaParams} from "../api/factura.api";
+import React from "react";
 import {selectFactura} from "../slices/facturacion/factura.slice";
 import {FormikProps, useFormik} from "formik";
 import {FacturaInputProps} from "../interfaces/factura";
 import {DetalleTransaccionComercial} from "./registro/DetalleTransaccionComercial";
 import {useAppSelector} from "../../../hooks";
-import AuthContext from "../../../base/contexts/JWTAuthContext";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import VentaTotales from "./registro/VentaTotales";
 import MetodosPago from "./registro/MetodosPago";

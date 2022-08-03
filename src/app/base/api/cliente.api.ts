@@ -3,22 +3,11 @@
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../models/paramsModel";
 import {AuditoriaProps} from "../../interfaces";
+import {ClienteProps} from "../../modules/clientes/interfaces/cliente";
 
 export interface SinTipoDocumentoIdentidad {
     codigoClasificador: string;
     descripcion: string;
-}
-
-export interface ClienteProps extends AuditoriaProps {
-    _id: string,
-    apellidos: string,
-    codigoCliente: string,
-    complemento: string,
-    email: string
-    nombres: string,
-    numeroDocumento: string,
-    razonSocial: string,
-    tipoDocumentoIdentidad: SinTipoDocumentoIdentidad
 }
 
 
@@ -38,6 +27,7 @@ const clientesListadoQuery = gql`
                     codigoClasificador
                     descripcion
                 }
+                state
             }
         }
     }

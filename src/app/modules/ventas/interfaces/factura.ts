@@ -1,6 +1,4 @@
-import {ClienteProps} from "../../../base/api/cliente.api";
 import {
-    SinActividadesPorDocumentoSector,
     SinActividadesProps,
     SinCufdProps,
     SinCuisProps,
@@ -16,8 +14,9 @@ import {
 import {PuntoVentaProps} from "../../puntoVenta/interfaces/puntoVenta";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
 import {ProductoVarianteProps} from "../../productos/interfaces/producto.interface";
+import {ClienteProps} from "../../clientes/interfaces/cliente";
 
-export interface FacturaDetalleInputProps extends ProductoVarianteProps{
+export interface FacturaDetalleInputProps extends ProductoVarianteProps {
     verificarStock: boolean
     codigoProductoSin: string
     descripcion: string

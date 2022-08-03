@@ -1,139 +1,158 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Button, Grid, IconButton, InputAdornment, Stack, TextField} from "@mui/material";
-import {FileDownload, LayersClear, MenuOpen, Search, UploadFile} from "@mui/icons-material";
-import DataTable, {TableColumn} from "react-data-table-component";
-import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import SimpleMenu, {StyledMenuItem} from "../../../../base/components/MyMenu/SimpleMenu";
-import {openInNewTab} from "../../../../utils/helper";
+import React, {FunctionComponent, useMemo, useState} from 'react';
+import {Chip, IconButton} from "@mui/material";
+import {genApiQuery} from "../../../../utils/helper";
 import {fetchClienteListado} from "../../api/clienteListado.api";
-import {PAGE_DEFAULT, PAGE_INFO_DEFAULT, PageInfoProps, PageProps} from "../../../../interfaces";
-import {ClienteProps} from "../../../../base/api/cliente.api";
+import {PAGE_DEFAULT, PageProps} from "../../../../interfaces";
+import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
+import {useQuery} from "@tanstack/react-query";
+import {ColumnFiltersState, PaginationState, SortingState} from "@tanstack/react-table";
+import {localization} from "../../../../utils/localization";
+import {Edit} from "@mui/icons-material";
 import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
+import ClienteModificarDialog from "../ClienteModificarDialog";
+import {ClienteProps} from "../../interfaces/cliente";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const columns: TableColumn<ClienteProps>[] = [{
-    name: 'Razon Social',
-    sortable: true,
-    selector: (row) => row.razonSocial,
-}, {
-    name: 'Nro. Documento',
-    sortable: true,
-    selector: (row) => row.numeroDocumento,
-    cell: (row) => `${row.numeroDocumento}${row.complemento ? `-${row.complemento}` : ''}`,
-    width: '170px'
-}, {
-    name: 'Correo Electrónico',
-    selector: (row) => row.email,
-}, {
-    name: 'Tipo Documento',
-    selector: (row) => row.tipoDocumentoIdentidad.descripcion,
-}, {
-    name: 'Acciones',
-    cell: (row) => (<>
-        <SimpleMenu
-            menuButton={
-                <>
-                    <IconButton aria-label="delete">
-                        <MenuOpen/>
-                    </IconButton>
-                </>
-            }
-        >
-            <StyledMenuItem onClick={() => {
-                openInNewTab(row._id)
-            }}>
-                <LayersClear/> Modificar Datos
-            </StyledMenuItem>
-        </SimpleMenu>
-        <AuditIconButton row={row}/>
-    </>),
-    ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
-},
-];
+const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
+    {
+        accessorKey: 'razonSocial',
+        header: 'Razon Social',
+    },
+    {
+        accessorFn: (row) => `${row.numeroDocumento}${row.complemento ? `-${row.complemento}` : ''}`,
+        id: 'numeroDocumento',
+        header: 'Nro. Documento',
+    },
+    {
+        id: 'email',
+        header: 'Correo',
+        accessorKey: 'email'
+    },
+    {
+        accessorKey: 'tipoDocumentoIdentidad.descripcion',
+        id: 'tipoDocumentoIdentidad.descripcion',
+        header: 'Tipo Documento',
+    },
+    {
+        accessorFn: (row) => (<Chip size={'small'} label={row.state} color={"success"}/>),
+        id: 'state',
+        header: 'Estado',
+    },
+]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
-    const [loading, setLoading] = useState(false);
-    const [{page, limit, query}, setPage] = useState<PageProps>(PAGE_DEFAULT);
-    const [pageInfo, setPageInfo] = useState<PageInfoProps>(PAGE_INFO_DEFAULT);
-    const [data, setData] = useState<ClienteProps[]>([]);
 
-    const fetchClientes = async (pageProp: PageProps) => {
-        setLoading(true);
-        await fetchClienteListado(pageProp).then(cli => {
-            setData(cli.docs)
-            setPageInfo(cli.pageInfo)
-        })
-        setLoading(false);
-    };
+    // DATA TABLE
+    const [rowCount, setRowCount] = useState(0);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: PAGE_DEFAULT.page,
+        pageSize: PAGE_DEFAULT.limit
+    });
+    // FIN DATA TABLE
+    const [openDialog, setOpenDialog] = useState(false);
+    const [cliente, setCliente] = useState<ClienteProps | null>(null);
 
-    useEffect(() => {
-        fetchClientes(PAGE_DEFAULT).then()
-    }, []);
+    const {data: clientes, isError, isLoading, isFetching} = useQuery([
+            'client',
+            columnFilters,
+            pagination.pageIndex,
+            pagination.pageSize,
+            sorting
+        ],
+        async () => {
+            const query = genApiQuery(columnFilters);
+            const fetchPagination: PageProps = {
+                ...PAGE_DEFAULT,
+                page: pagination.pageIndex + 1,
+                limit: pagination.pageSize,
+                reverse: sorting.length <= 0,
+                query
+            }
+            const {pageInfo, docs} = await fetchClienteListado(fetchPagination);
+            setRowCount(pageInfo.totalDocs);
+            return docs
+        }, {keepPreviousData: true})
+    const columns = useMemo(() => tableColumns, [])
 
-    const handlePerRowsChange = async (limit: number, page: number) => {
-        await fetchClientes({limit, page}).then()
-        setPage({limit, page, query})
-    };
-
-    const handlePageChange = async (page: number) => {
-        await fetchClientes({limit, page, query}).then()
-        setPage({limit, page, query})
-    };
-
-    const handleFilter = async (e: any) => {
-        e.preventDefault()
-        const filter = e.target.value.trim()
-        const filterQuery = filter.length > 0 ? `razonSocial=/${filter}/i` : ''
-        setTimeout(async () => {
-            await fetchClientes({limit, page, query: filterQuery})
-        }, 500)
-    }
     return (
-        <SimpleCard>
-            <Grid container spacing={1} mb={1}>
-                <Grid item lg={6} md={6} sm={6} xs={12}>
-                    <TextField
-                        label="Filtrar Clientes"
-                        fullWidth
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Search/>
-                                </InputAdornment>
-                            ),
-                        }}
-                        onChange={handleFilter}
-                        variant="outlined"
-                        size={'small'}
-                    />
-                </Grid>
-                <Grid item lg={6} md={6} sm={6} xs={12}>
-                    <Stack direction={{xs: 'column', sm: 'row'}} spacing={1}>
-                        <Button variant="outlined" color={'inherit'} startIcon={<UploadFile/>}>Proveedor</Button>
-                        <Button variant="outlined" color={'inherit'} startIcon={<FileDownload/>}>Estado</Button>
-                    </Stack>
-                </Grid>
-            </Grid>
-
-            <DataTable
+        <>
+            <MaterialReactTable
                 columns={columns}
-                data={data}
-                selectableRows
-                progressPending={loading}
-                dense
-                pagination
-                paginationServer
-                paginationTotalRows={pageInfo.totalDocs}
-                onChangeRowsPerPage={handlePerRowsChange}
-                onChangePage={handlePageChange}
+                data={clientes ?? []}
+                initialState={{showColumnFilters: false}}
+                manualFiltering
+                manualPagination
+                manualSorting
+                enableDensityToggle={false}
+                enableGlobalFilter={false}
+                localization={localization}
+                enableRowNumbers={true}
+                muiTableToolbarAlertBannerProps={
+                    isError
+                        ? {
+                            color: 'error',
+                            children: 'Error loading data',
+                        }
+                        : undefined
+                }
+                onColumnFiltersChange={setColumnFilters}
+                onPaginationChange={setPagination}
+                onSortingChange={setSorting}
+                rowCount={rowCount}
+                state={{
+                    columnFilters,
+                    isLoading,
+                    pagination,
+                    showAlertBanner: isError,
+                    showProgressBars: isFetching,
+                    sorting,
+                    density: 'compact'
+                }}
+                enableRowActions
+                positionActionsColumn={'last'}
+                renderRowActions={({row}) => (
+                    <>
+                        <div style={{display: 'flex', flexWrap: 'nowrap', gap: '0.5rem'}}>
+                            <IconButton onClick={() => {
+                                setCliente(row.original)
+                                setOpenDialog(true)
+                            }}
+                                        color={'primary'} aria-label="delete">
+                                <Edit/>
+                            </IconButton>
+                            <AuditIconButton row={row.original}/>
+                        </div>
+                    </>
+                )}
+                muiTableHeadCellFilterTextFieldProps={{
+                    sx: {m: '0.5rem 0', width: '95%'},
+                    variant: 'outlined',
+                    size: 'small'
+                }}
             />
-        </SimpleCard>
+            {
+                cliente && <ClienteModificarDialog
+                    id={'clienteModificar'}
+                    keepMounted
+                    open={openDialog}
+                    cliente={cliente!}
+                    onClose={(value?: ClienteProps) => {
+                        if(value){
+                            console.log(value)
+                        }
+                        setCliente(null)
+                        setOpenDialog(false)
+                    }}
+                />
+            }
+
+        </>
     );
 }
 export default ClientesListado
