@@ -1,9 +1,10 @@
 // noinspection GraphQLUnresolvedReference
 
 import {gql, GraphQLClient} from "graphql-request";
-import {ClasificadorProps, SinActividadesProps} from "../../../interfaces";
+import {ClasificadorProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
 import {ProductoVarianteProps} from "../interfaces/producto.interface";
+import {SinActividadesProps} from "../../sin/interfaces/sin.interface";
 
 export interface FacturaProps {
     sinTipoMetodoPago: ClasificadorProps[],

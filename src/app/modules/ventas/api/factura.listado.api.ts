@@ -1,9 +1,8 @@
 // noinspection GraphQLUnresolvedReference
 
 import {gql, GraphQLClient} from "graphql-request";
-import {ClasificadorProps, PageInfoProps, PageProps, SinActividadesProps} from "../../../interfaces";
+import {PageInfoProps, PageProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductoProps} from "../../productos/interfaces/producto.interface";
 import {FacturaProps} from "../interfaces/factura";
 
 /**

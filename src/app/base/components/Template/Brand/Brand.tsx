@@ -1,7 +1,6 @@
 import {Box, styled} from '@mui/system'
 import {Span} from "../Typography";
 import useSettings from "../../../hooks/useSettings";
-import MatxLogo from "../MatxLogo/MatxLogo";
 
 const BrandRoot = styled(Box)(({theme}) => ({
     display: 'flex',

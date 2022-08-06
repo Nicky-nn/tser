@@ -1,8 +1,8 @@
 // noinspection GraphQLUnresolvedReference
 
 import {gql, GraphQLClient} from "graphql-request";
-import {SinActividadesProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
+import {SinActividadesProps} from "../interfaces/sin.interface";
 
 const query = gql`
     query FCV_PARAMETROS {

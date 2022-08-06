@@ -6,7 +6,7 @@ import {themeShadows} from "../../MatxTheme/themeColors";
 import useSettings from "../../../../hooks/useSettings";
 import useAuth from "../../../../hooks/useAuth";
 import NotificationBar from "../../NotificationBar/NotificationBar";
-import {MailOutline, Menu, Person, PowerSettingsNew, Settings} from "@mui/icons-material";
+import {MailOutline, Menu, PowerSettingsNew, Settings} from "@mui/icons-material";
 import {Span} from "../../Typography";
 import {NotificationProvider} from "../../../../contexts/NotificationContext";
 import MatxMenu from "../../MatxMenu/MatxMenu";
@@ -148,14 +148,10 @@ const Layout1Topbar: FC<any> = () => {
                         }
                     >
                         <StyledItem>
-                            <Link to="/page-layouts/user-profile">
-                                <Person> person </Person> &nbsp;&nbsp;
-                                <Span> Perfil </Span>
+                            <Link to={'/account'}>
+                                <Settings> settings </Settings> &nbsp;&nbsp;
+                                <Span> Opciones </Span>
                             </Link>
-                        </StyledItem>
-                        <StyledItem>
-                            <Settings> settings </Settings> &nbsp;&nbsp;
-                            <Span> Opciones </Span>
                         </StyledItem>
                         <StyledItem onClick={logout}>
                             <PowerSettingsNew> power_settings_new </PowerSettingsNew> &nbsp;&nbsp;

@@ -1,10 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
-import {GraphQLClient} from "graphql-request";
-import {ClasificadorProps, SinActividadesProps} from "../../../interfaces";
+import {gql, GraphQLClient} from "graphql-request";
+import {ClasificadorProps} from "../../../interfaces";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {FacturaInputProps} from "../interfaces/factura";
-import {gql} from "@apollo/client";
+import {SinActividadesProps} from "../../sin/interfaces/sin.interface";
 
 export interface FacturaProps {
     sinTipoMetodoPago: ClasificadorProps[],

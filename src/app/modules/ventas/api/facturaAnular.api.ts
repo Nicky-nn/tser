@@ -1,9 +1,8 @@
 // noinspection GraphQLUnresolvedReference
 
-import {GraphQLClient} from "graphql-request";
+import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
 import {FacturaProps} from "../interfaces/factura";
-import {gql} from "@apollo/client";
 
 export const FCV_ONLINE = gql`
     mutation FCV_ANULAR($id: ID!, $codigoMotivo: Int!) {
