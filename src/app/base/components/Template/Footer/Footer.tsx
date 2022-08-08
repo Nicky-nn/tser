@@ -51,7 +51,7 @@ const Footer: FC<any> = () => {
                         <Paragraph sx={{m: 0}}>
                             FCV ISIPASS es un producto de &nbsp;
                             <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">INTEGRATE Soluciones Informáticas</a> <br/>
-                            Plantilla <a href="https://matx-react.ui-lib.com/">MatX</a>
+                            Plantilla <a target="_blank" href="https://matx-react.ui-lib.com/">MatX</a>
                         </Paragraph>
                     </FooterContent>
                 </AppFooter>

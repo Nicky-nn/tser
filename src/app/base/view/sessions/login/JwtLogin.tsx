@@ -66,8 +66,8 @@ const JwtLogin = () => {
     const formik = useFormik({
         initialValues: {
             shop: 'demo.isipass.com.bo',
-            email: 'ulric617@gmail.com',
-            password: '6176816',
+            email: '',
+            password: '',
             remember: true
         },
         validationSchema,

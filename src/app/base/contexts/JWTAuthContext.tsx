@@ -61,7 +61,7 @@ const reducer = (state: any, action: any) => {
             return {
                 ...state,
                 isAuthenticated: false,
-                user: null,
+                user: {},
             }
         }
         case 'REGISTER': {

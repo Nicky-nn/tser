@@ -2,7 +2,7 @@
 
 import React, {FunctionComponent, useState} from 'react';
 import {Button, Divider, Grid, Link, List, ListItem, ListItemText, Typography} from "@mui/material";
-import {Home, Paid} from "@mui/icons-material";
+import {Home, MonetizationOn, Paid} from "@mui/icons-material";
 import {useAppSelector} from "../../../../hooks";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
@@ -79,7 +79,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     }
     return (
         <>
-            <SimpleCard title="Cálculo de los totales" Icon={<Home/>}>
+            <SimpleCard title="Cálculo de los totales" childIcon={<MonetizationOn/>}>
                 <List dense>
                     <ListItem style={{padding: 0}}
                               secondaryAction={

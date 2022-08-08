@@ -154,7 +154,7 @@ const Layout1Topbar: FC<any> = () => {
                                 <Span> Opciones </Span>
                             </Link>
                         </StyledItem>
-                        <StyledItem onClick={logout}>
+                        <StyledItem onClick={() => logout()}>
                             <PowerSettingsNew> power_settings_new </PowerSettingsNew> &nbsp;&nbsp;
                             <Span> Cerrar Sesión </Span>
                         </StyledItem>
