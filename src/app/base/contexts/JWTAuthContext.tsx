@@ -83,8 +83,7 @@ const AuthContext = createContext({
     ...initialState,
     method: 'JWT',
     login: () => Promise.resolve(),
-    logout: () => {
-    },
+    logout: () => { },
     register: () => Promise.resolve(),
 })
 
@@ -147,7 +146,7 @@ export const AuthProvider = ({children}: any) => {
                         type: 'INIT',
                         payload: {
                             isAuthenticated: false,
-                            user: null,
+                            user: {},
                         },
                     })
                 }
@@ -157,7 +156,7 @@ export const AuthProvider = ({children}: any) => {
                     type: 'INIT',
                     payload: {
                         isAuthenticated: false,
-                        user: null,
+                        user: {},
                     },
                 })
             }

@@ -24,12 +24,8 @@ const NavExpandRoot = styled('div')(({theme}) => ({
         width: 44,
         overflow: 'hidden',
         justifyContent: 'center !important',
-        '& .itemText': {
-            display: 'none',
-        },
-        '& .itemIcon': {
-            display: 'none',
-        },
+        '& .itemText': {display: 'none'},
+        '& .itemIcon': {display: 'none'},
     },
 }))
 
@@ -44,9 +40,7 @@ const BaseButton = styled(ButtonBase)(({theme}) => ({
     display: 'flex',
     justifyContent: 'space-between !important',
     color: theme.palette.text.primary,
-    '&:hover': {
-        background: 'rgba(255, 255, 255, 0.08)',
-    },
+    '&:hover': { background: 'rgba(255, 255, 255, 0.08)' },
     '& .icon': {
         width: 36,
         fontSize: '18px',

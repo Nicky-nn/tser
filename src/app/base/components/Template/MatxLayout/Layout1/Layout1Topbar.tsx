@@ -13,6 +13,7 @@ import MatxMenu from "../../MatxMenu/MatxMenu";
 import {ThemeColorBarProvider} from "../../../../contexts/ThemeColorContext";
 import ThemeColorBar from "../../NotificationBar/ThemeColorBar";
 import {topBarHeight} from "../../../../../utils/constant";
+import {cuentaRouteMap} from "../../../../../modules/cuenta/CuentaRoutesMap";
 
 const StyledIconButton = styled(IconButton)(({theme}) => ({
     color: theme.palette.text.primary,
@@ -148,7 +149,7 @@ const Layout1Topbar: FC<any> = () => {
                         }
                     >
                         <StyledItem>
-                            <Link to={'/account'}>
+                            <Link to={cuentaRouteMap.cuenta}>
                                 <Settings> settings </Settings> &nbsp;&nbsp;
                                 <Span> Opciones </Span>
                             </Link>

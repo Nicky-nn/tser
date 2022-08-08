@@ -1,0 +1,70 @@
+import React, {FunctionComponent} from 'react';
+import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
+import {Person} from "@mui/icons-material";
+import useAuth from "../../../../base/hooks/useAuth";
+import {Chip, FormControl, Grid, TextField} from "@mui/material";
+import {H4} from "../../../../base/components/Template/Typography";
+
+interface OwnProps {
+}
+
+type Props = OwnProps;
+
+const CuentaPerfil: FunctionComponent<Props> = (props) => {
+    const {user} = useAuth()
+    console.log(user)
+    return (<>
+        <SimpleCard title={'PERFIL DE USUARIO'} childIcon={<Person/>}>
+            <Grid container spacing={2}>
+                <Grid item lg={6} md={6} xs={12}>
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Nombres"
+                            value={user.nombres}
+                            variant="outlined"
+                            size="small"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item lg={6} md={6} xs={12}>
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Apellidos"
+                            value={user.apellidos}
+                            variant="outlined"
+                            size="small"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item lg={6} md={6} xs={12}>
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Cargo"
+                            value={user.cargo}
+                            variant="outlined"
+                            size="small"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item lg={6} md={6} xs={12}>
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Rol Operaciones"
+                            value={user.rol}
+                            variant="outlined"
+                            size="small"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item lg={12} md={12} xs={12}>
+                    <H4>Restricción de accesos</H4>
+                    {
+                        user.dominio.map(item => <Chip key={item} label={item} variant="outlined"/>)
+                    }
+                </Grid>
+            </Grid>
+        </SimpleCard>
+    </>);
+};
+
+export default CuentaPerfil;

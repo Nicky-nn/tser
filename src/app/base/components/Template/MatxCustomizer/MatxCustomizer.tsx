@@ -1,6 +1,6 @@
 // noinspection DuplicatedCode
 
-import {H5, Span} from '../Typography'
+import {H1, H5, Span} from '../Typography'
 import BadgeSelected from './BadgeSelected'
 import Scrollbar from 'react-perfect-scrollbar'
 import React, {Fragment, useState} from 'react'
@@ -122,7 +122,7 @@ const MatxCustomizer = () => {
                                 <Icon className="icon" color="primary">
                                     settings
                                 </Icon>
-                                <H5 sx={{ml: 1, fontSize: '1rem'}}>
+                                <H5 sx={{ml: 1, fontSize: '1rem'}} >
                                     Opciones de Tema
                                 </H5>
                             </Box>

@@ -103,7 +103,7 @@ export const NotificationProvider: FC<any> = ({ settings, children }: Notificati
     }
 
     useEffect(() => {
-        getNotifications()
+        getNotifications().then()
     }, [])
 
     return (

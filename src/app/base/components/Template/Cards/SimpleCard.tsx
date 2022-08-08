@@ -1,11 +1,22 @@
 import {FC, PropsWithChildren, ReactNode} from 'react'
-import {Card, CSSObject} from '@mui/material'
-import {Box, styled} from '@mui/system'
+import {Avatar, Card, CardContent, CardHeader, CSSObject} from '@mui/material'
+import {styled} from '@mui/system'
+import {ArrowRight} from "@mui/icons-material";
+import {H4} from "../Typography";
 
 const CardRoot = styled(Card)(() => ({
     height: '100%',
     padding: '15px 15px',
     overflow: 'inherit', // Cambio realizado para mostrar los hidden selects
+    '& .MuiCardHeader-root': {
+        paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 25
+    },
+    '& .MuiCardContent-root': {
+        paddingLeft: 1.5, paddingRight: 1, paddingTop: 1, paddingBottom: 1,
+    },
+    '& .MuiCardHeader-avatar': {
+        marginRight: '8px'
+    }
 })) as typeof Card
 
 interface CardTitleProps {
@@ -21,19 +32,29 @@ const CardTitle: FC<PropsWithChildren<CardTitleProps>> = styled('div')(({subtitl
 export interface SimpleCardProps {
     title?: string
     subtitle?: string
-    Icon?: JSX.Element
+    childIcon?: ReactNode
     children: ReactNode
 }
 
-const SimpleCard: FC<SimpleCardProps> = ({children, title, subtitle, Icon}: SimpleCardProps) => {
+const SimpleCard: FC<SimpleCardProps> = ({children, title, subtitle, childIcon}: SimpleCardProps) => {
     return (
         <CardRoot elevation={6}>
-            {title && <CardTitle subtitle={subtitle}>
-                {title}
-            </CardTitle>
+            {
+                title && <CardHeader
+                    avatar={
+                        title && childIcon &&
+                        <Avatar sx={{height: 25, width: 25, marginLeft: 0}} aria-label="">
+                            {childIcon ? childIcon : <ArrowRight/>}
+                        </Avatar>
+                    }
+                    title={title && <H4>{title.toUpperCase()}</H4>}
+                    subheader={subtitle && subtitle}
+                />
             }
-            {subtitle && <Box sx={{mb: 2}}>{subtitle}</Box>}
-            {children}
+
+            <CardContent>
+                {children}
+            </CardContent>
         </CardRoot>
     )
 }

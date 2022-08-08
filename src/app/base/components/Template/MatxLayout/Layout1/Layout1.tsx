@@ -1,20 +1,21 @@
-import Footer from '../../Footer/Footer'
-import Layout1Topbar from './Layout1Topbar'
-import Layout1Sidenav from './Layout1Sidenav'
-import {Box, styled, useTheme} from '@mui/system'
-import React, {FC, useEffect, useRef} from 'react'
-import {ThemeProvider, useMediaQuery} from '@mui/material'
-import SidenavTheme from '../../MatxTheme/SidenavTheme/SidenavTheme'
-import {Outlet} from 'react-router-dom'
-import MatxSuspense from "../../MatxSuspense/MatxSuspense";
-import ScrollBar from "react-perfect-scrollbar";
+import {Box, styled, ThemeProvider, useMediaQuery} from '@mui/material';
+import React, {useEffect, useRef} from 'react';
+import Scrollbar from 'react-perfect-scrollbar';
+import {Outlet} from 'react-router-dom';
+import SidenavTheme from '../../MatxTheme/SidenavTheme/SidenavTheme';
+import Layout1Sidenav from './Layout1Sidenav';
+import Layout1Topbar from './Layout1Topbar';
 import useSettings from "../../../../hooks/useSettings";
 import {sidenavCompactWidth, sideNavWidth} from "../../../../../utils/constant";
+import {useTheme} from "@mui/system";
+import MatxSuspense from "../../MatxSuspense/MatxSuspense";
+import Footer from "../../Footer/Footer";
+import LayoutRestriccion from "../../../LayoutRestriccion/LayoutRestriccion";
 
 const Layout1Root = styled(Box)(({theme}) => ({
     display: 'flex',
     background: theme.palette.background.default,
-}))
+}));
 
 const ContentBox = styled(Box)(() => ({
     height: '100%',
@@ -23,21 +24,22 @@ const ContentBox = styled(Box)(() => ({
     overflowX: 'hidden',
     flexDirection: 'column',
     justifyContent: 'space-between',
-}))
+}));
 
-const StyledScrollBar: FC<any> = styled(ScrollBar)(() => ({
+const StyledScrollBar = styled(Scrollbar)(() => ({
     height: '100%',
     position: 'relative',
     display: 'flex',
     flexGrow: '1',
     flexDirection: 'column',
-}))
+}));
 
 type LayoutContainerProps = {
-    width: number,
+    width: string | number,
     secondarySidebar: any
 }
-const LayoutContainer: FC<any> = styled(Box)(({width, secondarySidebar}: LayoutContainerProps) => ({
+
+const LayoutContainer = styled(Box)(({width, secondarySidebar}: LayoutContainerProps) => ({
     height: '100vh',
     display: 'flex',
     flexGrow: '1',
@@ -48,43 +50,45 @@ const LayoutContainer: FC<any> = styled(Box)(({width, secondarySidebar}: LayoutC
     overflow: 'hidden',
     transition: 'all 0.3s ease',
     marginRight: secondarySidebar.open ? 50 : 0,
-}))
+}));
 
 const Layout1 = () => {
-    const {settings, updateSettings}: any = useSettings()
-    const {layout1Settings, secondarySidebar} = settings
-    const topbarTheme = settings.themes[layout1Settings.topbar.theme]
+    const {settings, updateSettings}: any = useSettings();
+    const {layout1Settings, secondarySidebar} = settings;
+    const topbarTheme = settings.themes[layout1Settings.topbar.theme];
     const {
         leftSidebar: {mode: sidenavMode, show: showSidenav},
-    } = layout1Settings
+    } = layout1Settings;
 
     const getSidenavWidth = () => {
         switch (sidenavMode) {
             case 'full':
-                return sideNavWidth
+                return sideNavWidth;
+
             case 'compact':
-                return sidenavCompactWidth
+                return sidenavCompactWidth;
+
             default:
-                return '0px'
+                return '0px';
         }
-    }
+    };
 
-    const sidenavWidth = getSidenavWidth()
-    const theme = useTheme()
-    const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
+    const sidenavWidth = getSidenavWidth();
+    const theme = useTheme();
+    const isMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    const ref = useRef({isMdScreen, settings})
-    const layoutClasses = `theme-${theme.palette.type}`
+    const ref = useRef({isMdScreen, settings});
+    const layoutClasses = `theme-${theme.palette.type}`;
 
     useEffect(() => {
-        let {settings} = ref.current
-        let sidebarMode = settings.layout1Settings.leftSidebar.mode
+        let {settings} = ref.current;
+        let sidebarMode = settings.layout1Settings.leftSidebar.mode;
         if (settings.layout1Settings.leftSidebar.show) {
-            let mode = isMdScreen ? 'close' : sidebarMode
-            updateSettings({layout1Settings: {leftSidebar: {mode}}})
+            let mode = isMdScreen ? 'close' : sidebarMode;
+            updateSettings({layout1Settings: {leftSidebar: {mode}}});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isMdScreen])
+    }, [isMdScreen]);
 
     return (
         <Layout1Root className={layoutClasses}>
@@ -94,62 +98,60 @@ const Layout1 = () => {
                 </SidenavTheme>
             )}
 
-            <LayoutContainer
-                width={sidenavWidth}
-                secondarySidebar={secondarySidebar}
-            >
+            <LayoutContainer width={sidenavWidth} secondarySidebar={secondarySidebar}>
                 {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
-                    // <Layout1Topbar fixed={true} />
-                    <ThemeProvider theme={topbarTheme}>
-                        <Layout1Topbar fixed={true} className="elevation-z8"/>
-                    </ThemeProvider>
+                    <>
+                        <ThemeProvider theme={topbarTheme}>
+                            <Layout1Topbar fixed={true} className="elevation-z8"/>
+                            <LayoutRestriccion fixed={true} className="elevation-z8"/>
+                        </ThemeProvider>
+                    </>
+
                 )}
+
                 {settings.perfectScrollbar && (
                     <StyledScrollBar>
-                        {layout1Settings.topbar.show &&
-                            !layout1Settings.topbar.fixed && (
-                                // <Layout1Topbar />
-                                <ThemeProvider theme={topbarTheme}>
-                                    <Layout1Topbar/>
-                                </ThemeProvider>
-                            )}
+                        {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
+                            <ThemeProvider theme={topbarTheme}>
+                                <Layout1Topbar/>
+                                fasjfldsjl
+                            </ThemeProvider>
+                        )}
                         <Box flexGrow={1} position="relative">
                             <MatxSuspense>
-                                {/* {renderRoutes(routes)} */}
                                 <Outlet/>
                             </MatxSuspense>
                         </Box>
-                        {settings.footer.show && !settings.footer.fixed && (
-                            <Footer/>
-                        )}
+
+                        {settings.footer.show && !settings.footer.fixed && <Footer/>}
                     </StyledScrollBar>
                 )}
 
                 {!settings.perfectScrollbar && (
                     <ContentBox>
-                        {layout1Settings.topbar.show &&
-                            !layout1Settings.topbar.fixed && (
-                                // <Layout1Topbar />
-                                <ThemeProvider theme={topbarTheme}>
-                                    <Layout1Topbar/>
-                                </ThemeProvider>
-                            )}
+                        {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
+                            <ThemeProvider theme={topbarTheme}>
+                                <Layout1Topbar/>
+                                zsv
+                            </ThemeProvider>
+                        )}
+
                         <Box flexGrow={1} position="relative">
                             <MatxSuspense>
-                                {/* {renderRoutes(routes)} */}
                                 <Outlet/>
                             </MatxSuspense>
                         </Box>
-                        {settings.footer.show && !settings.footer.fixed && (
-                            <Footer/>
-                        )}
+
+                        {settings.footer.show && !settings.footer.fixed && <Footer/>}
                     </ContentBox>
                 )}
+
                 {settings.footer.show && settings.footer.fixed && <Footer/>}
             </LayoutContainer>
+
             {/*settings.secondarySidebar.show && <SecondarySidebar/>*/}
         </Layout1Root>
-    )
-}
+    );
+};
 
-export default React.memo(Layout1)
+export default React.memo(Layout1);

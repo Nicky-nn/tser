@@ -5,7 +5,7 @@ type MatxSuspenseProps = {
     children: JSX.Element
 }
 
-const MatxSuspense: FC<any> = ({children}: MatxSuspenseProps) => {
+const MatxSuspense: FC<MatxSuspenseProps> = ({children}: MatxSuspenseProps) => {
     return <Suspense fallback={<MatxLoading/>}>{children}</Suspense>
 }
 

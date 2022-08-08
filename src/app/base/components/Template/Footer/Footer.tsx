@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
 import {Paragraph, Span} from '../Typography'
 import {AppBar, ThemeProvider, Toolbar} from '@mui/material'
-import {styled, useTheme} from '@mui/system'
+import {Box, styled, useTheme} from '@mui/system'
 import useSettings from "../../../hooks/useSettings";
 import {topBarHeight} from "../../../../utils/constant";
 
@@ -47,9 +47,9 @@ const Footer: FC<any> = () => {
             >
                 <AppFooter>
                     <FooterContent>
-                        <Span sx={{m: "auto"}}></Span>
+                        <Span sx={{m: "auto"}} ></Span>
                         <Paragraph sx={{m: 0}}>
-                            FCV.ISIPASS es un producto de &nbsp;
+                            FCV ISIPASS es un producto de &nbsp;
                             <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">INTEGRATE Soluciones Informáticas</a> <br/>
                             Plantilla <a href="https://matx-react.ui-lib.com/">MatX</a>
                         </Paragraph>

@@ -7,7 +7,7 @@ type MatxThemeProps = {
     children: JSX.Element
 }
 
-const MatxTheme: FC<any> = ({children}: MatxThemeProps) => {
+const MatxTheme: FC<MatxThemeProps> = ({children}: MatxThemeProps) => {
     const {settings} = useSettings()
     let activeTheme = {...settings.themes[settings.activeTheme]}
     return (

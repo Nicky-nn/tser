@@ -1,11 +1,12 @@
-import {Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, TextField,} from '@mui/material'
+import {Card, Checkbox, CircularProgress, Grid, TextField,} from '@mui/material'
 import React, {useState} from 'react'
-import {useNavigate} from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 import {Box, styled, useTheme} from '@mui/system'
 import {Paragraph} from "../../../components/Template/Typography";
 import useAuth from "../../../hooks/useAuth";
 import {object, string} from "yup";
 import {useFormik} from "formik";
+import {LoadingButton} from "@mui/lab";
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
@@ -56,18 +57,18 @@ const validationSchema = object({
 });
 
 const JwtLogin = () => {
-    const {palette} = useTheme()
-    const textError = palette.error.main
-    const textPrimary = palette.primary.main
+    const theme = useTheme()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
-    const [message, setMessage] = useState('')
     const {login}: any = useAuth()
+
+    const [message, setMessage] = useState('')
     const formik = useFormik({
         initialValues: {
             shop: 'demo.isipass.com.bo',
             email: 'ulric617@gmail.com',
-            password: '6176816'
+            password: '6176816',
+            remember: true
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -83,26 +84,12 @@ const JwtLogin = () => {
             }
         },
     })
-    
-    const [userInfo, setUserInfo]: any = useState({
-        store: 'base.integrate.com.bo',
-        email: 'richi617@gmail.com',
-        password: '6176816',
-    })
-
-
-    const handleChange = ({target: {name, value}}: any) => {
-        let temp: any = {...userInfo}
-        temp[name] = value
-        setUserInfo(temp)
-    }
-
 
     return (
         <JWTRoot>
             <Card className="card">
                 <Grid container>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <Grid item sm={12} xs={12}>
                         <JustifyBox p={4} height="100%">
                             <IMG
                                 src="/assets/images/logo-isiinvoice.png"
@@ -111,7 +98,7 @@ const JwtLogin = () => {
                             />
                         </JustifyBox>
                     </Grid>
-                    <Grid item lg={12} md={12} sm={7} xs={12}>
+                    <Grid item sm={12} xs={12}>
                         <ContentBox>
                             <form onSubmit={formik.handleSubmit} onError={() => null}>
                                 <Grid container spacing={5}>
@@ -154,64 +141,47 @@ const JwtLogin = () => {
                                             helperText={formik.touched.password && formik.errors.password}
                                         />
 
-                                        <FormControlLabel
-                                            sx={{mb: '12px', maxWidth: 288}}
-                                            name="agreement"
-                                            onChange={handleChange}
-                                            control={
+                                        <FlexBox justifyContent="space-between">
+                                            <FlexBox gap={1}>
                                                 <Checkbox
                                                     size="small"
-                                                    onChange={({
-                                                                   target: {checked},
-                                                               }) =>
-                                                        handleChange({
-                                                            target: {
-                                                                name: 'agreement',
-                                                                value: checked,
-                                                            },
-                                                        })
-                                                    }
-                                                    checked={userInfo.agreement || true}
+                                                    name="remember"
+                                                    onChange={formik.handleChange}
+                                                    checked={formik.values.remember}
+                                                    sx={{padding: 0}}
                                                 />
-                                            }
-                                            label="Recordarme"
-                                        />
+
+                                                <Paragraph>Remember Me</Paragraph>
+                                            </FlexBox>
+
+                                            <NavLink
+                                                to="/session/forgot-password"
+                                                style={{color: theme.palette.primary.main}}
+                                            >
+                                                ¿Olvidaste tu contraseña?
+                                            </NavLink>
+                                        </FlexBox>
+
+                                        <LoadingButton
+                                            type="submit"
+                                            color="primary"
+                                            loading={loading}
+                                            variant="contained"
+
+                                            sx={{my: 2,}}
+                                        >
+                                            Iniciar Sesión
+                                        </LoadingButton>
+
                                     </Grid>
 
                                 </Grid>
 
                                 {message && (
-                                    <Paragraph sx={{color: textError}}>
+                                    <Paragraph sx={{color: 'red'}}>
                                         {message}
                                     </Paragraph>
                                 )}
-
-                                <FlexBox mb={2} flexWrap="wrap">
-                                    <Box position="relative">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            disabled={loading}
-                                            type="submit"
-                                        >
-                                            Iniciar Sesión
-                                        </Button>
-                                        {loading && (
-                                            <StyledProgress
-                                                size={24}
-                                                className="buttonProgress"
-                                            />
-                                        )}
-                                    </Box>
-                                </FlexBox>
-                                <Button
-                                    sx={{color: textPrimary}}
-                                    onClick={() =>
-                                        navigate('/session/forgot-password')
-                                    }
-                                >
-                                    ¿Olvidaste tu contraseña?
-                                </Button>
                             </form>
                         </ContentBox>
                     </Grid>

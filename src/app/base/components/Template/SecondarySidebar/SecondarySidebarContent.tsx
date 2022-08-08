@@ -1,15 +1,14 @@
-import {FC} from 'react'
 import {styled} from '@mui/system'
 import {Span} from '../Typography'
-import {Theme} from '@mui/material'
+import {Theme, useTheme} from '@mui/material'
 import MatxCustomizer from "../MatxCustomizer/MatxCustomizer";
 
 type SidebarRootProps = {
     theme: Theme,
-    width: number
+    width: string | number
 }
 
-const SidebarRoot: FC<any> = styled('div')(({theme, width}: SidebarRootProps): any => ({
+const SidebarRoot = styled('div')(({theme, width}: SidebarRootProps): any => ({
     position: 'fixed',
     height: '100vh',
     width: width,
@@ -19,11 +18,11 @@ const SidebarRoot: FC<any> = styled('div')(({theme, width}: SidebarRootProps): a
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: theme.shadows[8],
-    backgroundColor: theme.palette.primary.main,
+    boxShadow: theme?.shadows[8],
+    backgroundColor: theme?.palette.primary.main,
     zIndex: 98,
     transition: 'all 0.15s ease',
-    color: theme.palette.text.primary,
+    color: theme?.palette.text.primary,
     '@global': {
         '@media screen and (min-width: 767px)': {
             '.content-wrap, .layout2.layout-contained, .layout2.layout-full': {
@@ -42,10 +41,10 @@ const SidebarRoot: FC<any> = styled('div')(({theme, width}: SidebarRootProps): a
 }))
 
 const SecondarySidebarContent = () => {
-    // const {palette} = useTheme()
+    const theme = useTheme()
     // const textColor = palette.primary.contrastText
     return (
-        <SidebarRoot width={'50px'} className="secondary-sidebar">
+        <SidebarRoot width={'50px'} theme={theme} className="secondary-sidebar">
             <Span sx={{m: 'auto'}}></Span>
             <MatxCustomizer/>
             <Span sx={{m: 'auto'}}></Span>

@@ -11,7 +11,7 @@ const SettingsContext = createContext({
 })
 
 type SettingsProviderProps = {
-    children: JSX.Element,
+    children: JSX.Element | JSX.Element[],
     settings: any,
 }
 

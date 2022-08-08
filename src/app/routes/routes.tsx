@@ -7,27 +7,24 @@ import sessionRoutes from "../base/view/sessions/SessionRoutes";
 import NotFound from "../base/view/sessions/NotFound";
 import productosRoutes from "../modules/productos/ProductosRoutes";
 import clientesRoutes from "../modules/clientes/ClientesRoutes";
+import cuentaRoutes from "../modules/cuenta/CuentaRoutes";
 
-export const AllPages = () => {
-    const allRoutes = [
-        {
-            element: (
-                <AuthGuard>
-                    <MatxLayout/>
-                </AuthGuard>
-            ),
-            children: [...dashboardRoutes, ...ventasRoutes, ...productosRoutes, ...clientesRoutes],
-        },
-        ...sessionRoutes,
-        {
-            path: '/',
-            element: <Navigate to="dashboard/default"/>,
-        },
-        {
-            path: '*',
-            element: <NotFound/>,
-        },
-    ]
-
-    return allRoutes
-}
+export const appRoutes = [
+    {
+        element: (
+            <AuthGuard>
+                <MatxLayout/>
+            </AuthGuard>
+        ),
+        children: [
+            ...dashboardRoutes,
+            ...ventasRoutes,
+            ...productosRoutes,
+            ...clientesRoutes,
+            ...cuentaRoutes
+        ],
+    },
+    ...sessionRoutes,
+    {path: '/', element: <Navigate to="dashboard/default"/>},
+    {path: '*', element: <NotFound/>},
+]

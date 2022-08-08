@@ -1,11 +1,4 @@
-export const mainThemes = [
-    'purple1',
-    'purple2',
-    'blue',
-    'purpleDark1',
-    'purpleDark2',
-    'blueDark',
-]
+export const mainThemes = ['purple1', 'purple2', 'blue', 'purpleDark1', 'purpleDark2', 'blueDark'];
 
 export const mainSidebarThemes = [
     'whitePurple',
@@ -15,7 +8,7 @@ export const mainSidebarThemes = [
     'purpleDark1',
     'purpleDark2',
     'blueDark',
-]
+];
 
 export const topbarThemes = [
     'whitePurple',
@@ -25,4 +18,4 @@ export const topbarThemes = [
     'purpleDark1',
     'purpleDark2',
     'blueDark',
-]
+];
