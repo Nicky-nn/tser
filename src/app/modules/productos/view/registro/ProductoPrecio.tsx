@@ -1,29 +1,31 @@
 import React, {FunctionComponent, useState} from 'react';
 import {FormControl, FormHelperText, Grid} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProducto} from "../../slices/productos/producto.slice";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {handleSelect} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
-import {useDispatch} from "react-redux";
 import {apiSinUnidadMedida} from "../../../sin/api/sinUnidadMedida.api";
 import {SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {useQuery} from "@tanstack/react-query";
+import {FormikProps} from "formik";
+import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
 
 interface OwnProps {
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoPrecio: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
+    const {formik} = props;
+    const {values, setFieldValue, errors} = formik
+
     const [isError, setError] = useState<any>(null);
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     const {data: unidadesMedida} = useQuery<SinUnidadMedidaProps[], Error>(['unidadesMedida'], () => {
         return apiSinUnidadMedida()
@@ -33,56 +35,64 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
         return <h1>Ocurrio un error</h1>
     }
 
+
     return (
         <SimpleCard title={'PRECIO'}>
-            <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
+            <Grid container columnSpacing={3} rowSpacing={2}>
                 <Grid item lg={12} md={12} xs={12}>
-                    <FormControl fullWidth sx={{mb: 1}}>
+                    <FormControl fullWidth sx={{mb: 1}}
+                                 error={Boolean(errors.variante?.unidadMedida)}
+                    >
                         <SelectInputLabel shrink>
                             Unidad Medida
                         </SelectInputLabel>
                         <Select<SinUnidadMedidaProps>
                             styles={reactSelectStyles}
                             menuPosition={'fixed'}
-                            name="unidadMedida"
                             placeholder={'Seleccione la unidad de medida'}
-                            value={prod.variante.unidadMedida}
+                            value={values.variante.unidadMedida}
                             onChange={async (unidadMedida: any) => {
-                                // const unidadMedida = resetUnidadMedida(prod.variante, prod.variantes, val)
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, unidadMedida},
-                                    variantes: prod.variantes.map((value) => {
-                                        return {
-                                            ...value,
-                                            unidadMedida
-                                        }
-                                    })
+                                setFieldValue(prodMap.variante, {...values.variante, unidadMedida})
+                                setFieldValue(prodMap.variantes, values.variantes.map(value => {
+                                    return {
+                                        ...value,
+                                        unidadMedida
+                                    }
                                 }))
                             }}
                             options={unidadesMedida}
                             getOptionValue={(item) => item.codigoClasificador}
                             getOptionLabel={(item) => `${item.codigoClasificador} - ${item.descripcion}`}
                         />
+                        <FormHelperText>{errors.variante?.unidadMedida}</FormHelperText>
                     </FormControl>
                 </Grid>
                 <Grid item lg={4} md={4} xs={12}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth
+                                 error={Boolean(errors.variante?.precio)}
+                    >
                         <MyInputLabel shrink>Precio</MyInputLabel>
                         <InputNumber
                             min={0}
                             placeholder={'0.00'}
-                            value={prod.variante.precio}
+                            name={'variante.precio'}
+                            value={values.variante.precio}
                             onFocus={handleSelect}
                             onChange={(precio: number) => {
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, precio},
-                                    variantes: prod.variantes.map(vs => ({...vs, precio}))
+                                setFieldValue(prodMap.variante, {
+                                    ...values.variante,
+                                    precio
+                                })
+                                setFieldValue(prodMap.variantes, values.variantes.map(value => {
+                                    return {
+                                        ...value,
+                                        precio
+                                    }
                                 }))
                             }}
                             formatter={numberWithCommas}
                         />
+                        <FormHelperText>{errors.variante?.precio}</FormHelperText>
                     </FormControl>
                 </Grid>
 
@@ -91,14 +101,20 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         <MyInputLabel shrink>Precio de comparación</MyInputLabel>
                         <InputNumber
                             min={0}
+                            name={'variante.precioComparacion'}
                             placeholder={'0.00'}
-                            value={prod.variante.precioComparacion}
+                            value={values.variante.precioComparacion}
                             onFocus={handleSelect}
                             onChange={(precioComparacion: number) => {
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, precioComparacion},
-                                    variantes: prod.variantes.map(vs => ({...vs, precioComparacion}))
+                                setFieldValue(prodMap.variante, {
+                                    ...values.variante,
+                                    precioComparacion
+                                })
+                                setFieldValue(prodMap.variantes, values.variantes.map(value => {
+                                    return {
+                                        ...value,
+                                        precioComparacion
+                                    }
                                 }))
                             }}
                             formatter={numberWithCommas}
@@ -111,15 +127,21 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         <MyInputLabel shrink>Costo</MyInputLabel>
                         <InputNumber
                             min={0}
-                            max={prod.variante.precio - 1}
+                            name={'variante.costo'}
+                            max={values.variante.precio - 1}
                             placeholder={'0.00'}
-                            value={prod.variante.costo}
+                            value={values.variante.costo}
                             onFocus={handleSelect}
                             onChange={(costo: number) => {
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, costo},
-                                    variantes: prod.variantes.map(vs => ({...vs, costo}))
+                                setFieldValue(prodMap.variante, {
+                                    ...values.variante,
+                                    costo
+                                })
+                                setFieldValue(prodMap.variantes, values.variantes.map(value => {
+                                    return {
+                                        ...value,
+                                        costo
+                                    }
                                 }))
                             }}
                             formatter={numberWithCommas}

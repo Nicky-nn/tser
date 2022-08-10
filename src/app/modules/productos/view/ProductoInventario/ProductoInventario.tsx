@@ -1,44 +1,42 @@
+// noinspection DuplicatedCode
+
 import React, {ChangeEvent, FunctionComponent} from 'react';
-import {Checkbox, FormControl, FormControlLabel, Grid, TextField, Typography} from "@mui/material";
+import {Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, TextField, Typography} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProducto} from "../../slices/productos/producto.slice";
 import InputNumber from "rc-input-number";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import {genReplaceEmpty, handleSelect, isEmptyValue} from "../../../../utils/helper";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 import {apiSucursales} from "../../../sucursal/api/sucursales.api";
 import {SucursalProps} from "../../../sucursal/interfaces/sucursal";
-import {useDispatch} from "react-redux";
 import {sortBy} from "lodash";
 import {useQuery} from "@tanstack/react-query";
+import {FormikProps} from "formik";
+import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
 
 interface OwnProps {
-
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoInventario: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
-    const dispatch = useDispatch()
+    const {formik} = props;
+    const {values, setFieldValue} = formik
 
     const crearInventario = (data: SucursalProps[]): Array<any> => {
         return sortBy(data, 'codigo').map(sucursal => ({
             sucursal,
-            stock: genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo == sucursal.codigo)?.stock, 0)
+            stock: genReplaceEmpty(values.variante.inventario.find(inv => inv.sucursal.codigo == sucursal.codigo)?.stock, 0)
         }))
     }
 
-    const {data: sucursales} = useQuery<SucursalProps[], Error>(['sucursales', prod], async () => {
+    const {data: sucursales} = useQuery<SucursalProps[], Error>(['sucursales'], async () => {
         const data = await apiSucursales()
         if (data.length > 0) {
-            if (prod.variante.inventario.length === 0) {
+            if (values.variante.inventario.length === 0) {
                 const inventario = crearInventario(data)
-                dispatch(setProducto({
-                    ...prod,
-                    variante: {...prod.variante, inventario}
-                }))
+                setFieldValue(prodMap.variante, {...values.variante, inventario})
             }
         }
         return data || []
@@ -48,23 +46,27 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
         <SimpleCard title={'INVENTARIO'}>
             <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
                 <Grid item lg={4} md={4} xs={12}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth
+                                 error={Boolean(formik.errors.variante?.codigoProducto)}
+                    >
                         <TextField
                             label="SKU (Código de producto)"
-                            value={prod.variante.codigoProducto}
+                            name={'variante.codigoProducto'}
+                            value={values.variante.codigoProducto}
                             onChange={(e) => {
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, codigoProducto: e.target.value},
-                                    variantes: prod.variantes.map((vs, index) => ({
-                                        ...vs,
-                                        codigoProducto: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
-                                    }))
-                                }))
+                                setFieldValue(prodMap.variante, {
+                                    ...values.variante,
+                                    codigoProducto: e.target.value
+                                })
+                                setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
+                                    ...vs,
+                                    codigoProducto: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
+                                })))
                             }}
                             variant="outlined"
                             size="small"
                         />
+                        <FormHelperText>{formik.errors.variante?.codigoProducto}</FormHelperText>
                     </FormControl>
                 </Grid>
 
@@ -72,8 +74,18 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                     <FormControl fullWidth>
                         <TextField
                             label="Código de Barras"
-                            value={prod.variante.codigoBarras || ''}
-                            onChange={(e) => {
+                            name={'variante.codigoBarras'}
+                            value={values.variante.codigoBarras || ''}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                setFieldValue(prodMap.variante, {
+                                    ...values.variante,
+                                    codigoBarras: e.target.value
+                                })
+                                setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
+                                    ...vs,
+                                    codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
+                                })))
+                                /*
                                 dispatch(setProducto({
                                     ...prod,
                                     variante: {...prod.variante, codigoBarras: e.target.value},
@@ -82,6 +94,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                         codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value || ''
                                     }))
                                 }))
+                                */
                             }}
                             variant="outlined"
                             size="small"
@@ -94,8 +107,18 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={prod.variante.incluirCantidad}
+                                    name={'variante.incluirCantidad'}
+                                    checked={values.variante.incluirCantidad}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                        setFieldValue(prodMap.variante, {
+                                            ...values.variante,
+                                            incluirCantidad: e.target.checked
+                                        })
+                                        setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
+                                            ...vs,
+                                            incluirCantidad: e.target.checked
+                                        })))
+                                        /*
                                         dispatch(setProducto({
                                             ...prod,
                                             variante: {...prod.variante, incluirCantidad: e.target.checked},
@@ -104,22 +127,31 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                                 incluirCantidad: e.target.checked
                                             }))
                                         }))
-
+                                         */
                                     }}
                                 />
                             }
                             label="¿Incluir cantidad al inventario?"/>
                     </FormControl>
                     {
-                        prod.variante.incluirCantidad && (
+                        values.variante.incluirCantidad && (
                             <>
                                 <br/>
                                 <FormControl>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                checked={!prod.variante.verificarStock}
+                                                checked={!values.variante.verificarStock}
                                                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                    setFieldValue(prodMap.variante, {
+                                                        ...values.variante,
+                                                        verificarStock: !e.target.checked
+                                                    })
+                                                    setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
+                                                        ...vs,
+                                                        verificarStock: !e.target.checked
+                                                    })))
+                                                    /*
                                                     dispatch(setProducto({
                                                         ...prod,
                                                         variante: {...prod.variante, verificarStock: !e.target.checked},
@@ -128,6 +160,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                                             verificarStock: !e.target.checked
                                                         }))
                                                     }))
+                                                     */
                                                 }}
                                             />
                                         }
@@ -161,16 +194,35 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                         </td>
                                         <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                             {
-                                                prod.variante.incluirCantidad ?
+                                                values.variante.incluirCantidad ?
                                                     (
                                                         <FormControl fullWidth component={'div'}>
                                                             <MyInputLabel shrink>Cantidad</MyInputLabel>
                                                             <InputNumber
                                                                 min={0}
                                                                 placeholder={'0.00'}
-                                                                value={genReplaceEmpty(prod.variante.inventario.find(inv => inv.sucursal.codigo === s.codigo)?.stock, 0)}
+                                                                value={genReplaceEmpty(values.variante.inventario.find(inv => inv.sucursal.codigo === s.codigo)?.stock, 0)}
                                                                 onFocus={handleSelect}
                                                                 onChange={(stock: number) => {
+                                                                    setFieldValue(prodMap.variante, {
+                                                                        ...values.variante,
+                                                                        inventario: values.variante.inventario.map(pvi => {
+                                                                            return pvi.sucursal.codigo === s.codigo ? {
+                                                                                ...pvi,
+                                                                                stock
+                                                                            } : pvi
+                                                                        })
+                                                                    })
+                                                                    setFieldValue(prodMap.variantes, values.variantes.map(pvs => {
+                                                                        return {
+                                                                            ...pvs,
+                                                                            inventario: pvs.inventario.map(pvsi => ({
+                                                                                ...pvsi,
+                                                                                stock
+                                                                            }))
+                                                                        }
+                                                                    }))
+                                                                    /*
                                                                     dispatch(setProducto({
                                                                         ...prod,
                                                                         variante: {
@@ -192,6 +244,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                                                             }
                                                                         })
                                                                     }))
+                                                                     */
                                                                 }}
                                                                 formatter={numberWithCommas}
                                                             />

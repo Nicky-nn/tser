@@ -1,9 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from "../../../../store/store";
-import {ProductoInitialValues, ProductoInputProps} from "../../interfaces/producto.interface";
+import {PRODUCTO_INITIAL_VALUES, ProductoInputProps} from "../../interfaces/producto.interface";
 import {genRandomString} from "../../../../utils/helper";
 
-const initialState: ProductoInputProps = ProductoInitialValues
+const initialState: ProductoInputProps = PRODUCTO_INITIAL_VALUES
 
 export const productoSlice = createSlice({
     name: 'producto',

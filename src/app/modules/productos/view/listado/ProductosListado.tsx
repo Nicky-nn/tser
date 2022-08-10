@@ -1,12 +1,12 @@
 import React, {FunctionComponent, useEffect, useMemo, useState} from 'react';
-import {Chip, IconButton} from "@mui/material";
-import {Edit} from "@mui/icons-material";
+import {Box, Button, Chip, IconButton} from "@mui/material";
+import {Delete, Edit} from "@mui/icons-material";
 import {ProductoProps} from "../../interfaces/producto.interface";
 import {PAGE_DEFAULT, PageProps} from "../../../../interfaces";
-import {swalException} from "../../../../utils/swal";
+import {swalAsyncConfirmDialog, swalException} from "../../../../utils/swal";
 import {apiProductos} from "../../api/producto.api";
 import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
-import type {ColumnFiltersState, PaginationState,} from '@tanstack/react-table';
+import type {ColumnFiltersState, PaginationState, RowSelectionState,} from '@tanstack/react-table';
 import {SortingState} from "@tanstack/react-table";
 import {sumBy} from "lodash";
 import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
@@ -14,6 +14,8 @@ import {useNavigate} from "react-router-dom";
 import {productosRouteMap} from "../../ProductosRoutesMap";
 import {localization} from "../../../../utils/localization";
 import {genApiQuery, genReplaceEmpty} from "../../../../utils/helper";
+import {apiProductosEliminar} from "../../api/productoEliminar.api";
+import {notSuccess} from "../../../../utils/notification";
 
 interface OwnProps {
 }
@@ -31,10 +33,10 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
                 return sumBy(item.inventario, (inv) => inv.stock!)
             })
             if (!row.varianteUnica) {
-                return <Chip label={`${cantidad} items para ${row.variantes.length} variantes`}
+                return <Chip size={'small'} label={`${cantidad} items para ${row.variantes.length} variantes`}
                              color={"info"}/>
             }
-            return <Chip label={`${cantidad} items`} color={"default"}/>
+            return <Chip size={'small'}  label={`${cantidad} items`} color={"default"}/>
 
         },
         id: 'inventario',
@@ -72,6 +74,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     const [isRefetching, setIsRefetching] = useState(false);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     // FIN ESTADO DATATABLE
 
     const fetchData = async () => {
@@ -102,6 +105,28 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         }
 
     }
+
+    const columns = useMemo(() => tableColumns, []);
+
+    const handleDeleteData = async (data: any) => {
+        const products = data.map((item: any) => item.original._id)
+        await swalAsyncConfirmDialog({
+            text: "Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir",
+            preConfirm: () => {
+                return apiProductosEliminar(products).catch(err => {
+                    swalException(err)
+                    return false
+                })
+            }
+        }).then(resp => {
+            if (resp.isConfirmed) {
+                notSuccess()
+                fetchData().then();
+                setRowSelection({})
+            }
+        })
+    }
+
     useEffect(() => {
         fetchData().then();
     }, [
@@ -111,7 +136,6 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         globalFilter,
         columnFilters
     ]);
-    const columns = useMemo(() => tableColumns, []);
 
     return (<>
         <MaterialReactTable
@@ -124,7 +148,8 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                 showProgressBars: isRefetching,
                 density: 'compact',
                 sorting,
-                columnFilters
+                columnFilters,
+                rowSelection
             }}
             manualPagination
             manualSorting
@@ -168,6 +193,26 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
                 sx: {m: '0.5rem 0', width: '95%'},
                 variant: 'outlined',
                 size: 'small'
+            }}
+            enableRowSelection
+            onRowSelectionChange={setRowSelection}
+            renderTopToolbarCustomActions={({table}) => {
+                return (
+                    <Box
+                        sx={{display: 'flex', gap: '1rem', p: '0.5rem', flexWrap: 'wrap'}}
+                    >
+                        <Button
+                            color="error"
+                            onClick={() => handleDeleteData(table.getSelectedRowModel().flatRows)}
+                            startIcon={<Delete/>}
+                            variant="contained"
+                            size={'small'}
+                            disabled={table.getSelectedRowModel().flatRows.length === 0}
+                        >
+                            Eliminar
+                        </Button>
+                    </Box>
+                )
             }}
         />
     </>);

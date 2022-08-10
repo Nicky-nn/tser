@@ -1,27 +1,27 @@
 import React, {FunctionComponent} from "react";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {FormControl, Grid, TextField} from "@mui/material";
-import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setDescripcionProducto, setProducto} from "../../slices/productos/producto.slice";
+import {FormControl, FormHelperText, Grid, TextField} from "@mui/material";
 import Select from "react-select";
 import {SinActividadesPorDocumentoSector, SinProductoServicioProps} from "../../../sin/interfaces/sin.interface";
 import {fetchSinProductoServicioPorActividad} from "../../../sin/api/sinProductoServicio.api";
-import {useDispatch} from "react-redux";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {fetchSinActividadesPorDocumentoSector} from "../../../sin/api/sinActividadesPorDocumentoSector";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import useAuth from "../../../../base/hooks/useAuth";
 import {useQuery} from "@tanstack/react-query";
 import AlertError from "../../../../base/components/Alert/AlertError";
+import {FormikProps} from "formik";
+import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
 
 interface OwnProps {
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoHomologacion: FunctionComponent<Props> = (props) => {
-    const dispatch = useDispatch()
-    const prod = useAppSelector(selectProducto)
+    const {formik} = props;
+    const {values, setFieldValue} = formik
     const {user} = useAuth()
 
     // CARGA DATOS DE ACTIVIDADES
@@ -30,7 +30,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
             const data = await fetchSinActividadesPorDocumentoSector()
             if (data.length > 0) {
                 const actividadEconomica = data.find(item => item.codigoActividad === user.actividadEconomica.codigoCaeb) || data[0];
-                dispatch(setProducto({...prod, actividadEconomica}))
+                setFieldValue(prodMap.actividadEconomica, actividadEconomica)
             }
             return data
         }, {enabled: !!user.actividadEconomica})
@@ -39,12 +39,12 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
     const {
         data: productosServicios,
         error: prodServError
-    } = useQuery<SinProductoServicioProps[], Error>(['productosServicios', prod.actividadEconomica],
+    } = useQuery<SinProductoServicioProps[], Error>(['productosServicios', values.actividadEconomica],
         async () => {
-            return await fetchSinProductoServicioPorActividad(prod.actividadEconomica?.codigoActividad!)
+            return await fetchSinProductoServicioPorActividad(values.actividadEconomica?.codigoActividad!)
         }, {
-            enabled: !!prod.actividadEconomica,
-            keepPreviousData: true
+            enabled: !!values.actividadEconomica,
+            keepPreviousData: false
         })
 
     return (
@@ -64,13 +64,10 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                                             menuPosition={'fixed'}
                                             name="actividadEconomica"
                                             placeholder={'Seleccione la actividad económica'}
-                                            value={prod.actividadEconomica}
+                                            value={formik.values.actividadEconomica}
                                             onChange={async (actividadEconomica: any) => {
-                                                dispatch(setProducto({
-                                                    ...prod,
-                                                    actividadEconomica,
-                                                    sinProductoServicio: null
-                                                }))
+                                                formik.setFieldValue(prodMap.actividadEconomica, actividadEconomica)
+                                                formik.setFieldValue(prodMap.sinProductoServicio, null)
                                             }}
                                             isSearchable={false}
                                             options={actividades}
@@ -87,7 +84,9 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                         {
                             prodServError ? <AlertError mensaje={prodServError.message}/> :
                                 (
-                                    <FormControl fullWidth component={'div'}>
+                                    <FormControl fullWidth component={'div'} error={
+                                        Boolean(formik.errors.sinProductoServicio)
+                                    }>
                                         <SelectInputLabel shrink>
                                             Producto Homologado
                                         </SelectInputLabel>
@@ -96,31 +95,30 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                                             menuPosition={'fixed'}
                                             name="productoServicio"
                                             placeholder={'Seleccione producto para homolgación'}
-                                            value={prod.sinProductoServicio}
+                                            value={values.sinProductoServicio}
                                             onChange={sinProductoServicio => {
-                                                dispatch(setProducto({
-                                                    ...prod,
-                                                    sinProductoServicio
-                                                }))
+                                                setFieldValue(prodMap.sinProductoServicio, sinProductoServicio)
                                             }}
                                             options={productosServicios}
                                             getOptionValue={(ps) => ps.codigoProducto}
                                             getOptionLabel={(ps) => `${ps.codigoProducto} - ${ps.descripcionProducto}`}
                                         />
+                                        <FormHelperText>{formik.errors.sinProductoServicio}</FormHelperText>
                                     </FormControl>
                                 )
                         }
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
                         <TextField
-                            name="nombre"
+                            name="titulo"
                             label="Nombre Producto"
                             size="small"
                             fullWidth
-                            value={prod.titulo}
-                            onChange={e => {
-                                dispatch(setProducto({...prod, titulo: e.target.value}))
-                            }}
+                            value={values.titulo}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.titulo && Boolean(formik.errors.titulo)}
+                            helperText={formik.touched.titulo && formik.errors.titulo}
                         />
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
@@ -132,10 +130,8 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                             multiline
                             minRows={3}
                             maxRows={5}
-                            value={prod.descripcion}
-                            onChange={(e) => {
-                                dispatch(setProducto({...prod, descripcion: e.target.value }))
-                            }}
+                            value={values.descripcion}
+                            onChange={formik.handleChange}
                         />
                     </Grid>
                 </Grid>

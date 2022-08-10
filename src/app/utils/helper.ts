@@ -47,6 +47,8 @@ export const cartesianProduct = (arr: [[]]) => {
 export const isEmptyValue = (value: any): boolean => {
     const matches = [null, false, undefined, '']
     if (typeof value === 'object') {
+        if(matches.includes(value))
+            return true
         if (Object.keys(value).length === 0)
             return true
     }
@@ -55,9 +57,13 @@ export const isEmptyValue = (value: any): boolean => {
             return true
     }
     if (typeof value === 'string') {
+        if(matches.includes(value))
+            return true
         if (value.trim() === '')
             return true
     }
+    if (value === null || value === false || value === undefined)
+        return true
     return matches.includes(value)
 }
 
@@ -101,7 +107,7 @@ export const handleFocus = (event: any) => event.target.select();
  * @param data
  */
 export const genApiQuery = (data: ColumnFiltersState): string => {
-    if(data.length === 0)
+    if (data.length === 0)
         return ''
     const query: Array<string> = []
     data.forEach((item) => {

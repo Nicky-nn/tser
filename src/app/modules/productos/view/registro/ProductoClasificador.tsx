@@ -3,22 +3,23 @@ import {Button, FormControl, Grid} from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {useAppSelector} from "../../../../hooks";
-import {selectProducto, setProdTipo, setProducto} from "../../slices/productos/producto.slice";
-import {useDispatch} from "react-redux";
 import Select from "react-select";
 import useQueryTiposProducto from "../../../tipoProducto/hooks/useQueryTiposProducto";
 import {TipoProductoInputProp, TipoProductoProps} from "../../../tipoProducto/interfaces/tipoProducto.interface";
 import TipoProductoDialogRegistro from "../../../tipoProducto/view/TipoProductoRegistroDialog";
+import {FormikProps} from "formik";
+import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
 
 interface OwnProps {
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoClasificador: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
-    const dispatch = useDispatch()
+    const {formik} = props;
+    const {values, setFieldValue} = formik
+
     const [openDialog, setOpenDialog] = useState(false);
     const {tiposProducto} = useQueryTiposProducto([openDialog])
 
@@ -33,11 +34,11 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                         <Select<TipoProductoProps>
                             styles={reactSelectStyles}
                             menuPosition={'fixed'}
-                            name="productoClasificador"
+                            name="tipoProducto"
                             placeholder={'Seleccione...'}
-                            value={prod.tipoProducto}
+                            value={values.tipoProducto}
                             onChange={(tipoProducto: any) => {
-                                dispatch(setProducto({...prod, tipoProducto}))
+                                setFieldValue(prodMap.tipoProducto, tipoProducto)
                             }}
                             options={tiposProducto}
                             isClearable={true}

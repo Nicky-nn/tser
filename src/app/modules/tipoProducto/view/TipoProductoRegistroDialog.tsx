@@ -1,11 +1,7 @@
 import React, {FunctionComponent, useEffect} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import {
-    TIPO_PRODUCTO_INITIAL_VALUES,
-    TipoProductoInputProp
-} from "../interfaces/tipoProducto.interface";
+import {TIPO_PRODUCTO_INITIAL_VALUES, TipoProductoInputProp} from "../interfaces/tipoProducto.interface";
 import {FormikProps, useFormik} from "formik";
-import {genRandomString} from "../../../utils/helper";
 import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
 import {notSuccess} from "../../../utils/notification";
 import {tipoProductoRegistroValidationSchema} from "../validator/tipoProductoRegistro.validator";
@@ -55,29 +51,32 @@ const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
     }, [open]);
 
     return (
-        <Dialog
-            sx={{'& .MuiDialog-paper': {width: '100%', maxHeight: 500}}}
-            maxWidth="sm"
-            open={open}
-            {...other}
-        >
-            <DialogTitle>Registrar nuevo clasificador de productos</DialogTitle>
-            <DialogContent dividers>
-                <TipoProductoForm formik={formik}/>
-            </DialogContent>
-            <DialogActions>
-                <Button autoFocus color={'error'} size={'small'} variant={'contained'} onClick={handleCancel}>
-                    Cancelar
-                </Button>
-                <Button
-                    onClick={formik.submitForm}
-                    size={'small'}
-                    style={{marginRight: 25}}
-                    variant={'contained'}
-                    disabled={!formik.isValid}
-                >Registrar Proveedor</Button>
-            </DialogActions>
-        </Dialog>
+        <>
+            <Dialog
+                sx={{'& .MuiDialog-paper': {width: '100%', maxHeight: 500}}}
+                maxWidth="sm"
+                open={open}
+                {...other}
+            >
+                <DialogTitle>Registrar nuevo clasificador de productos</DialogTitle>
+                <DialogContent dividers>
+                    <TipoProductoForm formik={formik}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus color={'error'} size={'small'} variant={'contained'} onClick={handleCancel}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={formik.submitForm}
+                        size={'small'}
+                        style={{marginRight: 25}}
+                        variant={'contained'}
+                        disabled={!formik.isValid}
+                    >Registrar Proveedor</Button>
+                </DialogActions>
+            </Dialog>
+        </>
+
     )
 };
 

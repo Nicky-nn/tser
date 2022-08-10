@@ -3,63 +3,67 @@ import SimpleContainer from "../../../base/components/Container/SimpleContainer"
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import {Button, CssBaseline, Grid, Paper, Stack} from "@mui/material";
 import Homologacion from "./registro/ProductoHomologacion";
+import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
+import {Save} from "@mui/icons-material";
+import {notError, notSuccess} from "../../../utils/notification";
+import {useNavigate} from "react-router-dom";
+import {FormikProps, useFormik} from "formik";
+import {PRODUCTO_INITIAL_VALUES, ProductoInputProps} from "../interfaces/producto.interface";
+import {genRandomString} from "../../../utils/helper";
 import ProductoPrecio from "./registro/ProductoPrecio";
+import ProductoInventario from "./ProductoInventario/ProductoInventario";
 import ProductoOpciones from "./registro/ProductoOpciones";
 import ProductoVariantes from "./registro/ProductoVariantes";
 import ProductoClasificador from "./registro/ProductoClasificador";
 import ProductoProveedor from "./registro/ProductoProveedor";
-import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
-import {Save} from "@mui/icons-material";
-import {useAppSelector} from "../../../hooks";
-import {productoReset, selectProducto} from "../slices/productos/producto.slice";
-import {productoRegistroValidator} from "../validator/productoRegistroValidator";
-import {notError, notSuccess} from "../../../utils/notification";
+import {productoRegistroValidationSchema, productoRegistroValidator} from "../validator/productoRegistroValidator";
 import {productoComposeService} from "../services/ProductoComposeService";
 import {apiProductoRegistro} from "../api/productoRegistro.api";
-import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import ProductoInventario from "./ProductoInventario/ProductoInventario";
 
 interface OwnProps {
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoRegistro: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
-    const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const handleSave = async () => {
-        // Reglas de validacion
-        const val = await productoRegistroValidator(prod)
-        if (val.length > 0) {
-            notError(val.join('<br>'))
-        } else {
-            const apiInput = productoComposeService(prod)
-            await swalAsyncConfirmDialog({
-                preConfirm: async () => {
-                    const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}))
-                    if (resp.error) {
-                        swalException(resp.error)
-                        return false
+    const formik: FormikProps<ProductoInputProps> = useFormik<ProductoInputProps>({
+        initialValues: PRODUCTO_INITIAL_VALUES,
+        validationSchema: productoRegistroValidationSchema,
+        onSubmit: async (values) => {
+            console.log(values)
+            const val = await productoRegistroValidator(values)
+            if (val.length > 0) {
+                notError(val.join('<br>'))
+            } else {
+                const apiInput = productoComposeService(values)
+                await swalAsyncConfirmDialog({
+                    preConfirm: async () => {
+                        const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}))
+                        if (resp.error) {
+                            swalException(resp.error)
+                            return false
+                        }
+                        return resp;
                     }
-                    return resp;
-                }
-            }).then(resp => {
-                if (resp.isConfirmed) {
-                    notSuccess()
-                    navigate(`/productos/modificar/${resp.value._id}`, {replace: true})
-                }
-                if (resp.isDenied) {
-                    swalException(resp.value)
-                }
-                return
-            })
-        }
-    }
+                }).then(resp => {
+                    if (resp.isConfirmed) {
+                        notSuccess()
+                        navigate(`/productos/modificar/${resp.value._id}`, {replace: true})
+                    }
+                    if (resp.isDenied) {
+                        swalException(resp.value)
+                    }
+                    return
+                })
+            }
+        },
+    });
+
     useEffect(() => {
-        dispatch(productoReset())
+        formik.setFieldValue('variante.id', genRandomString(10))
     }, []);
 
     return (
@@ -81,7 +85,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                     spacing={{xs: 1, sm: 1, md: 1, xl: 1}}
                     justifyContent="flex-end"
                 >
-                    <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={handleSave}>
+                    <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={formik.submitForm}>
                         Guardar Producto
                     </Button>
                 </Stack>
@@ -91,29 +95,29 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
                 <Grid item lg={8} md={8} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item lg={12} md={12} xs={12}>
-                            <Homologacion/>
+                            <Homologacion formik={formik}/>
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoPrecio/>
+                            {<ProductoPrecio formik={formik}/>}
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoInventario/>
+                            {<ProductoInventario formik={formik}/>}
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoOpciones/>
+                            {<ProductoOpciones formik={formik}/>}
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoVariantes/>
+                            {<ProductoVariantes formik={formik}/>}
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid item lg={4} md={4} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoClasificador/>
+                            {<ProductoClasificador formik={formik}/>}
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoProveedor/>
+                            {<ProductoProveedor formik={formik}/>}
                         </Grid>
                     </Grid>
                 </Grid>

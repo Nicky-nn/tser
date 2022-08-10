@@ -4,24 +4,23 @@ import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {selectProducto, setProdProveedor, setProducto} from "../../slices/productos/producto.slice";
-import {useAppSelector} from "../../../../hooks";
-import {useDispatch} from "react-redux";
 import {ProveedorInputProp, ProveedorProps} from "../../../proveedor/interfaces/proveedor.interface";
 import {apiProveedores} from "../../../proveedor/api/proveedores.api";
 import {useQuery} from "@tanstack/react-query";
-import {ProductoVarianteInputProps} from "../../interfaces/producto.interface";
-import PrecioInventarioVariantesDialog from "./ProductoVariantes/PrecioInventarioVariantesDialog";
+import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
 import ProveedorRegistroDialog from "../../../proveedor/view/ProveedorRegistroDialog";
+import {FormikProps} from "formik";
 
 interface OwnProps {
+    formik: FormikProps<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoProveedor: FunctionComponent<Props> = (props) => {
-    const prod = useAppSelector(selectProducto)
-    const dispatch = useDispatch()
+    const {formik} = props;
+    const {values, setFieldValue} = formik
+
     const [openDialog, setOpenDialog] = useState(false);
 
     const {data: proveedores} = useQuery<ProveedorProps[], Error>(['proveedores', openDialog], () => {
@@ -39,11 +38,11 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                         <Select<ProveedorProps>
                             styles={reactSelectStyles}
                             menuPosition={'fixed'}
-                            name="productoProveedor"
+                            name="proveedor"
                             placeholder={'Seleccione...'}
-                            value={prod.proveedor}
+                            value={values.proveedor}
                             onChange={(proveedor: any) => {
-                                dispatch(setProdProveedor(proveedor))
+                                setFieldValue(prodMap.proveedor, proveedor)
                             }}
                             options={proveedores}
                             isClearable={true}
@@ -53,13 +52,13 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                     </FormControl>
                 </Grid>
                 <Grid item lg={12} md={12} xs={12} textAlign={'right'}>
-                    <Button variant={'outlined'} onClick={() => setOpenDialog(true)} size={'small'}>Nuevo Proveedor</Button>
+                    <Button variant={'outlined'} onClick={() => setOpenDialog(true)} size={'small'}>Nuevo
+                        Proveedor</Button>
                     <ProveedorRegistroDialog
                         id={'proveedorRegistroDialog'}
                         keepMounted={false}
                         open={openDialog}
                         onClose={(value?: ProveedorInputProp) => {
-                            console.log(value)
                             setOpenDialog(false)
                         }}
                     />

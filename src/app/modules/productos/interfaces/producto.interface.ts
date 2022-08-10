@@ -8,6 +8,7 @@ import {InventarioProps} from "./inventario.interface";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
 import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
 import {TipoProductoProps} from "../../tipoProducto/interfaces/tipoProducto.interface";
+import {genRandomString} from "../../../utils/helper";
 
 export interface ProductoVarianteProps {
     id: string
@@ -90,6 +91,7 @@ export interface OpcionesProductoProps {
 }
 
 export interface ProductoInputProps {
+    id?: string | null
     actividadEconomica: SinActividadesPorDocumentoSector | null,
     sinProductoServicio: SinProductoServicioProps | null,
     titulo: string,
@@ -109,8 +111,8 @@ export interface ProductoInputProps {
 /**
  * Valores iniciales para una variante
  */
-export const ProductoVarianteInitialValues = {
-    id: '',
+export const PRODUCTO_VARIANTE_INITIAL_VALUES = {
+    id: genRandomString(10),
     codigoProducto: '',
     titulo: '',
     nombre: '',
@@ -127,7 +129,8 @@ export const ProductoVarianteInitialValues = {
 /**
  * valores iniciales para un nuevo producto
  */
-export const ProductoInitialValues: ProductoInputProps = {
+export const PRODUCTO_INITIAL_VALUES: ProductoInputProps = {
+    id: null,
     actividadEconomica: null,
     sinProductoServicio: null,
     titulo: '',
@@ -135,7 +138,7 @@ export const ProductoInitialValues: ProductoInputProps = {
     descripcionHtml: '<span></span>',
     varianteUnica: true,
     varianteUnicaTemp: true,
-    variante: ProductoVarianteInitialValues,
+    variante: PRODUCTO_VARIANTE_INITIAL_VALUES,
     opcionesProducto: [],
     tipoProducto: null,
     tipoProductoPersonalizado: '',
@@ -143,6 +146,24 @@ export const ProductoInitialValues: ProductoInputProps = {
     variantesTemp: [],
     proveedor: null
 }
+
+export const prodMap = {
+    actividadEconomica: 'actividadEconomica',
+    sinProductoServicio: 'sinProductoServicio',
+    titulo: 'titulo',
+    descripcion: 'descripcion',
+    descripcionHtml: 'descripcionHtml',
+    varianteUnica: 'varianteUnica',
+    varianteUnicaTemp: 'varianteUnicaTemp',
+    variante: 'variante',
+    opcionesProducto: 'opcionesProducto',
+    tipoProducto: 'tipoProducto',
+    tipoProductoPersonalizado: 'tipoProductoPersonalizado',
+    variantes: 'variantes',
+    variantesTemp: 'variantesTemp',
+    proveedor: 'proveedor'
+}
+
 
 export interface ProductoVarianteApiProps {
     id: string
