@@ -1,82 +1,81 @@
 // noinspection GraphQLUnresolvedReference
 
-import React, {FunctionComponent, useState} from 'react';
-import {Button, Divider, Grid, Link, List, ListItem, ListItemText, Typography} from "@mui/material";
-import {Home, MonetizationOn, Paid} from "@mui/icons-material";
-import {useAppSelector} from "../../../../hooks";
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {
+    Button,
+    Divider,
+    FormControl,
+    FormHelperText,
+    Grid,
+    InputLabel,
+    Link,
+    List,
+    ListItem,
+    ListItemText,
+    Typography
+} from "@mui/material";
+import {MonetizationOn, Paid} from "@mui/icons-material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
 import InputNumber from "rc-input-number";
 import {DescuentoAdicionalDialog} from "./ventaTotales/DescuentoAdicionalDialog";
-import {
-    facturaReset,
-    setFactura,
-    setFacturaDescuentoAdicional,
-    setFacturaInputMontoPagar,
-    setFacturaMontoPagar
-} from "../../slices/facturacion/factura.slice";
-import {useDispatch} from "react-redux";
+import {FacturaInitialValues, FacturaInputProps} from "../../interfaces/factura";
+import {Controller, SubmitHandler, UseFormReturn} from "react-hook-form";
+import {genCalculoTotalesService, montoSubTotal} from "../../services/operacionesService";
 import {composeFactura, composeFacturaValidator} from "../../utils/composeFactura";
-import Swal from 'sweetalert2';
-import {swalConfirm, swalErrorMsg, swalException} from "../../../../utils/swal";
+import {swalAsyncConfirmDialog, swalErrorMsg, swalException} from "../../../../utils/swal";
+import Swal from "sweetalert2";
 import {fetchFacturaCreate} from "../../api/facturaCreate.api";
 import {openInNewTab} from "../../../../utils/helper";
-import {FacturaResetValues} from "../../interfaces/factura";
 
 interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
 }
 
 type Props = OwnProps;
 
 
 const VentaTotales: FunctionComponent<Props> = (props) => {
-    const factura = useAppSelector(state => state.factura);
+    const {form: {control, reset, handleSubmit, setValue, getValues, formState: {errors}}} = props
     const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false);
+
     const handleFocus = (event: any) => event.target.select();
-    const dispatch = useDispatch();
-    const handleDescuentoAdicional = (event: any) => {
-        setOpenDescuentoAdicional(true);
-    }
-    const handleCloseDescuentoAdicional = (newValue?: number) => {
-        setOpenDescuentoAdicional(false);
-        if (newValue || newValue === 0) {
-            dispatch(setFacturaDescuentoAdicional(newValue))
-            dispatch(setFacturaMontoPagar())
-        }
-    };
-    const handeRealizarPago = async () => {
-        const inputFactura = composeFactura(factura)
-        console.log(inputFactura)
+    const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
+        const inputFactura = composeFactura(data)
         const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
             swalErrorMsg(err.message)
         })
         if (validator) {
-            Swal.fire({
-                ...swalConfirm,
+            await swalAsyncConfirmDialog({
                 text: '¿Confirma que desea emitir el documento fiscal?',
-                showLoaderOnConfirm: true,
                 preConfirm: () => {
-                    return fetchFacturaCreate(inputFactura)
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const {value}: any = result
-                    dispatch(setFactura({
-                        ...factura,
-                        ...FacturaResetValues
-                    }))
+                    return fetchFacturaCreate(inputFactura).catch(err => {
+                        swalException(err)
+                        return false
+                    })
+                }
+            }).then(resp => {
+                if (resp.isConfirmed) {
+                    const {value}: any = resp
+                    reset({...FacturaInitialValues, actividadEconomica: data.actividadEconomica})
                     openInNewTab(value.representacionGrafica.pdf)
                     Swal.fire({
                         title: `Documento generado correctamente`,
                         text: `${value.representacionGrafica.pdf}`,
                     }).then()
                 }
-            }).catch(err => {
-                swalException(err)
             })
         }
-    }
+    };
+
+    useEffect(() => {
+        const totales = genCalculoTotalesService(getValues())
+        setValue('montoSubTotal', totales.subTotal)
+        setValue('montoPagar', totales.montoPagar)
+        setValue('inputVuelto', totales.vuelto)
+        setValue('total', totales.total)
+    }, [getValues('descuentoAdicional'), getValues('inputMontoPagar')]);
+
     return (
         <>
             <SimpleCard title="Cálculo de los totales" childIcon={<MonetizationOn/>}>
@@ -84,54 +83,55 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <Typography variant="subtitle1" gutterBottom>
-                                      {numberWithCommas(factura.montoSubTotal, {})}
+                                      {numberWithCommas(getValues('montoSubTotal'), {})}
                                   </Typography>
                               }
                     >
                         <ListItemText primary={<strong>SUB-TOTAL</strong>}/>
                     </ListItem>
+
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <>
-                                      <Link href="#" onClick={handleDescuentoAdicional} variant="subtitle1"
+                                      <Link href="#" onClick={() => setOpenDescuentoAdicional(true)} variant="subtitle1"
                                             underline="hover">
-                                          {numberWithCommas(factura.descuentoAdicional || 0, {})}
+                                          {numberWithCommas(getValues('descuentoAdicional') || 0, {})}
                                       </Link>
                                       <DescuentoAdicionalDialog
                                           id="ringtone-menu"
-                                          keepMounted
+                                          keepMounted={false}
                                           open={openDescuentoAdicional}
-                                          onClose={handleCloseDescuentoAdicional}
-                                          value={factura.descuentoAdicional || 0}
+                                          onClose={(newValue) => {
+                                              setOpenDescuentoAdicional(false);
+                                              if (newValue || newValue === 0) {
+                                                  setValue('descuentoAdicional', newValue)
+                                              }
+                                          }}
+                                          value={getValues('descuentoAdicional') || 0}
                                       />
                                   </>
                               }
                     >
                         <ListItemText primary={<strong>DESCUENTO ADICIONAL</strong>}/>
                     </ListItem>
+
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <>
                                       <Link href="#" variant="subtitle1"
                                             underline="hover">
-                                          {numberWithCommas(factura.descuentoAdicional || 0, {})}
+                                          {numberWithCommas(getValues('montoGiftCard') || 0, {})}
                                       </Link>
-                                      <DescuentoAdicionalDialog
-                                          id="ringtone-menu"
-                                          keepMounted
-                                          open={openDescuentoAdicional}
-                                          onClose={handleCloseDescuentoAdicional}
-                                          value={factura.descuentoAdicional || 0}
-                                      />
                                   </>
                               }
                     >
                         <ListItemText primary={<strong>MONTO GIFT-CARD</strong>}/>
                     </ListItem>
+
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <Typography variant="subtitle1" gutterBottom>
-                                      {numberWithCommas(factura.montoSubTotal - factura.descuentoAdicional, {})}
+                                      {numberWithCommas(getValues('total') || 0, {})}
                                   </Typography>
                               }
                     >
@@ -141,7 +141,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     <ListItem style={{padding: 0}}
                               secondaryAction={
                                   <Typography variant="h6" gutterBottom>
-                                      {numberWithCommas(factura.montoPagar, {})}
+                                      {numberWithCommas(getValues('montoPagar') || 0, {})}
                                   </Typography>
                               }
                     >
@@ -152,27 +152,41 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                 <Divider style={{marginTop: 10, marginBottom: 20}} color={'red'}/>
                 <Grid sx={{flexGrow: 1}} container spacing={3}>
                     <Grid item xs={12} md={7} lg={7}>
-                        <small>Ingrese Monto</small><br/>
-                        <InputNumber
-                            min={0}
-                            id={'montoPagar'}
-                            className="inputMontoPagar"
-                            value={factura.inputMontoPagar}
-                            onFocus={handleFocus}
-                            onChange={(value: number) => {
-                                dispatch(setFacturaInputMontoPagar(value))
-                            }}
-                            formatter={numberWithCommas}
+                        <Controller
+                            control={control}
+                            name={'inputMontoPagar'}
+                            render={({field}) => (
+                                <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
+                                    <InputLabel>Ingrese Monto</InputLabel><br/>
+                                    <InputNumber
+                                        {...field}
+                                        min={0}
+                                        id={'montoPagar'}
+                                        className="inputMontoPagar"
+                                        value={field.value}
+                                        onFocus={handleFocus}
+                                        onChange={(value: number) => {
+                                            field.onChange(value)
+                                        }}
+                                        formatter={numberWithCommas}
+                                    />
+                                    <FormHelperText>{errors.inputMontoPagar?.message}</FormHelperText>
+                                </FormControl>
+                            )}
+
                         />
+
+
                     </Grid>
                     <Grid item xs={12} md={5} lg={5}>
                         <small>Vuelto / Saldo</small>
                         <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-                            {numberWithCommas(factura.inputVuelto, {})}
+                            {numberWithCommas(getValues('inputVuelto') || 0, {})}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Button variant="contained" onClick={handeRealizarPago} fullWidth={true} color="success"
+                        <Button variant="contained" onClick={handleSubmit(onSubmit)} fullWidth={true}
+                                color="success"
                                 startIcon={<Paid/>}>
                             REALIZAR PAGO
                         </Button>

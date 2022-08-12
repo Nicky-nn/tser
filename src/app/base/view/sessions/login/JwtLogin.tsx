@@ -32,7 +32,7 @@ const IMG = styled('img')(() => ({
 
 const JWTRoot = styled(JustifyBox)(() => ({
     background: '#1A2038',
-    minHeight: '100% !important',
+    minHeight: '100vh',
     '& .card': {
         maxWidth: 400,
         borderRadius: 12,

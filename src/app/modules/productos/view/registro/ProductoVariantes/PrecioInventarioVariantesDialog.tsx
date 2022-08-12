@@ -9,8 +9,8 @@ import {
     FormControl,
     FormControlLabel,
     FormHelperText,
-    Grid,
-    TextField,
+    Grid, styled,
+    TextField, Tooltip, tooltipClasses, TooltipProps,
     Typography
 } from "@mui/material";
 import {SelectInputLabel} from "../../../../../base/components/ReactSelect/SelectInputLabel";
@@ -44,7 +44,6 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
     const [data, setData] = useState<ProductoVarianteInputProps>(variante);
-    const [inputError, setInputError] = useState<any>({});
 
     const fetchUnidadesMedida = async () => {
         await apiSinUnidadMedida().then((data) => {
@@ -96,17 +95,17 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
     }, []);
     return (
         <Dialog
-            sx={{'& .MuiDialog-paper': {width: '100%', maxHeight: 850}}}
+            sx={{'& .MuiDialog-paper': {width: '100%', maxHeight: 800}}}
             maxWidth="md"
             open={open}
             {...other}
         >
             <DialogTitle>Modificar Variante "{data.titulo}"</DialogTitle>
             <DialogContent dividers>
-                <Grid container rowSpacing={2}>
+                <Grid container rowSpacing={1}>
                     <Grid item>
                         <SimpleCard title={'PRECIO'}>
-                            <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
+                            <Grid container columnSpacing={3} rowSpacing={2}>
                                 <Grid item lg={12} md={12} xs={12}>
                                     <FormControl fullWidth sx={{mb: 1}}>
                                         <SelectInputLabel shrink>
@@ -181,7 +180,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
 
                     <Grid item>
                         <SimpleCard title={'INVENTARIO'}>
-                            <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
+                            <Grid container columnSpacing={3} rowSpacing={2}>
                                 <Grid item lg={4} md={4} xs={12}>
                                     <FormControl fullWidth>
                                         <TextField

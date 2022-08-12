@@ -1,33 +1,38 @@
 import React, {FunctionComponent, useEffect} from 'react';
-import {FormControl} from "@mui/material";
-import {setFactura} from "../../slices/facturacion/factura.slice";
-import {useAppSelector} from "../../../../hooks";
-import {useDispatch} from "react-redux";
+import {FormControl, FormHelperText} from "@mui/material";
 import {SinActividadesProps} from "../../../sin/interfaces/sin.interface";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import Select from "react-select";
-import {genReplaceEmpty} from "../../../../utils/helper";
 import useQueryActividades from "../../../sin/hooks/useQueryActividades";
 import AlertError from "../../../../base/components/Alert/AlertError";
 import AlertLoading from "../../../../base/components/Alert/AlertLoading";
 import useAuth from "../../../../base/hooks/useAuth";
+import {Controller, UseFormReturn} from "react-hook-form";
+import {FacturaInputProps} from "../../interfaces/factura";
 
 interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
 }
 
 type Props = OwnProps;
 
-const DatosActividadEconomica: FunctionComponent<Props> = () => {
-    const factura = useAppSelector(state => state.factura);
+const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
+    const {
+        form: {
+            control,
+            setValue,
+            reset,
+            getValues,
+            formState: {errors, isSubmitted, isSubmitSuccessful}
+        }
+    } = props
     const {user} = useAuth()
-    const dispatch = useDispatch();
     const {actividades, actIsError, actError, actLoading} = useQueryActividades()
 
-    // Inicializacion de actividad economica dado por el usuario activo
     useEffect(() => {
-        dispatch(setFactura({...factura, actividadEconomica: user.actividadEconomica}))
+        setValue('actividadEconomica', user.actividadEconomica)
     }, []);
 
     if (actIsError) {
@@ -40,32 +45,38 @@ const DatosActividadEconomica: FunctionComponent<Props> = () => {
                 {
                     actLoading ? <AlertLoading/> :
                         (
-                            <FormControl fullWidth>
-                                <SelectInputLabel shrink>
-                                    Actividad Económica
-                                </SelectInputLabel>
-                                <Select<SinActividadesProps>
-                                    styles={reactSelectStyles}
-                                    menuPosition={'fixed'}
-                                    name="actividadEconomica"
-                                    placeholder={'Seleccione la actividad económica'}
-                                    value={genReplaceEmpty(factura.actividadEconomica, null)}
-                                    onChange={async (val: any) => {
-                                        dispatch(setFactura({
-                                            ...factura,
-                                            actividadEconomica: val,
-                                            detalle: []
-                                        }))
-                                    }}
-                                    isSearchable={false}
-                                    options={actividades}
-                                    getOptionValue={(item) => item.codigoCaeb}
-                                    getOptionLabel={(item) => `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`}
-                                />
-                            </FormControl>
+                            <Controller
+                                name="actividadEconomica"
+                                control={control}
+                                render={({field}) => (
+                                    <FormControl fullWidth error={Boolean(errors.actividadEconomica)}>
+                                        <SelectInputLabel shrink>
+                                            Actividad Económica
+                                        </SelectInputLabel>
+                                        <Select<SinActividadesProps>
+                                            {...field}
+                                            styles={reactSelectStyles}
+                                            name="actividadEconomica"
+                                            placeholder={'Seleccione la actividad económica'}
+                                            value={field.value}
+                                            onChange={async (val: any) => {
+                                                field.onChange(val)
+                                            }}
+                                            onBlur={async (val) => {
+                                                field.onBlur()
+                                            }}
+                                            isSearchable={false}
+                                            options={actividades}
+                                            getOptionValue={(item) => item.codigoCaeb}
+                                            getOptionLabel={(item) => `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`}
+                                        />
+                                        {errors.actividadEconomica &&
+                                            <FormHelperText>{errors.actividadEconomica?.message}</FormHelperText>}
+                                    </FormControl>
+                                )}
+                            />
                         )
                 }
-
             </SimpleCard>
 
         </>

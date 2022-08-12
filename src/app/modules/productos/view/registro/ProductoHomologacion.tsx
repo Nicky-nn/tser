@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from "react";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {FormControl, FormHelperText, Grid, TextField} from "@mui/material";
+import {FormControl, FormHelperText, Grid} from "@mui/material";
 import Select from "react-select";
 import {SinActividadesPorDocumentoSector, SinProductoServicioProps} from "../../../sin/interfaces/sin.interface";
 import {fetchSinProductoServicioPorActividad} from "../../../sin/api/sinProductoServicio.api";
@@ -12,6 +12,7 @@ import {useQuery} from "@tanstack/react-query";
 import AlertError from "../../../../base/components/Alert/AlertError";
 import {FormikProps} from "formik";
 import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
+import {FormTextField} from "../../../../base/components/Form";
 
 interface OwnProps {
     formik: FormikProps<ProductoInputProps>
@@ -109,11 +110,9 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                         }
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
-                        <TextField
+                        <FormTextField
                             name="titulo"
                             label="Nombre Producto"
-                            size="small"
-                            fullWidth
                             value={values.titulo}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -122,11 +121,9 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                         />
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
-                        <TextField
+                        <FormTextField
                             name="descripcion"
                             label="Descripcion"
-                            size="small"
-                            fullWidth
                             multiline
                             minRows={3}
                             maxRows={5}

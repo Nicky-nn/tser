@@ -58,7 +58,6 @@ export const apiProductosVariantes = async (codigoActividad: string, query: stri
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
-    console.log('buscando')
 
     const data: any = await client.request(reqQuery, {codigoActividad, query})
     return data?.fcvProductosVariantes || [];

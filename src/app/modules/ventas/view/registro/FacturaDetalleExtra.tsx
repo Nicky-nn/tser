@@ -1,44 +1,35 @@
-import React, {FunctionComponent, useState} from 'react';
-import {useAppSelector} from "../../../../hooks";
+import React, {FunctionComponent} from 'react';
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {Box} from "@mui/material";
-import FacturaDetalleExtraDialog from "./DetalleExtra/FacturaDetalleExtraDialog";
-import {setFactura} from "../../slices/facturacion/factura.slice";
-import {useDispatch} from "react-redux";
 import {Editor} from "@tinymce/tinymce-react";
 import {TINYMCE_TEMPLATES} from "../../../../interfaces/tinimce.template";
+import {UseFormReturn} from "react-hook-form";
+import {FacturaInputProps} from "../../interfaces/factura";
 
 interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
 }
 
 type Props = OwnProps;
 
 const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
-    const factura = useAppSelector(state => state.factura);
-    const [openDetalleExtra, setOpenDetalleExtra] = useState(false);
-    const dispatch = useDispatch();
-    const handleDetalleExtra = (event: any) => {
-        setOpenDetalleExtra(true);
-    }
-    const handleCloseDetalleExtra = (newValue?: string) => {
-        setOpenDetalleExtra(false);
-        if (newValue) {
-            dispatch(setFactura({...factura, detalleExtra: newValue}))
-        }
-    };
-
+    const {form: {control, setValue, getValues, formState: {errors}}} = props
     return (
         <>
             <SimpleCard title="Detalle Extra">
                 <Box sx={{alignItems: 'right', textAlign: 'left'}}>
                     <Editor
                         apiKey='niud727ae46xgl3s5morxk4v03hq6rrv7lpkvustyt2ilp2k'
-                        value={factura.detalleExtra || ''}
+                        value={getValues("detalleExtra") || ''}
                         onInit={(evt, editor) => {
-                            console.log(editor.getContent({format: 'text'}));
+                            editor.on('blur', (e) => {
+                                setValue("detalleExtraText", editor.getContent({format: 'text'}))
+                                console.log(getValues("detalleExtra"), getValues("detalleExtraText"))
+                            })
                         }}
                         onEditorChange={(newValue, editor) => {
-                            dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
+                            setValue("detalleExtra", editor.getContent())
+                            // dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
                         }}
                         init={{
                             plugins: 'table template code',
@@ -55,13 +46,6 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                     />
                 </Box>
             </SimpleCard>
-            <FacturaDetalleExtraDialog
-                id="ringtone-menu"
-                keepMounted
-                open={openDetalleExtra}
-                onClose={handleCloseDetalleExtra}
-                value={factura.detalleExtra || ''}
-            />
         </>
     );
 };

@@ -1,12 +1,7 @@
-import {Box, styled} from '@mui/system'
+import {Box} from '@mui/system'
 import {Divider, Grid} from "@mui/material";
 import {DatosTransaccionComercial} from "./registro/DatosTransaccionComercial";
-import React from "react";
-import {selectFactura} from "../slices/facturacion/factura.slice";
-import {FormikProps, useFormik} from "formik";
-import {FacturaInputProps} from "../interfaces/factura";
 import {DetalleTransaccionComercial} from "./registro/DetalleTransaccionComercial";
-import {useAppSelector} from "../../../hooks";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import VentaTotales from "./registro/VentaTotales";
 import MetodosPago from "./registro/MetodosPago";
@@ -14,33 +9,22 @@ import FacturaDetalleExtra from "./registro/FacturaDetalleExtra";
 import DatosActividadEconomica from "./registro/DatosActividadEconomica";
 import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
 import useAuth from "../../../base/hooks/useAuth";
-
-const Container = styled('div')(({theme}) => ({
-    margin: '30px',
-    [theme.breakpoints.down('sm')]: {
-        margin: '16px',
-    },
-    '& .breadcrumb': {
-        marginBottom: '30px',
-        [theme.breakpoints.down('sm')]: {
-            marginBottom: '16px',
-        },
-    },
-}))
+import SimpleContainer from "../../../base/components/Container/SimpleContainer";
+import {useForm} from "react-hook-form";
+import {FacturaInitialValues, FacturaInputProps} from "../interfaces/factura";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {VentaRegistroValidator} from "../validator/ventaRegistroValidator";
 
 const VentaRegistro = () => {
-    const factura = useAppSelector(selectFactura)
     const {user} = useAuth()
 
-    const formik: FormikProps<FacturaInputProps> = useFormik<FacturaInputProps>({
-        initialValues: factura,
-        onSubmit: (values) => {
-            console.log(values);
-        }
+    const form = useForm<FacturaInputProps>({
+        defaultValues: {...FacturaInitialValues, actividadEconomica: user.actividadEconomica},
+        resolver: yupResolver(VentaRegistroValidator),
     });
 
     return (
-        <Container>
+        <SimpleContainer>
             <div className="breadcrumb">
                 <Breadcrumb
                     routeSegments={[
@@ -49,31 +33,31 @@ const VentaRegistro = () => {
                     ]}
                 />
             </div>
-            <form noValidate onSubmit={formik.handleSubmit}>
+            <form noValidate>
                 <Grid container spacing={2}>
                     <Grid item lg={12} md={12} xs={12}>
-                        <DatosActividadEconomica/>
+                        <DatosActividadEconomica form={form}/>
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
-                        <FacturaDetalleExtra/>
+                        <FacturaDetalleExtra form={form}/>
                     </Grid>
                     <Grid item lg={12} md={12} xs={12}>
-                        <DetalleTransaccionComercial/>
+                        <DetalleTransaccionComercial form={form}/>
                     </Grid>
                     <Grid item lg={7} md={12} xs={12}>
                         <SimpleCard title={'Cliente / Método de págo'}>
-                            <DatosTransaccionComercial user={user!}/>
+                            <DatosTransaccionComercial form={form} user={user!}/>
                             <Divider/>
-                            <MetodosPago/>
+                            <MetodosPago form={form}/>
                         </SimpleCard>
                     </Grid>
                     <Grid item lg={5} md={6} xs={12}>
-                        <VentaTotales/>
+                        <VentaTotales form={form}/>
                     </Grid>
                 </Grid>
             </form>
             <Box py="12px"/>
-        </Container>
+        </SimpleContainer>
     )
 }
 

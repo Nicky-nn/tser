@@ -18,7 +18,7 @@ interface OwnProps {
 type Props = OwnProps;
 
 const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
-    const {onClose, open, ...other} = props;
+    const {onClose, keepMounted, open, ...other} = props;
 
     const clienteForm = useFormik<ClienteInputProps>({
         initialValues: CLIENTE_DEFAULT_INPUT,
@@ -59,6 +59,7 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
             <Dialog
                 sx={{'& .MuiDialog-paper': {width: '80%', maxHeight: 435}}}
                 maxWidth="sm"
+                keepMounted={keepMounted}
                 open={open}
                 {...other}
             >

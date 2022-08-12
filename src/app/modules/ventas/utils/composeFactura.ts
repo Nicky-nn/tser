@@ -4,9 +4,9 @@ import { es } from 'yup-locales'
 
 export const composeFactura = (fcv: FacturaInputProps): any => {
     const input = {
-        codigoCliente: fcv.cliente.codigoCliente,
+        codigoCliente: fcv.cliente!.codigoCliente,
         actividadEconomica: fcv.actividadEconomica.codigoCaeb,
-        codigoMetodoPago: fcv.codigoMetodoPago,
+        codigoMetodoPago: parseInt(fcv.codigoMetodoPago.toString()) ,
         descuentoAdicional: fcv.descuentoAdicional,
         detalleExtra: fcv.detalleExtra,
         emailCliente: fcv.emailCliente,

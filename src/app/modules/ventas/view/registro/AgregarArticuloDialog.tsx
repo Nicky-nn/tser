@@ -38,7 +38,7 @@ type Props = OwnProps;
 
 
 const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
-    const {onClose, codigoActividad, open, ...other} = props;
+    const {onClose, keepMounted, codigoActividad, open, ...other} = props;
     const {user} = useAuth()
     const initialValues: ProductoVarianteInputTempProps = {
         incluirCantidad: false,
@@ -148,6 +148,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
             <Dialog
                 sx={{'& .MuiDialog-paper': {width: '80%', maxHeight: 435}}}
                 maxWidth="sm"
+                keepMounted={false}
                 open={open}
                 {...other}
             >

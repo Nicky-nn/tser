@@ -1,11 +1,7 @@
-import {Button, FormControl, Grid, TextField} from "@mui/material";
-import {setCliente, setCodigoCliente, setEmailCliente} from "../../slices/facturacion/factura.slice";
-import {useDispatch} from "react-redux";
-import React, {useState} from "react";
+import {Button, FormControl, FormHelperText, Grid, List, ListItem, ListItemText, TextField} from "@mui/material";
+import React, {FC, useState} from "react";
 import {PerfilProps} from "../../../../base/models/loginModel";
-import {useAppSelector} from "../../../../hooks";
 import {fetchClientesList} from "../../../../base/api/cliente.api";
-import DatosCliente from "./DatosCliente";
 import {PersonAddAlt1Outlined} from "@mui/icons-material";
 import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import AsyncSelect from "react-select/async";
@@ -14,22 +10,21 @@ import {swalException} from "../../../../utils/swal";
 import {genReplaceEmpty} from "../../../../utils/helper";
 import ClienteRegistroDialog from "../../../clientes/view/ClienteRegistroDialog";
 import {ClienteProps} from "../../../clientes/interfaces/cliente";
+import {Controller, UseFormReturn} from "react-hook-form";
+import {FacturaInputProps} from "../../interfaces/factura";
+import {SingleValue} from "react-select";
 
-interface FilmOptionType {
-    codigoCaeb: string;
-    title: string;
-    year: number;
-}
-
-interface DatosTransaccionComercialProps {
+interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
     user: PerfilProps;
 }
 
-export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps) => {
-    const factura = useAppSelector(state => state.factura);
-    const dispatch = useDispatch();
-    const [openNuevoCliente, setNuevoCliente] = useState(false);
+type Props = OwnProps;
 
+export const DatosTransaccionComercial: FC<Props> = (props) => {
+    const {form: {control, watch, setValue, getValues, formState: {errors}}} = props
+    const [openNuevoCliente, setNuevoCliente] = useState(false);
+    const watchAllFields = watch();
 
     const fetchClientes = async (inputValue: string): Promise<any[]> => {
         try {
@@ -43,67 +38,106 @@ export const DatosTransaccionComercial = ({user}: DatosTransaccionComercialProps
     }
 
     return <>
-        <Grid container spacing={2}>
+        <Grid container spacing={1} rowSpacing={4}>
             <Grid item xs={12} lg={12} sm={12} md={12}>
-                <FormControl fullWidth>
-                    <SelectInputLabel shrink>
-                        Seleccione al cliente
-                    </SelectInputLabel>
-                    <AsyncSelect<ClienteProps>
-                        cacheOptions={false}
-                        defaultOptions
-                        styles={reactSelectStyles}
-                        menuPosition={'fixed'}
-                        name="clientes"
-                        placeholder={'Seleccione Cliente'}
-                        loadOptions={fetchClientes}
-                        isClearable={true}
-                        value={genReplaceEmpty(factura.cliente, null)}
-                        getOptionValue={(item) => item.codigoCliente}
-                        getOptionLabel={(item) => `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial} - ${item.tipoDocumentoIdentidad.descripcion}`}
-                        onChange={(cliente: any) => {
-                            dispatch(setCodigoCliente(cliente?.codigoCliente || ''));
-                            dispatch(setCliente(cliente || []));
-                        }}
-                    />
-                </FormControl>
-            </Grid>
-
-            <Grid item lg={9} xs={12} md={12}>
-                <TextField
-                    fullWidth
-                    size={'small'}
-                    id="correoElectronicoAlternativo"
-                    label="Correo Electrónico Alternativo"
-                    value={factura.emailCliente || ''}
-                    disabled={!factura.codigoCliente}
-                    onChange={(e) => dispatch(setEmailCliente(e.target.value))}
+                <Controller
+                    name="cliente"
+                    control={control}
+                    render={({field}) => (
+                        <FormControl fullWidth error={Boolean(errors.cliente)}>
+                            <SelectInputLabel shrink>
+                                Seleccione al cliente
+                            </SelectInputLabel>
+                            <AsyncSelect<ClienteProps>
+                                {...field}
+                                cacheOptions={false}
+                                defaultOptions
+                                styles={reactSelectStyles}
+                                menuPosition={'fixed'}
+                                name="clientes"
+                                placeholder={'Seleccione Cliente'}
+                                loadOptions={fetchClientes}
+                                isClearable={true}
+                                value={field.value || null}
+                                getOptionValue={(item) => item.codigoCliente}
+                                getOptionLabel={(item) => `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial} - ${item.tipoDocumentoIdentidad.descripcion}`}
+                                onChange={(cliente: SingleValue<ClienteProps>) => {
+                                    field.onChange(cliente)
+                                    setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
+                                }}
+                                onBlur={field.onBlur}
+                            />
+                            <FormHelperText>{errors.cliente?.message}</FormHelperText>
+                        </FormControl>
+                    )}
                 />
             </Grid>
 
-            <Grid item lg={3} xs={12} md={3}>
+            <Grid item lg={8} xs={12} md={12}>
+                <Controller
+                    control={control}
+                    name={'emailCliente'}
+                    render={({field}) => (
+                        <TextField
+                            {...field}
+                            error={Boolean(errors.emailCliente)}
+                            fullWidth
+                            name={'emailCliente'}
+                            size={'small'}
+                            label="Correo Electrónico Alternativo"
+                            value={field.value || ''}
+                            disabled={!getValues('cliente')}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            helperText={errors.emailCliente?.message}
+                        />
+                    )}
+                />
+            </Grid>
+
+            <Grid item lg={4} xs={12} md={3}>
                 <Button variant="outlined" fullWidth onClick={() => setNuevoCliente(true)}
-                        startIcon={<PersonAddAlt1Outlined/>}>Nuevo
-                    Cliente</Button>
+                        startIcon={<PersonAddAlt1Outlined/>}>Nuevo Cliente</Button>
             </Grid>
             <Grid item lg={12}>
-                <DatosCliente/>
+                <List style={{marginTop: -10, marginLeft: 10, padding: 0}}>
+                    <ListItem style={{padding: 0}}>
+                        <ListItemText>
+                            <strong>Nombre/Razón
+                                Social:</strong>&nbsp;&nbsp; {watchAllFields.cliente?.razonSocial || ''}
+                        </ListItemText>
+                    </ListItem>
+                    <ListItem style={{padding: 0}}>
+                        <ListItemText>
+                            <strong>NIT/CI/CEX:</strong>&nbsp;&nbsp; {watchAllFields.cliente?.numeroDocumento || ''} {watchAllFields.cliente?.complemento || ''}
+                        </ListItemText>
+                    </ListItem>
+                    <ListItem style={{padding: 0}}>
+                        <ListItemText>
+                            <strong>Correo:</strong>&nbsp;&nbsp; {watchAllFields.emailCliente || ''}
+                        </ListItemText>
+                    </ListItem>
+                </List>
             </Grid>
         </Grid>
-        <ClienteRegistroDialog
-            id={'nuevoClienteDialog'}
-            keepMounted
-            open={openNuevoCliente}
-            onClose={(value?: ClienteProps) => {
-                if (value) {
-                    dispatch(setCliente(value));
-                    dispatch(setCodigoCliente(value.codigoCliente))
-                    setNuevoCliente(false)
-                } else {
-                    setNuevoCliente(false)
-                }
-            }}
-        />
+        <>
+            <ClienteRegistroDialog
+                id={'nuevoClienteDialog'}
+                keepMounted={false}
+                open={openNuevoCliente}
+                onClose={async (value?: ClienteProps) => {
+                    if (value) {
+                        setValue('cliente', value)
+                        setValue('emailCliente', value.email)
+                        await fetchClientes(value.codigoCliente)
+                        setNuevoCliente(false)
+                    } else {
+                        setNuevoCliente(false)
+                    }
+                }}
+            />
+        </>
+
     </>
 }
 

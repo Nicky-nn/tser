@@ -8,7 +8,6 @@ const themeOptions = {
             fontSize: '14px',
         },
     },
-
     status: {
         danger: red[500],
     },

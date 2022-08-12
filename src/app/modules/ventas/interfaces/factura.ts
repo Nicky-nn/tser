@@ -33,7 +33,7 @@ export interface FacturaDetalleInputProps extends ProductoVarianteProps {
 export interface FacturaInputProps {
     actividadEconomica: SinActividadesProps
     tipoCliente: 'N' | '99002' | '99003'
-    cliente: ClienteProps,
+    cliente: ClienteProps | null,
     codigoCliente: string
     codigoExcepcion: number | null,
     codigoMetodoPago: number
@@ -41,12 +41,14 @@ export interface FacturaInputProps {
     descuentoAdicional: number
     detalle: FacturaDetalleInputProps[]
     detalleExtra?: string | null
+    detalleExtraText?: string | null
     emailCliente?: string | null
     montoGiftCard?: number | null
     numeroTarjeta?: string | null
     tipoCambio: number | null
     montoPagar: number
     montoSubTotal: number
+    total: number
     inputMontoPagar: number
     inputVuelto: number
 }
@@ -57,7 +59,7 @@ export interface FacturaInputProps {
 export const FacturaInitialValues: FacturaInputProps = {
     actividadEconomica: {} as SinActividadesProps,
     tipoCliente: 'N',
-    cliente: {} as ClienteProps,
+    cliente: null,
     codigoCliente: '',
     codigoExcepcion: null,
     codigoMetodoPago: 1,
@@ -65,12 +67,14 @@ export const FacturaInitialValues: FacturaInputProps = {
     descuentoAdicional: 0,
     detalle: [] as FacturaDetalleInputProps[],
     detalleExtra: '',
+    detalleExtraText: '',
     emailCliente: null,
     montoGiftCard: 0,
     numeroTarjeta: null,
     tipoCambio: 1,
     montoSubTotal: 0,
     montoPagar: 0,
+    total: 0,
     inputMontoPagar: 0,
     inputVuelto: 0
 }

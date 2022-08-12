@@ -1,4 +1,4 @@
-import { themeShadows } from './themeColors'
+import {themeShadows} from './themeColors'
 
 export const components = {
     MuiTable: {
@@ -128,5 +128,55 @@ export const components = {
                     '0px 3px 3px -2px rgb(0 0 0 / 6%), 0px 3px 4px 0px rgb(0 0 0 / 4%), 0px 1px 8px 0px rgb(0 0 0 / 4%) !important',
             },
         },
+    },
+    MuiInputLabel: {
+        styleOverrides: {
+            root: {
+                fontSize: '15px',
+            },
+            shrink: {
+                transform: 'translate(16px, -11px) scale(0.90) !important',
+            },
+            outlined: {
+                transform: 'translate(16px, 9px) scale(1)',
+            },
+
+        },
+    },
+    MuiTextField: {
+        styleOverrides: {
+            root: {
+                "& fieldset": {
+                    fontSize: "18px"
+                },
+            }
+        }
+    },
+    MuiSelect: {
+        styleOverrides: {
+            root: {
+                "& fieldset": {
+                    fontSize: "18px"
+                },
+            }
+        }
+    },
+    MuiCheckbox: {
+        styleOverrides: {
+            root: {
+                "& fieldset": {
+                    fontSize: "18px"
+                },
+            }
+        }
+    },
+    MuiRadio: {
+        styleOverrides: {
+            root: {
+                "& fieldset": {
+                    fontSize: "18px"
+                },
+            }
+        }
     },
 }

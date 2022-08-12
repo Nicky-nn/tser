@@ -30,7 +30,7 @@ const Brand = ({children}: { children: JSX.Element | JSX.Element[] }) => {
             <Box display="flex" alignItems="center">
                 <img src="/assets/images/logo_dark.png" style={{height: 30, marginTop: -15}} alt=""/>
                 <StyledSpan mode={mode} className="sidenavHoverShow">
-                    FCV-ISIPASS
+                    ISI.INVOICE
                 </StyledSpan>
             </Box>
             <Box

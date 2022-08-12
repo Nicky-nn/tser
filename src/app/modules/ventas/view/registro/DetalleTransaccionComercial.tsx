@@ -12,15 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import React, {FC, Fragment, useState} from "react";
-import {useAppSelector} from "../../../../hooks";
-import {useDispatch} from "react-redux";
-import {
-    setDeleteItem,
-    setDetalleFactura,
-    setFacturaMontoPagar,
-    setItemModificado
-} from "../../slices/facturacion/factura.slice";
+import React, {FC, Fragment, useEffect, useRef, useState} from "react";
 import {Delete, TextIncrease} from "@mui/icons-material";
 import {toast} from "react-toastify";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
@@ -32,42 +24,55 @@ import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectIn
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {apiProductosVariantes} from "../../../productos/api/productosVariantes.api";
 import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
-import {FacturaDetalleInputProps} from "../../interfaces/factura";
+import {FacturaDetalleInputProps, FacturaInputProps} from "../../interfaces/factura";
 import {notDanger} from "../../../../utils/notification";
-import {genReplaceEmpty} from "../../../../utils/helper";
+import {useFieldArray, UseFormReturn} from "react-hook-form";
+import {genCalculoTotalesService, montoSubTotal} from "../../services/operacionesService";
+import useAuth from "../../../../base/hooks/useAuth";
+import AlertLoading from "../../../../base/components/Alert/AlertLoading";
 
-const data: any = []
+interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
+}
 
-export const DetalleTransaccionComercial: FC = () => {
-    const factura = useAppSelector(state => state.factura);
-    const dispatch = useDispatch();
+type Props = OwnProps;
+export const DetalleTransaccionComercial: FC<Props> = (props) => {
+    const {form: {control, setValue, getValues, formState: {errors}}} = props
+    const {user} = useAuth()
+
+    const {fields, append, prepend, remove, insert, update} = useFieldArray({
+        control, // control props comes from useForm (optional: if you are using FormContext)
+        name: "detalle", // unique name for your Field Array
+    });
+    const selectInputRef = useRef();
+
     const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false);
     const handleFocus = (event: any) => event.target.select();
 
     const handleChange = async (newInput: ProductosVariantesProps) => {
         if (newInput) {
             // Verificamos si ya existe el producto
-            const producto = factura.detalle.find(d => d.codigoProducto === newInput.variantes.codigoProducto);
+            const producto = fields.find(d => d.codigoProducto === newInput.variantes.codigoProducto);
             if (!producto) {
-                dispatch(setDetalleFactura(newInput));
+                prepend({
+                    ...newInput.variantes,
+                    codigoProductoSin: newInput.sinProductoServicio.codigoProducto,
+                    cantidad: 1,
+                    precioUnitario: newInput.variantes.precio,
+                    montoDescuento: 0,
+                    detalleExtra: '',
+                    subtotal: 0,
+                } as FacturaDetalleInputProps)
             } else {
                 notDanger('El producto ya se adicionó')
             }
         }
     }
 
-    const handleDescuentoChange = async (item: any, inputDescuento: number) => {
-
-    }
-    const handleDelete = (item: FacturaDetalleInputProps) => {
-        if (item) {
-            dispatch(setDeleteItem(item));
-        }
-    }
-
     const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
         try {
-            const productos = await apiProductosVariantes(factura.actividadEconomica.codigoCaeb, inputValue)
+            console.log('volviendo a cargar')
+            const productos = await apiProductosVariantes(getValues('actividadEconomica.codigoCaeb'), inputValue)
             if (productos) return productos
             return []
         } catch (e: any) {
@@ -75,7 +80,20 @@ export const DetalleTransaccionComercial: FC = () => {
             return [];
         }
     }
-    if (factura.actividadEconomica.codigoCaeb) {
+    useEffect(() => {
+        const totales = genCalculoTotalesService(getValues())
+        setValue('montoSubTotal', totales.subTotal)
+        setValue('montoPagar', totales.montoPagar)
+        setValue('inputVuelto', totales.vuelto)
+        setValue('total', totales.total)
+    }, [fields]);
+
+    useEffect(() => {
+        if (getValues('actividadEconomica'))
+            cargarVariantesProductos('').then()
+    }, [getValues('actividadEconomica')]);
+
+    if (getValues('actividadEconomica.codigoCaeb')) {
         return <>
             <SimpleCard title="Productos">
                 <Grid container spacing={1}>
@@ -86,7 +104,7 @@ export const DetalleTransaccionComercial: FC = () => {
                             </SelectInputLabel>
                             <AsyncSelect<ProductosVariantesProps>
                                 cacheOptions={false}
-                                defaultOptions
+                                defaultOptions={false}
                                 styles={reactSelectStyles}
                                 menuPosition={'fixed'}
                                 name="productosServicios"
@@ -110,16 +128,6 @@ export const DetalleTransaccionComercial: FC = () => {
                             <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">
                                 Producto Personalizado
                             </Button>
-                            <AgregarArticuloDialog
-                                id={'agregarArticulo'}
-                                keepMounted
-                                open={openAgregarArticulo}
-                                codigoActividad={factura.actividadEconomica.codigoCaeb}
-                                onClose={(newProduct: any) => {
-                                    handleChange(newProduct).then()
-                                    setOpenAgregarArticulo(false)
-                                }}
-                            />
                         </Stack>
                     </Grid>
 
@@ -138,8 +146,8 @@ export const DetalleTransaccionComercial: FC = () => {
                                 </thead>
                                 <tbody>
                                 {
-                                    factura.detalle.length > 0 &&
-                                    factura.detalle.map((item, index) => {
+                                    fields.length > 0 &&
+                                    fields.map((item, index) => {
                                         return <tr key={item.codigoProducto}>
                                             <td data-label="Producto">
                                                 <List dense={true}
@@ -177,13 +185,16 @@ export const DetalleTransaccionComercial: FC = () => {
                                             <td data-label="CANTIDAD">
                                                 <InputNumber
                                                     min={1}
-                                                    max={100}
+                                                    max={1000}
                                                     value={item.cantidad}
                                                     onFocus={handleFocus}
                                                     onChange={(cantidad: number) => {
                                                         if (cantidad) {
                                                             if (cantidad >= 0) {
-                                                                dispatch(setItemModificado({...item, cantidad}));
+                                                                update(index, {
+                                                                    ...item,
+                                                                    cantidad
+                                                                })
                                                             }
                                                         }
                                                     }}
@@ -198,11 +209,7 @@ export const DetalleTransaccionComercial: FC = () => {
                                                     onChange={(precio: number) => {
                                                         if (precio) {
                                                             if (precio >= 0 && precio >= item.montoDescuento) {
-                                                                dispatch(setItemModificado({
-                                                                    ...item,
-                                                                    precioUnitario: precio
-                                                                }));
-                                                                dispatch(setFacturaMontoPagar())
+                                                                update(index, {...item, precioUnitario: precio})
                                                             } else {
                                                                 toast.warn('El precio no puede ser menor al descuento')
                                                             }
@@ -220,7 +227,7 @@ export const DetalleTransaccionComercial: FC = () => {
                                                     onChange={(montoDescuento: number) => {
                                                         if (montoDescuento >= 0) {
                                                             if (montoDescuento <= item.precioUnitario) {
-                                                                dispatch(setItemModificado({...item, montoDescuento}));
+                                                                update(index, {...item, montoDescuento})
                                                             } else {
                                                                 toast.warn('El descuento no puede ser mayor al precio')
                                                             }
@@ -236,7 +243,7 @@ export const DetalleTransaccionComercial: FC = () => {
                                                 </Typography>
                                             </td>
                                             <td data-label="OPCIONES" style={{textAlign: 'right'}}>
-                                                <IconButton onClick={() => handleDelete(item)}>
+                                                <IconButton onClick={() => remove(index)}>
                                                     <Delete color="warning"/>
                                                 </IconButton>
                                                 <IconButton onClick={() => {
@@ -254,8 +261,20 @@ export const DetalleTransaccionComercial: FC = () => {
                     </Grid>
                 </Grid>
             </SimpleCard>
+            <>
+                <AgregarArticuloDialog
+                    id={'agregarArticulo'}
+                    keepMounted
+                    open={openAgregarArticulo}
+                    codigoActividad={getValues('actividadEconomica.codigoCaeb')}
+                    onClose={(newProduct: any) => {
+                        handleChange(newProduct).then()
+                        setOpenAgregarArticulo(false)
+                    }}
+                />
+            </>
         </>
     }
-    return <><h1>Error al cargar Actividad Económicas</h1></>
+    return <><AlertLoading/></>
 }
 

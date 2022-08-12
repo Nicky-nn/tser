@@ -1,87 +1,90 @@
-import React, {ChangeEvent, FunctionComponent} from 'react';
-import {Home} from "@mui/icons-material";
-import {useAppSelector} from "../../../../hooks";
-import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
+import React, {FunctionComponent, useEffect} from 'react';
 import {
-    Divider,
     FormControl,
-    FormControlLabel, FormLabel,
+    FormControlLabel,
+    FormLabel,
     InputLabel,
     OutlinedInput,
     Radio,
     RadioGroup,
     Stack
 } from "@mui/material";
-import DatosCliente from "./DatosCliente";
-import {useDispatch} from "react-redux";
-import {
-    setFacturaInputMontoPagar,
-    setFacturaMetodoPago,
-    setFacturaNroTarjeta
-} from "../../slices/facturacion/factura.slice";
 import {TarjetaMask} from "../../../../base/components/Mask/TarjetaMask";
 import {replace} from "lodash";
+import {Controller, UseFormReturn} from "react-hook-form";
+import {FacturaInputProps} from "../../interfaces/factura";
 
 interface OwnProps {
+    form: UseFormReturn<FacturaInputProps>
 }
 
 type Props = OwnProps;
-
 const MetodosPago: FunctionComponent<Props> = (props) => {
-    const factura = useAppSelector(state => state.factura);
-    const dispatch = useDispatch();
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const metodoPago = parseInt(event.target.value)
-        dispatch(setFacturaMetodoPago(metodoPago))
-        if(metodoPago === 2){
-            dispatch(setFacturaMetodoPago(metodoPago))
+    const {form: {control, watch, setValue, getValues, formState: {errors}}} = props
+    const codigoMetodoPagoValue = watch('codigoMetodoPago');
+
+    useEffect(() => {
+        const metodoPago = parseInt(codigoMetodoPagoValue.toString())
+        if (metodoPago === 1) {
+            setValue('numeroTarjeta', '')
         }
-        if(metodoPago === 1){
-            dispatch(setFacturaInputMontoPagar(0))
-        }
-    }
-    const handleChangeNroTarjeta = (event: any) => {
-        const numeroTarjeta = replace(event.target.value, new RegExp("-", "g"), '').replace(/_/g, '').trim()
-        dispatch(setFacturaNroTarjeta(numeroTarjeta))
-    }
+    }, [codigoMetodoPagoValue]);
+
     return (
         <>
             <Stack spacing={2} pt={2}>
-                    <FormControl>
-                        <FormLabel id="demo-radio-buttons-group-label">Método de págo</FormLabel>
-                        <RadioGroup
-                            row
-                            aria-labelledby="demo-row-radio-buttons-group-label"
-                            name="row-radio-buttons-group"
-                            value={factura.codigoMetodoPago}
-                            onChange={handleChange}
-                        >
-                            <FormControlLabel value="1" control={<Radio/>} label="Efectivo"/>
-                            <FormControlLabel value="2" control={<Radio/>} label="Tarjeta"/>
-                        </RadioGroup>
-                    </FormControl>
-                    {
-                        factura.codigoMetodoPago === 2 && (
-                            <>
-                                <FormControl
-                                    fullWidth
-                                    size={"small"}
-                                >
-                                    <InputLabel htmlFor="formatted-text-mask-input">Ingrese el Número de
-                                        tarjeta</InputLabel>
-                                    <OutlinedInput
-                                        label="Ingrese el Número de tarjeta"
-                                        value={factura.numeroTarjeta || ""}
-                                        onChange={handleChangeNroTarjeta}
-                                        name="textmask"
-                                        id="formatted-text-mask-input"
-                                        inputComponent={TarjetaMask as any}
-                                    />
-                                    <small>primeros 4 y últimos 4 digitos</small>
-                                </FormControl>
-                            </>
-                        )
-                    }
+                <Controller
+                    name={'codigoMetodoPago'}
+                    control={control}
+                    render={({field}) => (
+                        <FormControl>
+                            <FormLabel>Método de págo</FormLabel>
+                            <RadioGroup
+                                {...field}
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                                value={field.value}
+                                onChange={field.onChange}
+                            >
+                                <FormControlLabel value="1" control={<Radio/>} label="Efectivo"/>
+                                <FormControlLabel value="2" control={<Radio/>} label="Tarjeta"/>
+                            </RadioGroup>
+                        </FormControl>
+                    )}
+                />
+                {
+                    parseInt(getValues('codigoMetodoPago').toString()) === 2 && (
+                        <>
+                            <Controller
+                                name={'numeroTarjeta'}
+                                control={control}
+                                render={({field}) => (
+                                    <FormControl
+                                        fullWidth
+                                        size={"small"}
+                                    >
+                                        <InputLabel htmlFor="formatted-text-mask-input">Ingrese el Número de
+                                            tarjeta</InputLabel>
+                                        <OutlinedInput
+                                            {...field}
+                                            label="Ingrese el Número de tarjeta"
+                                            value={field.value || ""}
+                                            onChange={(event) => {
+                                                const numeroTarjeta = replace(event.target.value, new RegExp("-", "g"), '').replace(/_/g, '').trim()
+                                                field.onChange(numeroTarjeta)
+                                            }}
+                                            name="numeroTarjeta"
+                                            inputComponent={TarjetaMask as any}
+                                        />
+                                        <small>Ingrese los primero 4 y últimos 4 dígitos</small>
+                                    </FormControl>
+                                )}
+                            />
+
+                        </>
+                    )
+                }
             </Stack>
         </>
     );

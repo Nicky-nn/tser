@@ -49,7 +49,7 @@ const Footer: FC<any> = () => {
                     <FooterContent>
                         <Span sx={{m: "auto"}} ></Span>
                         <Paragraph sx={{m: 0}}>
-                            FCV ISIPASS es un producto de &nbsp;
+                            ISI.INVOICE es un producto de &nbsp;
                             <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">INTEGRATE Soluciones Informáticas</a> <br/>
                             Plantilla <a target="_blank" href="https://matx-react.ui-lib.com/">MatX</a>
                         </Paragraph>

@@ -12,7 +12,7 @@ export interface SimpleDialogProps {
 }
 
 export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
-    const {onClose, value: valueProp, open, ...other} = props;
+    const {onClose, keepMounted, value: valueProp, open, ...other} = props;
     const [value, setValue] = useState(valueProp);
     const inputRef = useRef<HTMLElement>(null);
     useEffect(() => {
@@ -39,6 +39,7 @@ export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
         <Dialog
             sx={{'& .MuiDialog-paper': {width: '80%', maxHeight: 435}}}
             maxWidth="xs"
+            keepMounted={keepMounted}
             TransitionProps={{onEntering: handleEntering}}
             open={open}
             {...other}
