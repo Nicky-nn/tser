@@ -135,10 +135,11 @@ export const components = {
                 fontSize: '15px',
             },
             shrink: {
-                transform: 'translate(16px, -11px) scale(0.90) !important',
+                transform: 'translate(15px, -11px) scale(0.90) !important',
             },
             outlined: {
-                transform: 'translate(16px, 9px) scale(1)',
+                transform: 'translate(15px, 9px) scale(1)',
+                backgroundColor: 'none'
             },
 
         },

@@ -26,7 +26,7 @@ export const productoRegistroVarianteValidatorioSchema = {
 
 export const productoRegistroValidationSchema = object({
     actividadEconomica: object({
-        codigoActividad: string().required('Debe seleccionar la actividad económica')
+        codigoCaeb: string().required('Debe seleccionar la actividad económica')
     }).required(),
     sinProductoServicio: object().nullable().default({}).shape({
         codigoProducto: string().required('Codigo Producto Homologado es un campo obligatorio')

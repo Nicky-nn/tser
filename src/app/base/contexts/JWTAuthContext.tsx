@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useReducer} from 'react'
+import React, {createContext, ReactNode, useEffect, useReducer} from 'react'
 import jwtDecode from 'jwt-decode'
 import MatxLoading from "../components/Template/MatxLoading/MatxLoading";
 import {loginModel, PerfilProps, UserProps} from "../models/loginModel";
@@ -83,11 +83,16 @@ const AuthContext = createContext({
     ...initialState,
     method: 'JWT',
     login: () => Promise.resolve(),
-    logout: () => { },
+    logout: () => {
+    },
     register: () => Promise.resolve(),
 })
 
-export const AuthProvider = ({children}: any) => {
+export interface AuthProviderProps {
+    children: ReactNode
+}
+
+export const AuthProvider = ({children}: AuthProviderProps) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (shop: string, email: string, password: string) => {

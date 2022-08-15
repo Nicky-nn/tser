@@ -1,11 +1,32 @@
-const textLight = {
+import themeOptions, {ThemeOptionsProps} from "./themeOptions";
+
+export type ThemeTypeColorsProps =
+    'whitePurple'
+    | 'whiteBlue'
+    | 'slateDark1'
+    | 'slateDark2'
+    | 'purple1'
+    | 'purple2'
+    | 'purpleDark1'
+    | 'purpleDark2'
+    | 'blue'
+    | 'blueDark'
+    | 'red'
+
+interface TextLightDarkProps {
+    primary:string,
+    secondary: string,
+    disabled: string,
+    hint: string,
+}
+const textLight: TextLightDarkProps = {
     primary: 'rgba(52, 49, 76, 1)',
     secondary: 'rgba(52, 49, 76, 0.54)',
     disabled: 'rgba(52, 49, 76, 0.38)',
     hint: 'rgba(52, 49, 76, 0.38)',
 }
 
-const textDark = {
+const textDark: TextLightDarkProps = {
     primary: '#fff',
     secondary: 'rgba(255, 255, 255, 0.7)',
     disabled: 'rgba(255, 255, 255, 0.64)',
@@ -19,11 +40,90 @@ const secondaryColor = {
     contrastText: textLight.primary,
 }
 
+interface ErrorColorProps {
+    main: string,
+}
 const errorColor = {
     main: '#FF3D57',
 }
+export interface PaletteProps {
+    type: 'light' | 'dark'
+    primary: {
+        main: string
+        contrastText: string
+    }
+    secondary: {
+        main: string
+        contrastText: string
+    }
+    background: {
+        paper: string
+        default: string
+    }
+    error: ErrorColorProps
+    text: TextLightDarkProps
+}
 
-export const themeColors: any = {
+
+/*** COMPUESTO
+ * INTERFACE
+ */
+export interface ThemeColorsCompleteProps extends ThemeOptionsProps{
+    palette: PaletteProps
+}
+
+export interface CreateMatxThemesProps {
+    whitePurple: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    whiteBlue: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    slateDark1: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    slateDark2: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    purple1: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    purple2: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    purpleDark1: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    purpleDark2: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    blue: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    blueDark: ThemeColorsCompleteProps,
+}
+export interface CreateMatxThemesProps {
+    red: ThemeColorsCompleteProps,
+}
+/****
+ * SINGLE INTERFACE
+ */
+export interface ThemeColorsSingleProps {
+    palette: PaletteProps
+}
+interface  ThemeColorsProps {whitePurple: ThemeColorsSingleProps}
+interface  ThemeColorsProps {whiteBlue: ThemeColorsSingleProps}
+interface  ThemeColorsProps {slateDark1: ThemeColorsSingleProps}
+interface  ThemeColorsProps {slateDark2: ThemeColorsSingleProps}
+interface  ThemeColorsProps {purple1: ThemeColorsSingleProps}
+interface  ThemeColorsProps {purple2: ThemeColorsSingleProps}
+interface  ThemeColorsProps {purpleDark1: ThemeColorsSingleProps}
+interface  ThemeColorsProps {purpleDark2: ThemeColorsSingleProps}
+interface  ThemeColorsProps {blue: ThemeColorsSingleProps}
+interface  ThemeColorsProps {blueDark: ThemeColorsSingleProps}
+interface  ThemeColorsProps {red: ThemeColorsSingleProps}
+
+export const themeColors: ThemeColorsProps = {
     whitePurple: {
         palette: {
             type: 'light',
@@ -59,6 +159,7 @@ export const themeColors: any = {
                 default: '#fafafa',
             },
             text: textLight,
+            error: errorColor,
         },
     },
     slateDark1: {
@@ -72,12 +173,12 @@ export const themeColors: any = {
                 main: '#ff9e43',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#222A45',
                 default: '#1a2038',
             },
             text: textDark,
+            error: errorColor,
         },
     },
     slateDark2: {
@@ -91,12 +192,12 @@ export const themeColors: any = {
                 main: '#ff9e43',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#222A45',
                 default: '#1a2038',
             },
             text: textDark,
+            error: errorColor,
         },
     },
     purple1: {
@@ -107,12 +208,12 @@ export const themeColors: any = {
                 contrastText: '#ffffff',
             },
             secondary: secondaryColor,
-            error: errorColor,
             background: {
                 paper: '#fff',
                 default: '#fafafa',
             },
             text: textLight,
+            error: errorColor,
         },
     },
     purple2: {
@@ -126,12 +227,12 @@ export const themeColors: any = {
                 main: '#ff9e43',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#fff',
                 default: '#fafafa',
             },
             text: textLight,
+            error: errorColor,
         },
     },
     purpleDark1: {
@@ -145,12 +246,12 @@ export const themeColors: any = {
                 main: '#ff9e43',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#222A45',
                 default: '#1a2038',
             },
             text: textDark,
+            error: errorColor,
         },
     },
     purpleDark2: {
@@ -164,12 +265,12 @@ export const themeColors: any = {
                 main: '#ff9e43',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#222A45',
                 default: '#1a2038',
             },
             text: textDark,
+            error: errorColor,
         },
     },
     blue: {
@@ -183,12 +284,12 @@ export const themeColors: any = {
                 main: '#FFAF38',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#fff',
                 default: '#fafafa',
             },
             text: textLight,
+            error: errorColor,
         },
     },
     blueDark: {
@@ -202,12 +303,12 @@ export const themeColors: any = {
                 main: '#FF4F30',
                 contrastText: textLight.primary,
             },
-            error: errorColor,
             background: {
                 paper: '#222A45',
                 default: '#1a2038',
             },
             text: textDark,
+            error: errorColor,
         },
     },
     red: {
@@ -220,6 +321,10 @@ export const themeColors: any = {
             secondary: {
                 main: '#FFAF38',
                 contrastText: textLight.primary,
+            },
+            background: {
+                paper: '#222A45',
+                default: '#1a2038',
             },
             error: errorColor,
             text: textDark,

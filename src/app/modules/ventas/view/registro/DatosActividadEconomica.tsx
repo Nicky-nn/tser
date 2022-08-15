@@ -2,7 +2,6 @@ import React, {FunctionComponent, useEffect} from 'react';
 import {FormControl, FormHelperText} from "@mui/material";
 import {SinActividadesProps} from "../../../sin/interfaces/sin.interface";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import Select from "react-select";
 import useQueryActividades from "../../../sin/hooks/useQueryActividades";
@@ -11,6 +10,7 @@ import AlertLoading from "../../../../base/components/Alert/AlertLoading";
 import useAuth from "../../../../base/hooks/useAuth";
 import {Controller, UseFormReturn} from "react-hook-form";
 import {FacturaInputProps} from "../../interfaces/factura";
+import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     form: UseFormReturn<FacturaInputProps>
@@ -50,9 +50,9 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
                                 control={control}
                                 render={({field}) => (
                                     <FormControl fullWidth error={Boolean(errors.actividadEconomica)}>
-                                        <SelectInputLabel shrink>
+                                        <MyInputLabel shrink>
                                             Actividad Económica
-                                        </SelectInputLabel>
+                                        </MyInputLabel>
                                         <Select<SinActividadesProps>
                                             {...field}
                                             styles={reactSelectStyles}

@@ -1,56 +1,50 @@
 import React, {FunctionComponent, useMemo, useState} from 'react';
 import {Box, Button, Chip, IconButton} from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
-import {ProductoProps} from "../../interfaces/producto.interface";
-import {PAGE_DEFAULT, PageProps} from "../../../../interfaces";
-import {swalAsyncConfirmDialog, swalException} from "../../../../utils/swal";
-import {apiProductos} from "../../api/producto.api";
 import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
 import type {ColumnFiltersState, PaginationState, RowSelectionState,} from '@tanstack/react-table';
 import {SortingState} from "@tanstack/react-table";
-import {sumBy} from "lodash";
-import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
-import {useNavigate} from "react-router-dom";
-import {productosRouteMap} from "../../ProductosRoutesMap";
-import {localization} from "../../../../utils/localization";
-import {genApiQuery, genReplaceEmpty} from "../../../../utils/helper";
-import {apiProductosEliminar} from "../../api/productoEliminar.api";
-import {notSuccess} from "../../../../utils/notification";
 import {useQuery} from "@tanstack/react-query";
+import {ProveedorProps} from "../interfaces/proveedor.interface";
+import {useNavigate} from "react-router-dom";
+import {PAGE_DEFAULT, PageInputProps} from "../../../interfaces";
+import {genApiQuery} from "../../../utils/helper";
+import {apiProveedores} from "../api/proveedores.api";
+import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
+import {notSuccess} from "../../../utils/notification";
+import {localization} from "../../../utils/localization";
+import {proveedorRouteMap} from "../ProveedorRoutesMap";
+import AuditIconButton from "../../../base/components/Auditoria/AuditIconButton";
+import {apiProveedorEliminar} from "../api/proveedorEliminar.api";
+import ProveedorRegistroDialog from "../view/ProveedorRegistroDialog";
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
+const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
     {
-        accessorKey: 'titulo',
-        header: 'Producto',
-    },
-    {
-        accessorFn: (row) => {
-            const cantidad = sumBy(row.variantes, (item) => {
-                return sumBy(item.inventario, (inv) => inv.stock!)
-            })
-            if (!row.varianteUnica) {
-                return <Chip size={'small'} label={`${cantidad} items para ${row.variantes.length} variantes`}
-                             color={"info"}/>
-            }
-            return <Chip size={'small'} label={`${cantidad} items`} color={"default"}/>
-
-        },
-        id: 'inventario',
-        header: 'Inventario',
+        accessorKey: 'codigo',
+        header: 'Código',
     }, {
-        id: 'tipoProducto.descripcion',
-        header: 'Tipo Producto',
-        accessorFn: (row) => genReplaceEmpty(row.tipoProducto?.descripcion, '')
-    }, {
-        accessorKey: 'proveedor',
-        id: 'proveedor',
+        accessorKey: 'nombre',
         header: 'Proveedor',
-        accessorFn: (row) => (<span>{row.proveedor?.nombre}</span>),
+    }, {
+        accessorKey: 'direccion',
+        header: 'Dirección',
+    }, {
+        accessorKey: 'ciudad',
+        header: 'Ciudad',
+    }, {
+        accessorKey: 'contacto',
+        header: 'Contacto',
+    }, {
+        accessorKey: 'correo',
+        header: 'Correo Electrónico',
+    }, {
+        accessorKey: 'telefono',
+        header: 'Teléfono',
     },
     {
         accessorFn: (row) => (<Chip size={'small'} label={row.state} color={"success"}/>),
@@ -59,7 +53,7 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
     },
 ]
 
-const ProductosListado: FunctionComponent<Props> = (props) => {
+const ProveedorListado: FunctionComponent<Props> = (props) => {
     const navigate = useNavigate()
 
     // ESTADO DATATABLE
@@ -75,9 +69,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     // FIN ESTADO DATATABLE
 
-    const {data, isError, isFetching, isLoading, status, refetch} = useQuery<ProductoProps[]>(
+    const {data, isError, isFetching, isLoading, status, refetch} = useQuery<ProveedorProps[]>(
         [
-            'table-data',
+            'proveedoresListado',
             columnFilters,
             pagination.pageIndex,
             pagination.pageSize,
@@ -85,14 +79,14 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         ],
         async () => {
             const query = genApiQuery(columnFilters);
-            const fetchPagination: PageProps = {
+            const fetchPagination: PageInputProps = {
                 ...PAGE_DEFAULT,
                 page: pagination.pageIndex + 1,
                 limit: pagination.pageSize,
                 reverse: sorting.length <= 0,
                 query
             }
-            const {pageInfo, docs} = await apiProductos(fetchPagination);
+            const {pageInfo, docs} = await apiProveedores(fetchPagination);
             setRowCount(pageInfo.totalDocs);
             return docs
         },
@@ -105,11 +99,11 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     const columns = useMemo(() => tableColumns, []);
 
     const handleDeleteData = async (data: any) => {
-        const products = data.map((item: any) => item.original._id)
+        const resp = data.map((item: any) => item.original.codigo)
         await swalAsyncConfirmDialog({
-            text: "Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir",
+            text: "Confirma que desea eliminar los registros seleccionados, esta operación no se podra revertir",
             preConfirm: () => {
-                return apiProductosEliminar(products).catch(err => {
+                return apiProveedorEliminar(resp).catch(err => {
                     swalException(err)
                     return false
                 })
@@ -162,7 +156,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
             positionActionsColumn={'last'}
             renderRowActions={({row}) => (
                 <div style={{display: 'flex', flexWrap: 'nowrap', gap: '0.5rem'}}>
-                    <IconButton onClick={() => navigate(`${productosRouteMap.modificar}/${row.original._id}`)}
+                    <IconButton onClick={() => navigate(`${proveedorRouteMap.modificar}/${row.original.codigo}`)}
                                 color={'primary'} aria-label="delete">
                         <Edit/>
                     </IconButton>
@@ -198,4 +192,4 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     </>);
 };
 
-export default ProductosListado;
+export default ProveedorListado;

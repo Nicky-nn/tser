@@ -16,15 +16,12 @@ import {genRandomString, genReplaceEmpty, handleFocus, isEmptyValue} from "../..
 import {apiProductoServicioUnidadMedida} from "../../../productos/api/productoServicioUnidadMedida.api";
 import AlertError from "../../../../base/components/Alert/AlertError";
 import {SinProductoServicioProps, SinUnidadMedidaProps} from "../../../sin/interfaces/sin.interface";
-import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import Select from "react-select";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {
-    ProductosVariantesProps,
-    ProductoVarianteInputTempProps
-} from "../../../productos/interfaces/producto.interface";
+import {ProductoVarianteProps} from "../../../productos/interfaces/producto.interface";
 import useAuth from "../../../../base/hooks/useAuth";
 import {notError} from "../../../../utils/notification";
+import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     id: string;
@@ -40,7 +37,7 @@ type Props = OwnProps;
 const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
     const {onClose, keepMounted, codigoActividad, open, ...other} = props;
     const {user} = useAuth()
-    const initialValues: ProductoVarianteInputTempProps = {
+    const initialValues: any = {
         incluirCantidad: false,
         verificarStock: false,
         id: genRandomString(5),
@@ -59,7 +56,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
         disponibleParaVenta: false,
         codigoBarras: null
     }
-    const [inputForm, setInputForm] = useState<ProductoVarianteInputTempProps>(initialValues);
+    const [inputForm, setInputForm] = useState<any>(initialValues);
     const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
     const [productosServicios, setProductosServicios] = useState<SinProductoServicioProps[]>([]);
 
@@ -84,35 +81,34 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
             if (isEmptyValue(inputForm.sinProductoServicio)) {
                 throw new Error('Seleccione producto para homologación')
             }
-            const nuevoDetalle: ProductosVariantesProps = {
-                usucre: user.nombres,
+            const nuevoDetalle: ProductoVarianteProps = {
                 _id: inputForm.id,
+                id: inputForm.id,
                 sinProductoServicio: inputForm.sinProductoServicio,
-                titulo: inputForm.titulo,
-                descripcion: inputForm.nombre,
-                descripcionHtml: '<p></p>',
-                tipoProducto: null,
-                totalVariantes: 1,
-                varianteUnica: true,
-                proveedor: null,
-                opcionesProducto: [],
-                inventario: inputForm.inventario,
-                variantes: {
-                    id: inputForm.id,
-                    codigoProducto: inputForm.codigoProducto,
+                codigoProducto: inputForm.codigoProducto,
+                producto: {
                     titulo: inputForm.titulo,
-                    nombre: inputForm.nombre,
-                    disponibleParaVenta: inputForm.disponibleParaVenta,
-                    codigoBarras: null,
-                    precio: inputForm.precio,
-                    costo: inputForm.costo,
-                    precioComparacion: inputForm.precioComparacion!,
-                    inventario: inputForm.inventario,
-                    peso: 0,
-                    unidadMedida: inputForm.unidadMedida!,
-                    incluirCantidad: false,
-                    verificarStock: false
-                }
+                    descripcion: inputForm.nombre,
+                    descripcionHtml: inputForm.nombre,
+                    opcionesProducto: [],
+                    tipoProducto: null,
+                    totalVariantes: 1,
+                    varianteUnica: true,
+                    proveedor: null,
+                    usucre: user.nombres
+                },
+                titulo: inputForm.titulo,
+                nombre: inputForm.nombre,
+                codigoBarras: null,
+                precio: inputForm.precio,
+                precioComparacion: inputForm.precioComparacion!,
+                costo: inputForm.costo,
+                incluirCantidad: false,
+                verificarStock: false,
+                unidadMedida: inputForm.unidadMedida!,
+                inventario: inputForm.inventario,
+                peso: 0,
+                usucre: user.nombres
             }
             onClose(nuevoDetalle)
         } catch (e: any) {
@@ -158,9 +154,9 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                         <Grid container spacing={2.5}>
                             <Grid item lg={12} md={12} xs={12}>
                                 <FormControl fullWidth component={'div'}>
-                                    <SelectInputLabel shrink>
+                                    <MyInputLabel shrink>
                                         Tipo de Producto Homologado
-                                    </SelectInputLabel>
+                                    </MyInputLabel>
                                     <Select<SinProductoServicioProps>
                                         styles={reactSelectStyles}
                                         menuPosition={'fixed'}
@@ -182,9 +178,9 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
 
                             <Grid item lg={12} md={12} xs={12}>
                                 <FormControl fullWidth component={'div'}>
-                                    <SelectInputLabel shrink>
+                                    <MyInputLabel shrink>
                                         Unidad Medida
-                                    </SelectInputLabel>
+                                    </MyInputLabel>
                                     <Select<SinUnidadMedidaProps>
                                         styles={reactSelectStyles}
                                         menuPosition={'fixed'}

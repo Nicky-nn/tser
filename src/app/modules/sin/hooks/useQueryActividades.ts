@@ -16,11 +16,7 @@ const useQueryActividades = (queryKey: QueryKey = []) => {
     } = useQuery<SinActividadesProps[], Error>(['actividadesPorDocumentoSector', ...queryKey], async () => {
         const resp = await fetchSinActividadesPorDocumentoSector();
         if (resp.length > 0) {
-            return resp.map(item => ({
-                codigoCaeb: item.codigoActividad,
-                descripcion: item.actividadEconomica,
-                tipoActividad: item.tipoActividad
-            }))
+            return resp
         }
         return []
     })

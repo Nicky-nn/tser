@@ -1,17 +1,18 @@
-import {createTheme, CssBaseline, ThemeProvider} from '@mui/material'
+import {CssBaseline, ThemeProvider} from '@mui/material'
 import useSettings from "../../../hooks/useSettings";
 import {FC} from "react";
-import {esES} from "@mui/material/locale";
+import {CreateMatxThemesProps} from "./themeColors";
 
 type MatxThemeProps = {
-    children: JSX.Element
+    children: JSX.Element | JSX.Element[]
 }
 
 const MatxTheme: FC<MatxThemeProps> = ({children}: MatxThemeProps) => {
     const {settings} = useSettings()
-    let activeTheme = {...settings.themes[settings.activeTheme]}
+    // @ts-ignore
+    let activeTheme: CreateMatxThemesProps = {...settings.themes[settings.activeTheme]}
     return (
-        <ThemeProvider theme={createTheme(activeTheme, esES)}>
+        <ThemeProvider theme={activeTheme}>
             <CssBaseline/>
             {children}
         </ThemeProvider>

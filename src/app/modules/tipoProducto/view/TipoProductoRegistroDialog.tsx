@@ -1,6 +1,10 @@
 import React, {FunctionComponent, useEffect} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import {TIPO_PRODUCTO_INITIAL_VALUES, TipoProductoInputProp} from "../interfaces/tipoProducto.interface";
+import {
+    TIPO_PRODUCTO_INITIAL_VALUES,
+    TipoProductoInputProp,
+    TipoProductoProps
+} from "../interfaces/tipoProducto.interface";
 import {FormikProps, useFormik} from "formik";
 import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
 import {notSuccess} from "../../../utils/notification";
@@ -12,7 +16,7 @@ interface OwnProps {
     id: string;
     keepMounted: boolean;
     open: boolean;
-    onClose: (value?: TipoProductoInputProp) => void;
+    onClose: (value?: TipoProductoProps) => void;
 }
 
 type Props = OwnProps;
@@ -36,7 +40,7 @@ const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
             }).then(resp => {
                 if (resp.isConfirmed) {
                     notSuccess()
-                    onClose(values)
+                    onClose(resp.value)
                 }
             })
         }

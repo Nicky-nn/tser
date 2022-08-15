@@ -36,10 +36,10 @@ const StyledScrollBar = styled(Scrollbar)(() => ({
 
 type LayoutContainerProps = {
     width: string | number,
-    secondarySidebar: any
+    secondary_sidebar: any
 }
 
-const LayoutContainer = styled(Box)(({width, secondarySidebar}: LayoutContainerProps) => ({
+const LayoutContainer = styled(Box)(({width, secondary_sidebar}: LayoutContainerProps) => ({
     height: '100vh',
     display: 'flex',
     flexGrow: '1',
@@ -49,12 +49,13 @@ const LayoutContainer = styled(Box)(({width, secondarySidebar}: LayoutContainerP
     position: 'relative',
     overflow: 'hidden',
     transition: 'all 0.3s ease',
-    marginRight: secondarySidebar.open ? 50 : 0,
+    marginRight: secondary_sidebar.open ? 50 : 0,
 }));
 
 const Layout1 = () => {
-    const {settings, updateSettings}: any = useSettings();
+    const {settings, updateSettings} = useSettings();
     const {layout1Settings, secondarySidebar} = settings;
+    // @ts-ignore
     const topbarTheme = settings.themes[layout1Settings.topbar.theme];
     const {
         leftSidebar: {mode: sidenavMode, show: showSidenav},
@@ -85,6 +86,7 @@ const Layout1 = () => {
         let sidebarMode = settings.layout1Settings.leftSidebar.mode;
         if (settings.layout1Settings.leftSidebar.show) {
             let mode = isMdScreen ? 'close' : sidebarMode;
+            // @ts-ignore
             updateSettings({layout1Settings: {leftSidebar: {mode}}});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,7 +100,7 @@ const Layout1 = () => {
                 </SidenavTheme>
             )}
 
-            <LayoutContainer width={sidenavWidth} secondarySidebar={secondarySidebar}>
+            <LayoutContainer width={sidenavWidth} secondary_sidebar={secondarySidebar}>
                 {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
                     <>
                         <ThemeProvider theme={topbarTheme}>

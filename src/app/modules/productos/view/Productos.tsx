@@ -4,7 +4,7 @@ import React, {useContext} from "react";
 import AuthContext from "../../../base/contexts/JWTAuthContext";
 import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
 import SimpleContainer from "../../../base/components/Container/SimpleContainer";
-import {FileDownload, Newspaper, UploadFile} from "@mui/icons-material";
+import {Newspaper} from "@mui/icons-material";
 import ProductosListado from "./listado/ProductosListado";
 import {Link as RouterLink} from 'react-router-dom'
 
@@ -18,17 +18,18 @@ const Productos = () => {
             <div className="breadcrumb">
                 <Breadcrumb
                     routeSegments={[
-                        {name: 'Productos', path: '/productos/gestion'},
+                        {name: 'Productos', path: '/productos/gestión'},
                         {name: 'Gestión de productos'},
                     ]}
                 />
             </div>
             <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} justifyContent="right" sx={{marginBottom: 3}}>
-                <Button size={'small'} variant="outlined" startIcon={<UploadFile/>}>Importar</Button>
-                <Button size={'small'} variant="outlined" startIcon={<FileDownload/>}>Exportar</Button>
-                <Button size={'small'} variant="contained" component={RouterLink} to="/productos/nuevo"
-                        startIcon={<Newspaper/>} color={'success'}>Nuevo
-                    Producto</Button>
+                {/*<Button size={'small'} variant="outlined" startIcon={<UploadFile/>}>Importar</Button>*/}
+                {/*<Button size={'small'} variant="outlined" startIcon={<FileDownload/>}>Exportar</Button>*/}
+                <Button size={'small'} variant="contained" component={RouterLink}
+                        to="/productos/nuevo"
+                        startIcon={<Newspaper/>} color={'success'}
+                > Nuevo Producto</Button>
             </Stack>
             <Grid container spacing={2}>
                 <Grid item lg={12} md={12} xs={12}>

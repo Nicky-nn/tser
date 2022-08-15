@@ -42,7 +42,7 @@ const MatxLogo: FC<any> = ({className}: { className: string }) => {
                             </g>
                             <g
                                 id="path-1-link"
-                                fill={theme.palette.primary.light}
+                                fill={theme.palette.primary.main}
                             >
                                 <polygon
                                     id="path-1"
@@ -52,7 +52,7 @@ const MatxLogo: FC<any> = ({className}: { className: string }) => {
                         </g>
                         <polygon
                             id="Path-3"
-                            fill={theme.palette.primary.light}
+                            fill={theme.palette.primary.main}
                             points="13 238.415212 13 0 249.898437 238.415212"
                         ></polygon>
                         <polygon

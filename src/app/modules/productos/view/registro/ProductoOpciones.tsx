@@ -16,24 +16,36 @@ import {swalConfirmDialog} from "../../../../utils/swal";
 import {arrayMove, List} from "react-movable";
 import {
     OpcionesProductoProps,
-    prodMap,
     ProductoInputProps,
     ProductoVarianteInputProps
 } from "../../interfaces/producto.interface";
 import {Delete, Edit} from "@mui/icons-material";
 import {cartesianProduct, genRandomString, isEmptyValue} from "../../../../utils/helper";
 import {notError} from "../../../../utils/notification";
-import {FormikProps} from "formik";
+import {useFieldArray, UseFormReturn} from "react-hook-form";
 
 interface OwnProps {
-    formik: FormikProps<ProductoInputProps>
+    form: UseFormReturn<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoOpciones: FunctionComponent<Props> = (props) => {
-    const {formik} = props;
-    const {values, setFieldValue} = formik
+    const {
+        form: {
+            control,
+            setValue,
+            getValues,
+            watch,
+            formState: {errors}
+        }
+    } = props
+    const {replace} = useFieldArray({
+        control, // control props comes from useForm (optional: if you are using FormContext)
+        name: "variantes", // unique name for your Field Array
+    });
+    const [varianteWatch, opcionesProducto, varianteUnica] = watch(['variante', 'opcionesProducto', 'varianteUnica'])
+
     const [openProductOpcion, setOpenProductOpcion] = useState<boolean>(false);
     const [opcionesEdit, setOpcionesEdit] = useState<OpcionesProductoProps | undefined>(undefined);
 
@@ -44,16 +56,17 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
             preVariantes.push(op.valores)
         })
         const variantes = cartesianProduct(preVariantes).map((pv: any, index) => ({
-            ...values.variante,
+            ...varianteWatch,
             id: genRandomString(),
-            codigoProducto: !isEmptyValue(values.variante.codigoProducto) ? `${values.variante.codigoProducto}-${index + 1}` : '',
+            codigoProducto: !isEmptyValue(varianteWatch.codigoProducto) ? `${varianteWatch.codigoProducto}-${index + 1}` : '',
+            codigoBarras: !isEmptyValue(varianteWatch.codigoBarras) ? `${varianteWatch.codigoBarras}-${index + 1}` : '',
             titulo: pv.join(' / '),
-            nombre: `${values.titulo} ${pv.join(' / ')}`
+            nombre: `${getValues('titulo')} ${pv.join(' / ')}`
         })) || []
 
         // Generamos las nuevas opciones y variantes
-        setFieldValue(prodMap.opcionesProducto, opciones)
-        setFieldValue(prodMap.variantes, opciones.length === 0 ? [] : variantes)
+        setValue('opcionesProducto', opciones)
+        replace(variantes)
     }
 
     // Eliminamos un determinado valor del item
@@ -65,7 +78,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
             Esta acción también eliminará las variantes de productos relacionados con ${valor}`
             }).then(resp => {
                 if (resp.isConfirmed) {
-                    const newOpcionesProducto = values.opcionesProducto.map(op => op.nombre === opcion.nombre ? {
+                    const newOpcionesProducto = opcionesProducto.map(op => op.nombre === opcion.nombre ? {
                         ...op,
                         valores: newValor
                     } : op)
@@ -84,7 +97,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
             text: `¿Confirma que desea eliminar <strong>${opcion.nombre}</strong>. y todos sus valores?`
         }).then(resp => {
             if (resp.isConfirmed) {
-                const newOpcionesProducto = values.opcionesProducto.filter(op => op.nombre !== opcion.nombre)
+                const newOpcionesProducto = opcionesProducto.filter(op => op.nombre !== opcion.nombre)
                 generarVariantes(newOpcionesProducto)
             }
         })
@@ -104,19 +117,18 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={!values.varianteUnica}
+                                            checked={!varianteUnica}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                // clear opciones y variantes
-                                                setFieldValue(prodMap.varianteUnica, !e.target.checked)
+                                                setValue('varianteUnica', !e.target.checked)
                                             }}
                                         />
                                     }
-                                    label="Este producto tiene opciones, como talla y color"/>
+                                    label="Este producto tiene opciones, como Talla Marca, Color, etc"/>
                             </FormGroup>
                         </FormControl>
                     </Grid>
                     {
-                        !values.varianteUnica &&
+                        !varianteUnica &&
                         (
                             <Grid item lg={12} md={12} xs={12}>
                                 <Button size={"small"} onClick={() => {
@@ -124,9 +136,9 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                                 }}>Adicionar Opción de producto</Button>
 
                                 <List
-                                    values={values.opcionesProducto}
+                                    values={opcionesProducto}
                                     onChange={({oldIndex, newIndex}) => {
-                                        generarVariantes(arrayMove(values.opcionesProducto, oldIndex, newIndex))
+                                        generarVariantes(arrayMove(opcionesProducto, oldIndex, newIndex))
                                     }}
                                     renderList={({children, props, isDragged}) => (
                                         <div className="responsive-table">
@@ -215,14 +227,14 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                 onClose={(val) => {
                     setOpcionesEdit(undefined)
                     if (val) {
-                        const repetido = values.opcionesProducto.filter(op => op.id === val.id)
+                        const repetido = opcionesProducto.filter(op => op.id === val.id)
                         if (repetido.length === 0) {
-                            const newValue = [...values.opcionesProducto, {...val}]
+                            const newValue = [...opcionesProducto, {...val}]
                             generarVariantes(newValue)
                             setOpenProductOpcion(false)
                         } else {
                             // Buscamos y actualizamos el registro
-                            const updateValue = values.opcionesProducto.map(item => {
+                            const updateValue = opcionesProducto.map(item => {
                                 if (item.id === val.id) {
                                     return val
                                 }

@@ -1,60 +1,32 @@
 import {ImagenProps} from "../../../base/interfaces/base";
-import {
-    SinActividadesPorDocumentoSector,
-    SinProductoServicioProps,
-    SinUnidadMedidaProps
-} from "../../sin/interfaces/sin.interface";
+import {SinActividadesProps, SinProductoServicioProps, SinUnidadMedidaProps} from "../../sin/interfaces/sin.interface";
 import {InventarioProps} from "./inventario.interface";
 import {SucursalProps} from "../../sucursal/interfaces/sucursal";
 import {ProveedorProps} from "../../proveedor/interfaces/proveedor.interface";
 import {TipoProductoProps} from "../../tipoProducto/interfaces/tipoProducto.interface";
 import {genRandomString} from "../../../utils/helper";
 
-export interface ProductoVarianteProps {
-    id: string
-    codigoProducto: string // identificador o codigo unico
-    titulo: string // nombre propio
-    nombre: string // nombre producto + titulo
-    disponibleParaVenta: boolean
-    codigoBarras: string | null
-    precio: number
-    costo: number
-    precioComparacion: number
-    incluirCantidad: boolean, // Incluye cantidad por cada item producto
-    verificarStock: boolean, // Continuar venta aun si el stock ha terminado
-    imagen?: ImagenProps
-    inventario: Array<InventarioProps>
-    peso: number
-    unidadMedida: SinUnidadMedidaProps
-}
-
-interface ProductoDefinitionProps {
-    _id: string,
-    sinProductoServicio: SinProductoServicioProps
+export interface ProductoDefinitionProps {
+    _id?: string,
     titulo: string
     descripcion: string
     descripcionHtml: string
+    opcionesProducto: OpcionesProductoProps[]
     tipoProducto: TipoProductoProps | null
     totalVariantes: number
     imagenDestacada?: ImagenProps // url de la imagen
     varianteUnica: boolean // si solo tienen una sola variante
     proveedor: ProveedorProps | null // nombre del proveedor si vale el caso
-    opcionesProducto: Array<OpcionesProductoProps>
-    inventario: Array<InventarioProps>
-    usucre: string
+    state?: string
+    usucre?: string
     createdAt?: Date
     usumod?: string
     updatedAt?: Date
-    state?: string
 }
 
+// Para evitar circular llamada
 export interface ProductoProps extends ProductoDefinitionProps {
     variantes: ProductoVarianteProps[]
-
-}
-
-export interface ProductosVariantesProps extends ProductoDefinitionProps {
-    variantes: ProductoVarianteProps
 }
 
 export interface ProductoVarianteInventarioProps {
@@ -62,9 +34,35 @@ export interface ProductoVarianteInventarioProps {
     stock: number
 }
 
+export interface ProductoVarianteProps {
+    _id: string,
+    id: string
+    sinProductoServicio: SinProductoServicioProps
+    codigoProducto: string // identificador o codigo unico
+    producto: ProductoDefinitionProps
+    titulo: string // nombre propio
+    nombre: string // nombre producto + titulo
+    codigoBarras: string | null
+    precio: number
+    precioComparacion: number // Para mostrar un precio rebajado
+    costo: number
+    imagen?: ImagenProps
+    incluirCantidad: boolean // habilita cantidad al stock del inventario
+    verificarStock: boolean // si es true, se verifica cantidad en stock, false = no se toma en cuenta
+    unidadMedida: SinUnidadMedidaProps
+    inventario: Array<InventarioProps>
+    peso: number
+    state?: string
+    usucre?: string
+    createdAt?: Date
+    usumod?: string
+    updatedAt?: Date
+}
+
 export interface ProductoVarianteInputProps {
     id: string
     codigoProducto: string // identificador o codigo unico
+    sinProductoServicio: string
     titulo: string // nombre propio
     nombre: string // nombre producto + titulo
     disponibleParaVenta: boolean
@@ -79,11 +77,6 @@ export interface ProductoVarianteInputProps {
     unidadMedida: SinUnidadMedidaProps | null
 }
 
-// SE USA CUANDO SE QUIERE REGISTRAR UN PRODUCTO TEMPORAL
-export interface ProductoVarianteInputTempProps extends ProductoVarianteInputProps {
-    sinProductoServicio: SinProductoServicioProps
-}
-
 export interface OpcionesProductoProps {
     id: string,
     nombre: string
@@ -92,7 +85,7 @@ export interface OpcionesProductoProps {
 
 export interface ProductoInputProps {
     id?: string | null
-    actividadEconomica: SinActividadesPorDocumentoSector | null,
+    actividadEconomica: SinActividadesProps | null,
     sinProductoServicio: SinProductoServicioProps | null,
     titulo: string,
     descripcion: string,
@@ -114,6 +107,7 @@ export interface ProductoInputProps {
 export const PRODUCTO_VARIANTE_INITIAL_VALUES = {
     id: genRandomString(10),
     codigoProducto: '',
+    sinProductoServicio: '',
     titulo: '',
     nombre: '',
     disponibleParaVenta: true,
@@ -147,27 +141,11 @@ export const PRODUCTO_INITIAL_VALUES: ProductoInputProps = {
     proveedor: null
 }
 
-export const prodMap = {
-    actividadEconomica: 'actividadEconomica',
-    sinProductoServicio: 'sinProductoServicio',
-    titulo: 'titulo',
-    descripcion: 'descripcion',
-    descripcionHtml: 'descripcionHtml',
-    varianteUnica: 'varianteUnica',
-    varianteUnicaTemp: 'varianteUnicaTemp',
-    variante: 'variante',
-    opcionesProducto: 'opcionesProducto',
-    tipoProducto: 'tipoProducto',
-    tipoProductoPersonalizado: 'tipoProductoPersonalizado',
-    variantes: 'variantes',
-    variantesTemp: 'variantesTemp',
-    proveedor: 'proveedor'
-}
-
 
 export interface ProductoVarianteApiProps {
     id: string
     codigoProducto: string
+    codigoProductoSin: string
     titulo: string
     precio: number
     precioComparacion: number
@@ -175,7 +153,7 @@ export interface ProductoVarianteApiProps {
     incluirCantidad: boolean,
     verificarStock: boolean,
     codigoUnidadMedida: number
-    inventario: { codigoSucursal: number, stock: number }
+    inventario: Array<{ codigoSucursal: number, stock: number }>
 }
 
 /**
@@ -183,7 +161,6 @@ export interface ProductoVarianteApiProps {
  */
 export interface ProductoInputApiProps {
     codigoActividad: string,
-    codigoProductoSin: string,
     titulo: string,
     descripcion: string
     descripcionHtml: string

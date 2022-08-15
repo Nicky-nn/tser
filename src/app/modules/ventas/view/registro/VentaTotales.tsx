@@ -27,6 +27,7 @@ import {swalAsyncConfirmDialog, swalErrorMsg, swalException} from "../../../../u
 import Swal from "sweetalert2";
 import {fetchFacturaCreate} from "../../api/facturaCreate.api";
 import {openInNewTab} from "../../../../utils/helper";
+import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     form: UseFormReturn<FacturaInputProps>
@@ -157,7 +158,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                             name={'inputMontoPagar'}
                             render={({field}) => (
                                 <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
-                                    <InputLabel>Ingrese Monto</InputLabel><br/>
+                                    <MyInputLabel shrink>Ingrese Monto</MyInputLabel>
                                     <InputNumber
                                         {...field}
                                         min={0}

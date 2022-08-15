@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
-import React, {FC, Fragment, useEffect, useRef, useState} from "react";
+import React, {FC, Fragment, useEffect, useState} from "react";
 import {Delete, TextIncrease} from "@mui/icons-material";
 import {toast} from "react-toastify";
 import {numberWithCommas} from "../../../../base/components/MyInputs/NumberInput";
@@ -20,16 +20,17 @@ import InputNumber from 'rc-input-number';
 import AgregarArticuloDialog from "./AgregarArticuloDialog";
 import AsyncSelect from "react-select/async";
 import {swalException} from "../../../../utils/swal";
-import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
-import {apiProductosVariantes} from "../../../productos/api/productosVariantes.api";
-import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
 import {FacturaDetalleInputProps, FacturaInputProps} from "../../interfaces/factura";
 import {notDanger} from "../../../../utils/notification";
 import {useFieldArray, UseFormReturn} from "react-hook-form";
 import {genCalculoTotalesService, montoSubTotal} from "../../services/operacionesService";
 import useAuth from "../../../../base/hooks/useAuth";
 import AlertLoading from "../../../../base/components/Alert/AlertLoading";
+import ProductoExplorarDialog from "../../../productos/components/ProductoExplorarDialog";
+import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
+import {ProductoVarianteProps} from "../../../productos/interfaces/producto.interface";
+import {apiProductosVariantesBusqueda} from "../../../productos/api/productosVariantesBusqueda.api";
 
 interface OwnProps {
     form: UseFormReturn<FacturaInputProps>
@@ -44,21 +45,21 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
         control, // control props comes from useForm (optional: if you are using FormContext)
         name: "detalle", // unique name for your Field Array
     });
-    const selectInputRef = useRef();
 
     const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false);
+    const [openExplorarProducto, setOpenExplorarProducto] = useState(false);
     const handleFocus = (event: any) => event.target.select();
 
-    const handleChange = async (newInput: ProductosVariantesProps) => {
+    const handleChange = async (newInput: ProductoVarianteProps) => {
         if (newInput) {
             // Verificamos si ya existe el producto
-            const producto = fields.find(d => d.codigoProducto === newInput.variantes.codigoProducto);
+            const producto = fields.find(d => d.codigoProducto === newInput.codigoProducto);
             if (!producto) {
                 prepend({
-                    ...newInput.variantes,
+                    ...newInput,
                     codigoProductoSin: newInput.sinProductoServicio.codigoProducto,
                     cantidad: 1,
-                    precioUnitario: newInput.variantes.precio,
+                    precioUnitario: newInput.precio,
                     montoDescuento: 0,
                     detalleExtra: '',
                     subtotal: 0,
@@ -71,8 +72,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
 
     const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
         try {
-            console.log('volviendo a cargar')
-            const productos = await apiProductosVariantes(getValues('actividadEconomica.codigoCaeb'), inputValue)
+            const productos = await apiProductosVariantesBusqueda(getValues('actividadEconomica.codigoCaeb'), inputValue)
             if (productos) return productos
             return []
         } catch (e: any) {
@@ -99,10 +99,10 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                 <Grid container spacing={1}>
                     <Grid item xs={12} lg={8} sm={12}>
                         <FormControl fullWidth>
-                            <SelectInputLabel shrink>
+                            <MyInputLabel shrink>
                                 Productos
-                            </SelectInputLabel>
-                            <AsyncSelect<ProductosVariantesProps>
+                            </MyInputLabel>
+                            <AsyncSelect<ProductoVarianteProps>
                                 cacheOptions={false}
                                 defaultOptions={false}
                                 styles={reactSelectStyles}
@@ -112,9 +112,11 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 loadOptions={cargarVariantesProductos}
                                 isClearable={true}
                                 value={null}
-                                getOptionValue={(item) => item.variantes.codigoProducto}
-                                getOptionLabel={(item) => `${item.variantes.codigoProducto} - ${item.variantes.nombre}`}
+                                getOptionValue={(item) => item.codigoProducto}
+                                getOptionLabel={(item) => `${item.codigoProducto} - ${item.nombre}`}
                                 onChange={(val: any) => handleChange(val)}
+                                noOptionsMessage={() => 'Ingrese referencia al Producto/Servicio deseado'}
+                                loadingMessage={() => 'Buscando...'}
                             />
                         </FormControl>
                     </Grid>
@@ -124,7 +126,10 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                             direction={{xs: 'column', sm: 'row'}}
                             spacing={1}
                         >
-                            <Button variant="outlined">Explorar Productos</Button>
+                            <Button variant="outlined"
+                                    onClick={() => setOpenExplorarProducto(true)}>
+                                Explorar Productos
+                            </Button>
                             <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">
                                 Producto Personalizado
                             </Button>
@@ -264,12 +269,28 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
             <>
                 <AgregarArticuloDialog
                     id={'agregarArticulo'}
-                    keepMounted
+                    keepMounted={false}
                     open={openAgregarArticulo}
                     codigoActividad={getValues('actividadEconomica.codigoCaeb')}
                     onClose={(newProduct: any) => {
                         handleChange(newProduct).then()
                         setOpenAgregarArticulo(false)
+                    }}
+                />
+            </>
+            <>
+                <ProductoExplorarDialog
+                    id={'explorarProductos'}
+                    keepMounted={false}
+                    open={openExplorarProducto}
+                    codigoActividad={getValues('actividadEconomica.codigoCaeb')}
+                    onClose={(newProduct?: ProductoVarianteProps[]) => {
+                        if (newProduct) {
+                            for (const pvp of newProduct) {
+                                handleChange(pvp).then()
+                            }
+                        }
+                        setOpenExplorarProducto(false)
                     }}
                 />
             </>

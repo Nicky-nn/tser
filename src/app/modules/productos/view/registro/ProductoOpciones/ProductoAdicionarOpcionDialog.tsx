@@ -7,6 +7,7 @@ import {SelectInputLabel} from "../../../../../base/components/ReactSelect/Selec
 import {OnChangeValue} from "react-select";
 import {OpcionesProductoProps} from "../../../interfaces/producto.interface";
 import {genRandomString, genReplaceEmpty, isEmptyValue} from "../../../../../utils/helper";
+import {MyInputLabel} from "../../../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     id: string;
@@ -87,9 +88,9 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
                     <Grid container spacing={3}>
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                             <FormControl fullWidth>
-                                <SelectInputLabel shrink>
+                                <MyInputLabel shrink>
                                     Seleccione nombre de opción
-                                </SelectInputLabel>
+                                </MyInputLabel>
                                 <CreatableSelect
                                     styles={reactSelectStyles}
                                     menuPosition={'fixed'}
@@ -103,9 +104,9 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
                             <FormControl fullWidth>
-                                <SelectInputLabel shrink>
+                                <MyInputLabel shrink>
                                     Registre los valores de la opción
-                                </SelectInputLabel>
+                                </MyInputLabel>
                                 <CreatableSelect
                                     components={components}
                                     styles={reactSelectStyles}
@@ -122,13 +123,13 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button autoFocus color={'error'} variant={'outlined'} onClick={handleCancel}>
+                <Button autoFocus color={'error'} variant={'contained'} onClick={handleCancel}>
                     Cancelar
                 </Button>
                 <Button
                     onClick={handleSubmit}
                     disabled={!tipo || valor.length === 0}
-                    style={{marginRight: 15}} variant={'outlined'}>Adicionar</Button>
+                    style={{marginRight: 15}} variant={'contained'}>Adicionar</Button>
             </DialogActions>
         </Dialog>
     );

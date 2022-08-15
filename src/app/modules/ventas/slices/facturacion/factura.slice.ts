@@ -1,7 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {FacturaDetalleInputProps, FacturaInitialValues, FacturaInputProps} from "../../interfaces/factura";
 import {RootState} from "../../../../store/store";
-import {ProductosVariantesProps} from "../../../productos/interfaces/producto.interface";
 import {montoInputVuelto, montoPagarService, montoSubTotal} from "../../services/operacionesService";
 
 export interface FacturaState {
@@ -35,39 +34,25 @@ export const facturaSlice = createSlice({
         setEmailCliente: (state, action) => {
             state.emailCliente = action.payload;
         },
-        setDetalleFactura: (state, action: PayloadAction<ProductosVariantesProps>) => {
-            state.detalle.push({
-                ...action.payload.variantes,
-                codigoProductoSin: action.payload.sinProductoServicio.codigoProducto,
-                cantidad: 1,
-                precioUnitario: action.payload.variantes.precio,
-                montoDescuento: 0,
-                detalleExtra: '',
-                subtotal: 0,
-            } as FacturaDetalleInputProps)
-            state.montoSubTotal = montoSubTotal(state)
-            state.montoPagar = montoPagarService(state)
-            state.inputVuelto= montoInputVuelto(state)
-        },
         setItemModificado: (state, action: PayloadAction<FacturaDetalleInputProps>) => {
             state.detalle = state.detalle.map(item => {
                 return item.codigoProducto === action.payload.codigoProducto ? action.payload : item
             })
             state.montoSubTotal = montoSubTotal(state)
             state.montoPagar = montoPagarService(state)
-            state.inputVuelto= montoInputVuelto(state)
+            state.inputVuelto = montoInputVuelto(state)
         },
-        setDeleteItem: (state, action:PayloadAction<FacturaDetalleInputProps>) => {
+        setDeleteItem: (state, action: PayloadAction<FacturaDetalleInputProps>) => {
             state.detalle = state.detalle.filter(item => item.codigoProducto !== action.payload.codigoProducto)
             state.montoSubTotal = montoSubTotal(state)
             state.montoPagar = montoPagarService(state)
-            state.inputVuelto= montoInputVuelto(state)
+            state.inputVuelto = montoInputVuelto(state)
         },
         setFacturaDescuentoAdicional: (state, action) => {
             state.descuentoAdicional = action.payload
             state.montoSubTotal = montoSubTotal(state)
             state.montoPagar = montoPagarService(state)
-            state.inputVuelto= montoInputVuelto(state)
+            state.inputVuelto = montoInputVuelto(state)
         },
         setFacturaMetodoPago: (state, action) => {
             state.codigoMetodoPago = parseInt(action.payload)
@@ -78,12 +63,12 @@ export const facturaSlice = createSlice({
         },
         setFacturaInputMontoPagar: (state, action) => {
             state.inputMontoPagar = action.payload
-            state.inputVuelto= montoInputVuelto(state)
+            state.inputVuelto = montoInputVuelto(state)
         },
         setFacturaMontoPagar: (state) => {
             state.montoSubTotal = montoSubTotal(state)
             state.montoPagar = montoPagarService(state)
-            state.inputVuelto= montoInputVuelto(state)
+            state.inputVuelto = montoInputVuelto(state)
         }
     },
 });
@@ -95,7 +80,6 @@ export const {
     setCodigoCliente,
     setEmailCliente,
     setCliente,
-    setDetalleFactura,
     setItemModificado,
     setDeleteItem,
     setFacturaDescuentoAdicional,

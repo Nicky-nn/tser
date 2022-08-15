@@ -1,10 +1,10 @@
-import {FC} from 'react'
+import {FC, ReactNode} from 'react'
 import {Theme, ThemeProvider} from '@mui/material'
 
 type SecondarySidenavThemeProps = {
     theme: Theme,
     classes?: string,
-    children: JSX.Element | JSX.Element[],
+    children: ReactNode,
     open?: any
 }
 

@@ -1,7 +1,20 @@
-import { red } from '@mui/material/colors'
-import { components } from './components'
+import {red} from '@mui/material/colors'
+import {components} from './components'
 
-const themeOptions = {
+export interface ThemeOptionsProps {
+    typography: {
+        fontSize: number | string,
+        body1: {
+            fontSize: number | string,
+        },
+    },
+    status: {
+        danger: any,
+    },
+    components: any,
+}
+
+const themeOptions: ThemeOptionsProps = {
     typography: {
         fontSize: 14,
         body1: {

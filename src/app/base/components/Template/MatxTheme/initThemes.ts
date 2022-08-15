@@ -1,14 +1,17 @@
-import { forEach, merge } from 'lodash'
+import {forEach, merge} from 'lodash'
 import themeOptions from './themeOptions'
-import { themeColors } from './themeColors'
-import { createTheme } from '@mui/material'
+import {CreateMatxThemesProps, themeColors} from './themeColors'
+import {createTheme, Theme} from '@mui/material'
+import {esES} from "@mui/material/locale";
 
-function createMatxThemes() {
-    let themes: any = {}
-
+interface CreateThemeProps extends CreateMatxThemesProps, Theme {}
+const createMatxThemes = (): CreateMatxThemesProps => {
+    let themes: CreateThemeProps = {} as CreateThemeProps
     forEach(themeColors, (value, key) => {
-        themes[key] = createTheme(merge({}, themeOptions, value))
+        const mergeTheme: CreateMatxThemesProps = merge({} as CreateMatxThemesProps, themeOptions, value)
+        // @ts-ignore
+        themes[key] = createTheme(mergeTheme, esES)
     })
-    return themes
+    return themes as CreateThemeProps
 }
 export const themes = createMatxThemes()

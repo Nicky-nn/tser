@@ -13,6 +13,7 @@ import {ClienteProps} from "../../../clientes/interfaces/cliente";
 import {Controller, UseFormReturn} from "react-hook-form";
 import {FacturaInputProps} from "../../interfaces/factura";
 import {SingleValue} from "react-select";
+import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     form: UseFormReturn<FacturaInputProps>
@@ -38,16 +39,16 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
     }
 
     return <>
-        <Grid container spacing={1} rowSpacing={4}>
+        <Grid container spacing={1} rowSpacing={3}>
             <Grid item xs={12} lg={12} sm={12} md={12}>
                 <Controller
                     name="cliente"
                     control={control}
                     render={({field}) => (
                         <FormControl fullWidth error={Boolean(errors.cliente)}>
-                            <SelectInputLabel shrink>
+                            <MyInputLabel shrink>
                                 Seleccione al cliente
-                            </SelectInputLabel>
+                            </MyInputLabel>
                             <AsyncSelect<ClienteProps>
                                 {...field}
                                 cacheOptions={false}

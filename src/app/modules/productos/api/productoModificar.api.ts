@@ -11,62 +11,9 @@ const gqlQuery = gql`
             input: $input
         ) {
             _id
-            sinProductoServicio {
-                codigoActividad
-                codigoProducto
-                descripcionProducto
-            }
-            titulo
-            descripcion
-            descripcionHtml
-            opcionesProducto {
-                nombre
-                valores
-                id
-            }
-            tipoProducto {
-                _id
-                descripcion
-                codigoParent
-            }
-            totalVariantes
-            imagenDestacada {
-                altText
-                url
-            }
-            varianteUnica
-            proveedor {
-                codigo
-                nombre
-            }
-            variantes {
-                id
-                codigoProducto
-                titulo
-                nombre
-                codigoBarras
-                precio
-                precioComparacion
-                costo
-                imagen {
-                    altText
-                    url
-                }
-                unidadMedida {
-                    codigoClasificador
-                    descripcion
-                }
-                inventario {
-                    sucursal {
-                        codigo
-                    }
-                    stock
-                }
-            }
         }
     }
 `
-
 export const apiProductoModificar = async (id: string, input: ProductoInputApiProps): Promise<ProductoProps> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)

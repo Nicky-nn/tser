@@ -16,11 +16,10 @@ const userHasPermission = (pathname: any, user: PerfilProps, routes: any) => {
 }
 
 type Props = {
-    title: string,
     children: JSX.Element | JSX.Element[],
 };
 
-const AuthGuard: FC<any> = ({children}: Props) => {
+const AuthGuard: FC<Props> = ({children}: Props) => {
     const {
         isAuthenticated, user,
     } = useAuth()
@@ -35,16 +34,18 @@ const AuthGuard: FC<any> = ({children}: Props) => {
     let authenticated = isAuthenticated && hasPermission;
 
     console.log('app,auth,authguard', pathname, authenticated)
-
-    if (authenticated) return <>{children}</>
-    else {
-        return (
-            <Navigate
-                to="/session/signin"
-                state={{from: pathname}}
-            />
-        )
-    }
+    return (<>
+        {
+            isAuthenticated ? (children) :
+                (
+                    <Navigate
+                        replace
+                        to="/session/signin"
+                        state={{from: pathname}}
+                    />
+                )
+        }
+    </>)
 }
 
 export default AuthGuard

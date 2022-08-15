@@ -13,6 +13,7 @@ const useQueryTiposProducto = (queryKey: QueryKey = []) => {
         isLoading: tpLoading,
         isError: tpIsError,
         error: tpError,
+        refetch: tpRefetch
     } = useQuery<TipoProductoProps[], Error>(['tiposProducto', ...queryKey], async () => {
         const resp = await apiTiposProducto();
         if (resp.length > 0) {
@@ -21,7 +22,7 @@ const useQueryTiposProducto = (queryKey: QueryKey = []) => {
         return []
     })
 
-    return {tiposProducto, tpLoading, tpIsError, tpError}
+    return {tiposProducto, tpLoading, tpIsError, tpError, tpRefetch}
 };
 
 export default useQueryTiposProducto;

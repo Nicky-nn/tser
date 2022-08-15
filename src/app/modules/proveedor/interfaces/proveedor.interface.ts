@@ -1,5 +1,4 @@
 export interface ProveedorProps {
-    _id: string
     codigo: string,
     nombre: string,
     direccion: string,

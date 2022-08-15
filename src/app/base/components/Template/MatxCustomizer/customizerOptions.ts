@@ -1,6 +1,8 @@
+import {ThemeTypeColorsProps} from "../MatxTheme/themeColors";
+
 export const mainThemes = ['purple1', 'purple2', 'blue', 'purpleDark1', 'purpleDark2', 'blueDark'];
 
-export const mainSidebarThemes = [
+export const mainSidebarThemes: ThemeTypeColorsProps[] = [
     'whitePurple',
     'whiteBlue',
     'slateDark1',
@@ -10,7 +12,7 @@ export const mainSidebarThemes = [
     'blueDark',
 ];
 
-export const topbarThemes = [
+export const topbarThemes: ThemeTypeColorsProps[] = [
     'whitePurple',
     'whiteBlue',
     'slateDark1',

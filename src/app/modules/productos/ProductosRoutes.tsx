@@ -20,7 +20,7 @@ const productosRoutes = [
         path: `${productosRouteMap.modificar}/:id`,
         element: <AppProductoActualizar/>,
         auth: authRoles.admin,
-    },
+    }
 ]
 
 export default productosRoutes

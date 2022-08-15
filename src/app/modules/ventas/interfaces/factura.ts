@@ -79,26 +79,6 @@ export const FacturaInitialValues: FacturaInputProps = {
     inputVuelto: 0
 }
 
-export const FacturaResetValues = {
-    tipoCliente: 'N',
-    cliente: {} as ClienteProps,
-    codigoCliente: '',
-    codigoExcepcion: null,
-    codigoMetodoPago: 1,
-    codigoMoneda: 1,
-    descuentoAdicional: 0,
-    detalle: [] as FacturaDetalleInputProps[],
-    detalleExtra: '',
-    emailCliente: null,
-    montoGiftCard: 0,
-    numeroTarjeta: null,
-    tipoCambio: 1,
-    montoSubTotal: 0,
-    montoPagar: 0,
-    inputMontoPagar: 0,
-    inputVuelto: 0
-}
-
 
 export interface RepresentacionGraficaProps {
     pdf: string

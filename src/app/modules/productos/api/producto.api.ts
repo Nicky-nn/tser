@@ -3,7 +3,7 @@
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
 import {ProductoProps} from "../interfaces/producto.interface";
-import {PageInfoProps, PageProps} from "../../../interfaces";
+import {PageInfoProps, PageInputProps, PageProps} from "../../../interfaces";
 
 /**
  * Respuesta de productos
@@ -27,11 +27,6 @@ const query = gql`
             docs {
                 _id
                 state
-                sinProductoServicio {
-                    codigoActividad
-                    codigoProducto
-                    descripcionProducto
-                }
                 titulo
                 descripcion
                 descripcionHtml
@@ -55,8 +50,13 @@ const query = gql`
                     codigo
                     nombre
                 }
-                variantes {
-                    id
+                variantes{
+                    _id
+                    sinProductoServicio{
+                        codigoActividad
+                        codigoProducto
+                        descripcionProducto
+                    }
                     codigoProducto
                     titulo
                     nombre
@@ -64,22 +64,25 @@ const query = gql`
                     precio
                     precioComparacion
                     costo
-                    incluirCantidad
-                    verificarStock
-                    imagen {
+                    imagen{
                         altText
                         url
                     }
-                    unidadMedida {
+                    incluirCantidad
+                    verificarStock
+                    unidadMedida{
                         codigoClasificador
                         descripcion
                     }
-                    inventario {
-                        sucursal {
+                    inventario{
+                        sucursal{
                             codigo
+                            direccion
+                            municipio
                         }
                         stock
                     }
+                    peso
                 }
                 state
                 usucre
@@ -91,7 +94,7 @@ const query = gql`
     }
 `
 
-export const apiProductos = async (pageInfo: PageProps): Promise<ApiProductoResponse> => {
+export const apiProductos = async (pageInfo: PageInputProps): Promise<ApiProductoResponse> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header

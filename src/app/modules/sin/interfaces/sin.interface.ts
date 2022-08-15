@@ -47,10 +47,13 @@ export interface SinActividadesProps {
     codigoCaeb: string
     descripcion: string
     tipoActividad: string
+    codigoDocumentoSector: number,
+    tipoDocumentoSector: string,
 }
 
 export interface SinActividadesPorDocumentoSector {
     codigoActividad: string,
+    codigoCaeb: string
     codigoDocumentoSector: number,
     tipoDocumentoSector: string,
     actividadEconomica: string,

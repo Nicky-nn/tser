@@ -9,6 +9,7 @@ import AlertLoading from "../../../base/components/Alert/AlertLoading";
 import AlertError from "../../../base/components/Alert/AlertError";
 import useQueryTiposProducto from "../hooks/useQueryTiposProducto";
 import {genReplaceEmpty} from "../../../utils/helper";
+import {MyInputLabel} from "../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     formik: FormikProps<TipoProductoInputProp>
@@ -34,9 +35,9 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
                             <FormControl fullWidth color={"warning"} error={
                                 Boolean(formik.errors.codigoParent)
                             }>
-                                <SelectInputLabel shrink>
+                                <MyInputLabel shrink>
                                     Tipo Producto
-                                </SelectInputLabel>
+                                </MyInputLabel>
                                 <Select<TipoProductoProps>
                                     styles={reactSelectStyles}
                                     menuPosition={'fixed'}

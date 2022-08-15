@@ -1,3 +1,6 @@
+import {proveedorRouteMap} from "./modules/proveedor/ProveedorRoutesMap";
+import {productosRouteMap} from "./modules/productos/ProductosRoutesMap";
+
 export interface NavigationProps {
     name: string;
     path?: string;
@@ -45,10 +48,15 @@ export const navigations: NavigationProps[] = [
         icon: 'inventory_sharp',
         children: [
             {
-                name: 'Gestion de Productos',
+                name: 'Gestión de Productos',
                 iconText: 'GP',
-                path: '/productos/gestion',
+                path: productosRouteMap.gestion,
             },
+            {
+                name: 'Proveedores',
+                iconText: 'PR',
+                path: proveedorRouteMap.gestion,
+            }
         ],
     },
     {

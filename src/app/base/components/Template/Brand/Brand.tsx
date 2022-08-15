@@ -12,7 +12,7 @@ const BrandRoot = styled(Box)(({theme}) => ({
 interface StyledSpanProps {
     theme?: Theme,
     mode: any,
-    child: JSX.Element
+    child: JSX.Element | JSX.Element[]
 }
 const StyledSpan: any = styled(Span)(({theme, mode}: StyledSpanProps) => ({
     fontSize: 18,

@@ -14,14 +14,16 @@ import {productoRegistroValidationSchema, productoRegistroValidator} from "../va
 import {notDanger, notError, notSuccess} from "../../../utils/notification";
 import {productoComposeService, productoInputComposeService} from "../services/ProductoComposeService";
 import {useNavigate, useParams} from "react-router-dom";
-import {isEmptyValue} from "../../../utils/helper";
+import {genRandomString, isEmptyValue} from "../../../utils/helper";
 import {apiProductoPorId} from "../api/productoPorId.api";
 import {apiProductoModificar} from "../api/productoModificar.api";
 import {productosRouteMap} from "../ProductosRoutesMap";
 import {fetchSinActividadesPorDocumentoSector} from "../../sin/api/sinActividadesPorDocumentoSector";
 import ProductoInventario from "./ProductoInventario/ProductoInventario";
-import {FormikProps, useFormik} from "formik";
 import {PRODUCTO_INITIAL_VALUES, ProductoInputProps} from "../interfaces/producto.interface";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup/dist/yup";
+import {SinActividadesProps} from "../../sin/interfaces/sin.interface";
 
 interface OwnProps {
 }
@@ -31,41 +33,45 @@ type Props = OwnProps;
 const ProductoActualizar: FunctionComponent<Props> = (props) => {
     const {id}: { id?: string } = useParams();
     const navigate = useNavigate()
-    // const prod = useAppSelector(selectProducto)
-    // const dispatch = useDispatch()
 
-    const formik: FormikProps<ProductoInputProps> = useFormik<ProductoInputProps>({
-        initialValues: PRODUCTO_INITIAL_VALUES,
-        validationSchema: productoRegistroValidationSchema,
-        onSubmit: async (values) => {
-            const val = await productoRegistroValidator(values)
-            if (val.length > 0) {
-                notError(val.join('<br>'))
-            } else {
-                const apiInput = productoComposeService(values)
-                await swalAsyncConfirmDialog({
-                    preConfirm: async () => {
-                        const resp: any = await apiProductoModificar(id!, apiInput).catch(err => ({error: err}))
-                        if (resp.error) {
-                            swalException(resp.error)
-                            return false
-                        }
-                        return resp;
-                    }
-                }).then(resp => {
-                    if (resp.isConfirmed) {
-                        notSuccess()
-                        console.log(resp.value)
-                    }
-                    if (resp.isDenied) {
-                        swalException(resp.value)
-                    }
-                    return
-                })
-            }
-        }
+    const form = useForm<ProductoInputProps>({
+        defaultValues: {
+            ...PRODUCTO_INITIAL_VALUES,
+            variante: {...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(5)}
+        },
+        resolver: yupResolver(productoRegistroValidationSchema),
     });
 
+    const varianteUnicaTempWatch = form.watch('varianteUnicaTemp')
+
+
+    const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
+        const val = await productoRegistroValidator(values)
+        if (val.length > 0) {
+            notError(val.join('<br>'))
+        } else {
+            const apiInput = productoComposeService(values)
+            await swalAsyncConfirmDialog({
+                preConfirm: async () => {
+                    const resp: any = await apiProductoModificar(id!, apiInput).catch(err => ({error: err}))
+                    if (resp.error) {
+                        swalException(resp.error)
+                        return false
+                    }
+                    return resp;
+                }
+            }).then(resp => {
+                if (resp.isConfirmed) {
+                    notSuccess()
+                    console.log(resp.value)
+                }
+                if (resp.isDenied) {
+                    swalException(resp.value)
+                }
+                return
+            })
+        }
+    }
 
     const fetchProductoPorId = async (id: string) => {
         try {
@@ -73,15 +79,10 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
             const response = await apiProductoPorId(id);
             swalClose()
             if (response) {
-                const actividades = await fetchSinActividadesPorDocumentoSector()
-                    .then(async (data) => {
-                        if (data)
-                            return data.find(item => item.codigoActividad === response.sinProductoServicio.codigoActividad)
-                        throw new Error('Alert en cargar los datos')
-                    })
-                const prodInput = productoInputComposeService(response, actividades!)
-                formik.setValues(prodInput)
-                // dispatch(setProducto(prodInput))
+                const actividades: SinActividadesProps[] = await fetchSinActividadesPorDocumentoSector()
+                const actividad = actividades.find(item => item.codigoCaeb === response.variantes[0].sinProductoServicio.codigoActividad)
+                const prodInput = productoInputComposeService(response, actividad!)
+                form.reset(prodInput)
 
             } else {
                 notDanger('No se ha podido encontrar datos del producto')
@@ -131,7 +132,8 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                         Nuevo Producto
                     </Button>&nbsp;
 
-                    <Button color={'success'} startIcon={<Save/>} variant={"contained"} onClick={formik.submitForm}>
+                    <Button color={'success'} startIcon={<Save/>} variant={"contained"}
+                            onClick={form.handleSubmit(onSubmit)}>
                         Guardar Cambios
                     </Button>
                 </Stack>
@@ -141,24 +143,24 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                 <Grid item lg={8} md={8} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item lg={12} md={12} xs={12}>
-                            <Homologacion formik={formik}/>
+                            <Homologacion form={form}/>
                         </Grid>
-                        {formik.values.varianteUnicaTemp && (
+                        {varianteUnicaTempWatch && (
                             <>
                                 <Grid item lg={12} md={12} xs={12}>
-                                    <ProductoPrecio formik={formik}/>
+                                    <ProductoPrecio form={form}/>
                                 </Grid>
                                 <Grid item lg={12} md={12} xs={12}>
-                                    <ProductoInventario formik={formik}/>
+                                    <ProductoInventario form={form}/>
                                 </Grid>
                             </>
                         )}
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoOpciones formik={formik}/>
+                            <ProductoOpciones form={form}/>
 
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoVariantes formik={formik}/>
+                            <ProductoVariantes form={form}/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -166,10 +168,10 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
                 <Grid item lg={4} md={4} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoClasificador formik={formik}/>
+                            <ProductoClasificador form={form}/>
                         </Grid>
                         <Grid item lg={12} md={12} xs={12}>
-                            <ProductoProveedor formik={formik}/>
+                            <ProductoProveedor form={form}/>
                         </Grid>
                     </Grid>
                 </Grid>

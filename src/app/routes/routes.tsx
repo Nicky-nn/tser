@@ -8,6 +8,7 @@ import NotFound from "../base/view/sessions/NotFound";
 import productosRoutes from "../modules/productos/ProductosRoutes";
 import clientesRoutes from "../modules/clientes/ClientesRoutes";
 import cuentaRoutes from "../modules/cuenta/CuentaRoutes";
+import proveedorRoutes from "../modules/proveedor/ProveedorRoutes";
 
 export const appRoutes = [
     {
@@ -21,7 +22,8 @@ export const appRoutes = [
             ...ventasRoutes,
             ...productosRoutes,
             ...clientesRoutes,
-            ...cuentaRoutes
+            ...cuentaRoutes,
+            ...proveedorRoutes
         ],
     },
     ...sessionRoutes,

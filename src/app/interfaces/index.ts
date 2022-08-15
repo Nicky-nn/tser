@@ -51,7 +51,14 @@ export interface PageProps {
     query?: string
 }
 
-export const PAGE_DEFAULT: PageProps = {
+export interface PageInputProps {
+    limit: number,
+    page: number,
+    reverse: boolean,
+    query?: string
+}
+
+export const PAGE_DEFAULT: PageInputProps = {
     limit: 10,
     page: 0,
     reverse: true,

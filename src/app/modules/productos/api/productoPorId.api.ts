@@ -2,18 +2,14 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductoInputProps, ProductoProps} from "../interfaces/producto.interface";
+import {ProductoProps} from "../interfaces/producto.interface";
 
 
 const query = gql`
     query FCV_PRODUCTO($id: ID!) {
-        fcvProducto(id: $id) {
+        fcvProducto(id: $id){
             _id
-            sinProductoServicio {
-                codigoActividad
-                codigoProducto
-                descripcionProducto
-            }
+            state
             titulo
             descripcion
             descripcionHtml
@@ -37,8 +33,18 @@ const query = gql`
                 codigo
                 nombre
             }
-            variantes {
+            tipoProducto{
+                _id
+                descripcion
+            }
+            variantes{
+                _id
                 id
+                sinProductoServicio{
+                    codigoActividad
+                    codigoProducto
+                    descripcionProducto
+                }
                 codigoProducto
                 titulo
                 nombre
@@ -46,23 +52,31 @@ const query = gql`
                 precio
                 precioComparacion
                 costo
-                incluirCantidad
-                verificarStock
-                imagen {
+                imagen{
                     altText
                     url
                 }
-                unidadMedida {
+                incluirCantidad
+                verificarStock
+                unidadMedida{
                     codigoClasificador
                     descripcion
                 }
-                inventario {
-                    sucursal {
+                inventario{
+                    sucursal{
                         codigo
+                        direccion
+                        municipio
                     }
                     stock
                 }
+                peso
             }
+            state
+            usucre
+            createdAt
+            usumod
+            updatedAt
         }
     }
 `

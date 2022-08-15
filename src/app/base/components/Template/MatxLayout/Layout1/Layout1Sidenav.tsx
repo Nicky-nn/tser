@@ -9,12 +9,12 @@ import Brand from "../../Brand/Brand";
 import Sidenav from "../../Sidenav/Sidenav";
 
 interface SidebarNavRoot {
-    theme: Theme,
+    theme?: Theme,
     width: number | string,
-    primaryBg?: string,
-    bgImgURL: any
+    primarybg?: string,
+    bgimgurl: string
 }
-const SidebarNavRoot: any = styled(Box)(({ theme, width, primaryBg, bgImgURL }: SidebarNavRoot) => ({
+const SidebarNavRoot = styled(Box)(({ theme, width, primarybg, bgimgurl }: SidebarNavRoot) => ({
     position: 'fixed',
     top: 0,
     left: 0,
@@ -26,9 +26,9 @@ const SidebarNavRoot: any = styled(Box)(({ theme, width, primaryBg, bgImgURL }: 
     backgroundSize: 'cover',
     zIndex: 111,
     overflow: 'hidden',
-    color: theme.palette.text.primary,
+    color: theme?.palette.text.primary,
     transition: 'all 250ms ease-in-out',
-    backgroundImage: `linear-gradient(to bottom, rgba(${primaryBg}, 0.96), rgba(${primaryBg}, 0.96)), url(${bgImgURL})`,
+    backgroundImage: `linear-gradient(to bottom, rgba(${primarybg}, 0.96), rgba(${primarybg}, 0.96)), url(${bgimgurl})`,
     '&:hover': {
         width: sideNavWidth,
         '& .sidenavHoverShow': {
@@ -55,9 +55,11 @@ const NavListBox = styled(Box)(() => ({
 
 const Layout1Sidenav = () => {
     const theme = useTheme();
-    const { settings, updateSettings }: any = useSettings();
+    const { settings, updateSettings } = useSettings();
     const leftSidebar = settings.layout1Settings.leftSidebar;
     const { mode, bgImgURL } = leftSidebar;
+
+    console.log(bgImgURL)
 
     const getSidenavWidth = () => {
         switch (mode) {
@@ -84,7 +86,7 @@ const Layout1Sidenav = () => {
     };
 
     return (
-        <SidebarNavRoot bgImgURL={bgImgURL} primaryBg={primaryRGB} width={getSidenavWidth()}>
+        <SidebarNavRoot bgimgurl={bgImgURL} primarybg={primaryRGB} width={getSidenavWidth()}>
             <NavListBox>
                 <Brand>
                     <Hidden smDown>

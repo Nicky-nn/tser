@@ -102,15 +102,15 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
         >
             <DialogTitle>Modificar Variante "{data.titulo}"</DialogTitle>
             <DialogContent dividers>
-                <Grid container rowSpacing={1}>
+                <Grid container rowSpacing={2}>
                     <Grid item>
                         <SimpleCard title={'PRECIO'}>
-                            <Grid container columnSpacing={3} rowSpacing={2}>
+                            <Grid container columnSpacing={3} rowSpacing={3}>
                                 <Grid item lg={12} md={12} xs={12}>
-                                    <FormControl fullWidth sx={{mb: 1}}>
-                                        <SelectInputLabel shrink>
+                                    <FormControl fullWidth>
+                                        <MyInputLabel shrink>
                                             Unidad Medida
-                                        </SelectInputLabel>
+                                        </MyInputLabel>
                                         <Select<SinUnidadMedidaProps>
                                             styles={reactSelectStyles}
                                             menuPosition={'fixed'}

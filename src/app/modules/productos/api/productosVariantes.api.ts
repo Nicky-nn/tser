@@ -2,63 +2,106 @@
 
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
-import {ProductosVariantesProps} from "../interfaces/producto.interface";
+import {ProductoVarianteProps} from "../interfaces/producto.interface";
+import {PageInfoProps, PageProps} from "../../../interfaces";
+import {FacturaProps} from "../../ventas/interfaces/factura";
 
 const reqQuery = gql`
-    query PRODUCTOS_VARIANTES($codigoActividad: String, $query: String) {
-        fcvProductosVariantes(codigoActividad: $codigoActividad, query: $query) {
-            _id
-            titulo
-            descripcion
-            sinProductoServicio{
-                codigoActividad
-                codigoProducto
-                descripcionProducto
+    query FCV_PRODUCTOS_VARIANTES($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
+        fcvProductosVariantes(limit: $limit, reverse: $reverse, page: $page, query: $query){
+            pageInfo {
+                limit
+                page
+                totalPages
             }
-            varianteUnica
-            opcionesProducto{
-                nombre
-                valores
-            }
-            proveedor{
-                codigo
-                nombre
-            }
-            variantes{
+            docs{
+                _id
                 id
+                sinProductoServicio{
+                    codigoActividad
+                    codigoProducto
+                    descripcionProducto
+                }
                 codigoProducto
+                producto{
+                    _id
+                    titulo
+                    descripcion
+                    descripcionHtml
+                    opcionesProducto{
+                        id
+                        nombre
+                        valores
+                    }
+                    tipoProducto{
+                        _id
+                        codigoParent
+                        descripcion
+                    }
+                    totalVariantes
+                    imagenDestacada{
+                        altText
+                        url
+                    }
+                    proveedor{
+                        codigo
+                        nombre
+                        direccion
+                        ciudad
+                        contacto
+                        correo
+                        telefono
+                    }
+                }
                 titulo
                 nombre
                 codigoBarras
-                incluirCantidad
-                verificarStock
                 precio
                 precioComparacion
+                costo
                 imagen{
                     altText
                     url
                 }
+                incluirCantidad
+                verificarStock
                 unidadMedida{
                     codigoClasificador
                     descripcion
                 }
-                inventario {
+                inventario{
                     sucursal{
                         codigo
+                        direccion
+                        telefono
+                        municipio
                     }
                     stock
                 }
+                peso
+                state
+                usucre
+                createdAt
+                usumod
+                createdAt
             }
         }
     }
 `
+/**
+ * Respuesta de productos
+ */
+export interface ApiProductoVarianteResponse {
+    docs: Array<ProductoVarianteProps>,
+    pageInfo: PageInfoProps
+}
 
-export const apiProductosVariantes = async (codigoActividad: string, query: string): Promise<ProductosVariantesProps[]> => {
+export const apiProductosVariantes = async (pageInfo: PageProps): Promise<ApiProductoVarianteResponse> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data: any = await client.request(reqQuery, {codigoActividad, query})
+    const data: any = await client.request(reqQuery, pageInfo)
     return data?.fcvProductosVariantes || [];
 }

@@ -1,8 +1,8 @@
-import React, {FC, Suspense} from 'react'
+import React, {FC, ReactNode, Suspense} from 'react'
 import MatxLoading from "../MatxLoading/MatxLoading";
 
 type MatxSuspenseProps = {
-    children: JSX.Element
+    children: ReactNode
 }
 
 const MatxSuspense: FC<MatxSuspenseProps> = ({children}: MatxSuspenseProps) => {

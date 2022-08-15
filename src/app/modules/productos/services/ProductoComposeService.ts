@@ -6,14 +6,13 @@ import {
     ProductoVarianteApiProps,
     ProductoVarianteInputProps
 } from "../interfaces/producto.interface";
-import {SinActividadesPorDocumentoSector} from "../../sin/interfaces/sin.interface";
+import {SinActividadesPorDocumentoSector, SinActividadesProps} from "../../sin/interfaces/sin.interface";
 
 /**
  * Componemos el producto para su posterior guardado
  * @param prod
  */
 export const productoComposeService = (prod: ProductoInputProps): ProductoInputApiProps => {
-    let opcionesProducto: OpcionesProductoProps[] = [];
     const variantes: ProductoVarianteApiProps[] = [];
     if (prod.varianteUnica) {
         // VARIANTE UNICA
@@ -21,12 +20,13 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
         variantes.push({
             id: v.id,
             codigoProducto: v.codigoProducto,
+            codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
             titulo: prod.titulo,
             precio: v.precio,
             precioComparacion: v.precioComparacion!,
             costo: v.costo,
             codigoUnidadMedida: parseInt(v.unidadMedida?.codigoClasificador!),
-            inventario: <any>v.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
+            inventario: v.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
             verificarStock: v.verificarStock,
             incluirCantidad: v.incluirCantidad
         })
@@ -36,12 +36,13 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
             variantes.push({
                 id: item.id,
                 codigoProducto: item.codigoProducto,
+                codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
                 titulo: item.titulo,
                 precio: item.precio,
                 precioComparacion: item.precioComparacion!,
                 costo: item.costo,
                 codigoUnidadMedida: parseInt(item.unidadMedida?.codigoClasificador!),
-                inventario: <any>item.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
+                inventario: item.inventario.map(i => ({codigoSucursal: i.sucursal.codigo, stock: i.stock})),
                 verificarStock: item.verificarStock,
                 incluirCantidad: item.incluirCantidad
             })
@@ -49,8 +50,7 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
     }
 
     return {
-        codigoActividad: prod.actividadEconomica?.codigoActividad!,
-        codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
+        codigoActividad: prod.actividadEconomica?.codigoCaeb!,
         titulo: prod.titulo,
         descripcion: prod.descripcion,
         descripcionHtml: `<p>${prod.descripcionHtml}</p>`,
@@ -63,15 +63,16 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
     }
 }
 
-export const productoInputComposeService = (prod: ProductoProps, actividadEconomica: SinActividadesPorDocumentoSector): ProductoInputProps => {
+export const productoInputComposeService = (prod: ProductoProps, actividadEconomica: SinActividadesProps): ProductoInputProps => {
     let variantes: ProductoVarianteInputProps[] = [];
     const inputVariante = prod.variantes[0]
     const variante: ProductoVarianteInputProps = {
         id: inputVariante.id,
+        sinProductoServicio: inputVariante.sinProductoServicio.codigoProducto,
         titulo: inputVariante.titulo,
         nombre: inputVariante.nombre,
         codigoProducto: inputVariante.codigoProducto,
-        disponibleParaVenta: inputVariante.disponibleParaVenta,
+        disponibleParaVenta: true,
         codigoBarras: inputVariante.codigoBarras,
         precio: inputVariante.precio,
         precioComparacion: inputVariante.precioComparacion,
@@ -86,10 +87,11 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
     if (!prod.varianteUnica) {
         variantes = prod.variantes.map(value => ({
             id: value.id,
+            sinProductoServicio: inputVariante.sinProductoServicio.codigoProducto,
             titulo: value.titulo,
             nombre: value.nombre,
             codigoProducto: value.codigoProducto,
-            disponibleParaVenta: value.disponibleParaVenta,
+            disponibleParaVenta: true,
             codigoBarras: value.codigoBarras,
             precio: value.precio,
             precioComparacion: value.precioComparacion,
@@ -105,7 +107,7 @@ export const productoInputComposeService = (prod: ProductoProps, actividadEconom
     }
     return {
         actividadEconomica,
-        sinProductoServicio: prod.sinProductoServicio,
+        sinProductoServicio: inputVariante.sinProductoServicio,
         titulo: prod.titulo,
         descripcion: prod.descripcion,
         descripcionHtml: prod.descripcionHtml,

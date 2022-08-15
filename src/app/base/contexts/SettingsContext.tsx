@@ -1,10 +1,14 @@
 import React, {createContext, FC, useState} from 'react'
 
 import {merge} from 'lodash'
-import {MatxLayoutSettings} from "../components/Template/MatxLayout/settings";
+import {MatxLayoutSettings, MatxLayoutSettingsProps} from "../components/Template/MatxLayout/settings";
 
+interface SettingContextProps {
+    settings: MatxLayoutSettingsProps,
+    updateSettings: any,
+}
 
-const SettingsContext = createContext({
+const SettingsContext: React.Context<SettingContextProps> = createContext({
     settings: MatxLayoutSettings,
     updateSettings: () => {
     },
@@ -12,11 +16,11 @@ const SettingsContext = createContext({
 
 type SettingsProviderProps = {
     children: JSX.Element | JSX.Element[],
-    settings: any,
+    settings?: MatxLayoutSettingsProps,
 }
 
-export const SettingsProvider: FC<any> = ({settings, children}: SettingsProviderProps) => {
-    const [currentSettings, setCurrentSettings] = useState(
+export const SettingsProvider: FC<SettingsProviderProps> = ({settings, children}: SettingsProviderProps) => {
+    const [currentSettings, setCurrentSettings] = useState<MatxLayoutSettingsProps>(
         settings || MatxLayoutSettings
     )
 

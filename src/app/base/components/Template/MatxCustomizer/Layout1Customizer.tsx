@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import React, { Fragment } from 'react'
 import { Box, styled } from '@mui/system'
 import BadgeSelected from './BadgeSelected'
-import { themeColors } from '../MatxTheme/themeColors'
+import {themeColors, ThemeTypeColorsProps} from '../MatxTheme/themeColors'
 import { themeShadows } from '../MatxTheme/themeColors'
 import { mainSidebarThemes, topbarThemes } from './customizerOptions'
 import {
@@ -35,7 +35,7 @@ const ToolbarContainer = styled('div')(() => ({
     flexWrap: "wrap",
 }))
 
-const ToolbarContent = styled('div')(({ color }: any) => ({
+const ToolbarContent = styled('div')(({ color }: { color: ThemeTypeColorsProps }) => ({
     width: 40,
     height: 40,
     margin: '8px',

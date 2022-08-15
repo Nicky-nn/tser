@@ -3,10 +3,11 @@
 import {gql, GraphQLClient} from "graphql-request";
 import {AccessToken} from "../../../base/models/paramsModel";
 import {ProveedorProps} from "../interfaces/proveedor.interface";
+import {PageInfoProps, PageInputProps} from "../../../interfaces";
 
 const gqlQuery = gql`
-    query PROVEEDORES {
-        proveedores(limit: 1000, page: 1, reverse:true) {
+    query PROVEEDORES($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
+        proveedores(limit: $limit, reverse: $reverse, page: $page, query: $query) {
             pageInfo {
                 hasNextPage
                 hasPrevPage
@@ -16,7 +17,6 @@ const gqlQuery = gql`
                 totalPages
             }
             docs {
-                _id
                 codigo
                 nombre
                 direccion
@@ -34,11 +34,16 @@ const gqlQuery = gql`
     }
 `
 
-export const apiProveedores = async (): Promise<ProveedorProps[]> => {
+interface ProveedorResponse {
+    pageInfo: PageInfoProps,
+    docs: ProveedorProps[]
+}
+
+export const apiProveedores = async (pageInfo: PageInputProps): Promise<ProveedorResponse> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
-    const data: any = await client.request(gqlQuery)
-    return data.proveedores?.docs || []
+    const data: any = await client.request(gqlQuery, pageInfo)
+    return data.proveedores
 }

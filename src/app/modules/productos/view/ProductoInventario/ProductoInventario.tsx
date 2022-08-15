@@ -11,32 +11,44 @@ import {apiSucursales} from "../../../sucursal/api/sucursales.api";
 import {SucursalProps} from "../../../sucursal/interfaces/sucursal";
 import {sortBy} from "lodash";
 import {useQuery} from "@tanstack/react-query";
-import {FormikProps} from "formik";
-import {prodMap, ProductoInputProps} from "../../interfaces/producto.interface";
+import {ProductoInputProps} from "../../interfaces/producto.interface";
+import {Controller, useFieldArray, UseFormReturn} from "react-hook-form";
 
 interface OwnProps {
-    formik: FormikProps<ProductoInputProps>
+    form: UseFormReturn<ProductoInputProps>
 }
 
 type Props = OwnProps;
 
 const ProductoInventario: FunctionComponent<Props> = (props) => {
-    const {formik} = props;
-    const {values, setFieldValue} = formik
+    const {
+        form: {
+            control,
+            setValue,
+            getValues,
+            watch,
+            formState: {errors}
+        }
+    } = props
+    const {replace} = useFieldArray({
+        control,
+        name: "variantes", // unique name for your Field Array
+    });
+    const [varianteWatch, variantesWatch] = watch(['variante', 'variantes']);
 
     const crearInventario = (data: SucursalProps[]): Array<any> => {
         return sortBy(data, 'codigo').map(sucursal => ({
             sucursal,
-            stock: genReplaceEmpty(values.variante.inventario.find(inv => inv.sucursal.codigo == sucursal.codigo)?.stock, 0)
+            stock: genReplaceEmpty(varianteWatch.inventario.find(inv => inv.sucursal.codigo == sucursal.codigo)?.stock, 0)
         }))
     }
 
     const {data: sucursales} = useQuery<SucursalProps[], Error>(['sucursales'], async () => {
         const data = await apiSucursales()
         if (data.length > 0) {
-            if (values.variante.inventario.length === 0) {
+            if (getValues('variante.inventario').length === 0) {
                 const inventario = crearInventario(data)
-                setFieldValue(prodMap.variante, {...values.variante, inventario})
+                setValue('variante.inventario', inventario)
             }
         }
         return data || []
@@ -46,130 +58,127 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
         <SimpleCard title={'INVENTARIO'}>
             <Grid container columnSpacing={3} rowSpacing={{xs: 2, sm: 2, md: 0, lg: 0}}>
                 <Grid item lg={4} md={4} xs={12}>
-                    <FormControl fullWidth
-                                 error={Boolean(formik.errors.variante?.codigoProducto)}
-                    >
-                        <TextField
-                            label="SKU (Código de producto)"
-                            name={'variante.codigoProducto'}
-                            value={values.variante.codigoProducto}
-                            onChange={(e) => {
-                                setFieldValue(prodMap.variante, {
-                                    ...values.variante,
-                                    codigoProducto: e.target.value
-                                })
-                                setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
-                                    ...vs,
-                                    codigoProducto: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
-                                })))
-                            }}
-                            variant="outlined"
-                            size="small"
-                        />
-                        <FormHelperText>{formik.errors.variante?.codigoProducto}</FormHelperText>
-                    </FormControl>
+                    <Controller
+                        control={control}
+                        name={'variante.codigoProducto'}
+                        render={({field}) => (
+                            <FormControl fullWidth
+                                         error={Boolean(errors.variante?.codigoProducto)}
+                            >
+                                <TextField
+                                    {...field}
+                                    label="SKU (Código de producto)"
+                                    name={'variante.codigoProducto'}
+                                    value={field.value}
+                                    onChange={(e) => {
+                                        field.onChange(e.target.value)
+                                    }}
+                                    onBlur={(e) => {
+                                        if (variantesWatch.length > 0) {
+                                            replace(variantesWatch.map((vs, index) => ({
+                                                ...vs,
+                                                codigoProducto: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
+                                            })))
+                                        }
+                                    }}
+                                    variant="outlined"
+                                    size="small"
+                                />
+                                <FormHelperText>{errors.variante?.codigoProducto?.message}</FormHelperText>
+                            </FormControl>
+                        )}/>
+
                 </Grid>
 
                 <Grid item lg={8} md={8} xs={12}>
-                    <FormControl fullWidth>
-                        <TextField
-                            label="Código de Barras"
-                            name={'variante.codigoBarras'}
-                            value={values.variante.codigoBarras || ''}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-                                setFieldValue(prodMap.variante, {
-                                    ...values.variante,
-                                    codigoBarras: e.target.value
-                                })
-                                setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
-                                    ...vs,
-                                    codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
-                                })))
-                                /*
-                                dispatch(setProducto({
-                                    ...prod,
-                                    variante: {...prod.variante, codigoBarras: e.target.value},
-                                    variantes: prod.variantes.map((vs, index) => ({
-                                        ...vs,
-                                        codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value || ''
-                                    }))
-                                }))
-                                */
-                            }}
-                            variant="outlined"
-                            size="small"
-                        />
-                    </FormControl>
+                    <Controller
+                        control={control}
+                        name={'variante.codigoBarras'}
+                        render={({field}) => (
+                            <FormControl fullWidth>
+                                <TextField
+                                    {...field}
+                                    label="Código de Barras"
+                                    value={field.value || ''}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                        field.onChange(e.target.value)
+                                    }}
+                                    onBlur={(e) => {
+                                        if (variantesWatch.length > 0) {
+                                            replace(variantesWatch.map((vs, index) => ({
+                                                ...vs,
+                                                codigoBarras: !isEmptyValue(e.target.value) ? `${e.target.value}-${index + 1}` : e.target.value
+                                            })))
+                                        }
+                                    }}
+                                    variant="outlined"
+                                    size="small"
+                                />
+                            </FormControl>
+                        )}
+                    />
+
                 </Grid>
 
                 <Grid item lg={8} md={12} xs={12}>
-                    <FormControl>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    name={'variante.incluirCantidad'}
-                                    checked={values.variante.incluirCantidad}
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                        setFieldValue(prodMap.variante, {
-                                            ...values.variante,
-                                            incluirCantidad: e.target.checked
-                                        })
-                                        setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
-                                            ...vs,
-                                            incluirCantidad: e.target.checked
-                                        })))
-                                        /*
-                                        dispatch(setProducto({
-                                            ...prod,
-                                            variante: {...prod.variante, incluirCantidad: e.target.checked},
-                                            variantes: prod.variantes.map(pvs => ({
-                                                ...pvs,
-                                                incluirCantidad: e.target.checked
-                                            }))
-                                        }))
-                                         */
-                                    }}
-                                />
-                            }
-                            label="¿Incluir cantidad al inventario?"/>
-                    </FormControl>
+                    <Controller
+                        control={control}
+                        name={'variante.incluirCantidad'}
+                        render={({field}) => (
+                            <FormControl>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            {...field}
+                                            checked={field.value}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                field.onChange(e.target.checked)
+                                                // Actulizamos las variantes de los stocks
+                                                replace(variantesWatch.map(v => ({
+                                                    ...v,
+                                                    incluirCantidad: e.target.checked
+                                                })))
+                                            }}
+                                        />
+                                    }
+                                    label="¿Incluir cantidad al inventario?"/>
+                            </FormControl>
+                        )}
+                    />
+
                     {
-                        values.variante.incluirCantidad && (
+                        varianteWatch.incluirCantidad && (
                             <>
                                 <br/>
-                                <FormControl>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={!values.variante.verificarStock}
-                                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                    setFieldValue(prodMap.variante, {
-                                                        ...values.variante,
-                                                        verificarStock: !e.target.checked
-                                                    })
-                                                    setFieldValue(prodMap.variantes, values.variantes.map((vs, index) => ({
-                                                        ...vs,
-                                                        verificarStock: !e.target.checked
-                                                    })))
-                                                    /*
-                                                    dispatch(setProducto({
-                                                        ...prod,
-                                                        variante: {...prod.variante, verificarStock: !e.target.checked},
-                                                        variantes: prod.variantes.map(vs => ({
-                                                            ...vs,
-                                                            verificarStock: !e.target.checked
-                                                        }))
-                                                    }))
-                                                     */
-                                                }}
-                                            />
-                                        }
-                                        label="¿Continuar venta aun si el item este agotado?"/>
-                                </FormControl>
+                                <Controller
+                                    control={control}
+                                    name={'variante.verificarStock'}
+                                    render={({field}) => (
+                                        <FormControl>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        {...field}
+                                                        checked={!field.value}
+                                                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                            field.onChange(!e.target.checked)
+                                                            // Actulizamos las variantes de los stocks
+                                                            replace(variantesWatch.map(v => ({
+                                                                ...v,
+                                                                verificarStock: !e.target.checked
+                                                            })))
+                                                        }}
+                                                    />
+                                                }
+                                                label="¿Continuar venta aun si el item este agotado?"/>
+                                        </FormControl>
+                                    )}
+                                />
                             </>
                         )
                     }
                 </Grid>
+
                 <Grid item lg={12} md={12} xs={12}>
                     <Typography variant="subtitle2" gutterBottom component="div">
                         &nbsp;Cantidad
@@ -194,57 +203,35 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                         </td>
                                         <td data-label="CANTIDAD" style={{textAlign: 'right'}}>
                                             {
-                                                values.variante.incluirCantidad ?
+                                                varianteWatch.incluirCantidad ?
                                                     (
+
                                                         <FormControl fullWidth component={'div'}>
                                                             <MyInputLabel shrink>Cantidad</MyInputLabel>
                                                             <InputNumber
                                                                 min={0}
                                                                 placeholder={'0.00'}
-                                                                value={genReplaceEmpty(values.variante.inventario.find(inv => inv.sucursal.codigo === s.codigo)?.stock, 0)}
+                                                                value={genReplaceEmpty(varianteWatch.inventario.find(inv => inv.sucursal.codigo === s.codigo)?.stock, 0)}
                                                                 onFocus={handleSelect}
                                                                 onChange={(stock: number) => {
-                                                                    setFieldValue(prodMap.variante, {
-                                                                        ...values.variante,
-                                                                        inventario: values.variante.inventario.map(pvi => {
-                                                                            return pvi.sucursal.codigo === s.codigo ? {
-                                                                                ...pvi,
-                                                                                stock
-                                                                            } : pvi
-                                                                        })
-                                                                    })
-                                                                    setFieldValue(prodMap.variantes, values.variantes.map(pvs => {
-                                                                        return {
-                                                                            ...pvs,
-                                                                            inventario: pvs.inventario.map(pvsi => ({
-                                                                                ...pvsi,
-                                                                                stock
+                                                                    setValue('variante.inventario', varianteWatch.inventario.map(item => {
+                                                                        return item.sucursal.codigo === s.codigo ? {
+                                                                            ...item,
+                                                                            stock
+                                                                        } : item
+                                                                    }))
+                                                                }}
+                                                                onBlur={(eventStock) => {
+                                                                    if (variantesWatch.length > 0) {
+                                                                        // Actualizamos todos los stock de las variantes, en caso tuviera
+                                                                        replace(variantesWatch.map(item => ({
+                                                                            ...item,
+                                                                            inventario: item.inventario.map(vi => ({
+                                                                                ...vi,
+                                                                                stock: parseFloat(eventStock.target.value)
                                                                             }))
-                                                                        }
-                                                                    }))
-                                                                    /*
-                                                                    dispatch(setProducto({
-                                                                        ...prod,
-                                                                        variante: {
-                                                                            ...prod.variante,
-                                                                            inventario: prod.variante.inventario.map(pvi => {
-                                                                                return pvi.sucursal.codigo === s.codigo ? {
-                                                                                    ...pvi,
-                                                                                    stock
-                                                                                } : pvi
-                                                                            })
-                                                                        },
-                                                                        variantes: prod.variantes.map(pvs => {
-                                                                            return {
-                                                                                ...pvs,
-                                                                                inventario: pvs.inventario.map(pvsi => ({
-                                                                                    ...pvsi,
-                                                                                    stock
-                                                                                }))
-                                                                            }
-                                                                        })
-                                                                    }))
-                                                                     */
+                                                                        })))
+                                                                    }
                                                                 }}
                                                                 formatter={numberWithCommas}
                                                             />

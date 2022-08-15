@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
-import {PROVEEDOR_INITIAL_VALUES, ProveedorInputProp} from "../interfaces/proveedor.interface";
+import {PROVEEDOR_INITIAL_VALUES, ProveedorInputProp, ProveedorProps} from "../interfaces/proveedor.interface";
 import ProveedorForm from "./ProveedorForm";
 import {FormikProps, useFormik} from "formik";
 import {genRandomString} from "../../../utils/helper";
@@ -13,7 +13,7 @@ interface OwnProps {
     id: string;
     keepMounted: boolean;
     open: boolean;
-    onClose: (value?: ProveedorInputProp) => void;
+    onClose: (value?: ProveedorProps) => void;
 }
 
 type Props = OwnProps;
@@ -37,7 +37,7 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
             }).then(resp => {
                 if (resp.isConfirmed) {
                     notSuccess()
-                    onClose(values)
+                    onClose(resp.value)
                 }
             })
         }

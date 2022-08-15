@@ -4,14 +4,14 @@ import SecondarySidenavTheme from '../MatxTheme/SecondarySidenavTheme/SecondaryS
 import useSettings from "../../../hooks/useSettings";
 
 const SecondarySidebar = () => {
-    const { settings } = useSettings()
-    const secondarySidebarTheme =
-        settings.themes[settings.secondarySidebar.theme]
+    const {settings} = useSettings()
+    // @ts-ignore
+    const secondarySidebarTheme: any = settings.themes[settings.secondarySidebar.theme]
 
     return (
         <SecondarySidenavTheme theme={secondarySidebarTheme}>
-            {settings.secondarySidebar.open && <SecondarySidebarContent />}
-            <SecondarySidebarToggle />
+            {settings.secondarySidebar.open! && <SecondarySidebarContent/>}
+            <SecondarySidebarToggle/>
         </SecondarySidenavTheme>
     )
 }
