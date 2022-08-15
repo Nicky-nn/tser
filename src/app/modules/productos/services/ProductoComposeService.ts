@@ -1,12 +1,11 @@
 import {
-    OpcionesProductoProps,
     ProductoInputApiProps,
     ProductoInputProps,
     ProductoProps,
     ProductoVarianteApiProps,
     ProductoVarianteInputProps
 } from "../interfaces/producto.interface";
-import {SinActividadesPorDocumentoSector, SinActividadesProps} from "../../sin/interfaces/sin.interface";
+import {SinActividadesProps} from "../../sin/interfaces/sin.interface";
 
 /**
  * Componemos el producto para su posterior guardado
