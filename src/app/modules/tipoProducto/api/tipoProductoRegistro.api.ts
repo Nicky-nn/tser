@@ -10,6 +10,7 @@ const gqlQuery = gql`
             _id
             descripcion
             codigoParent
+            parientes
             state
             usucre
             createdAt

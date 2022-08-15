@@ -100,7 +100,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                     <Grid item xs={12} lg={8} sm={12}>
                         <FormControl fullWidth>
                             <MyInputLabel shrink>
-                                Productos
+                                Busqueda de Productos
                             </MyInputLabel>
                             <AsyncSelect<ProductoVarianteProps>
                                 cacheOptions={false}

@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {TipoProductoProps} from "../interfaces/tipoProducto.interface";
-import {apiTiposProducto} from "../../productos/api/productoTipo.api";
 import {QueryKey} from "@tanstack/query-core";
+import {apiTipoProductoListado} from "../api/tipoProductoListado.api";
 
 /**
  * Hook para listado básico de tipos de producto
@@ -15,7 +15,7 @@ const useQueryTiposProducto = (queryKey: QueryKey = []) => {
         error: tpError,
         refetch: tpRefetch
     } = useQuery<TipoProductoProps[], Error>(['tiposProducto', ...queryKey], async () => {
-        const resp = await apiTiposProducto();
+        const resp = await apiTipoProductoListado();
         if (resp.length > 0) {
             return resp
         }

@@ -45,7 +45,7 @@ const VentaRegistro = () => {
                         <DetalleTransaccionComercial form={form}/>
                     </Grid>
                     <Grid item lg={7} md={12} xs={12}>
-                        <SimpleCard title={'Cliente / Método de págo'}>
+                        <SimpleCard title={'Cliente / Método de pago'}>
                             <DatosTransaccionComercial form={form} user={user!}/>
                             <Divider/>
                             <MetodosPago form={form}/>

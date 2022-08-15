@@ -1,9 +1,7 @@
 import {Button, FormControl, FormHelperText, Grid, List, ListItem, ListItemText, TextField} from "@mui/material";
 import React, {FC, useState} from "react";
 import {PerfilProps} from "../../../../base/models/loginModel";
-import {fetchClientesList} from "../../../../base/api/cliente.api";
-import {PersonAddAlt1Outlined} from "@mui/icons-material";
-import {SelectInputLabel} from "../../../../base/components/ReactSelect/SelectInputLabel";
+import {PersonAddAlt1Outlined, TableChart} from "@mui/icons-material";
 import AsyncSelect from "react-select/async";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import {swalException} from "../../../../utils/swal";
@@ -14,6 +12,8 @@ import {Controller, UseFormReturn} from "react-hook-form";
 import {FacturaInputProps} from "../../interfaces/factura";
 import {SingleValue} from "react-select";
 import {MyInputLabel} from "../../../../base/components/MyInputs/MyInputLabel";
+import {apiClienteBusqueda} from "../../../clientes/api/clienteBusqueda.api";
+import ClienteExplorarDialog from "../../../clientes/components/ClienteExplorarDialog";
 
 interface OwnProps {
     form: UseFormReturn<FacturaInputProps>
@@ -25,12 +25,15 @@ type Props = OwnProps;
 export const DatosTransaccionComercial: FC<Props> = (props) => {
     const {form: {control, watch, setValue, getValues, formState: {errors}}} = props
     const [openNuevoCliente, setNuevoCliente] = useState(false);
+    const [openExplorarCliente, setExplorarCliente] = useState(false);
     const watchAllFields = watch();
 
     const fetchClientes = async (inputValue: string): Promise<any[]> => {
         try {
-            const clientes = await fetchClientesList()
-            if (clientes) return clientes
+            if (inputValue.length > 2) {
+                const clientes = await apiClienteBusqueda(inputValue)
+                if (clientes) return clientes
+            }
             return []
         } catch (e: any) {
             swalException(e)
@@ -40,19 +43,19 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
 
     return <>
         <Grid container spacing={1} rowSpacing={3}>
-            <Grid item xs={12} lg={12} sm={12} md={12}>
+            <Grid item xs={12} lg={8} sm={12} md={12}>
                 <Controller
                     name="cliente"
                     control={control}
                     render={({field}) => (
                         <FormControl fullWidth error={Boolean(errors.cliente)}>
                             <MyInputLabel shrink>
-                                Seleccione al cliente
+                                Busqueda de clientes
                             </MyInputLabel>
                             <AsyncSelect<ClienteProps>
                                 {...field}
                                 cacheOptions={false}
-                                defaultOptions
+                                defaultOptions={true}
                                 styles={reactSelectStyles}
                                 menuPosition={'fixed'}
                                 name="clientes"
@@ -67,11 +70,22 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
                                     setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                                 }}
                                 onBlur={field.onBlur}
+                                noOptionsMessage={() => 'Ingrese referencia -> Razon Social, Codigo Cliente, Numero documento'}
+                                loadingMessage={() => 'Buscando...'}
                             />
                             <FormHelperText>{errors.cliente?.message}</FormHelperText>
                         </FormControl>
                     )}
                 />
+            </Grid>
+
+            <Grid item lg={4} xs={12} md={3}>
+                <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => setExplorarCliente(true)}
+                    startIcon={<TableChart/>}
+                >Explorar Clientes</Button>
             </Grid>
 
             <Grid item lg={8} xs={12} md={12}>
@@ -134,6 +148,23 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
                         setNuevoCliente(false)
                     } else {
                         setNuevoCliente(false)
+                    }
+                }}
+            />
+        </>
+        <>
+            <ClienteExplorarDialog
+                id={'explorarClienteDialog'}
+                keepMounted={false}
+                open={openExplorarCliente}
+                onClose={async (value?: ClienteProps) => {
+                    if (value) {
+                        setValue('cliente', value)
+                        setValue('emailCliente', value.email)
+                        await fetchClientes(value.codigoCliente)
+                        setExplorarCliente(false)
+                    } else {
+                        setExplorarCliente(false)
                     }
                 }}
             />

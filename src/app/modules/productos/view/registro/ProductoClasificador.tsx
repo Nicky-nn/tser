@@ -4,7 +4,7 @@ import SimpleCard from "../../../../base/components/Template/Cards/SimpleCard";
 import {reactSelectStyles} from "../../../../base/components/MySelect/ReactSelect";
 import Select from "react-select";
 import useQueryTiposProducto from "../../../tipoProducto/hooks/useQueryTiposProducto";
-import {TipoProductoInputProp, TipoProductoProps} from "../../../tipoProducto/interfaces/tipoProducto.interface";
+import {TipoProductoProps} from "../../../tipoProducto/interfaces/tipoProducto.interface";
 import TipoProductoDialogRegistro from "../../../tipoProducto/view/TipoProductoRegistroDialog";
 import {ProductoInputProps} from "../../interfaces/producto.interface";
 import {Controller, UseFormReturn} from "react-hook-form";
@@ -53,7 +53,7 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                                     options={tiposProducto}
                                     isClearable={true}
                                     getOptionValue={(ps) => ps._id}
-                                    getOptionLabel={(ps) => `${ps.descripcion}`}
+                                    getOptionLabel={(item) => `${item.parientes.length > 0 ? item.parientes.join(' ---- ') + ' ---- ': '' } ${item.descripcion}`}
                                 />
                             </FormControl>
                         )}
@@ -71,7 +71,7 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                         open={openDialog}
                         onClose={(value?: TipoProductoProps) => {
                             setOpenDialog(false)
-                            if(value) {
+                            if (value) {
                                 setValue('tipoProducto', value)
                                 tpRefetch().then()
                             }

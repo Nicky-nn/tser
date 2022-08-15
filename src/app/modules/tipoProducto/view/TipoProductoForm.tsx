@@ -2,7 +2,6 @@ import React, {FunctionComponent} from 'react';
 import {FormikProps} from "formik";
 import {TipoProductoInputProp, TipoProductoProps} from "../interfaces/tipoProducto.interface";
 import {FormControl, FormHelperText, Grid, TextField} from "@mui/material";
-import {SelectInputLabel} from "../../../base/components/ReactSelect/SelectInputLabel";
 import Select, {SingleValue} from "react-select";
 import {reactSelectStyles} from "../../../base/components/MySelect/ReactSelect";
 import AlertLoading from "../../../base/components/Alert/AlertLoading";
@@ -51,7 +50,7 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
                                     isSearchable={false}
                                     options={tiposProducto}
                                     getOptionValue={(item) => item._id}
-                                    getOptionLabel={(item) => `${item.descripcion}`}
+                                    getOptionLabel={(item) => `${item.parientes.length > 0 ? item.parientes.join(' ---- ') + ' ---- ': '' } ${item.descripcion}`}
                                 />
                                 <FormHelperText>{formik.errors.codigoParent}</FormHelperText>
                             </FormControl>
