@@ -36,6 +36,7 @@ const query = gql`
             tipoProducto{
                 _id
                 descripcion
+                parientes
             }
             variantes{
                 _id

@@ -54,7 +54,7 @@ export const productoComposeService = (prod: ProductoInputProps): ProductoInputA
         descripcion: prod.descripcion,
         descripcionHtml: `<p>${prod.descripcionHtml}</p>`,
         opcionesProducto: prod.opcionesProducto,
-        codigoTipoProducto: prod.tipoProducto?._id || null,
+        tipoProductoId: prod.tipoProducto?._id || null,
         tipoProductoPersonalizado: prod.tipoProductoPersonalizado ? prod.tipoProductoPersonalizado.trim() : null,
         varianteUnica: prod.varianteUnica,
         codigoProveedor: prod.proveedor?.codigo || null,

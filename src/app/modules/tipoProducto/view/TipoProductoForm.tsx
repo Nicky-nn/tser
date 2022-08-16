@@ -50,7 +50,7 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
                                     isSearchable={false}
                                     options={tiposProducto}
                                     getOptionValue={(item) => item._id}
-                                    getOptionLabel={(item) => `${item.parientes.length > 0 ? item.parientes.join(' ---- ') + ' ---- ': '' } ${item.descripcion}`}
+                                    getOptionLabel={(item) => `${item.parientes}`}
                                 />
                                 <FormHelperText>{formik.errors.codigoParent}</FormHelperText>
                             </FormControl>

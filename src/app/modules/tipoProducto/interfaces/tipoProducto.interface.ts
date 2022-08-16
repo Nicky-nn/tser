@@ -2,7 +2,7 @@ export interface TipoProductoProps {
     _id: string
     codigoParent: string | null,
     descripcion: string,
-    parientes: Array<string>
+    parientes: string
 }
 
 export interface TipoProductoListProps extends TipoProductoProps {

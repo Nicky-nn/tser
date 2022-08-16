@@ -63,7 +63,6 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
             }).then(resp => {
                 if (resp.isConfirmed) {
                     notSuccess()
-                    console.log(resp.value)
                 }
                 if (resp.isDenied) {
                     swalException(resp.value)

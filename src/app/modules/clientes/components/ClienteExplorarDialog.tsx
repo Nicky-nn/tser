@@ -22,6 +22,11 @@ const ClienteExplorarDialog: FunctionComponent<Props> = (props) => {
         }
     }, [rowCliente]);
 
+    useEffect(() => {
+        if (open)
+            setRowCliente(null)
+    }, [open]);
+
     return (<>
         <Dialog
             sx={{'& .MuiDialog-paper': {width: '100%', maxHeight: 750}}}

@@ -165,7 +165,7 @@ export interface ProductoInputApiProps {
     descripcion: string
     descripcionHtml: string
     opcionesProducto: OpcionesProductoProps[],
-    codigoTipoProducto: string | null
+    tipoProductoId: string | null
     tipoProductoPersonalizado: string | null
     varianteUnica: boolean
     codigoProveedor: string | null
