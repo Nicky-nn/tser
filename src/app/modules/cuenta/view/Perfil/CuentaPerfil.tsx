@@ -12,7 +12,6 @@ type Props = OwnProps;
 
 const CuentaPerfil: FunctionComponent<Props> = (props) => {
     const {user} = useAuth()
-    console.log(user)
     return (<>
         <SimpleCard title={'PERFIL DE USUARIO'} childIcon={<Person/>}>
             <Grid container spacing={2}>

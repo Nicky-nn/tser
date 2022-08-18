@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useMemo, useState} from 'react';
-import {Box, Button, Chip, IconButton} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
+import {Box, Button, Chip, IconButton, Stack} from "@mui/material";
+import {Delete, Edit, Newspaper} from "@mui/icons-material";
 import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
 import type {ColumnFiltersState, PaginationState, RowSelectionState,} from '@tanstack/react-table';
 import {SortingState} from "@tanstack/react-table";
@@ -55,7 +55,7 @@ const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
 
 const ProveedorListado: FunctionComponent<Props> = (props) => {
     const navigate = useNavigate()
-
+    const [openNuevoProveedor, setOpenNuevoProveedor] = useState<boolean>(false);
     // ESTADO DATATABLE
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [pagination, setPagination] = useState<PaginationState>({
@@ -69,7 +69,7 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     // FIN ESTADO DATATABLE
 
-    const {data, isError, isFetching, isLoading, status, refetch} = useQuery<ProveedorProps[]>(
+    const {data, isError, isLoading, status, refetch} = useQuery<ProveedorProps[]>(
         [
             'proveedoresListado',
             columnFilters,
@@ -117,6 +117,11 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
         })
     }
     return (<>
+        <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} justifyContent="right" sx={{marginBottom: 3}}>
+            <Button size={'small'} variant="contained" onClick={() => setOpenNuevoProveedor(true)}
+                    startIcon={<Newspaper/>} color={'success'}
+            > Nuevo Proveedor</Button>
+        </Stack>
         <MaterialReactTable
             columns={columns}
             data={data ?? []}
@@ -187,6 +192,17 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
                         </Button>
                     </Box>
                 )
+            }}
+        />
+        <ProveedorRegistroDialog
+            id={'proveedorRegistroDialog'}
+            keepMounted={false}
+            open={openNuevoProveedor}
+            onClose={(value?: ProveedorProps) => {
+                if (value) {
+                    refetch().then()
+                }
+                setOpenNuevoProveedor(false)
             }}
         />
     </>);

@@ -10,6 +10,7 @@ import AlertLoading from "../../../base/components/Alert/AlertLoading";
 import {FormikProps} from "formik";
 import {ClienteInputProps} from "../interfaces/cliente";
 import {genReplaceEmpty, isEmptyValue} from "../../../utils/helper";
+import {MyInputLabel} from "../../../base/components/MyInputs/MyInputLabel";
 
 interface OwnProps {
     formik: FormikProps<ClienteInputProps>;
@@ -39,9 +40,9 @@ const ClienteForm: FunctionComponent<Props> = (props) => {
                     {
                         tdiLoading ? <AlertLoading/> : (
                             <FormControl fullWidth error={Boolean(formik.errors.codigoTipoDocumentoIdentidad)}>
-                                <SelectInputLabel shrink>
+                                <MyInputLabel shrink>
                                     Tipo Documento Identidad
-                                </SelectInputLabel>
+                                </MyInputLabel>
 
                                 <Select<SinTipoDocumentoIdentidadProps>
                                     menuPosition={'fixed'}

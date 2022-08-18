@@ -1,5 +1,5 @@
 import {Card, Checkbox, CircularProgress, Grid, TextField,} from '@mui/material'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {NavLink, useNavigate} from 'react-router-dom'
 import {Box, styled, useTheme} from '@mui/system'
 import {Paragraph} from "../../../components/Template/Typography";
@@ -7,6 +7,7 @@ import useAuth from "../../../hooks/useAuth";
 import {object, string} from "yup";
 import {useFormik} from "formik";
 import {LoadingButton} from "@mui/lab";
+import {isEmptyValue} from "../../../../utils/helper";
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
@@ -65,7 +66,7 @@ const JwtLogin = () => {
     const [message, setMessage] = useState('')
     const formik = useFormik({
         initialValues: {
-            shop: 'demo.isipass.com.bo',
+            shop: '',
             email: '',
             password: '',
             remember: true
@@ -73,8 +74,13 @@ const JwtLogin = () => {
         validationSchema,
         onSubmit: async (values) => {
             setLoading(true)
-            const {shop, email, password} = values
+            const {shop, email, password, remember} = values
             try {
+                if(remember){
+                    localStorage.setItem('shop', shop)
+                } else {
+                    localStorage.removeItem('shop')
+                }
                 await login(shop, email, password)
                 navigate('/')
             } catch (e: any) {
@@ -84,6 +90,12 @@ const JwtLogin = () => {
             }
         },
     })
+
+    useEffect(() => {
+        if(!isEmptyValue(localStorage.getItem('shop'))) {
+            formik.setFieldValue('shop', localStorage.getItem('shop'))
+        }
+    }, []);
 
     return (
         <JWTRoot>
@@ -104,7 +116,7 @@ const JwtLogin = () => {
                                 <Grid container spacing={5}>
                                     <Grid item lg={12} md={12} sm={12} xs={12} sx={{mt: 2}}>
                                         <TextField
-                                            label="Url Tienda"
+                                            label="URL Comercio"
                                             size={"small"}
                                             sx={{mb: 3, width: '100%'}}
                                             type="text"
@@ -151,7 +163,7 @@ const JwtLogin = () => {
                                                     sx={{padding: 0}}
                                                 />
 
-                                                <Paragraph>Remember Me</Paragraph>
+                                                <Paragraph>Recordarme</Paragraph>
                                             </FlexBox>
 
                                             <NavLink

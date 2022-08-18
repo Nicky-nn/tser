@@ -24,7 +24,6 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
         initialValues: CLIENTE_DEFAULT_INPUT,
         validationSchema: clienteInputValidator,
         onSubmit: async (values) => {
-            console.log(values)
             await swalAsyncConfirmDialog({
 
                 preConfirm: () => {
@@ -49,7 +48,7 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
 
     useEffect(() => {
         if (open) {
-            // clienteForm.resetForm()
+            clienteForm.resetForm()
             // clienteForm.setValues(CLIENTE_DEFAULT_INPUT)
         }
     }, [open]);

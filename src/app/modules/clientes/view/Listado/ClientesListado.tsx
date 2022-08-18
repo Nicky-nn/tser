@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useMemo, useState} from 'react';
-import {Box, Button, Chip, IconButton} from "@mui/material";
+import {Box, Button, Chip, IconButton, Stack} from "@mui/material";
 import {genApiQuery} from "../../../../utils/helper";
 import {fetchClienteListado} from "../../api/clienteListado.api";
 import {PAGE_DEFAULT, PageProps} from "../../../../interfaces";
@@ -7,13 +7,14 @@ import MaterialReactTable, {MRT_ColumnDef} from 'material-react-table';
 import {useQuery} from "@tanstack/react-query";
 import {ColumnFiltersState, PaginationState, RowSelectionState, SortingState} from "@tanstack/react-table";
 import {localization} from "../../../../utils/localization";
-import {Delete, Edit} from "@mui/icons-material";
+import {Delete, Edit, PersonAddAltSharp} from "@mui/icons-material";
 import AuditIconButton from "../../../../base/components/Auditoria/AuditIconButton";
 import ClienteModificarDialog from "../ClienteModificarDialog";
 import {ClienteProps} from "../../interfaces/cliente";
 import {swalAsyncConfirmDialog, swalException} from "../../../../utils/swal";
-import {notSuccess} from "../../../../utils/notification";
+import {notDanger, notSuccess} from "../../../../utils/notification";
 import {apiClientesEliminar} from "../../api/clientesEliminar.api";
+import ClienteRegistroDialog from "../ClienteRegistroDialog";
 
 interface OwnProps {
 }
@@ -51,7 +52,7 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
 ]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
-
+    const [open, setOpen] = useState(false);
     // DATA TABLE
     const [rowCount, setRowCount] = useState(0);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -65,7 +66,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [cliente, setCliente] = useState<ClienteProps | null>(null);
 
-    const {data: clientes, isError, isLoading, isFetching} = useQuery([
+    const {data: clientes, isError, isLoading, isFetching, refetch} = useQuery([
             'client',
             columnFilters,
             pagination.pageIndex,
@@ -101,12 +102,26 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
             if (resp.isConfirmed) {
                 notSuccess()
                 setRowSelection({})
+                refetch().then()
             }
         })
     }
 
     return (
         <>
+            <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} justifyContent="right" sx={{marginBottom: 3}}>
+                <Button size={'small'} variant="contained"
+                        onClick={() => setOpen(true)}
+                        startIcon={<PersonAddAltSharp/>} color={'primary'}
+                > Nuevo Cliente
+                </Button>
+                <Button
+                    size={'small'}
+                    variant="contained"
+                    onClick={() => notDanger('Opcion aun no disponible')}
+                    color={'primary'}
+                >Nuevo Cliente Extranjero</Button>
+            </Stack>
             <MaterialReactTable
                 columns={columns}
                 data={clientes ?? []}
@@ -198,7 +213,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
                     cliente={cliente!}
                     onClose={(value?: ClienteProps) => {
                         if (value) {
-                            console.log(value)
+                            refetch().then()
                         }
                         setCliente(null)
                         setOpenDialog(false)
@@ -206,7 +221,19 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
                 />
             }
 
+            <ClienteRegistroDialog
+                id={'clienteRegistroDialog'}
+                keepMounted
+                open={open}
+                onClose={(value?: ClienteProps) => {
+                    if (value) {
+                        refetch().then()
+                    }
+                    setOpen(false)
+                }}
+            />
         </>
+
     );
 }
 export default ClientesListado

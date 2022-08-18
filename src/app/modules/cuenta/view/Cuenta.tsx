@@ -3,12 +3,13 @@ import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb"
 import {Grid, List, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {Box} from "@mui/system";
 import SimpleContainer from "../../../base/components/Container/SimpleContainer";
-import {Key, Person, Token} from "@mui/icons-material";
+import {Cached, HomeWork, Key, Person, Token} from "@mui/icons-material";
 import CuentaPerfil from "./Perfil/CuentaPerfil";
 import CuentaPassword from "./Perfil/CuentaPassword";
 import CuentaTokenDelegado from "./Perfil/CuentaTokenDelegado";
 import SimpleCard from "../../../base/components/Template/Cards/SimpleCard";
 import CuentaSucursal from "./Perfil/CuentaSucursal";
+import CuentaRecargarCache from "./Perfil/CuentaRecargarCache";
 
 interface OwnProps {
 }
@@ -65,7 +66,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                                         onClick={(event) => handleListItemClick(event, 2)}
                                     >
                                         <ListItemIcon>
-                                            <Key/>
+                                            <HomeWork/>
                                         </ListItemIcon>
                                         <ListItemText primary="Sucursal / Punto Venta"/>
                                     </ListItemButton>
@@ -78,6 +79,16 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                                             <Token/>
                                         </ListItemIcon>
                                         <ListItemText primary="Token Delegado"/>
+                                    </ListItemButton>
+
+                                    <ListItemButton
+                                        selected={selectedIndex === 4}
+                                        onClick={(event) => handleListItemClick(event, 4)}
+                                    >
+                                        <ListItemIcon>
+                                            <Cached/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Recargar Cache"/>
                                     </ListItemButton>
                                 </List>
                             </Box>
@@ -96,6 +107,9 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                         }
                         {
                             selectedIndex === 3 && <CuentaTokenDelegado/>
+                        }
+                        {
+                            selectedIndex === 4 && <CuentaRecargarCache/>
                         }
                     </Grid>
                 </Grid>
