@@ -189,7 +189,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                             </td>
                                             <td data-label="CANTIDAD">
                                                 <InputNumber
-                                                    min={1}
+                                                    min={0.1}
                                                     max={1000}
                                                     value={item.cantidad}
                                                     onFocus={handleFocus}
