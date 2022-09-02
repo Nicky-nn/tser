@@ -1,129 +1,148 @@
-import React, {FunctionComponent} from 'react';
-import SimpleContainer from "../../../base/components/Container/SimpleContainer";
-import Breadcrumb from "../../../base/components/Template/Breadcrumb/Breadcrumb";
-import {Button, CssBaseline, Grid, Paper, Stack} from "@mui/material";
-import Homologacion from "./registro/ProductoHomologacion";
-import {Save} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
-import {PRODUCTO_INITIAL_VALUES, ProductoInputProps} from "../interfaces/producto.interface";
-import {genRandomString} from "../../../utils/helper";
-import {productoRegistroValidationSchema, productoRegistroValidator} from "../validator/productoRegistroValidator";
-import {SubmitHandler, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
-import ProductoPrecio from "./registro/ProductoPrecio";
-import {swalAsyncConfirmDialog, swalException} from "../../../utils/swal";
-import ProductoInventario from "./ProductoInventario/ProductoInventario";
-import ProductoOpciones from "./registro/ProductoOpciones";
-import ProductoVariantes from "./registro/ProductoVariantes";
-import ProductoClasificador from "./registro/ProductoClasificador";
-import ProductoProveedor from "./registro/ProductoProveedor";
-import {notError, notSuccess} from "../../../utils/notification";
-import {productoComposeService} from "../services/ProductoComposeService";
-import {apiProductoRegistro} from "../api/productoRegistro.api";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Save } from '@mui/icons-material';
+import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material';
+import React, { FunctionComponent } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-interface OwnProps {
-}
+import SimpleContainer from '../../../base/components/Container/SimpleContainer';
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
+import { genRandomString } from '../../../utils/helper';
+import { notError, notSuccess } from '../../../utils/notification';
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
+import { apiProductoRegistro } from '../api/productoRegistro.api';
+import {
+  PRODUCTO_INITIAL_VALUES,
+  ProductoInputProps,
+} from '../interfaces/producto.interface';
+import { productoComposeService } from '../services/ProductoComposeService';
+import {
+  productoRegistroValidationSchema,
+  productoRegistroValidator,
+} from '../validator/productoRegistroValidator';
+import ProductoInventario from './ProductoInventario/ProductoInventario';
+import ProductoClasificador from './registro/ProductoClasificador';
+import Homologacion from './registro/ProductoHomologacion';
+import ProductoOpciones from './registro/ProductoOpciones';
+import ProductoPrecio from './registro/ProductoPrecio';
+import ProductoProveedor from './registro/ProductoProveedor';
+import ProductoVariantes from './registro/ProductoVariantes';
+
+interface OwnProps {}
 
 type Props = OwnProps;
 
 const ProductoRegistro: FunctionComponent<Props> = (props) => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    const form = useForm<ProductoInputProps>({
-        defaultValues: {
-            ...PRODUCTO_INITIAL_VALUES,
-            variante: {...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(5)}
+  const form = useForm<ProductoInputProps>({
+    defaultValues: {
+      ...PRODUCTO_INITIAL_VALUES,
+      variante: { ...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(10) },
+    },
+    resolver: yupResolver(productoRegistroValidationSchema),
+  });
+
+  const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
+    const val = await productoRegistroValidator(values);
+    if (val.length > 0) {
+      notError(val.join('<br>'));
+    } else {
+      const apiInput = productoComposeService(values);
+      console.log(apiInput);
+      await swalAsyncConfirmDialog({
+        preConfirm: async () => {
+          const resp: any = await apiProductoRegistro(apiInput).catch((err) => ({
+            error: err,
+          }));
+          if (resp.error) {
+            swalException(resp.error);
+            return false;
+          }
+          return resp;
         },
-        resolver: yupResolver(productoRegistroValidationSchema),
-    });
-
-    const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
-        const val = await productoRegistroValidator(values)
-        if (val.length > 0) {
-            notError(val.join('<br>'))
-        } else {
-            const apiInput = productoComposeService(values)
-            await swalAsyncConfirmDialog({
-                preConfirm: async () => {
-                    const resp: any = await apiProductoRegistro(apiInput).catch(err => ({error: err}))
-                    if (resp.error) {
-                        swalException(resp.error)
-                        return false
-                    }
-                    return resp;
-                }
-            }).then(resp => {
-                if (resp.isConfirmed) {
-                    notSuccess()
-                    navigate(`/productos/modificar/${resp.value._id}`, {replace: true})
-                }
-                if (resp.isDenied) {
-                    swalException(resp.value)
-                }
-                return
-            })
+      }).then((resp) => {
+        if (resp.isConfirmed) {
+          notSuccess();
+          navigate(`/productos/modificar/${resp.value._id}`, { replace: true });
         }
-    };
+        if (resp.isDenied) {
+          swalException(resp.value);
+        }
+        return;
+      });
+    }
+  };
 
-    return (
-        <SimpleContainer>
-            <div className="breadcrumb">
-                <Breadcrumb
-                    routeSegments={[
-                        {name: 'Productos', path: '/productos/gestion'},
-                        {name: 'Nuevo Producto'},
-                    ]}
-                />
-            </div>
-            <CssBaseline/>
+  return (
+    <SimpleContainer>
+      <div className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: 'Productos', path: '/productos/gestion' },
+            { name: 'Nuevo Producto' },
+          ]}
+        />
+      </div>
+      <CssBaseline />
 
-            <Paper elevation={0} variant="elevation" square sx={{mb: 2, p: 0.5}} className={'asideSidebarFixed'}>
-                <Stack
-                    direction={{xs: 'column', sm: 'row'}}
-                    style={{marginTop: 2}}
-                    spacing={{xs: 1, sm: 1, md: 1, xl: 1}}
-                    justifyContent="flex-end"
-                >
-                    <Button color={'success'} startIcon={<Save/>} variant={"contained"}
-                            onClick={form.handleSubmit(onSubmit)}>
-                        Guardar Producto
-                    </Button>
-                </Stack>
-            </Paper>
+      <Paper
+        elevation={0}
+        variant="elevation"
+        square
+        sx={{ mb: 2, p: 0.5 }}
+        className={'asideSidebarFixed'}
+      >
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          style={{ marginTop: 2 }}
+          spacing={{ xs: 1, sm: 1, md: 1, xl: 1 }}
+          justifyContent="flex-end"
+        >
+          <Button
+            color={'success'}
+            startIcon={<Save />}
+            variant={'contained'}
+            onClick={form.handleSubmit(onSubmit)}
+          >
+            Guardar Producto
+          </Button>
+        </Stack>
+      </Paper>
 
-            <Grid container spacing={2}>
-                <Grid item lg={8} md={8} xs={12}>
-                    <Grid container spacing={1}>
-                        <Grid item lg={12} md={12} xs={12}>
-                            <Homologacion form={form}/>
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoPrecio form={form}/>}
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoInventario form={form}/>}
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoOpciones form={form}/>}
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoVariantes form={form}/>}
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item lg={4} md={4} xs={12}>
-                    <Grid container spacing={1}>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoClasificador form={form}/>}
-                        </Grid>
-                        <Grid item lg={12} md={12} xs={12}>
-                            {<ProductoProveedor form={form}/>}
-                        </Grid>
-                    </Grid>
-                </Grid>
+      <Grid container spacing={2}>
+        <Grid item lg={8} md={8} xs={12}>
+          <Grid container spacing={1}>
+            <Grid item lg={12} md={12} xs={12}>
+              <Homologacion form={form} />
             </Grid>
-        </SimpleContainer>
-    );
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoPrecio form={form} />}
+            </Grid>
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoInventario form={form} />}
+            </Grid>
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoOpciones form={form} />}
+            </Grid>
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoVariantes form={form} />}
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item lg={4} md={4} xs={12}>
+          <Grid container spacing={1}>
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoClasificador form={form} />}
+            </Grid>
+            <Grid item lg={12} md={12} xs={12}>
+              {<ProductoProveedor form={form} />}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </SimpleContainer>
+  );
 };
 
 export default ProductoRegistro;

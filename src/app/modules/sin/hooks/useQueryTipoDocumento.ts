@@ -1,27 +1,35 @@
-import {QueryObserverOptions, useQuery} from "@tanstack/react-query";
-import {QueryKey} from "@tanstack/query-core";
-import {SinTipoDocumentoIdentidadProps} from "../interfaces/sin.interface";
-import {fetchSinTipoDocumentoIdentidad} from "../api/sinTipoDocumentoIdentidad.api";
+import { QueryKey } from '@tanstack/query-core';
+import { QueryObserverOptions, useQuery } from '@tanstack/react-query';
+
+import { fetchSinTipoDocumentoIdentidad } from '../api/sinTipoDocumentoIdentidad.api';
+import { SinTipoDocumentoIdentidadProps } from '../interfaces/sin.interface';
 
 /**
  * Hook para listado básico de tipos de producto
  * limit 1000
  */
-const useQueryTipoDocumentoIdentidad = (queryKey: QueryKey = [], options: QueryObserverOptions = {}) => {
-    const {
-        data: tiposDocumentoIdentidad,
-        isLoading: tdiLoading,
-        isError: tdiIsError,
-        error: tdiError,
-    } = useQuery<SinTipoDocumentoIdentidadProps[], Error>(['tipoDocumentoIdentidad', ...queryKey], async () => {
-        const resp = await fetchSinTipoDocumentoIdentidad();
-        if (resp.length > 0) {
-            return resp;
-        }
-        return []
-    }, <Omit<any, any>>{...options})
+const useQueryTipoDocumentoIdentidad = (
+  queryKey: QueryKey = [],
+  options: QueryObserverOptions = {},
+) => {
+  const {
+    data: tiposDocumentoIdentidad,
+    isLoading: tdiLoading,
+    isError: tdiIsError,
+    error: tdiError,
+  } = useQuery<SinTipoDocumentoIdentidadProps[], Error>(
+    ['tipoDocumentoIdentidad', ...queryKey],
+    async () => {
+      const resp = await fetchSinTipoDocumentoIdentidad();
+      if (resp.length > 0) {
+        return resp;
+      }
+      return [];
+    },
+    <Omit<any, any>>{ ...options },
+  );
 
-    return {tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError}
+  return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError };
 };
 
 export default useQueryTipoDocumentoIdentidad;

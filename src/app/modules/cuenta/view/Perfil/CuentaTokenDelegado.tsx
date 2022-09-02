@@ -1,15 +1,11 @@
-import React, {FunctionComponent} from 'react';
+import React, { FunctionComponent } from 'react';
 
-interface OwnProps {
-}
+interface OwnProps {}
 
 type Props = OwnProps;
 
 const CuentaTokenDelegado: FunctionComponent<Props> = (props) => {
-
-    return (<>
-        Función no disponible
-    </>);
+  return <>Función no disponible</>;
 };
 
 export default CuentaTokenDelegado;

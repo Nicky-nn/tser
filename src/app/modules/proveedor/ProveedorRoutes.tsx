@@ -1,14 +1,16 @@
-import {lazy} from 'react'
-import Loadable from "../../base/components/Template/Loadable/Loadable";
-import {authRoles} from "../../../auth/authRoles";
+import { lazy } from 'react';
+
+import { authRoles } from '../../../auth/authRoles';
+import Loadable from '../../base/components/Template/Loadable/Loadable';
 
 const AppProveedores = Loadable(lazy(() => import('./view/Proveedores')));
 
-const proveedorRoutes = [{
+const proveedorRoutes = [
+  {
     path: `/proveedor/gestion`,
-    element: <AppProveedores/>,
+    element: <AppProveedores />,
     auth: authRoles.admin,
-},
-]
+  },
+];
 
-export default proveedorRoutes
+export default proveedorRoutes;

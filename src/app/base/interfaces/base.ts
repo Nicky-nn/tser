@@ -1,4 +1,4 @@
 export interface ImagenProps {
-    altText: string
-    url: string
+  altText: string;
+  url: string;
 }

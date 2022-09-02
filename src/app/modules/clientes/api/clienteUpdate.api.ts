@@ -1,39 +1,39 @@
 // noinspection GraphQLUnresolvedReference
 
-import {gql, GraphQLClient} from "graphql-request";
-import {AccessToken} from "../../../base/models/paramsModel";
-import {ClienteInputProps, ClienteProps} from "../interfaces/cliente";
+import { gql, GraphQLClient } from 'graphql-request';
+
+import { AccessToken } from '../../../base/models/paramsModel';
+import { ClienteInputProps, ClienteProps } from '../interfaces/cliente';
 
 const query = gql`
-    mutation CLIENTE_ACTUALIZACION($id: ID!, $input: ClienteUpdateInput!) {
-        clienteUpdate(
-            id: $id
-            input: $input
-        ) {
-            _id
-            razonSocial
-            tipoDocumentoIdentidad {
-                codigoClasificador
-                descripcion
-            }
-            codigoCliente
-            numeroDocumento
-            complemento
-            nombres
-            apellidos
-            email
-            codigoExcepcion
-        }
+  mutation CLIENTE_ACTUALIZACION($id: ID!, $input: ClienteUpdateInput!) {
+    clienteUpdate(id: $id, input: $input) {
+      _id
+      razonSocial
+      tipoDocumentoIdentidad {
+        codigoClasificador
+        descripcion
+      }
+      codigoCliente
+      numeroDocumento
+      complemento
+      nombres
+      apellidos
+      email
+      codigoExcepcion
     }
+  }
+`;
 
-`
+export const apiClienteUpdate = async (
+  id: string,
+  input: ClienteInputProps,
+): Promise<ClienteProps> => {
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
+  const token = localStorage.getItem(AccessToken);
+  // Set a single header
+  client.setHeader('authorization', `Bearer ${token}`);
 
-export const apiClienteUpdate = async (id: string, input: ClienteInputProps): Promise<ClienteProps> => {
-    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-    const token = localStorage.getItem(AccessToken)
-    // Set a single header
-    client.setHeader('authorization', `Bearer ${token}`)
-
-    const data: any = await client.request(query, {id, input})
-    return data.clienteUpdate;
-}
+  const data: any = await client.request(query, { id, input });
+  return data.clienteUpdate;
+};

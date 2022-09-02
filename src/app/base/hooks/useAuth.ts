@@ -1,6 +1,7 @@
-import { useContext } from 'react'
-import AuthContext from "../contexts/JWTAuthContext";
+import { useContext } from 'react';
 
-const useAuth = () => useContext(AuthContext)
+import AuthContext from '../contexts/JWTAuthContext';
 
-export default useAuth
+const useAuth = () => useContext(AuthContext);
+
+export default useAuth;

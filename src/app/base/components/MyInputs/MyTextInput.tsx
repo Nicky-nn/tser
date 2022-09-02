@@ -1,23 +1,22 @@
-import {ErrorMessage, useField} from 'formik';
+import { ErrorMessage, useField } from 'formik';
 
 interface Props {
-    label: string;
-    name: string;
-    type?: 'text' | 'email' | 'password';
-    placeholder?: string;
+  label: string;
+  name: string;
+  type?: 'text' | 'email' | 'password';
+  placeholder?: string;
 
-    [x: string]: any;
+  [x: string]: any;
 }
 
-export const MyTextInput = ({label, ...props}: Props) => {
+export const MyTextInput = ({ label, ...props }: Props) => {
+  const [field] = useField(props);
 
-    const [field] = useField(props)
-
-    return (
-        <>
-            <label htmlFor={props.id || props.name}>{label}</label>
-            <input className="text-input" {...field} {...props} />
-            <ErrorMessage name={props.name} component="span"/>
-        </>
-    )
-}
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <input className="text-input" {...field} {...props} />
+      <ErrorMessage name={props.name} component="span" />
+    </>
+  );
+};

@@ -1,15 +1,16 @@
-import {lazy} from 'react'
-import Loadable from "../../components/Template/Loadable/Loadable";
-import {authRoles} from "../../../../auth/authRoles";
+import { lazy } from 'react';
 
-const Analytics = Loadable(lazy(() => import('./Analytics')))
+import { authRoles } from '../../../../auth/authRoles';
+import Loadable from '../../components/Template/Loadable/Loadable';
+
+const Analytics = Loadable(lazy(() => import('./Analytics')));
 
 const dashboardRoutes = [
-    {
-        path: '/dashboard/default',
-        element: <Analytics/>,
-        auth: authRoles.admin,
-    }
-]
+  {
+    path: '/dashboard/default',
+    element: <Analytics />,
+    auth: authRoles.admin,
+  },
+];
 
-export default dashboardRoutes
+export default dashboardRoutes;

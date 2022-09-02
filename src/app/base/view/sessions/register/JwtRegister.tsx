@@ -1,120 +1,113 @@
-import React, { useState } from 'react'
-import { Box, styled } from '@mui/system'
-import { useNavigate } from 'react-router-dom'
-import { Card, Checkbox, FormControlLabel, Grid, Button } from '@mui/material'
-import useAuth from "../../../hooks/useAuth";
-import {Span} from "../../../components/Template/Typography";
+import { Button, Card, Checkbox, FormControlLabel, Grid } from '@mui/material';
+import { Box, styled } from '@mui/system';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Span } from '../../../components/Template/Typography';
+import useAuth from '../../../hooks/useAuth';
 
 const FlexBox = styled(Box)(() => ({
-    display: 'flex',
-    alignItems: 'center',
-}))
+  display: 'flex',
+  alignItems: 'center',
+}));
 
 const JustifyBox = styled(FlexBox)(() => ({
-    justifyContent: 'center',
-}))
+  justifyContent: 'center',
+}));
 
 const ContentBox = styled(JustifyBox)(() => ({
-    height: '100%',
-    padding: '32px',
-    background: 'rgba(0, 0, 0, 0.01)',
-}))
+  height: '100%',
+  padding: '32px',
+  background: 'rgba(0, 0, 0, 0.01)',
+}));
 
 const IMG = styled('img')(() => ({
-    width: '100%',
-}))
+  width: '100%',
+}));
 
 const JWTRegister = styled(JustifyBox)(() => ({
-    background: '#1A2038',
-    minHeight: '100vh !important',
-    '& .card': {
-        maxWidth: 800,
-        borderRadius: 12,
-        margin: '1rem',
-    },
-}))
+  background: '#1A2038',
+  minHeight: '100vh !important',
+  '& .card': {
+    maxWidth: 800,
+    borderRadius: 12,
+    margin: '1rem',
+  },
+}));
 
 const JwtRegister = () => {
-    const navigate = useNavigate()
-    const [state, setState]: any = useState({})
-    const { register }: any = useAuth()
+  const navigate = useNavigate();
+  const [state, setState]: any = useState({});
+  const { register }: any = useAuth();
 
-    const handleChange: any = ({ target: { name, value } }: any) => {
-        setState({
-            ...state,
-            [name]: value,
-        })
+  const handleChange: any = ({ target: { name, value } }: any) => {
+    setState({
+      ...state,
+      [name]: value,
+    });
+  };
+
+  const handleFormSubmit = (event: any) => {
+    try {
+      register(state.email, state.username, state.password);
+      navigate('/');
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    const handleFormSubmit = (event: any) => {
-        try {
-            register(state.email, state.username, state.password)
-            navigate('/')
-        } catch (e) {
-            console.log(e)
-        }
-    }
+  let { username, email, password, agreement } = state;
 
-    let { username, email, password, agreement } = state
+  return (
+    <JWTRegister>
+      <Card className="card">
+        <Grid container>
+          <Grid item lg={5} md={5} sm={5} xs={12}>
+            <ContentBox>
+              <IMG src="/assets/images/illustrations/posting_photo.svg" alt="" />
+            </ContentBox>
+          </Grid>
+          <Grid item lg={7} md={7} sm={7} xs={12}>
+            <Box p={4} height="100%">
+              <form onSubmit={handleFormSubmit}>
+                <FormControlLabel
+                  sx={{ mb: '16px' }}
+                  name="agreement"
+                  onChange={(e: any) =>
+                    handleChange({
+                      target: {
+                        name: 'agreement',
+                        value: e.target.checked,
+                      },
+                    })
+                  }
+                  control={<Checkbox size="small" checked={agreement || false} />}
+                  label="I have read and agree to the terms of service."
+                />
+                <FlexBox>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    sx={{ textTransform: 'capitalize' }}
+                  >
+                    Sign up
+                  </Button>
+                  <Span sx={{ mr: 1, ml: '20px' }}>or</Span>
+                  <Button
+                    sx={{ textTransform: 'capitalize' }}
+                    onClick={() => navigate('/session/signin')}
+                  >
+                    Sign in
+                  </Button>
+                </FlexBox>
+              </form>
+            </Box>
+          </Grid>
+        </Grid>
+      </Card>
+    </JWTRegister>
+  );
+};
 
-    return (
-        <JWTRegister>
-            <Card className="card">
-                <Grid container>
-                    <Grid item lg={5} md={5} sm={5} xs={12}>
-                        <ContentBox>
-                            <IMG
-                                src="/assets/images/illustrations/posting_photo.svg"
-                                alt=""
-                            />
-                        </ContentBox>
-                    </Grid>
-                    <Grid item lg={7} md={7} sm={7} xs={12}>
-                        <Box p={4} height="100%">
-                            <form onSubmit={handleFormSubmit}>
-                                <FormControlLabel
-                                    sx={{ mb: '16px' }}
-                                    name="agreement"
-                                    onChange={(e: any) =>
-                                        handleChange({
-                                            target: {
-                                                name: 'agreement',
-                                                value: e.target.checked,
-                                            },
-                                        })
-                                    }
-                                    control={
-                                        <Checkbox
-                                            size="small"
-                                            checked={agreement || false}
-                                        />
-                                    }
-                                    label="I have read and agree to the terms of service."
-                                />
-                                <FlexBox>
-                                    <Button
-                                        type="submit"
-                                        color="primary"
-                                        variant="contained"
-                                        sx={{ textTransform: 'capitalize' }}
-                                    >
-                                        Sign up
-                                    </Button>
-                                    <Span sx={{ mr: 1, ml: '20px' }}>or</Span>
-                                    <Button
-                                        sx={{ textTransform: 'capitalize' }}
-                                        onClick={() => navigate("/session/signin")}
-                                    >
-                                        Sign in
-                                    </Button>
-                                </FlexBox>
-                            </form>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Card>
-        </JWTRegister>
-    )
-}
-
-export default JwtRegister
+export default JwtRegister;

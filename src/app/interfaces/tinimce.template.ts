@@ -1,8 +1,8 @@
 export const TINYMCE_TEMPLATES = [
-    {
-        title: 'Detalle Proveedor',
-        description: 'Proveedores de servicios de importación.',
-        content: `
+  {
+    title: 'Detalle Proveedor',
+    description: 'Proveedores de servicios de importación.',
+    content: `
         <table style="border-collapse: collapse; width: 100%;" border="0"><colgroup><col style="width: 13.9859%;"><col style="width: 85.9435%;"></colgroup>
             <tbody>
                 <tr>
@@ -15,6 +15,6 @@ export const TINYMCE_TEMPLATES = [
                 </tr>
                 <tr>
             </tbody>
-        </table>`
-    }
-]
+        </table>`,
+  },
+];
