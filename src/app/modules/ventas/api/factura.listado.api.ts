@@ -128,7 +128,9 @@ const query = gql`
           pdf
           xml
           rollo
+          sin
         }
+        usuario
         state
         usucre
         createdAt

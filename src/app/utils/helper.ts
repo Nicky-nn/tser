@@ -99,6 +99,14 @@ export const genReplaceEmpty = (val: any, replace: any): any => {
 
 export const handleFocus = (event: any) => event.target.select();
 
+function isNumeric(str: any) {
+  if (typeof str != 'string') return false; // we only process strings!
+  return (
+    !isNaN(Number(str)) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ); // ...and ensure strings of whitespace fail
+}
+
 /**
  * Parseamos un array en formato query para envio de parametro query, a la api
  * @param data
@@ -107,7 +115,11 @@ export const genApiQuery = (data: ColumnFiltersState): string => {
   if (data.length === 0) return '';
   const query: Array<string> = [];
   data.forEach((item) => {
-    query.push(`${item.id}=/${item.value}/i`);
+    if (isNumeric(item.value)) {
+      query.push(`${item.id}=${item.value}`);
+    } else {
+      query.push(`${item.id}=/${item.value}/i`);
+    }
   });
   return query.join('&');
 };

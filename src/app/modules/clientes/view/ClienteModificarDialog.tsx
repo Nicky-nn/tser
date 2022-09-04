@@ -5,11 +5,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { notSuccess } from '../../../utils/notification';
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
 import { apiClienteUpdate } from '../api/clienteUpdate.api';
-import {
-  ClienteInputProps,
-  clienteInputUpdateDefault,
-  ClienteProps,
-} from '../interfaces/cliente';
+import { ClienteInputProps, clienteInputUpdateDefault, ClienteProps } from '../interfaces/cliente';
 import { clienteInputValidator } from '../validator/clienteInputValidator';
 import ClienteForm from './ClienteForm';
 
@@ -34,9 +30,7 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
         preConfirm: () => {
           return apiClienteUpdate(cliente._id, {
             ...values,
-            codigoTipoDocumentoIdentidad: parseInt(
-              values.codigoTipoDocumentoIdentidad.toString(),
-            ),
+            codigoTipoDocumentoIdentidad: parseInt(values.codigoTipoDocumentoIdentidad.toString()),
           }).catch((err) => {
             swalException(err);
             return false;
@@ -60,12 +54,7 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-        maxWidth="sm"
-        open={open}
-        {...other}
-      >
+      <Dialog sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }} maxWidth="sm" open={open} {...other}>
         <DialogTitle>Modificar cliente {cliente.razonSocial}</DialogTitle>
         <DialogContent dividers>
           <ClienteForm formik={clienteForm} />
@@ -82,12 +71,7 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
           >
             Cancelar
           </Button>
-          <Button
-            onClick={clienteForm.submitForm}
-            style={{ marginRight: 15 }}
-            size={'small'}
-            variant={'contained'}
-          >
+          <Button onClick={clienteForm.submitForm} style={{ marginRight: 15 }} size={'small'} variant={'contained'}>
             Actualizar
           </Button>
         </DialogActions>
