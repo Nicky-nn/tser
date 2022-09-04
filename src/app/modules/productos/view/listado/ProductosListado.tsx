@@ -1,7 +1,11 @@
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, Button, Chip, IconButton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import type { ColumnFiltersState, PaginationState, RowSelectionState } from '@tanstack/react-table';
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  RowSelectionState,
+} from '@tanstack/react-table';
 import { SortingState } from '@tanstack/react-table';
 import { sumBy } from 'lodash';
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
@@ -35,7 +39,11 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
       });
       if (!row.varianteUnica) {
         return (
-          <Chip size={'small'} label={`${cantidad} items para ${row.variantes.length} variantes`} color={'info'} />
+          <Chip
+            size={'small'}
+            label={`${cantidad} items para ${row.variantes.length} variantes`}
+            color={'info'}
+          />
         );
       }
       return <Chip size={'small'} label={`${cantidad} items`} color={'default'} />;
@@ -77,7 +85,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isFetching, isLoading, status, refetch } = useQuery<ProductoProps[]>(
+  const { data, isError, isFetching, isLoading, status, refetch } = useQuery<
+    ProductoProps[]
+  >(
     ['table-data', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
     async () => {
       const query = genApiQuery(columnFilters);
@@ -127,7 +137,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         manualFiltering
         manualPagination
         manualSorting
-        muiToolbarAlertBannerProps={isError ? { color: 'error', children: 'Error loading data' } : undefined}
+        muiToolbarAlertBannerProps={
+          isError ? { color: 'error', children: 'Error loading data' } : undefined
+        }
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
@@ -156,7 +168,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         renderRowActions={({ row }) => (
           <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
             <IconButton
-              onClick={() => navigate(`${productosRouteMap.modificar}/${row.original._id}`)}
+              onClick={() =>
+                navigate(`${productosRouteMap.modificar}/${row.original._id}`)
+              }
               color={'primary'}
               aria-label="delete"
             >

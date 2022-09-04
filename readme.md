@@ -10,6 +10,7 @@ Se debe tener instalado las extensiones `eslint` y `pretty` en su editor de codi
 # Instalación global
 npm i -g eslint
 ```
+
 Comandos para formateo, dev. build
 
 ```bash
@@ -25,4 +26,3 @@ yarn build
 ## Vista previa del proyecto en produccion
 yarn preview
 ```
-

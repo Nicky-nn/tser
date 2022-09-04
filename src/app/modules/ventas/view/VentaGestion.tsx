@@ -1,8 +1,19 @@
-import { FileOpen, ImportExport, LayersClear, MenuOpen, PictureAsPdf } from '@mui/icons-material';
+import {
+  FileOpen,
+  ImportExport,
+  LayersClear,
+  MenuOpen,
+  PictureAsPdf,
+} from '@mui/icons-material';
 import { Button, Chip, Grid, IconButton } from '@mui/material';
 import { Box } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
-import { ColumnFiltersState, PaginationState, RowSelectionState, SortingState } from '@tanstack/react-table';
+import {
+  ColumnFiltersState,
+  PaginationState,
+  RowSelectionState,
+  SortingState,
+} from '@tanstack/react-table';
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
 import React, { FC, useMemo, useState } from 'react';
 
@@ -16,7 +27,10 @@ import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces';
 import { genApiQuery, openInNewTab } from '../../../utils/helper';
 import { localization } from '../../../utils/localization';
-import { muiTableApiEstado, muiTableHeadCellFilterTextFieldProps } from '../../../utils/materialReactTableUtils';
+import {
+  muiTableApiEstado,
+  muiTableHeadCellFilterTextFieldProps,
+} from '../../../utils/materialReactTableUtils';
 import { fetchFacturaListado } from '../api/factura.listado.api';
 import { FacturaProps } from '../interfaces/factura';
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog';
@@ -56,10 +70,12 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     header: 'Nro. Documento',
     accessorFn: (row) => (
       <span>
-        {row.cliente.numeroDocumento} {row.cliente.complemento ? `-${row.cliente.complemento}` : ''}
+        {row.cliente.numeroDocumento}{' '}
+        {row.cliente.complemento ? `-${row.cliente.complemento}` : ''}
       </span>
     ),
-    filterFn: (row, id, filterValue) => row.original.cliente.numeroDocumento.startsWith(filterValue),
+    filterFn: (row, id, filterValue) =>
+      row.original.cliente.numeroDocumento.startsWith(filterValue),
   },
   {
     accessorKey: 'cuf',
@@ -72,14 +88,21 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     header: 'Estado',
     accessorFn: (row) => (
       <Chip
-        color={row.state === apiEstado.validada ? 'success' : row.state === apiEstado.pendiente ? 'warning' : 'error'}
+        color={
+          row.state === apiEstado.validada
+            ? 'success'
+            : row.state === apiEstado.pendiente
+            ? 'warning'
+            : 'error'
+        }
         label={row.state}
         size={'small'}
       />
     ),
     filterVariant: 'select',
     filterSelectOptions: muiTableApiEstado,
-    filterFn: (row, id, filterValue) => row.original.state.toLowerCase().startsWith(filterValue.toLowerCase()),
+    filterFn: (row, id, filterValue) =>
+      row.original.state.toLowerCase().startsWith(filterValue.toLowerCase()),
   },
 ];
 
@@ -105,7 +128,13 @@ const VentaGestion: FC<any> = () => {
     refetch,
     isRefetching,
   } = useQuery<FacturaProps[]>(
-    ['gestionFacturas', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
+    [
+      'gestionFacturas',
+      columnFilters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sorting,
+    ],
     async () => {
       const query = genApiQuery(columnFilters);
       const fetchPagination: PageProps = {
@@ -125,7 +154,12 @@ const VentaGestion: FC<any> = () => {
     <>
       <SimpleContainer>
         <div className="breadcrumb">
-          <Breadcrumb routeSegments={[{ name: 'Ventas', path: '/ventas/gestion' }, { name: 'Gestión de Ventas' }]} />
+          <Breadcrumb
+            routeSegments={[
+              { name: 'Ventas', path: '/ventas/gestion' },
+              { name: 'Gestión de Ventas' },
+            ]}
+          />
         </div>
 
         <SimpleRowMenu>
@@ -230,7 +264,9 @@ const VentaGestion: FC<any> = () => {
                   </SimpleMenu>
                 </div>
               )}
-              muiTableHeadCellFilterTextFieldProps={{ ...muiTableHeadCellFilterTextFieldProps }}
+              muiTableHeadCellFilterTextFieldProps={{
+                ...muiTableHeadCellFilterTextFieldProps,
+              }}
             />
           </Grid>
         </Grid>
