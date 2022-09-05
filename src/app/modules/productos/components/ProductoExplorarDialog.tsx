@@ -16,6 +16,7 @@ type Props = OwnProps;
 
 const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
   const { onClose, codigoActividad, open, ...other } = props;
+  console.log(codigoActividad);
   const [rowSelection, setProductosVariantes] = useState<ProductoVarianteProps[]>([]);
   const handleAddProds = () => {
     if (rowSelection.length > 0) {

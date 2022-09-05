@@ -55,7 +55,7 @@ interface OwnProps {
 type Props = OwnProps;
 
 const ProductosVariantes: FunctionComponent<Props> = (props) => {
-  const { setProductosVariantes } = props;
+  const { setProductosVariantes, codigoActividad } = props;
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -76,7 +76,9 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters, [
+        `sinProductoServicio.codigoActividad=${codigoActividad}`,
+      ]);
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,

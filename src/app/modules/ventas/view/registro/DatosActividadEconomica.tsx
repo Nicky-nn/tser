@@ -60,6 +60,7 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
                   value={field.value}
                   onChange={async (val: any) => {
                     field.onChange(val);
+                    setValue('detalle', []);
                   }}
                   onBlur={async (val) => {
                     field.onBlur();

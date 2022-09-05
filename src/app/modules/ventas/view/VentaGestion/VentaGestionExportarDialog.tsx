@@ -63,7 +63,7 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
         razonSocial: item.cliente.razonSocial,
         codigoCliente: item.cliente.codigoCliente,
         numeroDocumento: item.cliente.numeroDocumento,
-        complemento: item.cliente.complemento,
+        complemento: item.cliente.complemento || '',
         metodoPago: item.metodoPago.descripcion,
         montoTotal: item.montoTotal,
         moneda: item.moneda.descripcion,

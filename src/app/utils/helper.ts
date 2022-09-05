@@ -110,9 +110,13 @@ function isNumeric(str: any) {
 /**
  * Parseamos un array en formato query para envio de parametro query, a la api
  * @param data
+ * @param extraQuery: query extra
  */
-export const genApiQuery = (data: ColumnFiltersState): string => {
-  if (data.length === 0) return '';
+export const genApiQuery = (
+  data: ColumnFiltersState,
+  extraQuery: string[] = [],
+): string => {
+  if (data.length === 0) return extraQuery.join('&');
   const query: Array<string> = [];
   data.forEach((item) => {
     if (isNumeric(item.value)) {
@@ -121,5 +125,8 @@ export const genApiQuery = (data: ColumnFiltersState): string => {
       query.push(`${item.id}=/${item.value}/i`);
     }
   });
+  if (extraQuery.length > 0) {
+    return query.join('&') + '&' + extraQuery.join('&');
+  }
   return query.join('&');
 };
