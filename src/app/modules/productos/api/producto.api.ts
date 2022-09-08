@@ -3,7 +3,7 @@
 import { gql, GraphQLClient } from 'graphql-request';
 
 import { AccessToken } from '../../../base/models/paramsModel';
-import { PageInfoProps, PageInputProps, PageProps } from '../../../interfaces';
+import { PageInfoProps, PageInputProps } from '../../../interfaces';
 import { ProductoProps } from '../interfaces/producto.interface';
 
 /**
@@ -29,6 +29,11 @@ const query = gql`
         state
         titulo
         descripcion
+        actividadEconomica {
+          codigoCaeb
+          descripcion
+          tipoActividad
+        }
         descripcionHtml
         opcionesProducto {
           nombre

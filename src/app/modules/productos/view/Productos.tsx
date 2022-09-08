@@ -39,7 +39,6 @@ const Productos = () => {
           startIcon={<Newspaper />}
           color={'success'}
         >
-          {' '}
           Nuevo Producto
         </Button>
       </Stack>

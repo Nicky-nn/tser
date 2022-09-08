@@ -43,6 +43,12 @@ export interface SinTipoFacturaProps {
   descripcion: string;
 }
 
+export interface SinActividadesEconomicasProps {
+  codigoCaeb: string;
+  descripcion: string;
+  tipoActividad: string;
+}
+
 export interface SinActividadesProps {
   codigoCaeb: string;
   descripcion: string;

@@ -2,6 +2,7 @@ import { ImagenProps } from '../../../base/interfaces/base';
 import { genRandomString } from '../../../utils/helper';
 import { ProveedorProps } from '../../proveedor/interfaces/proveedor.interface';
 import {
+  SinActividadesEconomicasProps,
   SinActividadesProps,
   SinProductoServicioProps,
   SinUnidadMedidaProps,
@@ -14,6 +15,7 @@ export interface ProductoDefinitionProps {
   _id?: string;
   titulo: string;
   descripcion: string;
+  actividadEconomica?: SinActividadesEconomicasProps;
   descripcionHtml: string;
   opcionesProducto: OpcionesProductoProps[];
   tipoProducto: TipoProductoProps | null;

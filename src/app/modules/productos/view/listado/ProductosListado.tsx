@@ -29,8 +29,17 @@ type Props = OwnProps;
 
 const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
   {
+    accessorFn: (row) => {
+      return genReplaceEmpty(row.actividadEconomica?.codigoCaeb, '');
+    },
+    header: 'Act.Eco.',
+    id: 'actividadEconomica.codigoCaeb',
+  },
+  {
     accessorKey: 'titulo',
     header: 'Producto',
+    id: 'titulo',
+    size: 400,
   },
   {
     accessorFn: (row) => {
@@ -133,7 +142,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
       <MaterialReactTable
         columns={columns}
         data={data ?? []}
-        initialState={{ showColumnFilters: false }}
+        initialState={{ showColumnFilters: true }}
         manualFiltering
         manualPagination
         manualSorting
@@ -164,9 +173,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
           size: 'small',
         }}
         enableRowActions
-        positionActionsColumn={'last'}
+        positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
-          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem', width: 100 }}>
             <IconButton
               onClick={() =>
                 navigate(`${productosRouteMap.modificar}/${row.original._id}`)
@@ -201,6 +210,19 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
               </Button>
             </Box>
           );
+        }}
+        muiTableProps={{
+          sx: {
+            tableLayout: 'fixed',
+          },
+        }}
+        displayColumnDefOptions={{
+          'mrt-row-actions': {
+            muiTableHeadCellProps: {
+              align: 'center',
+            },
+            size: 120,
+          },
         }}
       />
     </>
