@@ -65,6 +65,13 @@ export interface SinActividadesPorDocumentoSector {
   actividadEconomica: string;
   tipoActividad: string;
 }
+export interface SinActividadesDocumentoSectorProps {
+  codigoActividad: string;
+  codigoDocumentoSector: number;
+  tipoDocumentoSector: string;
+  actividadEconomica: string;
+  tipoActividad: string;
+}
 
 export interface SinProductoServicioProps {
   codigoActividad: string;
