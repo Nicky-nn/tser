@@ -76,7 +76,9 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters, [
+        `sinProductoServicio.codigoActividad=${codigoActividad}`,
+      ]);
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
