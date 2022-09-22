@@ -5,47 +5,12 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces';
-import { genApiQuery } from '../../../utils/helper';
+import { genApiQuery, genReplaceEmpty } from '../../../utils/helper';
 import { localization } from '../../../utils/localization';
 import { apiProductosVariantes } from '../api/productosVariantes.api';
 import { ProductoVarianteProps } from '../interfaces/producto.interface';
-
-const columnsMap: MRT_ColumnDef<ProductoVarianteProps>[] = [
-  {
-    accessorKey: 'codigoProducto',
-    header: 'Código Producto',
-  },
-  {
-    accessorKey: 'nombre',
-    header: 'Producto / Servicio',
-  },
-  {
-    accessorKey: 'precio',
-    header: 'Precio',
-    muiTableBodyCellProps: {
-      align: 'right',
-    },
-    accessorFn: (row) => {
-      return numberWithCommas(row.precio, {});
-    },
-    size: 150,
-  },
-  {
-    accessorKey: 'precioComparacion',
-    header: 'Precio Comparación',
-    muiTableBodyCellProps: {
-      align: 'right',
-    },
-    accessorFn: (row) => {
-      return numberWithCommas(row.precioComparacion, {});
-    },
-    size: 150,
-  },
-  {
-    accessorKey: 'unidadMedida.descripcion',
-    header: 'Unidad Medida',
-  },
-];
+import useAuth from '../../../base/hooks/useAuth';
+import { AllInclusive } from '@mui/icons-material';
 
 interface OwnProps {
   codigoActividad: string;
@@ -55,6 +20,59 @@ interface OwnProps {
 type Props = OwnProps;
 
 const ProductosVariantes: FunctionComponent<Props> = (props) => {
+  const {
+    user: { sucursal },
+  } = useAuth();
+
+  const columns = useMemo<MRT_ColumnDef<ProductoVarianteProps>[]>(
+    () => [
+      {
+        accessorKey: 'codigoProducto',
+        header: 'Código Producto',
+        size: 100,
+      },
+      {
+        accessorKey: 'nombre',
+        header: 'Producto / Servicio',
+      },
+      {
+        accessorKey: 'precio',
+        header: 'Precio',
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        accessorFn: (row) => {
+          return numberWithCommas(row.precio, {});
+        },
+        size: 100,
+      },
+      {
+        header: 'Stock',
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        accessorFn: (row) => {
+          if (row.incluirCantidad) {
+            const stock = row.inventario.find(
+              (i) => i.sucursal.codigo === sucursal.codigo,
+            );
+            return genReplaceEmpty(stock?.stock, 0);
+          } else {
+            return <AllInclusive color={'primary'} fontSize={'small'} />;
+          }
+        },
+        size: 50,
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: 'unidadMedida.descripcion',
+        header: 'Unidad Medida',
+        enableColumnFilter: false,
+      },
+    ],
+    [],
+  );
+
   const { setProductosVariantes, codigoActividad } = props;
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0);
@@ -102,7 +120,6 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
     }
   }, [rowSelection]);
 
-  const columns = useMemo<MRT_ColumnDef<ProductoVarianteProps>[]>(() => columnsMap, []);
   return (
     <>
       <MaterialReactTable

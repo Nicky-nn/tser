@@ -14,7 +14,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     detalle: fcv.detalle.map((item) => ({
       codigoProductoSin: item.codigoProductoSin,
       codigoProducto: item.codigoProducto,
-      descripcion: item.nombre,
+      descripcion: [item.nombre, item.detalleExtra || ''].join(' '),
       cantidad: item.cantidad,
       unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
       precioUnitario: item.precioUnitario,

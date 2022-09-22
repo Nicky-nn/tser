@@ -35,12 +35,17 @@ import {
   montoSubTotal,
 } from '../../services/operacionesService';
 import AgregarArticuloDialog from './AgregarArticuloDialog';
+import Swal from 'sweetalert2';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;
 }
-
 type Props = OwnProps;
+/**
+ * @description Detalle de la transaccion comercial
+ * @param props
+ * @constructor
+ */
 export const DetalleTransaccionComercial: FC<Props> = (props) => {
   const {
     form: {
@@ -72,13 +77,18 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
           cantidad: 1,
           precioUnitario: newInput.precio,
           montoDescuento: 0,
-          detalleExtra: '',
+          detalleExtra: newInput.detalleExtra,
           subtotal: 0,
         } as FacturaDetalleInputProps);
       } else {
         notDanger('El producto ya se adicionó');
       }
     }
+  };
+
+  // AÑADIMOS O SETEAMOS A CERO EL DETALLE EXTRA
+  const handleAddDetalleExtra = (index: number, newInput: FacturaDetalleInputProps) => {
+    update(index, newInput);
   };
 
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
@@ -175,7 +185,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                     {fields.length > 0 &&
                       fields.map((item, index) => {
                         return (
-                          <tr key={item.codigoProducto}>
+                          <tr key={index}>
                             <td data-label="Producto">
                               <List
                                 dense={true}
@@ -195,9 +205,17 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                   </ListItemAvatar>
                                   <ListItemText
                                     primary={
-                                      <Typography variant="subtitle2">
-                                        {item.nombre}
-                                      </Typography>
+                                      <>
+                                        <Typography
+                                          variant="subtitle2"
+                                          gutterBottom={true}
+                                        >
+                                          {item.nombre}{' '}
+                                          <span style={{ fontWeight: 'normal' }}>
+                                            {item.detalleExtra || ''}
+                                          </span>
+                                        </Typography>
+                                      </>
                                     }
                                     secondary={
                                       <Fragment>
@@ -210,8 +228,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                           {`Código: ${item.codigoProducto}`}
                                         </Typography>{' '}
                                         <br />
-                                        {`${item.unidadMedida.descripcion || ''}`} <br />
-                                        {`${item.detalleExtra}`}
+                                        {`${item.unidadMedida.descripcion || ''}`}
                                       </Fragment>
                                     }
                                   />
@@ -299,8 +316,23 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 <Delete color="warning" />
                               </IconButton>
                               <IconButton
-                                onClick={() => {
-                                  alert('Aumentar');
+                                onClick={async () => {
+                                  const { value: text } = await Swal.fire({
+                                    input: 'textarea',
+                                    inputLabel: 'Añadir descripción extra',
+                                    inputPlaceholder: 'Ingrese su descripcion extra...',
+                                    inputValue: item.detalleExtra || '',
+                                    inputAttributes: {
+                                      'aria-label': 'Type your message here',
+                                    },
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Cancelar',
+                                    confirmButtonText: 'Agregar Descripción',
+                                  });
+                                  handleAddDetalleExtra(index, {
+                                    ...item,
+                                    detalleExtra: text || '',
+                                  });
                                 }}
                               >
                                 <TextIncrease color="primary" />

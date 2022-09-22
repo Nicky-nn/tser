@@ -49,7 +49,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       notError(val.join('<br>'));
     } else {
       const apiInput = productoComposeService(values);
-      console.log(apiInput);
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
           const resp: any = await apiProductoRegistro(apiInput).catch((err) => ({

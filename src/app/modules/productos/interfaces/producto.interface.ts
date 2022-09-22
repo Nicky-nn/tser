@@ -48,6 +48,7 @@ export interface ProductoVarianteProps {
   producto: ProductoDefinitionProps;
   titulo: string; // nombre propio
   nombre: string; // nombre producto + titulo
+  detalleExtra?: string;
   codigoBarras: string | null;
   precio: number;
   precioComparacion: number; // Para mostrar un precio rebajado

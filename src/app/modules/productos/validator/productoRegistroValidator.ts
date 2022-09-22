@@ -7,7 +7,7 @@ export const productoRegistroVarianteValidatorioSchema = {
   id: string().required('Identificador unico de la variante del producto es requerido'),
   codigoProducto: string().trim().required('Código del producto es requerido'),
   codigoBarras: string().trim().nullable(),
-  precio: number().min(1).required('Precio es un campo obligatorio'),
+  precio: number().min(0).required('Precio es un campo obligatorio'),
   precioComparacion: number().min(0),
   costo: number().min(0),
   inventario: array().of(
