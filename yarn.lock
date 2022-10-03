@@ -842,30 +842,42 @@
   dependencies:
     remove-accents "0.4.2"
 
-"@tanstack/query-core@4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.3.4.tgz#b93da17232fda91ec08ef14d2ca1d8326fc599f2"
-  integrity sha512-NLAe3j5Vk1yYEtoPP5fPGPjRzkZPx67KUM3f14L3InziJZJ0wVecCh7uKfgYkbRKJSeq6PlbND7iuCGdTplN6Q==
+"@tanstack/query-core@4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.9.0.tgz#ffc057b664f952bf3d4925fd924a12403646f6a2"
+  integrity sha512-Vl0jAWJR3A1md0PoPMoEd6+H1dlRB5NqXDBNF+MZEgjQsR0Nly2kJgJj0Zh6eRDndnn7VlspxTWoOpt+dwDdAA==
 
-"@tanstack/react-query@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.3.4.tgz#91a4232a967de04a0662d63d53b18ecc3e11c7e2"
-  integrity sha512-IiAo+B8bxphEpO7xwLQaCptd2rY4Ef3pW1q9J3pT66G+J/st4QpGQ+cSm9iESp9ccRy1YNUk3klk/hQtWewl6g==
+"@tanstack/react-query@^4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.9.0.tgz#e0e8894b9b7415608c488d68793826113d61224d"
+  integrity sha512-M4utYjk9BRDUYbbprSsa0eExdC9NjqQ0deuHXYxQkT8l8BIVyw6yv02LQUGBdOnn/6w5xXFyQRG2slo+JhqeBg==
   dependencies:
-    "@tanstack/query-core" "4.3.4"
+    "@tanstack/query-core" "4.9.0"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-table@8.5.13", "@tanstack/react-table@^8.5.13":
+"@tanstack/react-table@8.5.13":
   version "8.5.13"
   resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.13.tgz#a394c4db1cbcd63eb0c5fa2244a963da28f246c4"
   integrity sha512-k52HsnonKwDZMCIy59HfehTnkJYlqkqyvC+BAV0DyWdN9WmSbVq+Kf+luJVENQnXcnEX47dBHiHAjqZu592ZLQ==
   dependencies:
     "@tanstack/table-core" "8.5.13"
 
+"@tanstack/react-table@^8.5.15":
+  version "8.5.15"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.5.15.tgz#8179d24d7fdf909799a517e8897501c44e51284d"
+  integrity sha512-9rSvhIFeMpfXksFgQNTWnVoJbkae/U8CkHnHYGWAIB/O0Ca51IKap0Rjp5WkIUVBWxJ7Wfl2y13oY+aWcyM6Rg==
+  dependencies:
+    "@tanstack/table-core" "8.5.15"
+
 "@tanstack/table-core@8.5.13":
   version "8.5.13"
   resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.5.13.tgz#7ad94fcc9db72f3eb0ed7dbb9c511a6bd7ff9a06"
   integrity sha512-kvDRjC7LrLNNNgUMfsBz3nHOwbBLFdosWQ16dfbD9D/OJrvFHRXoUIPzF0MNqqSPghaj7/18fnwXHGypvzoh9Q==
+
+"@tanstack/table-core@8.5.15":
+  version "8.5.15"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.5.15.tgz#e1e674135cd6c36f29a1562a2b846f824861149b"
+  integrity sha512-k+BcCOAYD610Cij6p1BPyEqjMQjZIdAnVDoIUKVnA/tfHbF4JlDP7pKAftXPBxyyX5Z1yQPurPnOdEY007Snyg==
 
 "@tinymce/tinymce-react@^4.2.0":
   version "4.2.0"
@@ -2660,10 +2672,10 @@ ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
 
-imask@^6.4.2:
-  version "6.4.2"
-  resolved "https://registry.npmjs.org/imask/-/imask-6.4.2.tgz"
-  integrity sha512-xvEgbTdk6y2dW2UAysq0NRPmO6PuaXM5NHIt4TXEJEwXUHj26M0p/fXqyrSJdNXFaGVOtqYjPRnNdrjQQhDuuA==
+imask@^6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/imask/-/imask-6.4.3.tgz#b81b247043807995e048f559e98930c2fec8004a"
+  integrity sha512-aH2GHemGkr3cbRBfhogHMIx05eUxdHrZNlKTTLmz8VxpSopuHHJ8+85FsDlBVQqxPlDLhZuwj4lpHHWbLOdBSw==
 
 immer@^9.0.7:
   version "9.0.15"
@@ -3026,10 +3038,10 @@ magic-string@^0.26.2:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-react-table@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-1.0.7.tgz#a0bcd153b29daa4ad35085aecd0a9eb6d2f7fc31"
-  integrity sha512-XwRo5gmO+O/PR2RvUHUQWCl4gOn1TSdsGonRLpWyvETgeW7vUP0Prog2ahd8OszGHJ91XQet9yN6CbnJX8SpIg==
+material-react-table@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-1.2.5.tgz#15639c6f8155125933ea897cd712d2cac42077b9"
+  integrity sha512-IARh5JU6qHwM/20KLnbbXtPrcglzeHDny5LIIYUFxnWfv/vwUPS4thkE/kiJedUfu7kgiP2QRXlbUCFSCTeRnw==
   dependencies:
     "@tanstack/match-sorter-utils" "8.1.1"
     "@tanstack/react-table" "8.5.13"
@@ -3329,10 +3341,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-rc-input-number@^7.3.7:
-  version "7.3.7"
-  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-7.3.7.tgz#a5463770f06641388675d32b4ae88958b5ededf9"
-  integrity sha512-W9jDwfhJyNjg0iZX401r0GctTGX4ETURzF6SisC42GR0AkJxtaPD89eGwbTdAudUjEx0Pkn2rGmfvVGGdQACKA==
+rc-input-number@^7.3.9:
+  version "7.3.9"
+  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-7.3.9.tgz#bc6560376ea595e3bf8fbd3137711cbc158800b5"
+  integrity sha512-u0+miS+SATdb6DtssYei2JJ1WuZME+nXaG6XGtR8maNyW5uGDytfDu60OTWLQEb0Anv/AcCzehldV8CKmKyQfA==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
@@ -3389,17 +3401,17 @@ react-hook-form-mui@^5.7.2:
   resolved "https://registry.yarnpkg.com/react-hook-form-mui/-/react-hook-form-mui-5.7.2.tgz#947419b854b2b0241c55079dcf44dc5cc3651660"
   integrity sha512-AeQ4e2v7odlacSdBhpKy/vQ51MW6IgVpgPPF6gimZTMKWf0y3tk4AKiI0evFzQ2ybElKiJNRj767OtwAPJFxpw==
 
-react-hook-form@^7.35.0:
-  version "7.35.0"
-  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.35.0.tgz#b133de48fc84b1e62f9277ba79dfbacd9bb13dd3"
-  integrity sha512-9CYdOed+Itbiu5VMVxW0PK9mBR3f0gDGJcZEyUSm0eJbDymQ913TRs2gHcQZZmfTC+rtxyDFRuelMxx/+xwMcw==
+react-hook-form@^7.36.1:
+  version "7.36.1"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.36.1.tgz#82a311fe8cbe75e689fd4529f083b7c983da6520"
+  integrity sha512-EbYYkCG2p8ywe7ikOH2l02lAFMrrrslZi1I8fqd8ifDGNAkhomHZQzQsP6ksvzrWBKntRe8b5L5L7Zsd+Gm02Q==
 
-react-imask@^6.4.2:
-  version "6.4.2"
-  resolved "https://registry.npmjs.org/react-imask/-/react-imask-6.4.2.tgz"
-  integrity sha512-xBGZyM0RwQ/ujX7f2ccaYxE41eB81q5Yqek6SYXAq6XT88+TdCSmIpgh5GeygRedPJu6tnnN8OXrUMTc2uFNSw==
+react-imask@^6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/react-imask/-/react-imask-6.4.3.tgz#845de954e03e98179a23b92722ed3661cbd11037"
+  integrity sha512-5WyCbubQErO8Wr/zLDyUyC1zCqQXP979QXW6BNirUGsM1VxFmVG0nNfXA1PSXlgdbaXWBiBj+VJBvg/8BDzieA==
   dependencies:
-    imask "^6.4.2"
+    imask "^6.4.3"
     prop-types "^15.7.2"
 
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
@@ -3417,10 +3429,10 @@ react-movable@^3.0.4:
   resolved "https://registry.npmjs.org/react-movable/-/react-movable-3.0.4.tgz"
   integrity sha512-rIbzl62O7cr7n//GjZMnQ+nWuu2QZI3Mnkm8P0Y4A5Qadt24BKvimlt1kzoxFzJ+Gk2+ZwpM4ZLQUVvKzGjsCw==
 
-react-number-format@^5.0.0-beta.4:
-  version "5.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-5.0.0-beta.4.tgz#3982e947e735a6ab260665f90c63495a5f73ee8a"
-  integrity sha512-uqQ5RvtFB3LmrBZANlh4M46eCIMDVV2btExt7naSg6mC9xZavGgZL+VVgAcVc8YiH3fBQlrxNF1ec4PtOt6U1A==
+react-number-format@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-5.0.1.tgz#23a3a693c978c7be328fa9c00dee5135111ca32b"
+  integrity sha512-Tyv5Ygb77ZbC5vUNNAfXwE+zQKaN0LsTo7GwjudU/MckXa7beVAlFddq7QQnGobEglyq+4zsBltKvM9HMQD0GA==
   dependencies:
     prop-types "^15.7.2"
 

@@ -158,7 +158,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   {...field}
                   min={0}
                   name={'variante.costo'}
-                  max={varianteWatch.precio === 0 ? 0 : varianteWatch.precio - 0.1}
+                  max={varianteWatch.precio === 0 ? 0 : varianteWatch.precio - 0.01}
                   placeholder={'0.00'}
                   value={field.value}
                   onFocus={handleSelect}
