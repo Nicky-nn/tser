@@ -27,6 +27,10 @@ import { apiUsuarioRestriccion } from '../api/usuarioRestriccion.api';
 import { apiUsuarioActualizarRestriccion } from '../api/usuarioRestriccionActualizar.api';
 import { UsuarioSucursalRestriccionProps } from '../interfaces/restriccion.interface';
 
+/**
+ * @description
+ * Componente para generar interfaz de acordion
+ */
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({

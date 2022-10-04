@@ -108,7 +108,7 @@ export interface FacturaProps {
   cliente: ClienteProps;
   codigoRecepcion: String;
   createdAt: string;
-  cuf: String;
+  cuf: string;
   cufd: SinCufdProps;
   cuis: SinCuisProps;
   descuentoAdicional: number;

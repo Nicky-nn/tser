@@ -9,6 +9,7 @@ import useAuth from '../../../base/hooks/useAuth';
 import { NcdInputProps } from '../interfaces/ncdInterface';
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator';
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
+import NcdFacturaOriginal from "./Registro/NcdFacturaOriginal";
 
 const NcdRegistro = () => {
   const { user } = useAuth();
@@ -29,7 +30,14 @@ const NcdRegistro = () => {
         />
       </div>
       <form noValidate>
-        <Grid container spacing={2}></Grid>
+        <Grid container spacing={2}>
+            <Grid item lg={12}>
+                <NcdFacturaOriginal  form={form}/>
+            </Grid>
+            <Grid item lg={12}>
+                <NcdFacturaOriginal  form={form}/>
+            </Grid>
+        </Grid>
       </form>
       <Box py="12px" />
     </SimpleContainer>
