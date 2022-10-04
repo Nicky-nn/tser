@@ -1,5 +1,4 @@
 import { ClienteProps } from '../../clientes/interfaces/cliente';
-import { ProductoVarianteProps } from '../../productos/interfaces/producto.interface';
 import { PuntoVentaProps } from '../../puntoVenta/interfaces/puntoVenta';
 import {
   SinActividadesProps,
@@ -12,9 +11,11 @@ import {
   SinTipoFacturaProps,
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface';
-import { SucursalProps } from '../../sucursal/interfaces/sucursal';
 
-export interface FacturaDetalleInputProps extends ProductoVarianteProps {
+import { SucursalProps } from '../../sucursal/interfaces/sucursal';
+import { RepresentacionGraficaProps } from '../../../interfaces/facturaInterface';
+
+export interface NcdDetalleInputProps {
   verificarStock: boolean;
   codigoProductoSin: string;
   descripcion: string;
@@ -28,7 +29,7 @@ export interface FacturaDetalleInputProps extends ProductoVarianteProps {
   incluirCantidad: boolean;
 }
 
-export interface FacturaInputProps {
+export interface NcdInputProps {
   actividadEconomica: SinActividadesProps;
   tipoCliente: 'N' | '99002' | '99003';
   cliente: ClienteProps | null;
@@ -37,7 +38,7 @@ export interface FacturaInputProps {
   codigoMetodoPago: number;
   codigoMoneda: number;
   descuentoAdicional: number;
-  detalle: FacturaDetalleInputProps[];
+  detalle: NcdDetalleInputProps[];
   detalleExtra?: string | null;
   detalleExtraText?: string | null;
   emailCliente?: string | null;
@@ -49,39 +50,6 @@ export interface FacturaInputProps {
   total: number;
   inputMontoPagar: number;
   inputVuelto: number;
-}
-
-/**
- * Valores iniciales del formulario
- */
-export const FacturaInitialValues: FacturaInputProps = {
-  actividadEconomica: {} as SinActividadesProps,
-  tipoCliente: 'N',
-  cliente: null,
-  codigoCliente: '',
-  codigoExcepcion: null,
-  codigoMetodoPago: 1,
-  codigoMoneda: 1,
-  descuentoAdicional: 0,
-  detalle: [] as FacturaDetalleInputProps[],
-  detalleExtra: '',
-  detalleExtraText: '',
-  emailCliente: null,
-  montoGiftCard: 0,
-  numeroTarjeta: null,
-  tipoCambio: 1,
-  montoSubTotal: 0,
-  montoPagar: 0,
-  total: 0,
-  inputMontoPagar: 0,
-  inputVuelto: 0,
-};
-
-export interface RepresentacionGraficaProps {
-  pdf: string;
-  rollo: string;
-  xml: string;
-  sin: string;
 }
 
 export interface DetalleNcdProps {

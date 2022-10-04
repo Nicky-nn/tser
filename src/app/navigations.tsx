@@ -1,5 +1,6 @@
 import { productosRouteMap } from './modules/productos/ProductosRoutesMap';
 import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap';
+import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap';
 
 export interface NavigationProps {
   name: string;
@@ -40,6 +41,17 @@ export const navigations: NavigationProps[] = [
         name: 'Gestión de Ventas',
         iconText: 'VEGE',
         path: '/ventas/gestion',
+      },
+    ],
+  },
+  {
+    name: 'Nota Crédito Debito',
+    icon: 'document_scanner',
+    children: [
+      {
+        name: 'Gestión de Notas',
+        iconText: 'NCD',
+        path: ncdRouteMap.gestion,
       },
     ],
   },

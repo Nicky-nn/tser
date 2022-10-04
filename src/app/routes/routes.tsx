@@ -10,6 +10,7 @@ import cuentaRoutes from '../modules/cuenta/CuentaRoutes';
 import productosRoutes from '../modules/productos/ProductosRoutes';
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes';
 import ventasRoutes from '../modules/ventas/VentasRoutes';
+import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes';
 
 export const appRoutes = [
   {
@@ -25,6 +26,7 @@ export const appRoutes = [
       ...clientesRoutes,
       ...cuentaRoutes,
       ...proveedorRoutes,
+      ...notaCreditoDebitoRoutes,
     ],
   },
   ...sessionRoutes,

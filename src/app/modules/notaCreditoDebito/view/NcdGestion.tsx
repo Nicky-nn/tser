@@ -1,6 +1,6 @@
 import {
+  DocumentScanner,
   FileOpen,
-  ImportExport,
   LayersClear,
   MenuOpen,
   PictureAsPdf,
@@ -21,7 +21,6 @@ import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer';
 import { SimpleItem } from '../../../base/components/Container/SimpleItem';
 import SimpleRowMenu from '../../../base/components/Container/SimpleRow';
-import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
 import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu';
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces';
@@ -31,33 +30,32 @@ import {
   muiTableApiEstado,
   muiTableHeadCellFilterTextFieldProps,
 } from '../../../utils/materialReactTableUtils';
-import { fetchFacturaListado } from '../api/factura.listado.api';
-import { FacturaProps } from '../interfaces/factura';
-import AnularDocumentoDialog from './NcdGestion/AnularDocumentoDialog';
-import VentaGestionExportarDialog from './NcdGestion/VentaGestionExportarDialog';
+import { apiNotasCreditoDebito } from '../api/ncd.api';
 import { NcdProps } from '../interfaces/ncdInterface';
+import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
+import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
+import { Link as RouterLink } from 'react-router-dom';
 
 const tableColumns: MRT_ColumnDef<NcdProps>[] = [
   {
-    header: 'Nro. Factura',
+    header: 'Nro. FCV',
     accessorKey: 'numeroFactura',
     size: 50,
   },
   {
-    accessorKey: 'fechaEmision',
-    header: 'Fecha Emisión',
-    id: 'fechaEmision',
-    enableColumnFilter: false,
+    accessorKey: 'fechaEmisionFactura',
+    header: 'Fecha FCV',
+    id: 'fechaEmisionFactura',
   },
   {
-    header: 'Importe',
-    accessorKey: 'montoTotal',
-    muiTableBodyCellProps: {
-      align: 'right',
-    },
-    Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue() as number, {})}</span>,
+    accessorKey: 'fechaEmision',
+    header: 'Fecha NCD',
+    id: 'fechaEmision',
+  },
+  {
+    header: 'Número NCD',
+    accessorKey: 'numeroNotaCreditoDebito',
     size: 50,
-    enableColumnFilter: false,
   },
   {
     header: 'Razon Social',
@@ -82,7 +80,22 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
     accessorKey: 'cuf',
     id: 'cuf',
     header: 'C.U.F.',
-    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'montoTotalOriginal',
+    header: 'Monto.Original',
+    Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue() as number, {})}</span>,
+    muiTableBodyCellProps: {
+      align: 'right',
+    },
+  },
+  {
+    accessorKey: 'montoTotalOriginal',
+    header: 'Monto.Devuelto',
+    Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue() as number, {})}</span>,
+    muiTableBodyCellProps: {
+      align: 'right',
+    },
   },
   {
     accessorKey: 'state',
@@ -109,7 +122,7 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
 
 const NcdGestion: FC<any> = () => {
   const [openAnularNcd, setOpenAnularNcd] = useState(false);
-  const [factura, setFactura] = useState<FacturaProps | null>(null);
+
   const [openExport, setOpenExport] = useState(false);
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0);
@@ -128,14 +141,8 @@ const NcdGestion: FC<any> = () => {
     isLoading,
     refetch,
     isRefetching,
-  } = useQuery<FacturaProps[]>(
-    [
-      'gestionFacturas',
-      columnFilters,
-      pagination.pageIndex,
-      pagination.pageSize,
-      sorting,
-    ],
+  } = useQuery<NcdProps[]>(
+    ['gestionNotas', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
     async () => {
       const query = genApiQuery(columnFilters);
       const fetchPagination: PageProps = {
@@ -145,8 +152,9 @@ const NcdGestion: FC<any> = () => {
         reverse: sorting.length <= 0,
         query,
       };
-      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination);
+      const { pageInfo, docs } = await apiNotasCreditoDebito(fetchPagination);
       setRowCount(pageInfo.totalDocs);
+      console.log(docs);
       return docs;
     },
   );
@@ -157,8 +165,8 @@ const NcdGestion: FC<any> = () => {
         <div className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              { name: 'Ventas', path: '/ventas/gestion' },
-              { name: 'Gestión de Ventas' },
+              { name: 'Notas de crédito debito', path: ncdRouteMap.gestion },
+              { name: 'Gestión de Notas' },
             ]}
           />
         </div>
@@ -167,11 +175,13 @@ const NcdGestion: FC<any> = () => {
           <SimpleItem>
             <Button
               size={'small'}
-              startIcon={<ImportExport />}
-              onClick={() => setOpenExport(true)}
-              variant={'outlined'}
+              startIcon={<DocumentScanner />}
+              variant={'contained'}
+              color={'success'}
+              component={RouterLink}
+              to={ncdRouteMap.nuevo}
             >
-              EXPORTAR
+              Nueva Nota de Crédito Debito
             </Button>
           </SimpleItem>
         </SimpleRowMenu>
@@ -181,7 +191,14 @@ const NcdGestion: FC<any> = () => {
             <MaterialReactTable
               columns={columns} //must be memoized
               data={gestionProductos ?? []} //must be memoized
-              initialState={{ showColumnFilters: true }}
+              initialState={{
+                showColumnFilters: true,
+                columnVisibility: {
+                  cuf: false,
+                  fechaEmisionFactura: false,
+                  fechaEmision: false,
+                },
+              }}
               manualFiltering
               manualPagination
               manualSorting
@@ -208,9 +225,6 @@ const NcdGestion: FC<any> = () => {
                 showProgressBars: isRefetching,
                 sorting,
                 density: 'compact',
-                columnVisibility: {
-                  cuf: false,
-                },
                 columnPinning: { right: ['actions'] },
                 rowSelection,
               }}
@@ -232,8 +246,6 @@ const NcdGestion: FC<any> = () => {
                     <StyledMenuItem
                       onClick={(e) => {
                         e.preventDefault();
-                        setOpenAnularDocumento(true);
-                        setFactura(row.original);
                       }}
                     >
                       <LayersClear /> Anular Documento
@@ -272,29 +284,7 @@ const NcdGestion: FC<any> = () => {
           </Grid>
         </Grid>
         <Box py="12px" />
-        <AnularDocumentoDialog
-          id={'anularDocumentoDialog'}
-          open={openAnularDocumento}
-          keepMounted
-          factura={factura}
-          onClose={async (val) => {
-            if (val) {
-              await refetch();
-            }
-            setFactura(null);
-            setOpenAnularDocumento(false);
-          }}
-        />
       </SimpleContainer>
-      <VentaGestionExportarDialog
-        id={'ventaGestionExportar'}
-        keepMounted={true}
-        open={openExport}
-        onClose={() => {
-          setOpenExport(false);
-          console.log('saliendo');
-        }}
-      />
     </>
   );
 };
