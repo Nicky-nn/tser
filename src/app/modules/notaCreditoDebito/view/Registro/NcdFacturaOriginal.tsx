@@ -37,15 +37,6 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
 
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const [{ numeroFactura, fechaEmision, razonSocial, cuf }, setFacturaOriginal] =
-    useState({
-      numeroFactura: '',
-      fechaEmision: '',
-      razonSocial: '',
-      cuf: '',
-    });
-
-  const [data, setData] = useState<DetalleFacturaProps[]>([]);
   const columns = useMemo<TableColumn<DetalleFacturaProps>[]>(
     //column definitions...
     () => [
@@ -84,7 +75,6 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
     ],
     [], //end
   );
-
   const handleRowSelected = useCallback((state: any) => {
     setSelectedRows(state.selectedRows);
     const detalle = state.selectedRows.map((d: DetalleFacturaProps) => ({
@@ -101,6 +91,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     setSelectedRows([]);
+    setValue('detalleFactura', []);
   }, []);
 
   return (
@@ -122,7 +113,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
             <FormTextField
               name="numeroFactura"
               label="Número Factura"
-              value={numeroFactura}
+              value={getValues('numeroFactura')}
               autoComplete="off"
             />
           </Grid>
@@ -130,14 +121,22 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
             <FormTextField
               name="fechaEmision"
               label="Fecha Emisión"
-              value={fechaEmision}
+              value={getValues('fechaEmision')}
             />
           </Grid>
           <Grid item lg={6} md={6} xs={12}>
-            <FormTextField name="razonSocial" label="Razon Social" value={razonSocial} />
+            <FormTextField
+              name="razonSocial"
+              label="Razon Social"
+              value={getValues('razonSocial')}
+            />
           </Grid>
           <Grid item lg={12} md={12} xs={12}>
-            <FormTextField name="cuf" label="Código Control (C.U.F.)" value={cuf} />
+            <FormTextField
+              name="cuf"
+              label="Código Control (C.U.F.)"
+              value={getValues('facturaCuf')}
+            />
           </Grid>
           <Grid item lg={12} md={12} xs={12} sx={{ pt: 10 }}>
             <Typography gutterBottom variant={'subtitle1'}>
@@ -145,7 +144,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
             </Typography>
             <DataTable
               columns={columns}
-              data={data}
+              data={getValues('detalle')}
               selectableRows
               onSelectedRowsChange={handleRowSelected}
               dense
@@ -161,18 +160,13 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
           onClose={(value?: FacturaProps) => {
             setOpenDialog(false);
             if (value) {
-              setFacturaOriginal({
-                numeroFactura: value.numeroFactura.toString(),
-                fechaEmision: value.fechaEmision,
-                razonSocial: value.cliente.razonSocial,
-                cuf: value.cuf,
-              });
+              setValue('numeroFactura', value.numeroFactura.toString());
+              setValue('fechaEmision', value.fechaEmision);
+              setValue('razonSocial', value.cliente.razonSocial);
               setValue('facturaCuf', value.cuf);
               setValue('detalleFactura', []);
-              setData(value.detalle);
+              setValue('detalle', value.detalle);
               setSelectedRows([]);
-              // setValue('tipoProducto', value);
-              // tpRefetch().then();
             }
           }}
         />

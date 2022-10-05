@@ -27,12 +27,12 @@ export interface NcdDetalleInputProps {
 }
 
 export interface NcdInputProps {
+  numeroFactura: string;
+  fechaEmision: string;
+  razonSocial: string;
   facturaCuf: string;
   detalleFactura: NcdDetalleInputProps[];
-  detalle: Array<{
-    itemFactura: number;
-    cantidad: number;
-  }>;
+  detalle: DetalleFacturaProps[];
 }
 
 export interface DetalleNcdProps {

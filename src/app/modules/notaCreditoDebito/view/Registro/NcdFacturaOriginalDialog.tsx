@@ -12,7 +12,7 @@ import { localization } from '../../../../utils/localization';
 import SimpleMenu, {
   StyledMenuItem,
 } from '../../../../base/components/MyMenu/SimpleMenu';
-import { CheckBox, FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material';
+import { FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material';
 import { genApiQuery, openInNewTab } from '../../../../utils/helper';
 import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils';
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
@@ -191,7 +191,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
             enableRowActions
             positionActionsColumn={'first'}
             renderRowActions={({ row }) => (
-              <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
+              <>
                 <SimpleMenu
                   menuButton={
                     <>
@@ -225,14 +225,15 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                     <FileOpen /> Url S.I.N.
                   </StyledMenuItem>
                 </SimpleMenu>
-                <IconButton
-                  color={'success'}
-                  title={'Iniciar Nota Crédito Debito'}
+                <Button
+                  size={'small'}
+                  variant={'contained'}
+                  color={'info'}
                   onClick={() => setNotaCreditoDebito(row.original)}
                 >
-                  <CheckBox />
-                </IconButton>
-              </div>
+                  Seleccionar
+                </Button>
+              </>
             )}
             muiTableHeadCellFilterTextFieldProps={{
               ...muiTableHeadCellFilterTextFieldProps,

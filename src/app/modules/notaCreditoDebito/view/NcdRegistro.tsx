@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Save } from '@mui/icons-material';
 import { Button, Grid, Paper, Stack } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer';
@@ -15,13 +14,12 @@ import { NcdInputProps } from '../interfaces/ncdInterface';
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
 import { ncdInputCompose } from '../services/ncdInputCompose';
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator';
-import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion';
-import NcdFacturaOriginal from './registro/NcdFacturaOriginal';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
 import { openInNewTab } from '../../../utils/helper';
-import { FacturaInitialValues } from '../../ventas/interfaces/factura';
+import NcdFacturaOriginal from './Registro/NcdFacturaOriginal';
+import NcdFacturaDevolucion from './Registro/NcdFacturaDevolucion';
 
 const NcdRegistro = () => {
   const { user } = useAuth();
@@ -29,8 +27,12 @@ const NcdRegistro = () => {
 
   const form = useForm<NcdInputProps>({
     defaultValues: {
+      numeroFactura: '',
+      fechaEmision: '',
+      razonSocial: '',
       facturaCuf: '',
       detalleFactura: [],
+      detalle: [],
     },
     resolver: yupResolver(ncdRegistroValidationSchema),
   });
@@ -59,6 +61,9 @@ const NcdRegistro = () => {
           ),
         });
         form.reset({
+          numeroFactura: '',
+          fechaEmision: '',
+          razonSocial: '',
           facturaCuf: '',
           detalleFactura: [],
         });

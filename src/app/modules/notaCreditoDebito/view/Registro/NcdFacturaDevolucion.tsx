@@ -47,9 +47,6 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
                     <th scope="col" style={{ width: 160 }}>
                       DESCUENTO
                     </th>
-                    <th scope="col" style={{ width: 150 }}>
-                      SUB TOTAL
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -82,9 +79,6 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
                           </td>
                           <td data-label="DESCUENTO" style={{ textAlign: 'right' }}>
                             {numberWithCommas(item.montoDescuento, {})}
-                          </td>
-                          <td data-label="SUB-TOTAL" style={{ textAlign: 'right' }}>
-                            {numberWithCommas(item.subTotal, {})}
                           </td>
                         </tr>
                       );
