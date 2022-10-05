@@ -148,7 +148,6 @@ export const fetchFacturaListado = async (
   const token = localStorage.getItem(AccessToken);
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`);
-  console.log(pageInfo)
 
   const data: any = await client.request(query, pageInfo);
   return data.facturaCompraVentaAll;

@@ -22,6 +22,9 @@ export const FCV_ONLINE = gql`
       numeroFactura
       representacionGrafica {
         pdf
+        rollo
+        xml
+        sin
       }
     }
   }

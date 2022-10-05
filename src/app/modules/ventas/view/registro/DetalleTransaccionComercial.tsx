@@ -17,6 +17,7 @@ import React, { FC, Fragment, useEffect, useState } from 'react';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import AsyncSelect from 'react-select/async';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 import AlertLoading from '../../../../base/components/Alert/AlertLoading';
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
@@ -35,7 +36,6 @@ import {
   montoSubTotal,
 } from '../../services/operacionesService';
 import AgregarArticuloDialog from './AgregarArticuloDialog';
-import Swal from 'sweetalert2';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;

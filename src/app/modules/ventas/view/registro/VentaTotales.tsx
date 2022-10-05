@@ -36,6 +36,8 @@ import {
 } from '../../services/operacionesService';
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura';
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog';
+import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
+import withReactContent from 'sweetalert2-react-content';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;
@@ -55,6 +57,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     },
   } = props;
   const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false);
+  const mySwal = withReactContent(Swal);
 
   const handleFocus = (event: any) => event.target.select();
   const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
@@ -76,10 +79,14 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
           const { value }: any = resp;
           reset({ ...FacturaInitialValues, actividadEconomica: data.actividadEconomica });
           openInNewTab(value.representacionGrafica.pdf);
-          Swal.fire({
+          mySwal.fire({
             title: `Documento generado correctamente`,
-            text: `${value.representacionGrafica.pdf}`,
-          }).then();
+            html: (
+              <RepresentacionGraficaUrls
+                representacionGrafica={value.representacionGrafica}
+              />
+            ),
+          });
         }
       });
     }

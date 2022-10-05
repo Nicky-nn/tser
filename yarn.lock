@@ -3038,10 +3038,10 @@ magic-string@^0.26.2:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-react-table@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-1.2.5.tgz#15639c6f8155125933ea897cd712d2cac42077b9"
-  integrity sha512-IARh5JU6qHwM/20KLnbbXtPrcglzeHDny5LIIYUFxnWfv/vwUPS4thkE/kiJedUfu7kgiP2QRXlbUCFSCTeRnw==
+material-react-table@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-1.2.6.tgz#cd0b9ad1e89061920172cfc4718ef4f9c230988b"
+  integrity sha512-eloqPhK8i81ff8RDT4km5tgRNNoh2vYjo+gRHkuO+CiyYWkbrvh1Au4y+N+gCbXfyvwfhkDPUyp5q/UAqwgtcg==
   dependencies:
     "@tanstack/match-sorter-utils" "8.1.1"
     "@tanstack/react-table" "8.5.13"
@@ -3954,10 +3954,10 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
 
-vite@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-3.1.0.tgz#3138b279072941d57e76bcf7f66f272fc6a17fe2"
-  integrity sha512-YBg3dUicDpDWFCGttmvMbVyS9ydjntwEjwXRj2KBFwSB8SxmGcudo1yb8FW5+M/G86aS8x828ujnzUVdsLjs9g==
+vite@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-3.1.4.tgz#b75824b819d8354a6f36e4b988943c7e4947e155"
+  integrity sha512-JoQI08aBjY9lycL7jcEq4p9o1xUjq5aRvdH4KWaXtkSx7e7RpAh9D3IjzDWRD4Fg44LS3oDAIOG/Kq1L+82psA==
   dependencies:
     esbuild "^0.15.6"
     postcss "^8.4.16"
