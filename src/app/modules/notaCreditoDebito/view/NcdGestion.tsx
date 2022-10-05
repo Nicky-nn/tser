@@ -90,7 +90,7 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
     },
   },
   {
-    accessorKey: 'montoTotalOriginal',
+    accessorKey: 'montoTotalDevuelto',
     header: 'Monto.Devuelto',
     Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue() as number, {})}</span>,
     muiTableBodyCellProps: {
@@ -154,7 +154,6 @@ const NcdGestion: FC<any> = () => {
       };
       const { pageInfo, docs } = await apiNotasCreditoDebito(fetchPagination);
       setRowCount(pageInfo.totalDocs);
-      console.log(docs);
       return docs;
     },
   );
