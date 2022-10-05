@@ -52,7 +52,7 @@ const validationSchema = object({
   shop: string().required('Url de la tienda es requerido'),
   email: string().email('Debe registrar un email válido').required('Email es requerido'),
   password: string()
-    .min(7, 'Password debe contener al menos 7 caracteres')
+    .min(6, 'Password debe contener al menos 6 caracteres')
     .required('Password es requerido'),
 });
 
