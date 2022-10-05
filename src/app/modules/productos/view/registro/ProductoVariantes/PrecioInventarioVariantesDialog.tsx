@@ -138,8 +138,8 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       placeholder={'0.00'}
                       value={data.precio}
                       onFocus={handleSelect}
-                      onChange={(precio: number) => {
-                        setData({ ...data, precio });
+                      onChange={(precio: number | null) => {
+                        setData({ ...data, precio: precio! });
                       }}
                       formatter={numberWithCommas}
                     />
@@ -154,8 +154,8 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       placeholder={'0.00'}
                       value={data.precioComparacion}
                       onFocus={handleSelect}
-                      onChange={(precioComparacion: number) => {
-                        setData({ ...data, precioComparacion });
+                      onChange={(precioComparacion: number | null) => {
+                        setData({ ...data, precioComparacion: precioComparacion! });
                       }}
                       formatter={numberWithCommas}
                     />
@@ -170,8 +170,8 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       placeholder={'0.00'}
                       value={data.costo}
                       onFocus={handleSelect}
-                      onChange={(costo: number) => {
-                        setData({ ...data, costo });
+                      onChange={(costo: number | null) => {
+                        setData({ ...data, costo: costo! });
                       }}
                       formatter={numberWithCommas}
                     />
@@ -291,11 +291,11 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                         0,
                                       )}
                                       onFocus={handleSelect}
-                                      onChange={(precioComparacion: number) => {
+                                      onChange={(precioComparacion: number | null) => {
                                         const newArray = [...data.inventario];
                                         newArray[index] = {
                                           sucursal: s,
-                                          stock: precioComparacion,
+                                          stock: precioComparacion!,
                                         };
                                         setData({
                                           ...data,

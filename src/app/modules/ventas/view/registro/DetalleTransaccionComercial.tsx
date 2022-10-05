@@ -241,7 +241,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 max={1000}
                                 value={item.cantidad}
                                 onFocus={handleFocus}
-                                onChange={(cantidad: number) => {
+                                onChange={(cantidad: number | null) => {
                                   if (cantidad) {
                                     if (cantidad >= 0) {
                                       update(index, {
@@ -259,7 +259,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 min={0}
                                 value={item.precioUnitario}
                                 onFocus={handleFocus}
-                                onChange={(precio: number) => {
+                                onChange={(precio: number | null) => {
                                   if (precio) {
                                     if (precio >= 0 && precio >= item.montoDescuento) {
                                       update(index, { ...item, precioUnitario: precio });
@@ -279,10 +279,13 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 max={item.precioUnitario - 0.1}
                                 value={item.montoDescuento || 0}
                                 onFocus={handleFocus}
-                                onChange={(montoDescuento: number) => {
-                                  if (montoDescuento >= 0) {
-                                    if (montoDescuento <= item.precioUnitario) {
-                                      update(index, { ...item, montoDescuento });
+                                onChange={(montoDescuento: number | null) => {
+                                  if (montoDescuento! >= 0) {
+                                    if (montoDescuento! <= item.precioUnitario) {
+                                      update(index, {
+                                        ...item,
+                                        montoDescuento: montoDescuento!,
+                                      });
                                     } else {
                                       toast.warn(
                                         'El descuento no puede ser mayor al precio',

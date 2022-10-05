@@ -51,7 +51,7 @@ export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
           min={0}
           value={value}
           onFocus={(e) => e.target.select()}
-          onChange={(val: number) => setValue(val)}
+          onChange={(val: number | null) => setValue(val!)}
           formatter={numberWithCommas}
         />
       </DialogContent>

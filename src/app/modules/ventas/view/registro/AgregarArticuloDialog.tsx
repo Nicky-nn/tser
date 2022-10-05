@@ -235,7 +235,9 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                   min={0}
                   value={inputForm.precio}
                   onFocus={handleFocus}
-                  onChange={(precio: number) => setInputForm({ ...inputForm, precio })}
+                  onChange={(precio: number | null) =>
+                    setInputForm({ ...inputForm, precio: precio! })
+                  }
                   formatter={numberWithCommas}
                   style={{ width: '100%' }}
                 />

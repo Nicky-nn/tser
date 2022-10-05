@@ -246,18 +246,20 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                 0,
                               )}
                               onFocus={handleSelect}
-                              onChange={(stock: number) => {
-                                setValue(
-                                  'variante.inventario',
-                                  varianteWatch.inventario.map((item) => {
-                                    return item.sucursal.codigo === s.codigo
-                                      ? {
-                                          ...item,
-                                          stock,
-                                        }
-                                      : item;
-                                  }),
-                                );
+                              onChange={(stock: number | null) => {
+                                if (stock) {
+                                  setValue(
+                                    'variante.inventario',
+                                    varianteWatch.inventario.map((item) => {
+                                      return item.sucursal.codigo === s.codigo
+                                        ? {
+                                            ...item,
+                                            stock,
+                                          }
+                                        : item;
+                                    }),
+                                  );
+                                }
                               }}
                               onBlur={(eventStock) => {
                                 if (variantesWatch.length > 0) {

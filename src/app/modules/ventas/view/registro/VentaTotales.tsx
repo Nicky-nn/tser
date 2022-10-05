@@ -201,7 +201,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     className="inputMontoPagar"
                     value={field.value}
                     onFocus={handleFocus}
-                    onChange={(value: number) => {
+                    onChange={(value: number | null) => {
                       field.onChange(value);
                     }}
                     formatter={numberWithCommas}

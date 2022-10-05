@@ -2,7 +2,7 @@ import { FormControl, FormHelperText, Grid } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import InputNumber from 'rc-input-number';
 import React, { FunctionComponent } from 'react';
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import Select, { SingleValue } from 'react-select';
 
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
@@ -94,7 +94,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   name={'variante.precio'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(precio: number) => {
+                  onChange={(precio: number | null) => {
                     field.onChange(precio);
                   }}
                   onBlur={(e) => {
@@ -128,7 +128,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   placeholder={'0.00'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(precioComparacion: number) => {
+                  onChange={(precioComparacion: number | null) => {
                     field.onChange(precioComparacion);
                   }}
                   onBlur={(e) => {
@@ -162,7 +162,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   placeholder={'0.00'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(costo: number) => {
+                  onChange={(costo: number | null) => {
                     field.onChange(costo);
                   }}
                   onBlur={(e) => {
