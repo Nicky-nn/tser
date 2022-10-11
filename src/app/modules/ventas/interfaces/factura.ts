@@ -15,6 +15,7 @@ import {
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface';
 import { SucursalProps } from '../../sucursal/interfaces/sucursal';
+import { MonedaProps } from '../../base/moneda/interfaces/moneda';
 
 export interface FacturaDetalleInputProps extends ProductoVarianteProps {
   verificarStock: boolean;
@@ -45,12 +46,13 @@ export interface FacturaInputProps {
   emailCliente?: string | null;
   montoGiftCard?: number | null;
   numeroTarjeta?: string | null;
-  tipoCambio: number | null;
+  tipoCambio: number;
   montoPagar: number;
   montoSubTotal: number;
   total: number;
   inputMontoPagar: number;
   inputVuelto: number;
+  moneda?: MonedaProps;
 }
 
 /**

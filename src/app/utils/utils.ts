@@ -1,4 +1,5 @@
 import { differenceInSeconds } from 'date-fns';
+import { round } from 'lodash';
 
 export const convertHexToRGB = (hex: string) => {
   // check if it's a rgba
@@ -176,4 +177,19 @@ export const flat = (array: any) => {
     }
   });
   return result;
+};
+
+/**
+ * Redondeamos un valor numerico a n decimales
+ * @param val
+ * @param places
+ */
+export const genRound = (val: any, places = 2) => {
+  try {
+    if (val === undefined) return 0;
+    if (val === null) return 0;
+    return round(round(val, 5), places);
+  } catch (e: any) {
+    throw new Error(e.message);
+  }
 };

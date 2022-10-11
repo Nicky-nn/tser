@@ -5,6 +5,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import { PuntoVentaProps } from '../../modules/puntoVenta/interfaces/puntoVenta';
 import { SinActividadesProps } from '../../modules/sin/interfaces/sin.interface';
 import { SucursalProps } from '../../modules/sucursal/interfaces/sucursal';
+import { MonedaParamsProps } from '../interfaces/base';
 
 export interface PerfilProps {
   nombres: string;
@@ -21,6 +22,8 @@ export interface PerfilProps {
   sucursal: SucursalProps;
   puntoVenta: PuntoVentaProps;
   actividadEconomica: SinActividadesProps;
+  moneda: MonedaParamsProps;
+  monedaTienda: MonedaParamsProps;
 }
 
 export interface UserProps {
@@ -71,6 +74,16 @@ const mutation = gql`
           codigoCaeb
           descripcion
           tipoActividad
+        }
+        moneda {
+          codigo
+          descripcion
+          sigla
+        }
+        monedaTienda {
+          codigo
+          descripcion
+          sigla
         }
       }
     }

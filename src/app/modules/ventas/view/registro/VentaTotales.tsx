@@ -7,7 +7,6 @@ import {
   FormControl,
   FormHelperText,
   Grid,
-  InputLabel,
   Link,
   List,
   ListItem,
@@ -38,6 +37,14 @@ import { composeFactura, composeFacturaValidator } from '../../utils/composeFact
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog';
 import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
 import withReactContent from 'sweetalert2-react-content';
+import useAuth from '../../../../base/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import { MonedaProps } from '../../../base/moneda/interfaces/moneda';
+import { apiMonedas } from '../../../base/moneda/api/monedaListado.api';
+import AlertLoading from '../../../../base/components/Alert/AlertLoading';
+import Select from 'react-select';
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
+import { genRound } from '../../../../utils/utils';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;
@@ -46,6 +53,9 @@ interface OwnProps {
 type Props = OwnProps;
 
 const VentaTotales: FunctionComponent<Props> = (props) => {
+  const {
+    user: { moneda, monedaTienda },
+  } = useAuth();
   const {
     form: {
       control,
@@ -58,6 +68,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   } = props;
   const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false);
   const mySwal = withReactContent(Swal);
+  const inputMoneda = getValues('moneda');
+  const tipoCambio = getValues('tipoCambio');
 
   const handleFocus = (event: any) => event.target.select();
   const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
@@ -92,6 +104,35 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     }
   };
 
+  const {
+    data: monedas,
+    isLoading: monedaLoading,
+    isError: monedasIsError,
+    error: monedasError,
+  } = useQuery<MonedaProps[], Error>(['apiMonedas'], async () => {
+    const resp = await apiMonedas();
+    if (resp.length > 0) {
+      // monedaUsuario
+      const sessionMoneda = resp.find((i) => i.codigo === moneda.codigo);
+      // montoTienda
+      const mt = resp.find((i) => i.codigo === monedaTienda.codigo);
+      if (sessionMoneda && mt) {
+        setValue('moneda', sessionMoneda);
+        setValue('tipoCambio', mt.tipoCambio);
+      }
+      return resp;
+    }
+    return [];
+  });
+
+  const calculoMoneda = (monto: number): number => {
+    try {
+      return genRound((monto * tipoCambio) / genRound(inputMoneda!.tipoCambio));
+    } catch (e) {
+      return monto;
+    }
+  };
+
   useEffect(() => {
     const totales = genCalculoTotalesService(getValues());
     setValue('montoSubTotal', totales.subTotal);
@@ -103,12 +144,57 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   return (
     <>
       <SimpleCard title="Cálculo de los totales" childIcon={<MonetizationOn />}>
-        <List dense>
+        {monedaLoading ? (
+          <AlertLoading />
+        ) : (
+          <Controller
+            name="moneda"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={Boolean(errors.moneda)}>
+                <MyInputLabel shrink>Moneda de venta</MyInputLabel>
+                <Select<MonedaProps>
+                  {...field}
+                  styles={{
+                    ...reactSelectStyles,
+                    control: (styles) => ({
+                      ...styles,
+                      fontWeight: 'bold',
+                      fontSize: '1.2em',
+                    }),
+                  }}
+                  name="moneda"
+                  placeholder={'Seleccione la moneda de venta'}
+                  value={field.value}
+                  onChange={async (val: any) => {
+                    field.onChange(val);
+                  }}
+                  onBlur={async (val) => {
+                    field.onBlur();
+                  }}
+                  isSearchable={false}
+                  options={monedas}
+                  getOptionValue={(item) => item.codigo.toString()}
+                  getOptionLabel={(item) =>
+                    `${item.descripcion} (${item.sigla}) - ${item.tipoCambio}`
+                  }
+                />
+                {errors.moneda && (
+                  <FormHelperText>{errors.moneda?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
+        )}
+
+        <List dense sx={{ mt: 2 }}>
+          <Divider />
           <ListItem
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(getValues('montoSubTotal'), {})}
+                {numberWithCommas(calculoMoneda(getValues('montoSubTotal') || 0), {})}
+                <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
           >
@@ -125,7 +211,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   variant="subtitle1"
                   underline="hover"
                 >
-                  {numberWithCommas(getValues('descuentoAdicional') || 0, {})}
+                  {numberWithCommas(
+                    calculoMoneda(getValues('descuentoAdicional')) || 0,
+                    {},
+                  )}
+                  <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
                 <DescuentoAdicionalDialog
                   id="ringtone-menu"
@@ -150,7 +240,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             secondaryAction={
               <>
                 <Link href="#" variant="subtitle1" underline="hover">
-                  {numberWithCommas(getValues('montoGiftCard') || 0, {})}
+                  {numberWithCommas(calculoMoneda(getValues('montoGiftCard') || 0), {})}
+                  <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
               </>
             }
@@ -162,7 +253,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(getValues('total') || 0, {})}
+                {numberWithCommas(calculoMoneda(getValues('total') || 0), {})}
+                <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
           >
@@ -177,7 +269,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="h6" gutterBottom>
-                {numberWithCommas(getValues('montoPagar') || 0, {})}
+                {numberWithCommas(calculoMoneda(getValues('montoPagar') || 0), {})}
+                <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
           >
@@ -214,7 +307,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
           <Grid item xs={12} md={5} lg={5}>
             <small>Vuelto / Saldo</small>
             <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-              {numberWithCommas(getValues('inputVuelto') || 0, {})}
+              {numberWithCommas(calculoMoneda(getValues('inputVuelto') || 0), {})}
             </Typography>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>

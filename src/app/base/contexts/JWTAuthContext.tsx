@@ -156,7 +156,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           });
         }
       } catch (err) {
-        console.error(err);
         dispatch({
           type: 'INIT',
           payload: {

@@ -1,8 +1,17 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Typography,
+} from '@mui/material';
 import InputNumber from 'rc-input-number';
 import { useEffect, useRef, useState } from 'react';
 
 import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput';
+import useAuth from '../../../../../base/hooks/useAuth';
 
 export interface SimpleDialogProps {
   id: string;
@@ -13,6 +22,9 @@ export interface SimpleDialogProps {
 }
 
 export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
+  const {
+    user: { monedaTienda },
+  } = useAuth();
   const { onClose, keepMounted, value: valueProp, open, ...other } = props;
   const [value, setValue] = useState(valueProp);
   const inputRef = useRef<HTMLElement>(null);
@@ -45,15 +57,22 @@ export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
       open={open}
       {...other}
     >
-      <DialogTitle>Ingrese Descuento Adicional</DialogTitle>
+      <DialogTitle>Ingrese Descuento Adicional ({monedaTienda.descripcion})</DialogTitle>
       <DialogContent dividers>
-        <InputNumber
-          min={0}
-          value={value}
-          onFocus={(e) => e.target.select()}
-          onChange={(val: number | null) => setValue(val!)}
-          formatter={numberWithCommas}
-        />
+        <Grid container>
+          <Grid item lg={12}>
+            <InputNumber
+              min={0}
+              value={value}
+              onFocus={(e) => e.target.select()}
+              onChange={(val: number | null) => setValue(val!)}
+              formatter={numberWithCommas}
+            />
+            <Typography variant={'subtitle1'} sx={{ ml: 1 }} component={'small'}>
+              {monedaTienda.sigla || ''}
+            </Typography>
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>

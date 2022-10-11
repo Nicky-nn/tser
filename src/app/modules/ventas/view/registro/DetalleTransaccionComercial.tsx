@@ -121,7 +121,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       <>
         <SimpleCard title="Productos">
           <Grid container spacing={1}>
-            <Grid item xs={12} lg={8} sm={12}>
+            <Grid item xs={12} lg={7} md={7} sm={12}>
               <FormControl fullWidth>
                 <MyInputLabel shrink>Busqueda de Productos</MyInputLabel>
                 <AsyncSelect<ProductoVarianteProps>
@@ -145,7 +145,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={5} lg={5}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 <Button variant="outlined" onClick={() => setOpenExplorarProducto(true)}>
                   Explorar Productos

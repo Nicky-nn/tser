@@ -45,6 +45,16 @@ const query = gql`
         descripcion
         tipoActividad
       }
+      moneda {
+        codigo
+        descripcion
+        sigla
+      }
+      monedaTienda {
+        codigo
+        descripcion
+        sigla
+      }
     }
   }
 `;
