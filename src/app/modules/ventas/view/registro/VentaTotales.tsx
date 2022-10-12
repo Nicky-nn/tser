@@ -13,20 +13,30 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import InputNumber from 'rc-input-number';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import Select from 'react-select';
 import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
+import AlertLoading from '../../../../base/components/Alert/AlertLoading';
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
+import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { openInNewTab } from '../../../../utils/helper';
+import useAuth from '../../../../base/hooks/useAuth';
+import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper';
 import {
   swalAsyncConfirmDialog,
   swalErrorMsg,
   swalException,
 } from '../../../../utils/swal';
+import { genRound } from '../../../../utils/utils';
+import { apiMonedas } from '../../../base/moneda/api/monedaListado.api';
+import { MonedaProps } from '../../../base/moneda/interfaces/moneda';
 import { fetchFacturaCreate } from '../../api/facturaCreate.api';
 import { FacturaInitialValues, FacturaInputProps } from '../../interfaces/factura';
 import {
@@ -35,16 +45,6 @@ import {
 } from '../../services/operacionesService';
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura';
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog';
-import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
-import withReactContent from 'sweetalert2-react-content';
-import useAuth from '../../../../base/hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
-import { MonedaProps } from '../../../base/moneda/interfaces/moneda';
-import { apiMonedas } from '../../../base/moneda/api/monedaListado.api';
-import AlertLoading from '../../../../base/components/Alert/AlertLoading';
-import Select from 'react-select';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import { genRound } from '../../../../utils/utils';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;
@@ -113,7 +113,9 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     const resp = await apiMonedas();
     if (resp.length > 0) {
       // monedaUsuario
-      const sessionMoneda = resp.find((i) => i.codigo === moneda.codigo);
+      const sessionMoneda = resp.find(
+        (i) => i.codigo === genReplaceEmpty(inputMoneda?.codigo, moneda.codigo),
+      );
       // montoTienda
       const mt = resp.find((i) => i.codigo === monedaTienda.codigo);
       if (sessionMoneda && mt) {
@@ -176,7 +178,10 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   options={monedas}
                   getOptionValue={(item) => item.codigo.toString()}
                   getOptionLabel={(item) =>
-                    `${item.descripcion} (${item.sigla}) - ${item.tipoCambio}`
+                    `${item.descripcion} (${item.sigla}) - ${numberWithCommas(
+                      item.tipoCambio,
+                      {},
+                    )}`
                   }
                 />
                 {errors.moneda && (

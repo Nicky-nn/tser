@@ -56,6 +56,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     },
   } = props;
   const { user } = useAuth();
+  const monedaTienda = user.monedaTienda;
 
   const { fields, append, prepend, remove, insert, update } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
@@ -168,13 +169,13 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                         Cantidad
                       </th>
                       <th scope="col" style={{ width: 160 }}>
-                        Precio
+                        Precio ({monedaTienda.sigla})
                       </th>
                       <th scope="col" style={{ width: 160 }}>
-                        Descuento
+                        Descuento ({monedaTienda.sigla})
                       </th>
                       <th scope="col" style={{ width: 150 }}>
-                        SUB-Total
+                        SUB Total ({monedaTienda.sigla})
                       </th>
                       <th scope="col" style={{ width: 100 }}>
                         Opciones
@@ -254,7 +255,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 formatter={numberWithCommas}
                               />
                             </td>
-                            <td data-label="PRECIO">
+                            <td data-label={`PRECIO (${monedaTienda.sigla})`}>
                               <InputNumber
                                 min={0}
                                 value={item.precioUnitario}
@@ -273,7 +274,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 formatter={numberWithCommas}
                               />
                             </td>
-                            <td data-label="DESCUENTO">
+                            <td data-label={`DESCUENTO (${monedaTienda.sigla})`}>
                               <InputNumber
                                 min={0}
                                 max={item.precioUnitario - 0.1}
@@ -297,7 +298,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                               />
                             </td>
                             <td
-                              data-label="SUB-TOTAL"
+                              data-label={`SUB-TOTAL (${monedaTienda.sigla || ''})`}
                               style={{ textAlign: 'right', backgroundColor: '#fafafa' }}
                             >
                               <Typography

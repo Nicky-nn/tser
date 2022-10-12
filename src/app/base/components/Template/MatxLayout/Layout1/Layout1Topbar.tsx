@@ -1,12 +1,5 @@
 import { MailOutline, Menu, PowerSettingsNew, Settings } from '@mui/icons-material';
-import {
-  Avatar,
-  Hidden,
-  IconButton,
-  MenuItem,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Avatar, Hidden, IconButton, MenuItem, useMediaQuery } from '@mui/material';
 import { Box, styled, useTheme } from '@mui/system';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
@@ -129,9 +122,6 @@ const Layout1Topbar: FC<any> = () => {
             </StyledIconButton>
           </IconBox>
         </Box>
-        <Typography color={'error'} style={{ fontWeight: 'bold', fontSize: '1.1em' }}>
-          AVIANCA ECUADOR
-        </Typography>
         <Box display="flex" alignItems="center">
           <NotificationProvider>
             <NotificationBar />

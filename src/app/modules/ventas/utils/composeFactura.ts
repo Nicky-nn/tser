@@ -2,23 +2,35 @@ import { array, number, object, setLocale, string } from 'yup';
 import { es } from 'yup-locales';
 
 import { FacturaInputProps } from '../interfaces/factura';
+import { genRound } from '../../../utils/utils';
+
+const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
+  try {
+    return genRound(monto * tipoCambioBs);
+  } catch (e) {
+    return monto;
+  }
+};
 
 export const composeFactura = (fcv: FacturaInputProps): any => {
+  console.log(fcv);
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
     actividadEconomica: fcv.actividadEconomica.codigoCaeb,
     codigoMetodoPago: parseInt(fcv.codigoMetodoPago.toString()),
-    descuentoAdicional: fcv.descuentoAdicional,
+    descuentoAdicional: calculoMonedaBs(fcv.descuentoAdicional, fcv.tipoCambio),
     detalleExtra: fcv.detalleExtra,
     emailCliente: fcv.emailCliente,
+    codigoMoneda: fcv.moneda!.codigo,
+    tipoCambio: fcv.moneda!.tipoCambio,
     detalle: fcv.detalle.map((item) => ({
       codigoProductoSin: item.codigoProductoSin,
       codigoProducto: item.codigoProducto,
       descripcion: [item.nombre, item.detalleExtra || ''].join(' '),
       cantidad: item.cantidad,
       unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
-      precioUnitario: item.precioUnitario,
-      montoDescuento: item.montoDescuento,
+      precioUnitario: calculoMonedaBs(item.precioUnitario, fcv.tipoCambio),
+      montoDescuento: calculoMonedaBs(item.montoDescuento, fcv.tipoCambio),
     })),
   };
   if (fcv.numeroTarjeta) {
