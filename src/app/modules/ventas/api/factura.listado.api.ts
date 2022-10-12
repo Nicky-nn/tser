@@ -93,6 +93,7 @@ const query = gql`
         montoGiftCard
         montoTotalLiteral
         montoTotalSujetoIva
+        montoTotalMoneda
         moneda {
           codigoClasificador
           descripcion
