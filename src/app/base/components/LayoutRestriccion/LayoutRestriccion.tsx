@@ -1,5 +1,6 @@
-import { RepeatOne } from '@mui/icons-material';
+import { Computer, Face, Home, RepeatOne } from '@mui/icons-material';
 import {
+  Chip,
   IconButton,
   Paper,
   Table,
@@ -9,6 +10,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/system';
 import React, { FC, useState } from 'react';
@@ -69,13 +71,42 @@ const LayoutRestriccion: FC<any> = () => {
               <TableBody>
                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell>
-                    Sucursal <strong>{user.sucursal.codigo}</strong> &nbsp;&nbsp;{' '}
-                    {user.sucursal.direccion}
+                    <Typography
+                      variant={'body1'}
+                      color={'red'}
+                      style={{ fontWeight: 500 }}
+                    >
+                      {user.razonSocial}
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell>
+                    <Tooltip title={user.sucursal.direccion}>
+                      <Chip
+                        icon={<Home />}
+                        label={
+                          <>
+                            Sucursal <strong>{user.sucursal.codigo}</strong>
+                          </>
+                        }
+                        variant="outlined"
+                      />
+                    </Tooltip>
                   </TableCell>
                   <TableCell align="left">
-                    Punto Venta <strong>{user.puntoVenta.codigo}</strong> &nbsp;&nbsp;{' '}
-                    {user.puntoVenta.nombre}
+                    <Tooltip title={user.puntoVenta.nombre}>
+                      <Chip
+                        icon={<Computer />}
+                        label={
+                          <>
+                            Punto Venta <strong>{user.puntoVenta.codigo}</strong>
+                          </>
+                        }
+                        variant="outlined"
+                      />
+                    </Tooltip>
                   </TableCell>
+
                   <TableCell align="left" sx={{ width: 50 }}>
                     <Tooltip title={'Cambiar Sucursal / PuntoVenta'} leaveDelay={50}>
                       <StyledIconButton

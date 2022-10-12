@@ -24,6 +24,7 @@ export interface PerfilProps {
   actividadEconomica: SinActividadesProps;
   moneda: MonedaParamsProps;
   monedaTienda: MonedaParamsProps;
+  razonSocial: string;
 }
 
 export interface UserProps {
@@ -38,6 +39,7 @@ const mutation = gql`
       token
       refreshToken
       perfil {
+        razonSocial
         nombres
         apellidos
         avatar

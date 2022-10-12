@@ -8,6 +8,7 @@ import { AccessToken } from './paramsModel';
 const query = gql`
   {
     perfil {
+      razonSocial
       nombres
       apellidos
       avatar

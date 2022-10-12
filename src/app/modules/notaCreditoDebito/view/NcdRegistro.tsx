@@ -3,10 +3,14 @@ import { Save } from '@mui/icons-material';
 import { Button, Grid, Paper, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer';
+import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
 import useAuth from '../../../base/hooks/useAuth';
+import { openInNewTab } from '../../../utils/helper';
 import { notSuccess } from '../../../utils/notification';
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
 import { apiNcdRegistro } from '../api/ncdRegistroApi';
@@ -14,12 +18,8 @@ import { NcdInputProps } from '../interfaces/ncdInterface';
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
 import { ncdInputCompose } from '../services/ncdInputCompose';
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
-import { openInNewTab } from '../../../utils/helper';
-import NcdFacturaOriginal from './Registro/NcdFacturaOriginal';
-import NcdFacturaDevolucion from './Registro/NcdFacturaDevolucion';
+import NcdFacturaOriginal from './registro/NcdFacturaOriginal';
+import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion';
 
 const NcdRegistro = () => {
   const { user } = useAuth();

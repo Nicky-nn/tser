@@ -1,3 +1,4 @@
+import { FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -6,26 +7,26 @@ import {
   DialogTitle,
   IconButton,
 } from '@mui/material';
-import React, { FunctionComponent, useMemo, useState } from 'react';
-import { FacturaProps } from '../../../ventas/interfaces/factura';
-import { localization } from '../../../../utils/localization';
-import SimpleMenu, {
-  StyledMenuItem,
-} from '../../../../base/components/MyMenu/SimpleMenu';
-import { FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material';
-import { genApiQuery, openInNewTab } from '../../../../utils/helper';
-import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
+import { useQuery } from '@tanstack/react-query';
 import {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table';
-import { useQuery } from '@tanstack/react-query';
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
+import React, { FunctionComponent, useMemo, useState } from 'react';
+
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
+import SimpleMenu, {
+  StyledMenuItem,
+} from '../../../../base/components/MyMenu/SimpleMenu';
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
+import { genApiQuery, openInNewTab } from '../../../../utils/helper';
+import { localization } from '../../../../utils/localization';
+import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils';
 import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api';
+import { FacturaProps } from '../../../ventas/interfaces/factura';
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
