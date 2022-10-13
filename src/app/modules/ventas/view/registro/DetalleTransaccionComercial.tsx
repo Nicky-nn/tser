@@ -69,21 +69,24 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
 
   const handleChange = async (newInput: ProductoVarianteProps) => {
     if (newInput) {
-      // Verificamos si ya existe el producto
-      const producto = fields.find((d) => d.codigoProducto === newInput.codigoProducto);
+      // Verificamos si ya existe el producto (no se verifica)
+      // const producto = fields.find((d) => d.codigoProducto === newInput.codigoProducto);
+      prepend({
+        ...newInput,
+        codigoProductoSin: newInput.sinProductoServicio.codigoProducto,
+        cantidad: 1,
+        precioUnitario: newInput.precio,
+        montoDescuento: 0,
+        detalleExtra: newInput.detalleExtra,
+        subtotal: 0,
+      } as FacturaDetalleInputProps);
+      /*
       if (!producto) {
-        prepend({
-          ...newInput,
-          codigoProductoSin: newInput.sinProductoServicio.codigoProducto,
-          cantidad: 1,
-          precioUnitario: newInput.precio,
-          montoDescuento: 0,
-          detalleExtra: newInput.detalleExtra,
-          subtotal: 0,
-        } as FacturaDetalleInputProps);
+
       } else {
         notDanger('El producto ya se adicionó');
       }
+       */
     }
   };
 

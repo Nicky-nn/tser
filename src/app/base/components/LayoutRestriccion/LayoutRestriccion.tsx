@@ -1,4 +1,11 @@
-import { Computer, Face, Home, RepeatOne } from '@mui/icons-material';
+import {
+  Computer,
+  Home,
+  MonetizationOn,
+  Money,
+  MoneySharp,
+  RepeatOne,
+} from '@mui/icons-material';
 import {
   Chip,
   IconButton,
@@ -100,6 +107,20 @@ const LayoutRestriccion: FC<any> = () => {
                         label={
                           <>
                             Punto Venta <strong>{user.puntoVenta.codigo}</strong>
+                          </>
+                        }
+                        variant="outlined"
+                      />
+                    </Tooltip>
+                  </TableCell>
+
+                  <TableCell align="left">
+                    <Tooltip title={'Moneda general'}>
+                      <Chip
+                        icon={<MonetizationOn />}
+                        label={
+                          <>
+                            Moneda <strong>{user.monedaTienda.sigla}</strong>
                           </>
                         }
                         variant="outlined"
