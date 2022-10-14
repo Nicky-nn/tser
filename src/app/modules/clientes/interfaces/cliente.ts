@@ -26,6 +26,18 @@ export interface ClienteInputProps {
   apellidos: string;
 }
 
+export interface Cliente99001InputProps {
+  codigoCliente: string;
+  razonSocial: string;
+  email: string;
+}
+
+export const CLIENTE_99001_DEFAULT_INPUT: Cliente99001InputProps = {
+  codigoCliente: '',
+  razonSocial: '',
+  email: '',
+};
+
 export const CLIENTE_DEFAULT_INPUT: ClienteInputProps = {
   codigoTipoDocumentoIdentidad: 1,
   razonSocial: '',

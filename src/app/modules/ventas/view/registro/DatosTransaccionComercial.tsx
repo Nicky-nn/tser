@@ -24,6 +24,7 @@ import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarD
 import { ClienteProps } from '../../../clientes/interfaces/cliente';
 import ClienteRegistroDialog from '../../../clientes/view/ClienteRegistroDialog';
 import { FacturaInputProps } from '../../interfaces/factura';
+import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog';
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>;
@@ -44,6 +45,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
   } = props;
   const [openNuevoCliente, setNuevoCliente] = useState(false);
   const [openExplorarCliente, setExplorarCliente] = useState(false);
+  const [openCliente99001, setCliente99001] = useState(false);
   const watchAllFields = watch();
 
   const fetchClientes = async (inputValue: string): Promise<any[]> => {
@@ -113,7 +115,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           </Button>
         </Grid>
 
-        <Grid item lg={8} xs={12} md={12}>
+        <Grid item lg={5} xs={12} md={8}>
           <Controller
             control={control}
             name={'emailCliente'}
@@ -135,7 +137,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           />
         </Grid>
 
-        <Grid item lg={4} xs={12} md={3}>
+        <Grid item lg={3} xs={12} md={3}>
           <Button
             variant="outlined"
             fullWidth
@@ -143,6 +145,16 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             startIcon={<PersonAddAlt1Outlined />}
           >
             Nuevo Cliente
+          </Button>
+        </Grid>
+        <Grid item lg={4} xs={12} md={3}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => setCliente99001(true)}
+            startIcon={<PersonAddAlt1Outlined />}
+          >
+            Nuevo Cliente 99001
           </Button>
         </Grid>
         <Grid item lg={12}>
@@ -198,6 +210,23 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
               setExplorarCliente(false);
             } else {
               setExplorarCliente(false);
+            }
+          }}
+        />
+      </>
+      <>
+        <Cliente99001RegistroDialog
+          id={'explorarClienteDialog99001'}
+          keepMounted={false}
+          open={openCliente99001}
+          onClose={async (value?: ClienteProps) => {
+            if (value) {
+              setValue('cliente', value);
+              setValue('emailCliente', value.email);
+              await fetchClientes(value.codigoCliente);
+              setCliente99001(false);
+            } else {
+              setCliente99001(false);
             }
           }}
         />

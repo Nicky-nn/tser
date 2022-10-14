@@ -32,10 +32,12 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
   } = props;
   return (
     <>
-      <Accordion>
+      <Accordion sx={{ backgroundColor: '#EFEFEF' }}>
         <Tooltip title={'Click para Abrir / Cerrar'} placement={'top'} arrow>
           <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1a-content">
-            <Typography variant={'subtitle2'}>DETALLE EXTRA</Typography>
+            <Typography variant={'subtitle2'}>
+              DETALLE EXTRA (Click para expandir)
+            </Typography>
           </AccordionSummary>
         </Tooltip>
         <AccordionDetails>
