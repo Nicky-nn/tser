@@ -35,6 +35,7 @@ import { fetchFacturaListado } from '../api/factura.listado.api';
 import { FacturaProps } from '../interfaces/factura';
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog';
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog';
+import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog';
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -127,6 +128,7 @@ const VentaGestion: FC<any> = () => {
   const [openAnularDocumento, setOpenAnularDocumento] = useState(false);
   const [factura, setFactura] = useState<FacturaProps | null>(null);
   const [openExport, setOpenExport] = useState(false);
+  const [openExportDetalle, setOpenExportDetalle] = useState(false);
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -188,6 +190,17 @@ const VentaGestion: FC<any> = () => {
               variant={'outlined'}
             >
               EXPORTAR
+            </Button>
+          </SimpleItem>
+
+          <SimpleItem>
+            <Button
+              size={'small'}
+              startIcon={<ImportExport />}
+              onClick={() => setOpenExportDetalle(true)}
+              variant={'outlined'}
+            >
+              EXPORTAR DETALLES
             </Button>
           </SimpleItem>
         </SimpleRowMenu>
@@ -302,6 +315,7 @@ const VentaGestion: FC<any> = () => {
           }}
         />
       </SimpleContainer>
+
       <VentaGestionExportarDialog
         id={'ventaGestionExportar'}
         keepMounted={true}
@@ -309,6 +323,16 @@ const VentaGestion: FC<any> = () => {
         onClose={() => {
           setOpenExport(false);
           console.log('saliendo');
+        }}
+      />
+
+      <VentaGestionExportarDetalleDialog
+        id={'ventaGestionExportarDetalle'}
+        keepMounted={true}
+        open={openExportDetalle}
+        onClose={() => {
+          setOpenExportDetalle(false);
+          console.log('saliendo exportación detalle');
         }}
       />
     </>
