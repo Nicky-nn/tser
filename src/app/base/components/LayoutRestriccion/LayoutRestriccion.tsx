@@ -77,7 +77,7 @@ const LayoutRestriccion: FC<any> = () => {
               <TableHead></TableHead>
               <TableBody>
                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell>
+                  <TableCell sx={{ minWidth: 200, maxWidth: 400 }}>
                     <Typography
                       variant={'body1'}
                       color={'red'}
@@ -87,34 +87,34 @@ const LayoutRestriccion: FC<any> = () => {
                     </Typography>
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell align="left" sx={{ width: 270 }}>
                     <Tooltip title={user.sucursal.direccion}>
                       <Chip
                         icon={<Home />}
+                        color={'success'}
                         label={
                           <>
-                            Sucursal <strong>{user.sucursal.codigo}</strong>
+                            <strong>Sucursal {user.sucursal.codigo}</strong>
                           </>
                         }
                         variant="outlined"
                       />
                     </Tooltip>
-                  </TableCell>
-                  <TableCell align="left">
+                    &nbsp;
                     <Tooltip title={user.puntoVenta.nombre}>
                       <Chip
                         icon={<Computer />}
+                        color={'success'}
                         label={
                           <>
-                            Punto Venta <strong>{user.puntoVenta.codigo}</strong>
+                            <strong>Punto Venta {user.puntoVenta.codigo}</strong>
                           </>
                         }
                         variant="outlined"
                       />
                     </Tooltip>
                   </TableCell>
-
-                  <TableCell align="left">
+                  <TableCell align="left" sx={{ width: 180 }}>
                     <Tooltip title={'Moneda general'}>
                       <Chip
                         icon={<MonetizationOn />}
@@ -128,15 +128,16 @@ const LayoutRestriccion: FC<any> = () => {
                     </Tooltip>
                   </TableCell>
 
-                  <TableCell align="left" sx={{ width: 50 }}>
+                  <TableCell align="left" sx={{ width: 60 }}>
                     <Tooltip title={'Cambiar Sucursal / PuntoVenta'} leaveDelay={50}>
                       <StyledIconButton
+                        color={'success'}
                         onClick={handleChangeSucursal}
                         theme={theme}
                         aria-label="Cambiar Sucursal / Punto Venta"
                         style={{ padding: 0, margin: 0 }}
                       >
-                        <RepeatOne fontSize={'inherit'} />
+                        <RepeatOne fontSize={'large'} />
                       </StyledIconButton>
                     </Tooltip>
                   </TableCell>
