@@ -50,6 +50,25 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     enableColumnFilter: false,
   },
   {
+    header: 'Razon Social',
+    id: 'cliente.razonSocial',
+    accessorKey: 'cliente.razonSocial',
+    maxSize: 80,
+    minSize: 20,
+  },
+  {
+    id: 'cliente.numeroDocumento',
+    header: 'Nro. Documento',
+    accessorFn: (row) => (
+      <span>
+        {row.cliente.numeroDocumento}{' '}
+        {row.cliente.complemento ? `-${row.cliente.complemento}` : ''}
+      </span>
+    ),
+    filterFn: (row, id, filterValue) =>
+      row.original.cliente.numeroDocumento.startsWith(filterValue),
+  },
+  {
     header: 'Importe',
     accessorKey: 'montoTotal',
     muiTableBodyCellProps: {
@@ -77,29 +96,19 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     enableColumnFilter: false,
   },
   {
-    header: 'Razon Social',
-    id: 'cliente.razonSocial',
-    accessorKey: 'cliente.razonSocial',
-    maxSize: 80,
-    minSize: 20,
-  },
-  {
-    id: 'cliente.numeroDocumento',
-    header: 'Nro. Documento',
-    accessorFn: (row) => (
-      <span>
-        {row.cliente.numeroDocumento}{' '}
-        {row.cliente.complemento ? `-${row.cliente.complemento}` : ''}
-      </span>
-    ),
-    filterFn: (row, id, filterValue) =>
-      row.original.cliente.numeroDocumento.startsWith(filterValue),
+    header: 'Tipo Cambio',
+    accessorKey: 'tipoCambio',
+    size: 30,
+    muiTableBodyCellProps: {
+      align: 'right',
+    },
+    accessorFn: (row) => <span> {numberWithCommas(row.tipoCambio, {})}</span>,
+    enableColumnFilter: false,
   },
   {
     accessorKey: 'cuf',
     id: 'cuf',
     header: 'C.U.F.',
-    enableColumnFilter: false,
   },
   {
     accessorKey: 'state',
@@ -210,7 +219,13 @@ const VentaGestion: FC<any> = () => {
             <MaterialReactTable
               columns={columns} //must be memoized
               data={gestionProductos ?? []} //must be memoized
-              initialState={{ showColumnFilters: true }}
+              initialState={{
+                showColumnFilters: true,
+                columnVisibility: {
+                  cuf: false,
+                  montoTotal: false,
+                },
+              }}
               manualFiltering
               manualPagination
               manualSorting
@@ -237,9 +252,6 @@ const VentaGestion: FC<any> = () => {
                 showProgressBars: isRefetching,
                 sorting,
                 density: 'compact',
-                columnVisibility: {
-                  cuf: false,
-                },
                 columnPinning: { right: ['actions'] },
                 rowSelection,
               }}

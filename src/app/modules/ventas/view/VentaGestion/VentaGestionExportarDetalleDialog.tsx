@@ -47,37 +47,52 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
     const query = `fechaEmision<=${endDate}&fechaEmision>=${startDate}`;
     const fetchPagination: PageProps = {
       ...PAGE_DEFAULT,
-      limit: 10000,
+      limit: 100000,
       reverse: false,
       query,
     };
     const { docs } = await fetchFacturaListado(fetchPagination);
     setLoading(false);
     if (docs.length > 0) {
-      const dataExport = docs.map((item) => ({
-        numeroFactura: item.numeroFactura,
-        fechaEmision: item.fechaEmision,
-        cuf: item.cuf,
-        sucursal: item.sucursal.codigo,
-        puntoVenta: item.puntoVenta.codigo,
-        razonSocial: item.cliente.razonSocial,
-        codigoCliente: item.cliente.codigoCliente,
-        numeroDocumento: item.cliente.numeroDocumento,
-        complemento: item.cliente.complemento || '',
-        metodoPago: item.metodoPago.descripcion,
-        montoTotal: item.montoTotal,
-        montoTotalMoneda: item.montoTotalMoneda,
-        moneda: item.moneda.descripcion,
-        estado: item.state,
-        usuario: item.usuario,
-      }));
+      const dataExport: any = [];
+      for (const doc of docs) {
+        doc.detalle.map((item) => {
+          dataExport.push({
+            numeroFactura: doc.numeroFactura,
+            fechaEmision: doc.fechaEmision,
+            cuf: doc.cuf,
+            sucursal: doc.sucursal.codigo,
+            puntoVenta: doc.puntoVenta.codigo,
+            razonSocial: doc.cliente.razonSocial,
+            codigoCliente: doc.cliente.codigoCliente,
+            numeroDocumento: doc.cliente.numeroDocumento,
+            complemento: doc.cliente.complemento || '',
+            metodoPago: doc.metodoPago.descripcion,
+            nroItem: item.nroItem,
+            actividadEconomica: item.actividadEconomica.codigoCaeb,
+            productoServicio: item.productoServicio.descripcionProducto,
+            producto: item.producto,
+            descripcion: item.descripcion,
+            detalleExtra: item.detalleExtra,
+            cantidad: item.cantidad,
+            unidadMedida: item.unidadMedida.descripcion,
+            precioUnitario: item.precioUnitario,
+            montoDescuento: item.montoDescuento,
+            montoTotal: doc.montoTotal,
+            montoTotalMoneda: doc.montoTotalMoneda,
+            moneda: doc.moneda.descripcion,
+            tipoCambio: doc.tipoCambio,
+            estado: doc.state,
+            usuario: doc.usuario,
+          });
+        });
+      }
       exportFromJSON({
         data: dataExport,
-        fileName: 'reporte_ventas',
+        fileName: 'reporte_detalle_ventas',
         exportType: exportFromJSON.types.csv,
         withBOM: true,
       });
-      console.log('exportando');
     } else {
       notDanger('No se han encontrado registros para el periodo seleccionado');
     }
@@ -97,9 +112,23 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
         open={open}
         {...other}
       >
-        <DialogTitle>Exportar Ventas</DialogTitle>
+        <DialogTitle>Exportar Ventas + Detalles</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
+            <Grid item sm={7}>
+              <SimpleItem>
+                <DatePicker
+                  selected={startDate}
+                  onChange={onChange}
+                  locale={'es'}
+                  startDate={startDate}
+                  endDate={endDate}
+                  selectsRange
+                  inline
+                  isClearable={true}
+                />
+              </SimpleItem>
+            </Grid>
             <Grid item sm={5}>
               <TextField
                 sx={{ mt: 1 }}
@@ -115,20 +144,6 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
                 value={dayjs(endDate).format('DD/MM/YYYY') || ''}
                 size="small"
               />
-            </Grid>
-            <Grid item sm={7}>
-              <SimpleItem>
-                <DatePicker
-                  selected={startDate}
-                  onChange={onChange}
-                  locale={'es'}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectsRange
-                  inline
-                  isClearable={true}
-                />
-              </SimpleItem>
             </Grid>
           </Grid>
         </DialogContent>
