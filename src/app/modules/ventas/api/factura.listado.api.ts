@@ -124,6 +124,7 @@ const query = gql`
           subTotal
           numeroImei
           numeroSerie
+          detalleExtra
         }
         representacionGrafica {
           pdf

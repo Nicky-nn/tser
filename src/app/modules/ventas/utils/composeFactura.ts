@@ -3,6 +3,7 @@ import { es } from 'yup-locales';
 
 import { FacturaInputProps } from '../interfaces/factura';
 import { genRound } from '../../../utils/utils';
+import { genReplaceEmpty } from '../../../utils/helper';
 
 const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
   try {
@@ -13,7 +14,6 @@ const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
 };
 
 export const composeFactura = (fcv: FacturaInputProps): any => {
-  console.log(fcv);
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
     actividadEconomica: fcv.actividadEconomica.codigoCaeb,
@@ -26,11 +26,12 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     detalle: fcv.detalle.map((item) => ({
       codigoProductoSin: item.codigoProductoSin,
       codigoProducto: item.codigoProducto,
-      descripcion: [item.nombre, item.detalleExtra || ''].join(' '),
+      descripcion: item.nombre,
       cantidad: item.cantidad,
       unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
       precioUnitario: calculoMonedaBs(item.precioUnitario, fcv.tipoCambio),
       montoDescuento: calculoMonedaBs(item.montoDescuento, fcv.tipoCambio),
+      detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
     })),
   };
   if (fcv.numeroTarjeta) {

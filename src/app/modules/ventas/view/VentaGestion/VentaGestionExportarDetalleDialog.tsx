@@ -19,6 +19,7 @@ import { SimpleItem } from '../../../../base/components/Container/SimpleItem';
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
 import { notDanger } from '../../../../utils/notification';
 import { fetchFacturaListado } from '../../api/factura.listado.api';
+import { genReplaceEmpty } from '../../../../utils/helper';
 
 registerLocale('es', es);
 
@@ -73,7 +74,7 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             productoServicio: item.productoServicio.descripcionProducto,
             producto: item.producto,
             descripcion: item.descripcion,
-            detalleExtra: item.detalleExtra,
+            detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
             cantidad: item.cantidad,
             unidadMedida: item.unidadMedida.descripcion,
             precioUnitario: item.precioUnitario,
