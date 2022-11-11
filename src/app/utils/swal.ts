@@ -102,6 +102,7 @@ export const swalLoading = (): void => {
     timerProgressBar: true,
     allowOutsideClick: false,
     didOpen: () => {
+      // @ts-ignore
       Swal.showLoading();
     },
   }).then();
