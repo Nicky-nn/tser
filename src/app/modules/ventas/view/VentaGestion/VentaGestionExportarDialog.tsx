@@ -44,7 +44,9 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
 
   const exportarDatos = async () => {
     setLoading(true);
-    const query = `fechaEmision<=${endDate}&fechaEmision>=${startDate}`;
+    const sd = dayjs(startDate).format('YYYY-MM-DD');
+    const ed = dayjs(endDate).format('YYYY-MM-DD');
+    const query = `fechaEmision<=${ed} 24:00:00&fechaEmision>=${sd} 00:00:00`;
     const fetchPagination: PageProps = {
       ...PAGE_DEFAULT,
       limit: 10000,
