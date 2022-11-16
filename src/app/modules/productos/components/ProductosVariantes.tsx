@@ -11,6 +11,7 @@ import { apiProductosVariantes } from '../api/productosVariantes.api';
 import { ProductoVarianteProps } from '../interfaces/producto.interface';
 import useAuth from '../../../base/hooks/useAuth';
 import { AllInclusive } from '@mui/icons-material';
+import { muiTableHeadCellFilterTextFieldProps } from '../../../utils/materialReactTableUtils';
 
 interface OwnProps {
   codigoActividad: string;
@@ -127,26 +128,26 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
         data={data ?? []}
         initialState={{ showColumnFilters: true }}
         localization={localization}
-        manualPagination
         manualFiltering
+        manualPagination
         manualSorting
         muiToolbarAlertBannerProps={
           isError
             ? {
                 color: 'error',
-                children: 'Error loading data',
+                children: 'Error en cargar los datos',
               }
             : undefined
         }
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
+        enableDensityToggle={false}
+        enableGlobalFilter={false}
         rowCount={rowCount ?? 0}
         state={{
-          columnFilters,
           isLoading,
+          columnFilters,
           pagination,
           showAlertBanner: isError,
           showProgressBars: isFetching,
@@ -155,9 +156,7 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
           rowSelection,
         }}
         muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
+          ...muiTableHeadCellFilterTextFieldProps,
         }}
         enableRowSelection
         enableSelectAll={false}

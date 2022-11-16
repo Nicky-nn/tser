@@ -27,7 +27,7 @@ const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 700 } }}
+        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 750 } }}
         maxWidth="xl"
         open={open}
         {...other}
@@ -39,7 +39,7 @@ const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
             setProductosVariantes={setProductosVariantes}
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ justifyContent: 'center', marginLeft: 10 }}>
           <Button
             autoFocus
             color={'error'}
