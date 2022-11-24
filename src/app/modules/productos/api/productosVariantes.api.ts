@@ -16,9 +16,11 @@ const reqQuery = gql`
   ) {
     fcvProductosVariantes(limit: $limit, reverse: $reverse, page: $page, query: $query) {
       pageInfo {
+        hasNextPage
+        hasPrevPage
         limit
         page
-        totalPages
+        totalDocs
       }
       docs {
         _id

@@ -1,3 +1,4 @@
+import { MonedaProps } from '../../base/moneda/interfaces/moneda';
 import { ClienteProps } from '../../clientes/interfaces/cliente';
 import { ProductoVarianteProps } from '../../productos/interfaces/producto.interface';
 import { PuntoVentaProps } from '../../puntoVenta/interfaces/puntoVenta';
@@ -15,7 +16,6 @@ import {
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface';
 import { SucursalProps } from '../../sucursal/interfaces/sucursal';
-import { MonedaProps } from '../../base/moneda/interfaces/moneda';
 
 export interface FacturaDetalleInputProps extends ProductoVarianteProps {
   verificarStock: boolean;
