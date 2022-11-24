@@ -1,8 +1,6 @@
 import './App.css';
-
 import { Provider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
-
 import MatxTheme from './app/base/components/Template/MatxTheme/MatxTheme';
 import { AuthProvider } from './app/base/contexts/JWTAuthContext';
 import { SettingsProvider } from './app/base/contexts/SettingsContext';

@@ -7,6 +7,7 @@ import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import AuthContext from '../../../base/contexts/JWTAuthContext';
 import { productosRouteMap } from '../../productos/ProductosRoutesMap';
 import ProveedorListado from '../components/ProveedorListado';
+import ClientesListado from '../../clientes/view/Listado/ClientesListado';
 
 const Proveedores = () => {
   const { user } = useContext(AuthContext);

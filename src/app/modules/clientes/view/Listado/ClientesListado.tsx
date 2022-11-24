@@ -144,6 +144,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           Nuevo Cliente Extranjero
         </Button>
       </Stack>
+
       <MaterialReactTable
         columns={columns}
         data={clientes ?? []}

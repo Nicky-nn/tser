@@ -2,6 +2,7 @@ import {
   FileOpen,
   ImportExport,
   LayersClear,
+  Mail,
   MenuOpen,
   PictureAsPdf,
 } from '@mui/icons-material';
@@ -36,6 +37,7 @@ import { FacturaProps } from '../interfaces/factura';
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog';
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog';
 import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog';
+import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog';
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -129,6 +131,7 @@ const VentaGestion: FC<any> = () => {
   const [factura, setFactura] = useState<FacturaProps | null>(null);
   const [openExport, setOpenExport] = useState(false);
   const [openExportDetalle, setOpenExportDetalle] = useState(false);
+  const [openReenviarEmails, setOpenReenviarEmails] = useState(false);
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -278,6 +281,14 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
+                        openInNewTab(row.original.representacionGrafica.rollo);
+                      }}
+                    >
+                      <PictureAsPdf /> Pdf Rollo
+                    </StyledMenuItem>
+
+                    <StyledMenuItem
+                      onClick={() => {
                         openInNewTab(row.original.representacionGrafica.xml);
                       }}
                     >
@@ -290,6 +301,16 @@ const VentaGestion: FC<any> = () => {
                       }}
                     >
                       <FileOpen /> Url S.I.N.
+                    </StyledMenuItem>
+
+                    <StyledMenuItem
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setOpenReenviarEmails(true);
+                        setFactura(row.original);
+                      }}
+                    >
+                      <Mail /> Reenviar Correo
                     </StyledMenuItem>
                   </SimpleMenu>
                 </div>
@@ -334,6 +355,17 @@ const VentaGestion: FC<any> = () => {
           setOpenExportDetalle(false);
           console.log('saliendo exportación detalle');
         }}
+      />
+
+      <ReenviarEmailsDialog
+        id={'reenviarEmails'}
+        keepMounted={true}
+        open={openReenviarEmails}
+        onClose={() => {
+          setFactura(null);
+          setOpenReenviarEmails(false);
+        }}
+        factura={factura}
       />
     </>
   );
