@@ -40,7 +40,7 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
 
   useEffect(() => {
     if (open) {
-      setEmails('');
+      setEmails(factura?.cliente.email || '');
     }
   }, [open]);
 
