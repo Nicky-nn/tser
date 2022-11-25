@@ -1,26 +1,27 @@
 import { LoadingButton } from '@mui/lab';
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
+  TextField,
 } from '@mui/material';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-
-import { useMounted } from '../../../../hooks/useMounted';
-import { swalConfirm, swalException } from '../../../../utils/swal';
-import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api';
-import { SinMotivoAnulacionProps } from '../../../sin/interfaces/sin.interface';
-import { fetchFacturaAnular } from '../../api/facturaAnular.api';
+import {
+  swalAsyncConfirmDialog,
+  swalConfirm,
+  swalException,
+} from '../../../../utils/swal';
 import { FacturaProps } from '../../interfaces/factura';
+import { isEmptyValue, validateEmail } from '../../../../utils/helper';
+import { fetchClienteCreate } from '../../../clientes/api/clienteCreate.api';
+import { notSuccess } from '../../../../utils/notification';
+import { apiFcvReenvioEmails } from '../../api/facturaReenvioEmail.api';
 
 interface OwnProps {
   id: string;
@@ -34,28 +35,14 @@ type Props = OwnProps;
 
 const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
   const { onClose, open, factura, ...other } = props;
-  const isMounted = useMounted();
-  const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([]);
+  const [emails, setEmails] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const initalValues: any = {
-    codigoMotivo: null,
-  };
-  const [value, setValue] = useState(initalValues);
 
   useEffect(() => {
     if (open) {
-      setValue(initalValues);
+      setEmails('');
     }
   }, [open]);
-
-  useEffect(() => {
-    const fetch = async (): Promise<void> => {
-      await fetchSinMotivoAnulacion().then((res) => {
-        setMotivosAnulacion(res || []);
-      });
-    };
-    fetch().then();
-  }, []);
 
   const handleCancel = () => {
     onClose();
@@ -63,38 +50,40 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
 
   const handleOk = async () => {
     let aux = true;
-    if (!value.codigoMotivo) {
-      toast.error('Seleccione el motivo de la anulación');
-      aux = false;
-    }
     if (!factura?._id) {
       toast.error('Seleccione el documento');
       aux = false;
     }
+    if (isEmptyValue(emails)) {
+      toast.error('Debe registrar al menos un correo electrónico');
+      aux = false;
+    }
+
+    const newEmails: string[] = emails.split(';');
+    for (const newEmail of newEmails) {
+      if (!validateEmail(newEmail)) {
+        toast.error(`${newEmail} no es un correo electrónico válido`);
+        aux = false;
+      }
+    }
+
     if (aux) {
-      Swal.fire({
-        ...swalConfirm,
-        html: '¿Confirma que desea anular el documento? <br> este proceso no se podra revertir',
-        showLoaderOnConfirm: true,
+      await swalAsyncConfirmDialog({
         preConfirm: () => {
-          setLoading(true);
-          const input = { id: factura?._id, codigoMotivo: value.codigoMotivo };
-          return fetchFacturaAnular(factura?._id || '', value.codigoMotivo);
+          return apiFcvReenvioEmails({
+            cuf: factura?.cuf!,
+            emails: newEmails,
+          }).catch((err) => {
+            swalException(err);
+            return false;
+          });
         },
-        allowOutsideClick: () => !Swal.isLoading(),
-      })
-        .then((result) => {
-          console.log(result);
-          if (result.isConfirmed) {
-            toast.success('Documento Anulado correctamente');
-            onClose(true);
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          swalException(err);
-          setLoading(false);
-        });
+      }).then((resp) => {
+        if (resp.isConfirmed) {
+          notSuccess();
+          onClose(resp.value);
+        }
+      });
     }
   };
 
@@ -116,35 +105,48 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
               Código de control CUF: {factura?.cuf || ''} <br />
             </Grid>
             <Grid item lg={12} md={12}>
-              <pre>fasdfas</pre>
+              <Alert severity="info">
+                Para varios correos, puede registrar las mismas separadas por{' '}
+                <strong>;</strong> <br />
+                Ejemplo: cliente1@correo.com;cliente2@correo.com
+              </Alert>
             </Grid>
             <Grid item lg={12} md={12}>
-              <FormControl sx={{ width: '100%' }} size="small">
-                <InputLabel id="demo-select-small">Motivo de la anulación</InputLabel>
-                <Select
-                  labelId="Motivo de la anulación"
-                  value={value.codigoMotivo || ''}
-                  label="Motivo de la anulación"
-                  onChange={(e) => {
-                    setValue({ ...value, codigoMotivo: parseInt(e.target.value) });
-                  }}
-                >
-                  {motivosAnulacion.map((ma) => (
-                    <MenuItem key={ma.codigoClasificador} value={ma.codigoClasificador}>
-                      {ma.descripcion}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField
+                id="emails"
+                name="emails"
+                label="Ingrese los correos separados por ;"
+                size="small"
+                fullWidth
+                value={emails}
+                multiline
+                rows={2}
+                onChange={(event) => {
+                  setEmails(event.target.value);
+                }}
+              />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleCancel} disabled={loading}>
+          <Button
+            autoFocus
+            color={'error'}
+            size={'small'}
+            variant={'contained'}
+            onClick={handleCancel}
+            disabled={loading}
+          >
             Cancelar
           </Button>
-          <LoadingButton onClick={handleOk} loading={loading} style={{ marginRight: 15 }}>
-            Anular Documento
+          <LoadingButton
+            variant={'contained'}
+            size={'small'}
+            onClick={handleOk}
+            loading={loading}
+            style={{ marginRight: 15 }}
+          >
+            Enviar Notificación
           </LoadingButton>
         </DialogActions>
       </Dialog>

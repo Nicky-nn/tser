@@ -130,3 +130,13 @@ export const genApiQuery = (
   }
   return query.join('&');
 };
+
+/**
+ * @description Verifica si una string es un email valdiso
+ * @param mail
+ */
+export const validateEmail = (mail: string): boolean => {
+  const res =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(String(mail).toLowerCase());
+};
