@@ -68,7 +68,7 @@ export const facturaSlice = createSlice({
       state.inputVuelto = montoInputVuelto(state);
     },
     setFacturaMetodoPago: (state, action) => {
-      state.codigoMetodoPago = parseInt(action.payload);
+      state.codigoMetodoPago = action.payload.codigoClasificador;
       state.numeroTarjeta = null;
     },
     setFacturaNroTarjeta: (state, action) => {
