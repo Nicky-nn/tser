@@ -132,6 +132,7 @@ const query = gql`
           rollo
           sin
         }
+        detalleExtra
         usuario
         state
         usucre

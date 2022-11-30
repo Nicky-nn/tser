@@ -17,7 +17,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
     actividadEconomica: fcv.actividadEconomica.codigoCaeb,
-    codigoMetodoPago: parseInt(fcv.codigoMetodoPago.toString()),
+    codigoMetodoPago: fcv.codigoMetodoPago.codigoClasificador,
     descuentoAdicional: calculoMonedaBs(fcv.descuentoAdicional, fcv.tipoCambio),
     detalleExtra: fcv.detalleExtra,
     emailCliente: fcv.emailCliente,

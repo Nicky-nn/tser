@@ -16,6 +16,7 @@ import {
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface';
 import { SucursalProps } from '../../sucursal/interfaces/sucursal';
+import { MetodoPagoProp } from '../../base/metodoPago/interfaces/metodoPago';
 
 export interface FacturaDetalleInputProps extends ProductoVarianteProps {
   verificarStock: boolean;
@@ -37,7 +38,7 @@ export interface FacturaInputProps {
   cliente: ClienteProps | null;
   codigoCliente: string;
   codigoExcepcion: number | null;
-  codigoMetodoPago: number;
+  codigoMetodoPago: MetodoPagoProp;
   codigoMoneda: number;
   descuentoAdicional: number;
   detalle: FacturaDetalleInputProps[];
@@ -64,7 +65,10 @@ export const FacturaInitialValues: FacturaInputProps = {
   cliente: null,
   codigoCliente: '',
   codigoExcepcion: null,
-  codigoMetodoPago: 1,
+  codigoMetodoPago: {
+    codigoClasificador: 1,
+    descripcion: 'EFECTIVO',
+  },
   codigoMoneda: 1,
   descuentoAdicional: 0,
   detalle: [] as FacturaDetalleInputProps[],

@@ -5,7 +5,7 @@ export const ReactSelect = Select;
 export const reactSelectStyles: StylesConfig<any> | undefined = {
   menuPortal: (base) => ({
     ...base,
-    zIndex: 9999,
+    zIndex: 99999,
   }),
   placeholder: (base) => ({
     ...base,

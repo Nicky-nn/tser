@@ -12,6 +12,7 @@ import {
 import es from 'date-fns/locale/es';
 import dayjs from 'dayjs';
 import exportFromJSON from 'export-from-json';
+import { convert } from 'html-to-text';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 
@@ -56,7 +57,7 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
     const { docs } = await fetchFacturaListado(fetchPagination);
     setLoading(false);
     if (docs.length > 0) {
-      const dataExport = docs.map((item) => ({
+      const dataExport: any = docs.map((item) => ({
         numeroFactura: item.numeroFactura,
         fechaEmision: item.fechaEmision,
         cuf: item.cuf,
@@ -70,6 +71,10 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
         montoTotal: item.montoTotal,
         montoTotalMoneda: item.montoTotalMoneda,
         moneda: item.moneda.descripcion,
+        detalleExtra: convert(item.detalleExtra, {
+          preserveNewlines: false,
+          wordwrap: null,
+        }),
         estado: item.state,
         usuario: item.usuario,
       }));
