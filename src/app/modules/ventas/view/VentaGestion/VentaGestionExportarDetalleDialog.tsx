@@ -20,6 +20,7 @@ import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
 import { notDanger } from '../../../../utils/notification';
 import { fetchFacturaListado } from '../../api/factura.listado.api';
 import { genReplaceEmpty } from '../../../../utils/helper';
+import { convert } from 'html-to-text';
 
 registerLocale('es', es);
 
@@ -77,6 +78,10 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             producto: item.producto,
             descripcion: item.descripcion,
             detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
+            detalleExtraGeneral: convert(doc.detalleExtra, {
+              preserveNewlines: false,
+              wordwrap: null,
+            }),
             cantidad: item.cantidad,
             unidadMedida: item.unidadMedida.descripcion,
             precioUnitario: item.precioUnitario,
