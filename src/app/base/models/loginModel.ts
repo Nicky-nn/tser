@@ -25,6 +25,13 @@ export interface PerfilProps {
   moneda: MonedaParamsProps;
   monedaTienda: MonedaParamsProps;
   razonSocial: string;
+  miEmpresa: {
+    razonSocial: string;
+    codigoModalidad: number;
+    codigoAmbiente: number;
+    fechaValidezToken: string;
+    tienda: string;
+  };
 }
 
 export interface UserProps {
@@ -39,6 +46,13 @@ const mutation = gql`
       token
       refreshToken
       perfil {
+        miEmpresa {
+          tienda
+          razonSocial
+          codigoModalidad
+          codigoAmbiente
+          fechaValidezToken
+        }
         razonSocial
         nombres
         apellidos
@@ -99,10 +113,8 @@ export const loginModel = async (
 ): Promise<UserProps> => {
   const variables = { shop, email, password };
   const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-
   // Set a single header
   // client.setHeader('authorization', 'Bearer MY_TOKEN')
-
   const data: any = await client.request(mutation, variables);
   return data.login;
 };

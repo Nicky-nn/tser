@@ -4,6 +4,7 @@ import {
   MonetizationOn,
   Money,
   MoneySharp,
+  RadioButtonChecked,
   RepeatOne,
 } from '@mui/icons-material';
 import {
@@ -139,6 +140,24 @@ const LayoutRestriccion: FC<any> = () => {
                       >
                         <RepeatOne fontSize={'large'} />
                       </StyledIconButton>
+                    </Tooltip>
+                  </TableCell>
+
+                  <TableCell align="left" sx={{ width: 60 }}>
+                    <Tooltip
+                      title={`Ambiente ${
+                        user.miEmpresa.codigoAmbiente === 1 ? 'PRODUCCIÓN' : 'PILOTO'
+                      }`}
+                      leaveDelay={50}
+                    >
+                      <IconButton
+                        color={
+                          user.miEmpresa.codigoAmbiente === 1 ? 'success' : 'warning'
+                        }
+                        style={{ padding: 0, margin: 0 }}
+                      >
+                        <RadioButtonChecked fontSize={'large'} />
+                      </IconButton>
                     </Tooltip>
                   </TableCell>
                 </TableRow>

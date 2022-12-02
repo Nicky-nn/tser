@@ -8,6 +8,13 @@ import { AccessToken } from './paramsModel';
 const query = gql`
   {
     perfil {
+      miEmpresa {
+        tienda
+        razonSocial
+        codigoModalidad
+        codigoAmbiente
+        fechaValidezToken
+      }
       razonSocial
       nombres
       apellidos

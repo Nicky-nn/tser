@@ -7,10 +7,10 @@ import NotFound from '../base/view/sessions/NotFound';
 import sessionRoutes from '../base/view/sessions/SessionRoutes';
 import clientesRoutes from '../modules/clientes/ClientesRoutes';
 import cuentaRoutes from '../modules/cuenta/CuentaRoutes';
+import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes';
 import productosRoutes from '../modules/productos/ProductosRoutes';
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes';
 import ventasRoutes from '../modules/ventas/VentasRoutes';
-import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes';
 
 export const appRoutes = [
   {

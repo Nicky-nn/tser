@@ -11,6 +11,7 @@ import CuentaPerfil from './Perfil/CuentaPerfil';
 import CuentaRecargarCache from './Perfil/CuentaRecargarCache';
 import CuentaSucursal from './Perfil/CuentaSucursal';
 import CuentaTokenDelegado from './Perfil/CuentaTokenDelegado';
+import CuentaSincronizacion from './Perfil/CuentaSincronizacion';
 
 interface OwnProps {}
 
@@ -74,7 +75,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                     <ListItemIcon>
                       <Token />
                     </ListItemIcon>
-                    <ListItemText primary="Token Delegado" />
+                    <ListItemText primary="Sincronización" />
                   </ListItemButton>
 
                   <ListItemButton
@@ -94,7 +95,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
             {selectedIndex === 0 && <CuentaPerfil />}
             {selectedIndex === 1 && <CuentaPassword />}
             {selectedIndex === 2 && <CuentaSucursal />}
-            {selectedIndex === 3 && <CuentaTokenDelegado />}
+            {selectedIndex === 3 && <CuentaSincronizacion />}
             {selectedIndex === 4 && <CuentaRecargarCache />}
           </Grid>
         </Grid>
