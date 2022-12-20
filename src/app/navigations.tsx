@@ -1,6 +1,7 @@
+import { giftCardRouteMap } from './modules/giftCard/GiftCardRoutesMap';
+import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap';
 import { productosRouteMap } from './modules/productos/ProductosRoutesMap';
 import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap';
-import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap';
 
 export interface NavigationProps {
   name: string;
@@ -68,6 +69,22 @@ export const navigations: NavigationProps[] = [
         name: 'Proveedores',
         iconText: 'PR',
         path: proveedorRouteMap.gestion,
+      },
+    ],
+  },
+  {
+    name: 'Gift Cards',
+    icon: 'redeem',
+    children: [
+      {
+        name: 'Gestión de Gift Cards',
+        iconText: 'GG',
+        path: giftCardRouteMap.gestion.path,
+      },
+      {
+        name: 'Clientes Gift Card',
+        iconText: 'CGC',
+        path: giftCardRouteMap.clientes.path,
       },
     ],
   },

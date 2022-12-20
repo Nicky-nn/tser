@@ -11,6 +11,7 @@ import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDeb
 import productosRoutes from '../modules/productos/ProductosRoutes';
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes';
 import ventasRoutes from '../modules/ventas/VentasRoutes';
+import giftCardRoutes from '../modules/giftCard/GiftCardRoutes';
 
 export const appRoutes = [
   {
@@ -23,6 +24,7 @@ export const appRoutes = [
       ...dashboardRoutes,
       ...ventasRoutes,
       ...productosRoutes,
+      ...giftCardRoutes,
       ...clientesRoutes,
       ...cuentaRoutes,
       ...proveedorRoutes,

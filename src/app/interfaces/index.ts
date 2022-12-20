@@ -64,3 +64,4 @@ export const PAGE_DEFAULT: PageInputProps = {
   reverse: true,
   query: '',
 };
+

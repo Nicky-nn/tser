@@ -83,7 +83,7 @@ const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             disabled={!formik.isValid}
           >
-            Registrar Proveedor
+            Registrar Clasificador
           </Button>
         </DialogActions>
       </Dialog>
