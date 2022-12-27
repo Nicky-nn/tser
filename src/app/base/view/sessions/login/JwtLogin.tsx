@@ -9,6 +9,7 @@ import { object, string } from 'yup';
 import { isEmptyValue } from '../../../../utils/helper';
 import { Paragraph } from '../../../components/Template/Typography';
 import useAuth from '../../../hooks/useAuth';
+import fcvFondo from '../../../../../../public/assets/images/fcvFondo.jpg';
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
@@ -33,7 +34,10 @@ const IMG = styled('img')(() => ({
 }));
 
 const JWTRoot = styled(JustifyBox)(() => ({
-  background: '#1A2038',
+  backgroundImage: `url("${fcvFondo}")`,
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
   minHeight: '100vh',
   '& .card': {
     maxWidth: 400,

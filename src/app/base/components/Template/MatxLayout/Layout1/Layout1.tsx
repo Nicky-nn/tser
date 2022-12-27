@@ -116,6 +116,7 @@ const Layout1 = () => {
             {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
               <ThemeProvider theme={topbarTheme}>
                 <Layout1Topbar />
+                <LayoutRestriccion />
               </ThemeProvider>
             )}
             <Box flexGrow={1} position="relative">
@@ -133,6 +134,7 @@ const Layout1 = () => {
             {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
               <ThemeProvider theme={topbarTheme}>
                 <Layout1Topbar />
+                <LayoutRestriccion />
               </ThemeProvider>
             )}
 

@@ -2,8 +2,6 @@ import {
   Computer,
   Home,
   MonetizationOn,
-  Money,
-  MoneySharp,
   RadioButtonChecked,
   RepeatOne,
 } from '@mui/icons-material';
@@ -47,7 +45,7 @@ const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  background: theme.palette.primary.main,
+  background: theme.palette.primary.primary,
   borderRadius: 0,
   justifyContent: 'space-between',
 }));
@@ -80,8 +78,9 @@ const LayoutRestriccion: FC<any> = () => {
                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell sx={{ minWidth: 200, maxWidth: 400 }}>
                     <Typography
-                      variant={'body1'}
-                      color={'red'}
+                      variant={'body2'}
+                      color={'error'}
+                      fontSize={15}
                       style={{ fontWeight: 500 }}
                     >
                       {user.razonSocial}

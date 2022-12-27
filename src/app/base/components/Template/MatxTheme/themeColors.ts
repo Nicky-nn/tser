@@ -190,12 +190,12 @@ export const themeColors: ThemeColorsProps = {
     palette: {
       type: 'light',
       primary: {
-        main: '#7467ef',
+        main: '#b085f5',
         contrastText: '#ffffff',
       },
       secondary: secondaryColor,
       background: {
-        paper: '#fff',
+        paper: '#ffffff',
         default: '#fafafa',
       },
       text: textLight,
