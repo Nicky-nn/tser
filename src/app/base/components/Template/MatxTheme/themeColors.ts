@@ -28,7 +28,7 @@ const textLight: TextLightDarkProps = {
 };
 
 const textDark: TextLightDarkProps = {
-  primary: '#fff',
+  primary: 'rgba(255, 255, 255, 0.9)',
   secondary: 'rgba(255, 255, 255, 0.7)',
   disabled: 'rgba(255, 255, 255, 0.64)',
   hint: 'rgba(255, 255, 255, 0.64)',
@@ -152,7 +152,7 @@ export const themeColors: ThemeColorsProps = {
     palette: {
       type: 'dark',
       primary: {
-        main: '#222A45',
+        main: '#1E1E1E',
         contrastText: '#ffffff',
       },
       secondary: {
@@ -160,7 +160,7 @@ export const themeColors: ThemeColorsProps = {
         contrastText: textLight.primary,
       },
       background: {
-        paper: '#222A45',
+        paper: '#1E1E1E', // antes 222A45
         default: '#1a2038',
       },
       text: textDark,
