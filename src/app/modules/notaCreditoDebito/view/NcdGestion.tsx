@@ -16,11 +16,13 @@ import {
 } from '@tanstack/react-table';
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
 import React, { FC, useMemo, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton';
 import SimpleContainer from '../../../base/components/Container/SimpleContainer';
 import { SimpleItem } from '../../../base/components/Container/SimpleItem';
 import SimpleRowMenu from '../../../base/components/Container/SimpleRow';
+import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
 import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu';
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces';
@@ -32,37 +34,37 @@ import {
 } from '../../../utils/materialReactTableUtils';
 import { apiNotasCreditoDebito } from '../api/ncd.api';
 import { NcdProps } from '../interfaces/ncdInterface';
-import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
-import { Link as RouterLink } from 'react-router-dom';
 
 const tableColumns: MRT_ColumnDef<NcdProps>[] = [
   {
     header: 'Nro. FCV',
     accessorKey: 'numeroFactura',
-    size: 50,
+    size: 140,
   },
   {
     accessorKey: 'fechaEmisionFactura',
     header: 'Fecha FCV',
     id: 'fechaEmisionFactura',
+    size: 180,
   },
   {
     accessorKey: 'fechaEmision',
     header: 'Fecha NCD',
     id: 'fechaEmision',
+    size: 180,
   },
   {
     header: 'Número NCD',
     accessorKey: 'numeroNotaCreditoDebito',
-    size: 50,
+    size: 140,
   },
   {
     header: 'Razon Social',
     id: 'cliente.razonSocial',
     accessorKey: 'cliente.razonSocial',
-    maxSize: 80,
-    minSize: 20,
+    maxSize: 250,
+    minSize: 200,
   },
   {
     id: 'cliente.numeroDocumento',
@@ -75,6 +77,7 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
     ),
     filterFn: (row, id, filterValue) =>
       row.original.cliente.numeroDocumento.startsWith(filterValue),
+    size: 155,
   },
   {
     accessorKey: 'cuf',
@@ -229,10 +232,14 @@ const NcdGestion: FC<any> = () => {
               }}
               enableRowActions
               positionActionsColumn="first"
+              displayColumnDefOptions={{
+                'mrt-row-actions': {
+                  header: 'Acciones', //change header text
+                  size: 110, //make actions column wider
+                },
+              }}
               renderRowActions={({ row }) => (
                 <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
-                  <AuditIconButton row={row.original} />
-
                   <SimpleMenu
                     menuButton={
                       <>
@@ -274,6 +281,7 @@ const NcdGestion: FC<any> = () => {
                       <FileOpen /> Url S.I.N.
                     </StyledMenuItem>
                   </SimpleMenu>
+                  <AuditIconButton row={row.original} />
                 </div>
               )}
               muiTableHeadCellFilterTextFieldProps={{

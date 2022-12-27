@@ -22,6 +22,13 @@ import { apiGiftCardEliminar } from '../../api/giftCardEliminar.api';
 import { apiGiftCards } from '../../api/giftCards.api';
 import { giftCardRouteMap } from '../../GiftCardRoutesMap';
 import { GiftCardProps } from '../../interfaces/giftCard.interface';
+import {
+  DisplayColumnDefOptions,
+  MuiSearchTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../../utils/materialReactTableUtils';
 
 interface OwnProps {}
 
@@ -143,9 +150,7 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
         manualFiltering
         manualPagination
         manualSorting
-        muiToolbarAlertBannerProps={
-          isError ? { color: 'error', children: 'Error loading data' } : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
@@ -163,12 +168,7 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
           sorting,
           rowSelection,
         }}
-        muiSearchTextFieldProps={{
-          variant: 'outlined',
-          placeholder: 'Busqueda',
-          InputLabelProps: { shrink: true },
-          size: 'small',
-        }}
+        muiSearchTextFieldProps={MuiSearchTextFieldProps}
         enableRowActions
         positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
@@ -185,11 +185,7 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
             <AuditIconButton row={row.original} />
           </div>
         )}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={({ table }) => {
@@ -208,19 +204,8 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
             </Box>
           );
         }}
-        muiTableProps={{
-          sx: {
-            tableLayout: 'fixed',
-          },
-        }}
-        displayColumnDefOptions={{
-          'mrt-row-actions': {
-            muiTableHeadCellProps: {
-              align: 'center',
-            },
-            size: 120,
-          },
-        }}
+        muiTableProps={MuiTableProps}
+        displayColumnDefOptions={DisplayColumnDefOptions}
       />
     </>
   );

@@ -9,7 +9,7 @@ import { object, string } from 'yup';
 import { isEmptyValue } from '../../../../utils/helper';
 import { Paragraph } from '../../../components/Template/Typography';
 import useAuth from '../../../hooks/useAuth';
-import fcvFondo from '../../../../../../public/assets/images/fcvFondo.jpg';
+import fcvFondo from '/assets/images/fcvFondo.jpg';
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',

@@ -18,6 +18,13 @@ import { localization } from '../../../../utils/localization';
 import { apiGiftCardClientes } from '../../api/giftCardsClientes.api';
 import { GiftCardClienteProps } from '../../interfaces/giftCardCliente.interface';
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
+import {
+  DisplayColumnDefOptions,
+  MuiSearchTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../../utils/materialReactTableUtils';
 
 interface OwnProps {}
 
@@ -132,9 +139,7 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
         manualFiltering
         manualPagination
         manualSorting
-        muiToolbarAlertBannerProps={
-          isError ? { color: 'error', children: 'Error loading data' } : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
@@ -152,12 +157,7 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
           sorting,
           rowSelection,
         }}
-        muiSearchTextFieldProps={{
-          variant: 'outlined',
-          placeholder: 'Busqueda',
-          InputLabelProps: { shrink: true },
-          size: 'small',
-        }}
+        muiSearchTextFieldProps={MuiSearchTextFieldProps}
         enableRowActions
         positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
@@ -165,11 +165,7 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
             <AuditIconButton row={row.original} />
           </div>
         )}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={({ table }) => {
@@ -188,19 +184,8 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
             </Box>
           );
         }}
-        muiTableProps={{
-          sx: {
-            tableLayout: 'fixed',
-          },
-        }}
-        displayColumnDefOptions={{
-          'mrt-row-actions': {
-            muiTableHeadCellProps: {
-              align: 'center',
-            },
-            size: 50,
-          },
-        }}
+        muiTableProps={MuiTableProps}
+        displayColumnDefOptions={DisplayColumnDefOptions}
       />
     </>
   );

@@ -43,20 +43,21 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
     header: 'Nro. Factura',
     accessorKey: 'numeroFactura',
-    size: 50,
+    size: 130,
   },
   {
     accessorKey: 'fechaEmision',
     header: 'Fecha Emisión',
     id: 'fechaEmision',
     enableColumnFilter: false,
+    size: 160,
   },
   {
     header: 'Razon Social',
     id: 'cliente.razonSocial',
     accessorKey: 'cliente.razonSocial',
-    maxSize: 80,
-    minSize: 20,
+    maxSize: 250,
+    minSize: 200,
   },
   {
     id: 'cliente.numeroDocumento',
@@ -69,6 +70,7 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     ),
     filterFn: (row, id, filterValue) =>
       row.original.cliente.numeroDocumento.startsWith(filterValue),
+    maxSize: 150,
   },
   {
     header: 'Importe',
@@ -77,7 +79,7 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
       align: 'right',
     },
     Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue() as number, {})}</span>,
-    size: 50,
+    size: 150,
     enableColumnFilter: false,
   },
   {
@@ -87,20 +89,20 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
       align: 'right',
     },
     accessorFn: (row) => <span> {numberWithCommas(row.montoTotalMoneda, {})}</span>,
-    size: 50,
+    size: 150,
     enableColumnFilter: false,
   },
   {
     header: 'Moneda',
     accessorKey: 'moneda.descripcion',
     accessorFn: (row) => <strong>{row.moneda.descripcion}</strong>,
-    size: 50,
+    size: 110,
     enableColumnFilter: false,
   },
   {
     header: 'Tipo Cambio',
     accessorKey: 'tipoCambio',
-    size: 30,
+    size: 130,
     muiTableBodyCellProps: {
       align: 'right',
     },
@@ -227,6 +229,7 @@ const VentaGestion: FC<any> = () => {
                 columnVisibility: {
                   cuf: false,
                   montoTotal: false,
+                  tipoCambio: false,
                 },
               }}
               manualFiltering
@@ -260,10 +263,14 @@ const VentaGestion: FC<any> = () => {
               }}
               enableRowActions
               positionActionsColumn="first"
+              displayColumnDefOptions={{
+                'mrt-row-actions': {
+                  header: 'Acciones', //change header text
+                  size: 100, //make actions column wider
+                },
+              }}
               renderRowActions={({ row }) => (
                 <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
-                  <AuditIconButton row={row.original} />
-
                   <SimpleMenu
                     menuButton={
                       <>
@@ -325,6 +332,7 @@ const VentaGestion: FC<any> = () => {
                       <Mail /> Reenviar Correo
                     </StyledMenuItem>
                   </SimpleMenu>
+                  <AuditIconButton row={row.original} />
                 </div>
               )}
               muiTableHeadCellFilterTextFieldProps={{
