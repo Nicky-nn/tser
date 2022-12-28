@@ -1,3 +1,5 @@
+import 'react-perfect-scrollbar/dist/css/styles.css'
+
 import { Box, styled, ThemeProvider, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/system'
 import React, { useEffect, useRef } from 'react'
@@ -26,7 +28,6 @@ const ContentBox = styled(Box)(() => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
 }))
-
 const StyledScrollBar = styled(Scrollbar)(() => ({
   height: '100%',
   position: 'relative',

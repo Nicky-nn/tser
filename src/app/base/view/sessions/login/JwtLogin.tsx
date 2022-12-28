@@ -6,10 +6,11 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { object, string } from 'yup'
 
+import fcvFondo from '/assets/images/fcvFondo.jpg'
+
 import { isEmptyValue } from '../../../../utils/helper'
 import { Paragraph } from '../../../components/Template/Typography'
 import useAuth from '../../../hooks/useAuth'
-import fcvFondo from '/assets/images/fcvFondo.jpg'
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',

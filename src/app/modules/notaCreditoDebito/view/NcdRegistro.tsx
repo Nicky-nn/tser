@@ -18,8 +18,8 @@ import { NcdInputProps } from '../interfaces/ncdInterface'
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
 import { ncdInputCompose } from '../services/ncdInputCompose'
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator'
-import NcdFacturaOriginal from './registro/NcdFacturaOriginal'
 import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion'
+import NcdFacturaOriginal from './registro/NcdFacturaOriginal'
 
 const NcdRegistro = () => {
   const { user } = useAuth()

@@ -1,9 +1,9 @@
 import { array, number, object, setLocale, string } from 'yup'
 import { es } from 'yup-locales'
 
-import { FacturaInputProps } from '../interfaces/factura'
-import { genRound } from '../../../utils/utils'
 import { genReplaceEmpty } from '../../../utils/helper'
+import { genRound } from '../../../utils/utils'
+import { FacturaInputProps } from '../interfaces/factura'
 
 const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
   try {

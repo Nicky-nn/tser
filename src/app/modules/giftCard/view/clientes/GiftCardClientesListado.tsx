@@ -12,12 +12,10 @@ import React, { FunctionComponent, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery } from '../../../../utils/helper'
 import { localization } from '../../../../utils/localization'
-import { apiGiftCardClientes } from '../../api/giftCardsClientes.api'
-import { GiftCardClienteProps } from '../../interfaces/giftCardCliente.interface'
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import {
   DisplayColumnDefOptions,
   MuiSearchTextFieldProps,
@@ -25,6 +23,8 @@ import {
   MuiTableProps,
   MuiToolbarAlertBannerProps,
 } from '../../../../utils/materialReactTableUtils'
+import { apiGiftCardClientes } from '../../api/giftCardsClientes.api'
+import { GiftCardClienteProps } from '../../interfaces/giftCardCliente.interface'
 
 interface OwnProps {}
 

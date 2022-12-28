@@ -66,7 +66,6 @@
     "sweetalert2": "^11.6.16",
     "sweetalert2-react-content": "^5.0.7",
     "tinymce": "^6.3.1",
-    "yarn": "^1.22.19",
     "yup": "^0.32.11",
     "yup-locales": "^1.2.10"
   },

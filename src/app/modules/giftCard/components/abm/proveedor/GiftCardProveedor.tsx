@@ -3,14 +3,15 @@ import { useQuery } from '@tanstack/react-query'
 import React, { FunctionComponent, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
-import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
-import { ProveedorProps } from '../../../../proveedor/interfaces/proveedor.interface'
-import { PageInputProps } from '../../../../../interfaces'
-import { apiProveedores } from '../../../../proveedor/api/proveedores.api'
-import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
+
 import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
+import { PageInputProps } from '../../../../../interfaces'
+import { apiProveedores } from '../../../../proveedor/api/proveedores.api'
+import { ProveedorProps } from '../../../../proveedor/interfaces/proveedor.interface'
 import ProveedorRegistroDialog from '../../../../proveedor/view/ProveedorRegistroDialog'
+import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>

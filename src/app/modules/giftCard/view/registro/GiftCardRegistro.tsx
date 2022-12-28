@@ -10,8 +10,10 @@ import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcru
 import { notError, notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
+import GiftCardClasificador from '../../components/abm/clasificador/GiftCardClasificador'
 import GiftCardDenominacion from '../../components/abm/GiftCardDenominacion'
 import GiftCardHomologacion from '../../components/abm/GiftCardHomologacion'
+import GiftCardProveedor from '../../components/abm/proveedor/GiftCardProveedor'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,
@@ -22,8 +24,6 @@ import {
   giftCardRegistroValidationSchema,
   giftCardRegistroValidator,
 } from '../../validator/giftCardRegistroValidator'
-import GiftCardClasificador from '../../components/abm/clasificador/GiftCardClasificador'
-import GiftCardProveedor from '../../components/abm/proveedor/GiftCardProveedor'
 
 interface OwnProps {}
 

@@ -9,9 +9,9 @@ import SimpleCard from '../../../base/components/Template/Cards/SimpleCard'
 import CuentaPassword from './Perfil/CuentaPassword'
 import CuentaPerfil from './Perfil/CuentaPerfil'
 import CuentaRecargarCache from './Perfil/CuentaRecargarCache'
+import CuentaSincronizacion from './Perfil/CuentaSincronizacion'
 import CuentaSucursal from './Perfil/CuentaSucursal'
 import CuentaTokenDelegado from './Perfil/CuentaTokenDelegado'
-import CuentaSincronizacion from './Perfil/CuentaSincronizacion'
 
 interface OwnProps {}
 

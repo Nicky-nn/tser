@@ -1,3 +1,4 @@
+import { ExpandMore } from '@mui/icons-material'
 import {
   Accordion,
   AccordionDetails,
@@ -13,7 +14,6 @@ import { UseFormReturn } from 'react-hook-form'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template'
 import { FacturaInputProps } from '../../interfaces/factura'
-import { ExpandMore } from '@mui/icons-material'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>

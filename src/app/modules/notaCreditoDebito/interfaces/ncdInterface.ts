@@ -1,3 +1,4 @@
+import { RepresentacionGraficaProps } from '../../../interfaces/facturaInterface'
 import { ClienteProps } from '../../clientes/interfaces/cliente'
 import { PuntoVentaProps } from '../../puntoVenta/interfaces/puntoVenta'
 import {
@@ -11,9 +12,7 @@ import {
   SinTipoFacturaProps,
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface'
-
 import { SucursalProps } from '../../sucursal/interfaces/sucursal'
-import { RepresentacionGraficaProps } from '../../../interfaces/facturaInterface'
 import { DetalleFacturaProps } from '../../ventas/interfaces/factura'
 
 export interface NcdDetalleInputProps {

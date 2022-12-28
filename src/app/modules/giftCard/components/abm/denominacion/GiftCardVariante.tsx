@@ -1,13 +1,14 @@
+import { DeleteForever } from '@mui/icons-material'
 import { FormControl, FormHelperText, Grid, IconButton } from '@mui/material'
+import InputNumber from 'rc-input-number'
 import React, { FunctionComponent } from 'react'
 import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form'
-import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
+
 import { FormTextField } from '../../../../../base/components/Form'
-import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
-import InputNumber from 'rc-input-number'
-import { handleSelect } from '../../../../../utils/helper'
 import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
-import { DeleteForever } from '@mui/icons-material'
+import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
+import { handleSelect } from '../../../../../utils/helper'
+import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>

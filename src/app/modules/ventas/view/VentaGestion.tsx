@@ -35,9 +35,9 @@ import {
 import { fetchFacturaListado } from '../api/factura.listado.api'
 import { FacturaProps } from '../interfaces/factura'
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog'
-import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
-import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
 import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
+import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
+import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {

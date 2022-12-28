@@ -1,5 +1,6 @@
 import { ImagenProps } from '../../../base/interfaces/base'
 import { genRandomString } from '../../../utils/helper'
+import { ProductoVarianteInventarioProps } from '../../productos/interfaces/producto.interface'
 import { ProveedorProps } from '../../proveedor/interfaces/proveedor.interface'
 import {
   SinActividadesProps,
@@ -7,7 +8,6 @@ import {
   SinUnidadMedidaProps,
 } from '../../sin/interfaces/sin.interface'
 import { TipoProductoProps } from '../../tipoProducto/interfaces/tipoProducto.interface'
-import { ProductoVarianteInventarioProps } from '../../productos/interfaces/producto.interface'
 
 export interface GiftCardVarianteProps {
   _id?: string

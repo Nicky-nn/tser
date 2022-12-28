@@ -1,13 +1,14 @@
-import React, { FunctionComponent } from 'react'
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { Person } from '@mui/icons-material'
 import { Button, Grid } from '@mui/material'
+import React, { FunctionComponent } from 'react'
+
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { H4 } from '../../../../base/components/Template/Typography'
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
-import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api'
 import { notSuccess } from '../../../../utils/notification'
-import { apiSincronizarCufd } from '../../api/sincronizarCufd.api'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiSincronizarCatalogos } from '../../api/sincronizarCatalogos.api'
+import { apiSincronizarCufd } from '../../api/sincronizarCufd.api'
+import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api'
 
 interface OwnProps {}
 

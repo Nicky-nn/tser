@@ -1,8 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
 import { gql, GraphQLClient } from 'graphql-request'
-import { MonedaProps } from '../interfaces/moneda'
+
 import { AccessToken } from '../../../../base/models/paramsModel'
+import { MonedaProps } from '../interfaces/moneda'
 
 const apiQuery = gql`
   query MONEDAS {

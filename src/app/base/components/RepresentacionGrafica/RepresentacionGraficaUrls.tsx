@@ -1,12 +1,13 @@
-import { Button, Container, List, ListItem, ListItemText } from '@mui/material'
-import React, { FunctionComponent } from 'react'
-import { openInNewTab } from '../../../utils/helper'
 import {
   FileOpen,
   PictureAsPdfOutlined,
   PostAdd,
   ScreenSearchDesktop,
 } from '@mui/icons-material'
+import { Button, Container, List, ListItem, ListItemText } from '@mui/material'
+import React, { FunctionComponent } from 'react'
+
+import { openInNewTab } from '../../../utils/helper'
 
 interface OwnProps {
   representacionGrafica: {

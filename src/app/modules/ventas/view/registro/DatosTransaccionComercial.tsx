@@ -20,11 +20,11 @@ import { PerfilProps } from '../../../../base/models/loginModel'
 import { genReplaceEmpty } from '../../../../utils/helper'
 import { swalException } from '../../../../utils/swal'
 import { apiClienteBusqueda } from '../../../clientes/api/clienteBusqueda.api'
+import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog'
 import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../../clientes/interfaces/cliente'
 import ClienteRegistroDialog from '../../../clientes/view/ClienteRegistroDialog'
 import { FacturaInputProps } from '../../interfaces/factura'
-import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>

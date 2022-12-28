@@ -1,7 +1,8 @@
 import { QueryKey } from '@tanstack/query-core'
 import { useQuery } from '@tanstack/react-query'
-import { MetodoPagoProp } from '../interfaces/metodoPago'
+
 import { apiMetodosPago } from '../api/metodosPago.api'
+import { MetodoPagoProp } from '../interfaces/metodoPago'
 
 /**
  * Hook para listado de métodos de págo

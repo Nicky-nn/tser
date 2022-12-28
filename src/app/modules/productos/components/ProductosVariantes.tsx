@@ -1,17 +1,17 @@
+import { AllInclusive } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
+import useAuth from '../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
+import { muiTableHeadCellFilterTextFieldProps } from '../../../utils/materialReactTableUtils'
 import { apiProductosVariantes } from '../api/productosVariantes.api'
 import { ProductoVarianteProps } from '../interfaces/producto.interface'
-import useAuth from '../../../base/hooks/useAuth'
-import { AllInclusive } from '@mui/icons-material'
-import { muiTableHeadCellFilterTextFieldProps } from '../../../utils/materialReactTableUtils'
 
 interface OwnProps {
   codigoActividad: string
