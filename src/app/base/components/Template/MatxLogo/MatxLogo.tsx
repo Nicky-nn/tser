@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
-import useSettings from '../../../hooks/useSettings';
+import useSettings from '../../../hooks/useSettings'
 
 const MatxLogo: FC<any> = ({ className }: { className: string }) => {
-  const { settings } = useSettings();
-  const theme = settings.themes[settings.activeTheme];
+  const { settings } = useSettings()
+  const theme = settings.themes[settings.activeTheme]
 
   return (
     <svg
@@ -56,7 +56,7 @@ const MatxLogo: FC<any> = ({ className }: { className: string }) => {
         </g>
       </g>
     </svg>
-  );
-};
+  )
+}
 
-export default MatxLogo;
+export default MatxLogo

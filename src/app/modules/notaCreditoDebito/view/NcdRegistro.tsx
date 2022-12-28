@@ -1,29 +1,29 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Save } from '@mui/icons-material';
-import { Button, Grid, Paper, Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Save } from '@mui/icons-material'
+import { Button, Grid, Paper, Stack } from '@mui/material'
+import { Box } from '@mui/system'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import useAuth from '../../../base/hooks/useAuth';
-import { openInNewTab } from '../../../utils/helper';
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiNcdRegistro } from '../api/ncdRegistroApi';
-import { NcdInputProps } from '../interfaces/ncdInterface';
-import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
-import { ncdInputCompose } from '../services/ncdInputCompose';
-import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator';
-import NcdFacturaOriginal from './registro/NcdFacturaOriginal';
-import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import useAuth from '../../../base/hooks/useAuth'
+import { openInNewTab } from '../../../utils/helper'
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiNcdRegistro } from '../api/ncdRegistroApi'
+import { NcdInputProps } from '../interfaces/ncdInterface'
+import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
+import { ncdInputCompose } from '../services/ncdInputCompose'
+import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator'
+import NcdFacturaOriginal from './registro/NcdFacturaOriginal'
+import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion'
 
 const NcdRegistro = () => {
-  const { user } = useAuth();
-  const mySwal = withReactContent(Swal);
+  const { user } = useAuth()
+  const mySwal = withReactContent(Swal)
 
   const form = useForm<NcdInputProps>({
     defaultValues: {
@@ -35,47 +35,47 @@ const NcdRegistro = () => {
       detalle: [],
     },
     resolver: yupResolver(ncdRegistroValidationSchema),
-  });
+  })
 
   const onSubmit: SubmitHandler<NcdInputProps> = async (values) => {
-    const apiInput = ncdInputCompose(values);
+    const apiInput = ncdInputCompose(values)
     await swalAsyncConfirmDialog({
       preConfirm: async () => {
         const resp: any = await apiNcdRegistro(apiInput).catch((err) => ({
           error: err,
-        }));
+        }))
         if (resp.error) {
-          swalException(resp.error);
-          return false;
+          swalException(resp.error)
+          return false
         }
-        return resp;
+        return resp
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        const { value } = resp;
-        const { representacionGrafica } = value;
+        const { value } = resp
+        const { representacionGrafica } = value
         mySwal.fire({
           title: `Documento generado correctamente`,
           html: (
             <RepresentacionGraficaUrls representacionGrafica={representacionGrafica} />
           ),
-        });
+        })
         form.reset({
           numeroFactura: '',
           fechaEmision: '',
           razonSocial: '',
           facturaCuf: '',
           detalleFactura: [],
-        });
-        notSuccess();
-        openInNewTab(representacionGrafica.pdf);
+        })
+        notSuccess()
+        openInNewTab(representacionGrafica.pdf)
       }
       if (resp.isDenied) {
-        swalException(resp.value);
+        swalException(resp.value)
       }
-      return;
-    });
-  };
+      return
+    })
+  }
 
   return (
     <SimpleContainer>
@@ -122,7 +122,7 @@ const NcdRegistro = () => {
       </form>
       <Box py="12px" />
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default NcdRegistro;
+export default NcdRegistro

@@ -1,16 +1,16 @@
-import { Newspaper } from '@mui/icons-material';
-import { Button, Grid, Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import AuthContext from '../../../../base/contexts/JWTAuthContext';
-import SimpleContainer from '../../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcrumb';
-import { giftCardRouteMap } from '../../GiftCardRoutesMap';
-import GiftCardClientesListado from './GiftCardClientesListado';
+import { Newspaper } from '@mui/icons-material'
+import { Button, Grid, Stack } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { useContext } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import AuthContext from '../../../../base/contexts/JWTAuthContext'
+import SimpleContainer from '../../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcrumb'
+import { giftCardRouteMap } from '../../GiftCardRoutesMap'
+import GiftCardClientesListado from './GiftCardClientesListado'
 
 const GiftCardsClientes = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext)
   // in this case *props are stored in the state of parent component
 
   return (
@@ -47,7 +47,7 @@ const GiftCardsClientes = () => {
       ;
       <Box py="12px" />;
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default GiftCardsClientes;
+export default GiftCardsClientes

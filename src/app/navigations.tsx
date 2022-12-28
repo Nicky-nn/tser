@@ -1,21 +1,21 @@
-import { giftCardRouteMap } from './modules/giftCard/GiftCardRoutesMap';
-import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap';
-import { productosRouteMap } from './modules/productos/ProductosRoutesMap';
-import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap';
+import { giftCardRouteMap } from './modules/giftCard/GiftCardRoutesMap'
+import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap'
+import { productosRouteMap } from './modules/productos/ProductosRoutesMap'
+import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap'
 
 export interface NavigationProps {
-  name: string;
-  path?: string;
-  icon?: any;
-  iconText?: string;
-  label?: string;
-  type?: string;
-  badge?: { value: string; color: string };
+  name: string
+  path?: string
+  icon?: any
+  iconText?: string
+  label?: string
+  type?: string
+  badge?: { value: string; color: string }
   children?: Array<{
-    name: string;
-    iconText: string;
-    path: string;
-  }>;
+    name: string
+    iconText: string
+    path: string
+  }>
 }
 
 export const navigations: NavigationProps[] = [
@@ -118,4 +118,4 @@ export const navigations: NavigationProps[] = [
     type: 'extLink',
     path: 'http://demos.ui-lib.com/matx-react-doc/',
   },
-];
+]

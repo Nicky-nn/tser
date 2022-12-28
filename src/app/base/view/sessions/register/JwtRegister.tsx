@@ -1,29 +1,29 @@
-import { Button, Card, Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { Box, styled } from '@mui/system';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Button, Card, Checkbox, FormControlLabel, Grid } from '@mui/material'
+import { Box, styled } from '@mui/system'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Span } from '../../../components/Template/Typography';
-import useAuth from '../../../hooks/useAuth';
+import { Span } from '../../../components/Template/Typography'
+import useAuth from '../../../hooks/useAuth'
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-}));
+}))
 
 const JustifyBox = styled(FlexBox)(() => ({
   justifyContent: 'center',
-}));
+}))
 
 const ContentBox = styled(JustifyBox)(() => ({
   height: '100%',
   padding: '32px',
   background: 'rgba(0, 0, 0, 0.01)',
-}));
+}))
 
 const IMG = styled('img')(() => ({
   width: '100%',
-}));
+}))
 
 const JWTRegister = styled(JustifyBox)(() => ({
   background: '#1A2038',
@@ -33,30 +33,30 @@ const JWTRegister = styled(JustifyBox)(() => ({
     borderRadius: 12,
     margin: '1rem',
   },
-}));
+}))
 
 const JwtRegister = () => {
-  const navigate = useNavigate();
-  const [state, setState]: any = useState({});
-  const { register }: any = useAuth();
+  const navigate = useNavigate()
+  const [state, setState]: any = useState({})
+  const { register }: any = useAuth()
 
   const handleChange: any = ({ target: { name, value } }: any) => {
     setState({
       ...state,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleFormSubmit = (event: any) => {
     try {
-      register(state.email, state.username, state.password);
-      navigate('/');
+      register(state.email, state.username, state.password)
+      navigate('/')
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
 
-  let { username, email, password, agreement } = state;
+  let { username, email, password, agreement } = state
 
   return (
     <JWTRegister>
@@ -107,7 +107,7 @@ const JwtRegister = () => {
         </Grid>
       </Card>
     </JWTRegister>
-  );
-};
+  )
+}
 
-export default JwtRegister;
+export default JwtRegister

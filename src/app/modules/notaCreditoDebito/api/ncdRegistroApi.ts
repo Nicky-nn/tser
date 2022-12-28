@@ -1,16 +1,16 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { NcdProps } from '../interfaces/ncdInterface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { NcdProps } from '../interfaces/ncdInterface'
 
 export interface NcdRegistroInputProps {
-  facturaCuf: string;
+  facturaCuf: string
   detalle: {
-    itemFactura: number;
-    cantidad: number;
-  }[];
+    itemFactura: number
+    cantidad: number
+  }[]
 }
 
 const apiQuery = gql`
@@ -26,7 +26,7 @@ const apiQuery = gql`
       }
     }
   }
-`;
+`
 
 /**
  * @description Registro de una nota de credito debito
@@ -35,11 +35,11 @@ const apiQuery = gql`
 export const apiNcdRegistro = async (
   inputProps: NcdRegistroInputProps,
 ): Promise<NcdProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(apiQuery, { input: inputProps });
-  return data.notaCreditoDebitoFcvRegistro;
-};
+  const data: any = await client.request(apiQuery, { input: inputProps })
+  return data.notaCreditoDebitoFcvRegistro
+}

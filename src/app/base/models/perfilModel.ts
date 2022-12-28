@@ -1,9 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { PerfilProps } from './loginModel';
-import { AccessToken } from './paramsModel';
+import { PerfilProps } from './loginModel'
+import { AccessToken } from './paramsModel'
 
 const query = gql`
   {
@@ -65,13 +65,13 @@ const query = gql`
       }
     }
   }
-`;
+`
 
 export const perfilModel = async (): Promise<PerfilProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
-  const data: any = await client.request(query);
-  return data.perfil;
-};
+  client.setHeader('authorization', `Bearer ${token}`)
+  const data: any = await client.request(query)
+  return data.perfil
+}

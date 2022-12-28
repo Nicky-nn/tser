@@ -1,13 +1,13 @@
 // noinspection JSUnresolvedVariable
 
 module.exports = {
-  semi: true,
+  semi: false,
   trailingComma: 'all',
   singleQuote: true,
   printWidth: 90,
   tabWidth: 2,
-  endOfLine: 'auto',
-};
+  endOfLine: 'crlf',
+}
 
 // {
 //   "arrowParens": "always",

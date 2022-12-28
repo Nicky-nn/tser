@@ -4,7 +4,7 @@ import {
   MonetizationOn,
   RadioButtonChecked,
   RepeatOne,
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 import {
   Chip,
   IconButton,
@@ -17,18 +17,18 @@ import {
   TableRow,
   Tooltip,
   Typography,
-} from '@mui/material';
-import { styled, useTheme } from '@mui/system';
-import React, { FC, useState } from 'react';
+} from '@mui/material'
+import { styled, useTheme } from '@mui/system'
+import React, { FC, useState } from 'react'
 
-import CuentaRestriccionDialog from '../../../modules/cuenta/view/CuentaRestriccionDialog';
-import { topBarHeightRestriccion } from '../../../utils/constant';
-import useAuth from '../../hooks/useAuth';
-import { themeShadows } from '../Template/MatxTheme/themeColors';
+import CuentaRestriccionDialog from '../../../modules/cuenta/view/CuentaRestriccionDialog'
+import { topBarHeightRestriccion } from '../../../utils/constant'
+import useAuth from '../../hooks/useAuth'
+import { themeShadows } from '../Template/MatxTheme/themeColors'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
-}));
+}))
 
 const RestriccionTopBarRoot = styled('div')(() => ({
   top: 0,
@@ -36,7 +36,7 @@ const RestriccionTopBarRoot = styled('div')(() => ({
   transition: 'all 0.3s ease',
   boxShadow: themeShadows[5],
   height: topBarHeightRestriccion,
-}));
+}))
 
 const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
   padding: 0,
@@ -48,16 +48,16 @@ const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
   background: theme.palette.primary.primary,
   borderRadius: 0,
   justifyContent: 'space-between',
-}));
+}))
 
 const LayoutRestriccion: FC<any> = () => {
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
-  const { logout, user }: any = useAuth();
+  const theme = useTheme()
+  const [open, setOpen] = useState(false)
+  const { logout, user }: any = useAuth()
 
   const handleChangeSucursal = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   return (
     <>
@@ -170,11 +170,11 @@ const LayoutRestriccion: FC<any> = () => {
         keepMounted
         open={open}
         onClose={() => {
-          setOpen(false);
+          setOpen(false)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default React.memo(LayoutRestriccion);
+export default React.memo(LayoutRestriccion)

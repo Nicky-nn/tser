@@ -1,23 +1,23 @@
-import { Button, FormControl, Grid } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import React, { FunctionComponent, useState } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select from 'react-select';
+import { Button, FormControl, Grid } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import React, { FunctionComponent, useState } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select from 'react-select'
 
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { PageInputProps } from '../../../../interfaces';
-import { apiProveedores } from '../../../proveedor/api/proveedores.api';
-import { ProveedorProps } from '../../../proveedor/interfaces/proveedor.interface';
-import ProveedorRegistroDialog from '../../../proveedor/view/ProveedorRegistroDialog';
-import { ProductoInputProps } from '../../interfaces/producto.interface';
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { PageInputProps } from '../../../../interfaces'
+import { apiProveedores } from '../../../proveedor/api/proveedores.api'
+import { ProveedorProps } from '../../../proveedor/interfaces/proveedor.interface'
+import ProveedorRegistroDialog from '../../../proveedor/view/ProveedorRegistroDialog'
+import { ProductoInputProps } from '../../interfaces/producto.interface'
 
 interface OwnProps {
-  form: UseFormReturn<ProductoInputProps>;
+  form: UseFormReturn<ProductoInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoProveedor: FunctionComponent<Props> = (props) => {
   const {
@@ -29,12 +29,12 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors, isSubmitted, isSubmitSuccessful },
     },
-  } = props;
+  } = props
 
   // const {formik} = props;
   // const {values, setFieldValue} = formik
 
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false)
 
   const { data: proveedores, refetch } = useQuery<ProveedorProps[], Error>(
     ['productoProveedores', openDialog],
@@ -43,11 +43,11 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
         page: 1,
         limit: 1000,
         reverse: true,
-      };
-      const { docs } = await apiProveedores(pageInput);
-      return docs;
+      }
+      const { docs } = await apiProveedores(pageInput)
+      return docs
     },
-  );
+  )
 
   return (
     <SimpleCard title={'Proveedor'}>
@@ -67,7 +67,7 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                   placeholder={'Seleccione proveedor...'}
                   value={field.value}
                   onChange={(proveedor: any) => {
-                    field.onChange(proveedor);
+                    field.onChange(proveedor)
                   }}
                   options={proveedores}
                   isClearable={true}
@@ -89,16 +89,16 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
             open={openDialog}
             onClose={(value?: ProveedorProps) => {
               if (value) {
-                setValue('proveedor', value);
-                refetch().then();
+                setValue('proveedor', value)
+                refetch().then()
               }
-              setOpenDialog(false);
+              setOpenDialog(false)
             }}
           />
         </Grid>
       </Grid>
     </SimpleCard>
-  );
-};
+  )
+}
 
-export default ProductoProveedor;
+export default ProductoProveedor

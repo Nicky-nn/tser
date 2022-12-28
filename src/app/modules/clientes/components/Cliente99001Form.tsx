@@ -1,18 +1,18 @@
-import { Grid, TextField } from '@mui/material';
-import { FormikProps } from 'formik';
-import React, { FunctionComponent } from 'react';
+import { Grid, TextField } from '@mui/material'
+import { FormikProps } from 'formik'
+import React, { FunctionComponent } from 'react'
 
-import AlertError from '../../../base/components/Alert/AlertError';
-import { Cliente99001InputProps } from '../interfaces/cliente';
+import AlertError from '../../../base/components/Alert/AlertError'
+import { Cliente99001InputProps } from '../interfaces/cliente'
 
 interface OwnProps {
-  formik: FormikProps<Cliente99001InputProps>;
+  formik: FormikProps<Cliente99001InputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const Cliente99001Form: FunctionComponent<Props> = (props) => {
-  const { formik, ...other } = props;
+  const { formik, ...other } = props
 
   return (
     <form>
@@ -65,7 +65,7 @@ const Cliente99001Form: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
     </form>
-  );
-};
+  )
+}
 
-export default Cliente99001Form;
+export default Cliente99001Form

@@ -1,17 +1,17 @@
-import { Grid, TextField } from '@mui/material';
-import { FormikProps } from 'formik';
-import React, { FunctionComponent } from 'react';
+import { Grid, TextField } from '@mui/material'
+import { FormikProps } from 'formik'
+import React, { FunctionComponent } from 'react'
 
-import { ProveedorInputProp } from '../interfaces/proveedor.interface';
+import { ProveedorInputProp } from '../interfaces/proveedor.interface'
 
 interface OwnProps {
-  formik: FormikProps<ProveedorInputProp>;
+  formik: FormikProps<ProveedorInputProp>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProveedorForm: FunctionComponent<Props> = (props) => {
-  const { formik } = props;
+  const { formik } = props
   return (
     <>
       <form noValidate>
@@ -111,7 +111,7 @@ const ProveedorForm: FunctionComponent<Props> = (props) => {
         </Grid>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default ProveedorForm;
+export default ProveedorForm

@@ -1,19 +1,19 @@
-import { Hidden, Switch } from '@mui/material';
-import { Box, styled, Theme, useTheme } from '@mui/system';
-import React from 'react';
+import { Hidden, Switch } from '@mui/material'
+import { Box, styled, Theme, useTheme } from '@mui/system'
+import React from 'react'
 
-import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant';
-import { convertHexToRGB } from '../../../../../utils/utils';
-import useSettings from '../../../../hooks/useSettings';
-import Brand from '../../Brand/Brand';
-import { themeShadows } from '../../MatxTheme/themeColors';
-import Sidenav from '../../Sidenav/Sidenav';
+import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
+import { convertHexToRGB } from '../../../../../utils/utils'
+import useSettings from '../../../../hooks/useSettings'
+import Brand from '../../Brand/Brand'
+import { themeShadows } from '../../MatxTheme/themeColors'
+import Sidenav from '../../Sidenav/Sidenav'
 
 interface SidebarNavRootProps {
-  theme?: Theme;
-  width: number | string;
-  primarybg?: string;
-  bgimgurl: string;
+  theme?: Theme
+  width: number | string
+  primarybg?: string
+  bgimgurl: string
 }
 const SidebarNavRoot = styled(Box)(
   ({ theme, width, primarybg, bgimgurl }: SidebarNavRootProps) => ({
@@ -48,31 +48,31 @@ const SidebarNavRoot = styled(Box)(
       },
     },
   }),
-);
+)
 
 const NavListBox = styled(Box)(() => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-}));
+}))
 
 const Layout1Sidenav = () => {
-  const theme = useTheme();
-  const { settings, updateSettings } = useSettings();
-  const leftSidebar = settings.layout1Settings.leftSidebar;
-  const { mode, bgImgURL } = leftSidebar;
+  const theme = useTheme()
+  const { settings, updateSettings } = useSettings()
+  const leftSidebar = settings.layout1Settings.leftSidebar
+  const { mode, bgImgURL } = leftSidebar
 
-  console.log(bgImgURL);
+  console.log(bgImgURL)
 
   const getSidenavWidth = () => {
     switch (mode) {
       case 'compact':
-        return sidenavCompactWidth;
+        return sidenavCompactWidth
       default:
-        return sideNavWidth;
+        return sideNavWidth
     }
-  };
-  const primaryRGB = convertHexToRGB(theme.palette.primary.main);
+  }
+  const primaryRGB = convertHexToRGB(theme.palette.primary.main)
 
   const updateSidebarMode = (sidebarSettings: any) => {
     updateSettings({
@@ -81,12 +81,12 @@ const Layout1Sidenav = () => {
           ...sidebarSettings,
         },
       },
-    });
-  };
+    })
+  }
 
   const handleSidenavToggle = () => {
-    updateSidebarMode({ mode: mode === 'compact' ? 'full' : 'compact' });
-  };
+    updateSidebarMode({ mode: mode === 'compact' ? 'full' : 'compact' })
+  }
 
   return (
     <SidebarNavRoot bgimgurl={bgImgURL} primarybg={primaryRGB} width={getSidenavWidth()}>
@@ -104,7 +104,7 @@ const Layout1Sidenav = () => {
         <Sidenav />
       </NavListBox>
     </SidebarNavRoot>
-  );
-};
+  )
+}
 
-export default React.memo(Layout1Sidenav);
+export default React.memo(Layout1Sidenav)

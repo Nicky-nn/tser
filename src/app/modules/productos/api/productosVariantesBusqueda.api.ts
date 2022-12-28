@@ -1,9 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { ProductoVarianteProps } from '../interfaces/producto.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { ProductoVarianteProps } from '../interfaces/producto.interface'
 
 const reqQuery = gql`
   query FCV_PRODUCTOS_VARIANTES_BUSQUEDA($codigoActividad: String!, $query: String) {
@@ -52,17 +52,17 @@ const reqQuery = gql`
       peso
     }
   }
-`;
+`
 
 export const apiProductosVariantesBusqueda = async (
   codigoActividad: string,
   query: string,
 ): Promise<ProductoVarianteProps[]> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(reqQuery, { codigoActividad, query });
-  return data?.fcvProductosVariantesBusqueda || [];
-};
+  const data: any = await client.request(reqQuery, { codigoActividad, query })
+  return data?.fcvProductosVariantesBusqueda || []
+}

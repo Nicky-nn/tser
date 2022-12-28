@@ -1,32 +1,32 @@
-import { Person } from '@mui/icons-material';
-import { Button, Grid } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Person } from '@mui/icons-material'
+import { Button, Grid } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { H4 } from '../../../../base/components/Template/Typography';
-import { notSuccess } from '../../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal';
-import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { H4 } from '../../../../base/components/Template/Typography'
+import { notSuccess } from '../../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaRecargarCache: FunctionComponent<Props> = (props) => {
   const handleVaciarCache = async () => {
     await swalAsyncConfirmDialog({
       preConfirm: () => {
         return apiUsuarioVaciarCache().catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess('Recarga de cache exitosa');
+        notSuccess('Recarga de cache exitosa')
       }
-    });
-  };
+    })
+  }
   return (
     <>
       <SimpleCard title={'RECARGAR CACHE'} childIcon={<Person />}>
@@ -47,7 +47,7 @@ const CuentaRecargarCache: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default CuentaRecargarCache;
+export default CuentaRecargarCache

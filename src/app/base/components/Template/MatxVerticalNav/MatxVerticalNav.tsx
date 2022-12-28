@@ -1,13 +1,13 @@
-import { ButtonBase } from '@mui/material';
-import Icon from '@mui/material/Icon';
-import { Box, styled } from '@mui/system';
-import React, { FC, Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { ButtonBase } from '@mui/material'
+import Icon from '@mui/material/Icon'
+import { Box, styled } from '@mui/system'
+import React, { FC, Fragment } from 'react'
+import { NavLink } from 'react-router-dom'
 
-import { NavigationProps } from '../../../../navigations';
-import useSettings from '../../../hooks/useSettings';
-import { Paragraph, Span } from '../Typography';
-import MatxVerticalNavExpansionPanel from './MatxVerticalNavExpansionPanel';
+import { NavigationProps } from '../../../../navigations'
+import useSettings from '../../../hooks/useSettings'
+import { Paragraph, Span } from '../Typography'
+import MatxVerticalNavExpansionPanel from './MatxVerticalNavExpansionPanel'
 
 const ListLabel = styled(Paragraph)(({ theme, mode }: any): any => ({
   fontSize: '12px',
@@ -17,7 +17,7 @@ const ListLabel = styled(Paragraph)(({ theme, mode }: any): any => ({
   textTransform: 'uppercase',
   display: mode === 'compact' && 'none',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const ExtAndIntCommon = {
   display: 'flex',
@@ -42,11 +42,11 @@ const ExtAndIntCommon = {
     paddingRight: '16px',
     verticalAlign: 'middle',
   },
-};
+}
 const ExternalLink = styled('a')(({ theme }: any): any => ({
   ...ExtAndIntCommon,
   color: theme.palette.text.primary,
-}));
+}))
 
 const InternalLink = styled(Box)(({ theme }) => ({
   '& a': {
@@ -56,13 +56,13 @@ const InternalLink = styled(Box)(({ theme }) => ({
   '& .navItemActive': {
     backgroundColor: 'rgba(255, 255, 255, 0.16)',
   },
-}));
+}))
 
 const StyledText: FC<any> = styled(Span)(({ mode }: any): any => ({
   fontSize: '0.875rem',
   paddingLeft: '0.8rem',
   display: mode === 'compact' && 'none',
-}));
+}))
 
 const BulletIcon: FC<any> = styled('div')(({ theme }) => ({
   padding: '2px',
@@ -71,17 +71,17 @@ const BulletIcon: FC<any> = styled('div')(({ theme }) => ({
   overflow: 'hidden',
   borderRadius: '300px',
   background: theme.palette.text.primary,
-}));
+}))
 
 const BadgeValue = styled('div')(() => ({
   padding: '1px 8px',
   overflow: 'hidden',
   borderRadius: '300px',
-}));
+}))
 
 const MatxVerticalNav: FC<any> = ({ items }: any) => {
-  const { settings } = useSettings();
-  const { mode } = settings.layout1Settings.leftSidebar;
+  const { settings } = useSettings()
+  const { mode } = settings.layout1Settings.leftSidebar
 
   const renderLevels = (data: NavigationProps[]) => {
     return data.map((item, index: number) => {
@@ -90,13 +90,13 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
           <ListLabel key={index} mode={mode} className="sidenavHoverShow">
             {item.label}
           </ListLabel>
-        );
+        )
       if (item.children) {
         return (
           <MatxVerticalNavExpansionPanel mode={mode} item={item} key={index}>
             {renderLevels(item.children)}
           </MatxVerticalNavExpansionPanel>
-        );
+        )
       } else if (item.type === 'extLink') {
         return (
           <ExternalLink
@@ -109,9 +109,9 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
             <ButtonBase key={item.name} name="child" sx={{ width: '100%' }}>
               {(() => {
                 if (item.icon) {
-                  return <Icon className="icon">{item.icon}</Icon>;
+                  return <Icon className="icon">{item.icon}</Icon>
                 } else {
-                  return <span className="item-icon icon-text">{item.iconText}</span>;
+                  return <span className="item-icon icon-text">{item.iconText}</span>
                 }
               })()}
               <StyledText mode={mode} className="sidenavHoverShow">
@@ -121,7 +121,7 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
               {item.badge && <BadgeValue>{item.badge.value}</BadgeValue>}
             </ButtonBase>
           </ExternalLink>
-        );
+        )
       } else {
         return (
           <InternalLink key={index}>
@@ -168,12 +168,12 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
               </ButtonBase>
             </NavLink>
           </InternalLink>
-        );
+        )
       }
-    });
-  };
+    })
+  }
 
-  return <div className="navigation">{renderLevels(items)}</div>;
-};
+  return <div className="navigation">{renderLevels(items)}</div>
+}
 
-export default React.memo(MatxVerticalNav);
+export default React.memo(MatxVerticalNav)

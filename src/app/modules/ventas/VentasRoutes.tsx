@@ -1,10 +1,10 @@
-import { lazy } from 'react';
+import { lazy } from 'react'
 
-import { authRoles } from '../../../auth/authRoles';
-import Loadable from '../../base/components/Template/Loadable/Loadable';
+import { authRoles } from '../../../auth/authRoles'
+import Loadable from '../../base/components/Template/Loadable/Loadable'
 
-const AppVentaRegistro = Loadable(lazy(() => import('./view/VentaRegistro')));
-const AppVentaGestion = Loadable(lazy(() => import('./view/VentaGestion')));
+const AppVentaRegistro = Loadable(lazy(() => import('./view/VentaRegistro')))
+const AppVentaGestion = Loadable(lazy(() => import('./view/VentaGestion')))
 
 const ventasRoutes = [
   {
@@ -17,6 +17,6 @@ const ventasRoutes = [
     element: <AppVentaGestion />,
     auth: authRoles.admin,
   },
-];
+]
 
-export default ventasRoutes;
+export default ventasRoutes

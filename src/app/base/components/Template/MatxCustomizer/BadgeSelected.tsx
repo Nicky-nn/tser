@@ -1,6 +1,6 @@
-import { Badge } from '@mui/material';
-import { styled } from '@mui/system';
-import { FC } from 'react';
+import { Badge } from '@mui/material'
+import { styled } from '@mui/system'
+import { FC } from 'react'
 
 const BadgeSelected: FC<any> = styled(Badge)(() => ({
   top: '0',
@@ -8,6 +8,6 @@ const BadgeSelected: FC<any> = styled(Badge)(() => ({
   height: '32px',
   width: '32px',
   borderRadius: '50%',
-}));
+}))
 
-export default BadgeSelected;
+export default BadgeSelected

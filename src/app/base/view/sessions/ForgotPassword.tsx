@@ -1,20 +1,20 @@
-import { Box, Button, Card, Grid, styled, TextField } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, Card, Grid, styled, TextField } from '@mui/material'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-}));
+}))
 
 const JustifyBox = styled(FlexBox)(() => ({
   justifyContent: 'center',
-}));
+}))
 
 const ContentBox = styled(Box)(({ theme }) => ({
   padding: 32,
   background: theme.palette.background.default,
-}));
+}))
 
 const ForgotPasswordRoot = styled(JustifyBox)(() => ({
   background: '#1A2038',
@@ -24,15 +24,15 @@ const ForgotPasswordRoot = styled(JustifyBox)(() => ({
     margin: '1rem',
     borderRadius: 12,
   },
-}));
+}))
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('admin@example.com');
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('admin@example.com')
 
   const handleFormSubmit = () => {
-    console.log(email);
-  };
+    console.log(email)
+  }
 
   return (
     <ForgotPasswordRoot>
@@ -75,7 +75,7 @@ const ForgotPassword = () => {
         </Grid>
       </Card>
     </ForgotPasswordRoot>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default ForgotPassword

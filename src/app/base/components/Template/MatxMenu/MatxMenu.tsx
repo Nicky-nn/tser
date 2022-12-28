@@ -1,8 +1,8 @@
-import { Menu, ThemeProvider } from '@mui/material';
-import { Box, styled } from '@mui/system';
-import React, { FC, Fragment } from 'react';
+import { Menu, ThemeProvider } from '@mui/material'
+import { Box, styled } from '@mui/system'
+import React, { FC, Fragment } from 'react'
 
-import useSettings from '../../../hooks/useSettings';
+import useSettings from '../../../hooks/useSettings'
 
 const MenuButton = styled(Box)(({ theme }) => ({
   display: 'inline-block',
@@ -10,21 +10,21 @@ const MenuButton = styled(Box)(({ theme }) => ({
   '& div:hover': {
     backgroundColor: theme.palette.action.hover,
   },
-}));
+}))
 
 const MatxMenu: FC<any> = (props: any) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const children = React.Children.toArray(props.children);
-  let { shouldCloseOnItemClick = true, horizontalPosition = 'left' } = props;
-  const { settings } = useSettings();
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const children = React.Children.toArray(props.children)
+  let { shouldCloseOnItemClick = true, horizontalPosition = 'left' } = props
+  const { settings } = useSettings()
 
   const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
     <Fragment>
@@ -52,7 +52,7 @@ const MatxMenu: FC<any> = (props: any) => {
         </Menu>
       </ThemeProvider>
     </Fragment>
-  );
-};
+  )
+}
 
-export default MatxMenu;
+export default MatxMenu

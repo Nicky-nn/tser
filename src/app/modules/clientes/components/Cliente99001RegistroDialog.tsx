@@ -1,32 +1,32 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useFormik } from 'formik';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useFormik } from 'formik'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
 import {
   Cliente99001InputProps,
   CLIENTE_99001_DEFAULT_INPUT,
   ClienteProps,
-} from '../interfaces/cliente';
-import { cliente99001InputValidator } from '../validator/clienteInputValidator';
-import Cliente99001Form from './Cliente99001Form';
-import { genRandomString } from '../../../utils/helper';
-import useAuth from '../../../base/hooks/useAuth';
-import { apiCliente99001Create } from '../api/cliente99001Create.api';
+} from '../interfaces/cliente'
+import { cliente99001InputValidator } from '../validator/clienteInputValidator'
+import Cliente99001Form from './Cliente99001Form'
+import { genRandomString } from '../../../utils/helper'
+import useAuth from '../../../base/hooks/useAuth'
+import { apiCliente99001Create } from '../api/cliente99001Create.api'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: ClienteProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: ClienteProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, keepMounted, open, ...other } = props;
-  const { user } = useAuth();
+  const { onClose, keepMounted, open, ...other } = props
+  const { user } = useAuth()
 
   const cliente99001Form = useFormik<Cliente99001InputProps>({
     initialValues: CLIENTE_99001_DEFAULT_INPUT,
@@ -37,28 +37,28 @@ const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
           return apiCliente99001Create({
             ...values,
           }).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
         text: 'Confirma que desea registrar al nuevo cliente Extranjero?',
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     },
-  });
+  })
 
   useEffect(() => {
     if (open) {
-      cliente99001Form.resetForm();
-      cliente99001Form.setFieldValue('codigoCliente', genRandomString(10).toUpperCase());
-      cliente99001Form.setFieldValue('email', user.correo);
+      cliente99001Form.resetForm()
+      cliente99001Form.setFieldValue('codigoCliente', genRandomString(10).toUpperCase())
+      cliente99001Form.setFieldValue('email', user.correo)
       // clienteForm.setValues(CLIENTE_DEFAULT_INPUT)
     }
-  }, [open]);
+  }, [open])
 
   return (
     <>
@@ -80,7 +80,7 @@ const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             size={'small'}
             onClick={() => {
-              onClose();
+              onClose()
             }}
           >
             Cancelar
@@ -96,7 +96,7 @@ const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default Cliente99001RegistroDialog;
+export default Cliente99001RegistroDialog

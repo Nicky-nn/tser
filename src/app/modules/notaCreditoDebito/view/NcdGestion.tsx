@@ -4,37 +4,37 @@ import {
   LayersClear,
   MenuOpen,
   PictureAsPdf,
-} from '@mui/icons-material';
-import { Button, Chip, Grid, IconButton } from '@mui/material';
-import { Box } from '@mui/system';
-import { useQuery } from '@tanstack/react-query';
+} from '@mui/icons-material'
+import { Button, Chip, Grid, IconButton } from '@mui/material'
+import { Box } from '@mui/system'
+import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
   SortingState,
-} from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FC, useMemo, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+} from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FC, useMemo, useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 
-import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton';
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import { SimpleItem } from '../../../base/components/Container/SimpleItem';
-import SimpleRowMenu from '../../../base/components/Container/SimpleRow';
-import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
-import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces';
-import { genApiQuery, openInNewTab } from '../../../utils/helper';
-import { localization } from '../../../utils/localization';
+import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import { SimpleItem } from '../../../base/components/Container/SimpleItem'
+import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
+import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
+import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
+import { genApiQuery, openInNewTab } from '../../../utils/helper'
+import { localization } from '../../../utils/localization'
 import {
   muiTableApiEstado,
   muiTableHeadCellFilterTextFieldProps,
-} from '../../../utils/materialReactTableUtils';
-import { apiNotasCreditoDebito } from '../api/ncd.api';
-import { NcdProps } from '../interfaces/ncdInterface';
-import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap';
+} from '../../../utils/materialReactTableUtils'
+import { apiNotasCreditoDebito } from '../api/ncd.api'
+import { NcdProps } from '../interfaces/ncdInterface'
+import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
 
 const tableColumns: MRT_ColumnDef<NcdProps>[] = [
   {
@@ -121,21 +121,21 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
     filterFn: (row, id, filterValue) =>
       row.original.state.toLowerCase().startsWith(filterValue.toLowerCase()),
   },
-];
+]
 
 const NcdGestion: FC<any> = () => {
-  const [openAnularNcd, setOpenAnularNcd] = useState(false);
+  const [openAnularNcd, setOpenAnularNcd] = useState(false)
 
-  const [openExport, setOpenExport] = useState(false);
+  const [openExport, setOpenExport] = useState(false)
   // DATA TABLE
-  const [rowCount, setRowCount] = useState(0);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowCount, setRowCount] = useState(0)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN DATA TABLE
 
   const {
@@ -147,20 +147,20 @@ const NcdGestion: FC<any> = () => {
   } = useQuery<NcdProps[]>(
     ['gestionNotas', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await apiNotasCreditoDebito(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await apiNotasCreditoDebito(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
-  );
-  const columns = useMemo(() => tableColumns, []);
+  )
+  const columns = useMemo(() => tableColumns, [])
   return (
     <>
       <SimpleContainer>
@@ -251,7 +251,7 @@ const NcdGestion: FC<any> = () => {
                   >
                     <StyledMenuItem
                       onClick={(e) => {
-                        e.preventDefault();
+                        e.preventDefault()
                       }}
                     >
                       <LayersClear /> Anular Documento
@@ -259,7 +259,7 @@ const NcdGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.pdf);
+                        openInNewTab(row.original.representacionGrafica.pdf)
                       }}
                     >
                       <PictureAsPdf /> Pdf Medio Oficio
@@ -267,7 +267,7 @@ const NcdGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.xml);
+                        openInNewTab(row.original.representacionGrafica.xml)
                       }}
                     >
                       <FileOpen /> Xml
@@ -275,7 +275,7 @@ const NcdGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.sin);
+                        openInNewTab(row.original.representacionGrafica.sin)
                       }}
                     >
                       <FileOpen /> Url S.I.N.
@@ -293,7 +293,7 @@ const NcdGestion: FC<any> = () => {
         <Box py="12px" />
       </SimpleContainer>
     </>
-  );
-};
+  )
+}
 
-export default NcdGestion;
+export default NcdGestion

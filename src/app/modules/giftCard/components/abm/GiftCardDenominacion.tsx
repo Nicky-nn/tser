@@ -1,40 +1,40 @@
-import React, { FunctionComponent } from 'react';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
+import React, { FunctionComponent } from 'react'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import {
   GIFT_CARD_VARIANTE_INITIAL_VALUES,
   GiftCardInputProps,
-} from '../../interfaces/giftCard.interface';
-import GiftCardVariante from './denominacion/GiftCardVariante';
-import { Button, Grid } from '@mui/material';
-import { genRandomString } from '../../../../utils/helper';
+} from '../../interfaces/giftCard.interface'
+import GiftCardVariante from './denominacion/GiftCardVariante'
+import { Button, Grid } from '@mui/material'
+import { genRandomString } from '../../../../utils/helper'
 
 interface OwnProps {
-  form: UseFormReturn<GiftCardInputProps>;
+  form: UseFormReturn<GiftCardInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
-  const { form } = props;
+  const { form } = props
   const {
     control,
     setValue,
     watch,
     formState: { errors },
-  } = form;
+  } = form
 
-  const [variantesWatch] = watch(['variantes']);
+  const [variantesWatch] = watch(['variantes'])
   const variantesField = useFieldArray({
     control,
     name: 'variantes',
-  });
+  })
   const agregarDenominacion = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     variantesField.append({
       ...GIFT_CARD_VARIANTE_INITIAL_VALUES,
       id: genRandomString(10),
-    });
-  };
+    })
+  }
 
   return (
     <SimpleCard title={'DENOMINACIONES'}>
@@ -59,7 +59,7 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
         </Button>
       </Grid>
     </SimpleCard>
-  );
-};
+  )
+}
 
-export default GiftCardDenominacion;
+export default GiftCardDenominacion

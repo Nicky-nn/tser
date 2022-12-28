@@ -1,84 +1,84 @@
-import jwtDecode from 'jwt-decode';
-import React, { createContext, ReactNode, useEffect, useReducer } from 'react';
+import jwtDecode from 'jwt-decode'
+import React, { createContext, ReactNode, useEffect, useReducer } from 'react'
 
-import MatxLoading from '../components/Template/MatxLoading/MatxLoading';
-import { loginModel, PerfilProps, UserProps } from '../models/loginModel';
-import { AccessToken } from '../models/paramsModel';
-import { perfilModel } from '../models/perfilModel';
+import MatxLoading from '../components/Template/MatxLoading/MatxLoading'
+import { loginModel, PerfilProps, UserProps } from '../models/loginModel'
+import { AccessToken } from '../models/paramsModel'
+import { perfilModel } from '../models/perfilModel'
 
 type InitialStateProps = {
-  isAuthenticated: boolean;
-  isInitialised: boolean;
-  user: PerfilProps;
-};
+  isAuthenticated: boolean
+  isInitialised: boolean
+  user: PerfilProps
+}
 const initialState: InitialStateProps = {
   isAuthenticated: false,
   isInitialised: false,
   user: {} as PerfilProps,
-};
+}
 
 const isValidToken = (accessToken: string) => {
   if (!accessToken) {
-    return false;
+    return false
   }
 
-  const decodedToken: any = jwtDecode(accessToken);
-  const currentTime = Date.now() / 1000;
-  return decodedToken.exp > currentTime;
-};
+  const decodedToken: any = jwtDecode(accessToken)
+  const currentTime = Date.now() / 1000
+  return decodedToken.exp > currentTime
+}
 
 const setSession = (accessToken: string | null) => {
   if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken)
     // axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
   } else {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('accessToken')
     // delete axios.defaults.headers.common.Authorization
   }
-};
+}
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
     case 'INIT': {
-      const { isAuthenticated, user } = action.payload;
+      const { isAuthenticated, user } = action.payload
 
       return {
         ...state,
         isAuthenticated,
         isInitialised: true,
         user,
-      };
+      }
     }
     case 'LOGIN': {
-      const { user } = action.payload;
+      const { user } = action.payload
 
       return {
         ...state,
         isAuthenticated: true,
         user,
-      };
+      }
     }
     case 'LOGOUT': {
       return {
         ...state,
         isAuthenticated: false,
         user: {},
-      };
+      }
     }
     case 'REGISTER': {
-      const { user } = action.payload;
+      const { user } = action.payload
 
       return {
         ...state,
         isAuthenticated: true,
         user,
-      };
+      }
     }
     default: {
-      return { ...state };
+      return { ...state }
     }
   }
-};
+}
 
 const AuthContext = createContext({
   ...initialState,
@@ -86,25 +86,25 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   logout: () => {},
   register: () => Promise.resolve(),
-});
+})
 
 export interface AuthProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   const login = async (shop: string, email: string, password: string) => {
-    const user: UserProps = await loginModel(shop, email, password);
-    setSession(user.token);
+    const user: UserProps = await loginModel(shop, email, password)
+    setSession(user.token)
     dispatch({
       type: 'LOGIN',
       payload: {
         user: user.perfil,
       },
-    });
-  };
+    })
+  }
 
   const register = async (email: string, username: string, password: string) => {
     /*
@@ -125,27 +125,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             },
         })
         */
-  };
+  }
 
   const logout = () => {
-    setSession(null);
-    dispatch({ type: 'LOGOUT' });
-  };
+    setSession(null)
+    dispatch({ type: 'LOGOUT' })
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        const accessToken = window.localStorage.getItem(AccessToken);
+        const accessToken = window.localStorage.getItem(AccessToken)
         if (accessToken && isValidToken(accessToken)) {
-          setSession(accessToken);
-          const user = await perfilModel();
+          setSession(accessToken)
+          const user = await perfilModel()
           dispatch({
             type: 'INIT',
             payload: {
               isAuthenticated: true,
               user,
             },
-          });
+          })
         } else {
           dispatch({
             type: 'INIT',
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               isAuthenticated: false,
               user: {},
             },
-          });
+          })
         }
       } catch (err) {
         dispatch({
@@ -162,13 +162,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             isAuthenticated: false,
             user: {},
           },
-        });
+        })
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   if (!state.isInitialised) {
-    return <MatxLoading />;
+    return <MatxLoading />
   }
 
   return (
@@ -183,7 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     >
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
-export default AuthContext;
+export default AuthContext

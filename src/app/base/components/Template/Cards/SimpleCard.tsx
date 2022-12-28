@@ -1,9 +1,9 @@
-import { ArrowRight } from '@mui/icons-material';
-import { Avatar, Card, CardContent, CardHeader, CSSObject } from '@mui/material';
-import { styled } from '@mui/system';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { ArrowRight } from '@mui/icons-material'
+import { Avatar, Card, CardContent, CardHeader, CSSObject } from '@mui/material'
+import { styled } from '@mui/system'
+import { FC, PropsWithChildren, ReactNode } from 'react'
 
-import { H4 } from '../Typography';
+import { H4 } from '../Typography'
 
 const CardRoot = styled(Card)(() => ({
   height: '100%',
@@ -24,10 +24,10 @@ const CardRoot = styled(Card)(() => ({
   '& .MuiCardHeader-avatar': {
     marginRight: '8px',
   },
-})) as typeof Card;
+})) as typeof Card
 
 interface CardTitleProps {
-  subtitle?: string;
+  subtitle?: string
 }
 
 const CardTitle: FC<PropsWithChildren<CardTitleProps>> = styled('div')(
@@ -36,13 +36,13 @@ const CardTitle: FC<PropsWithChildren<CardTitleProps>> = styled('div')(
     fontWeight: '500',
     marginBottom: !subtitle ? '22px' : '0px',
   }),
-);
+)
 
 export interface SimpleCardProps {
-  title?: string;
-  subtitle?: string;
-  childIcon?: ReactNode;
-  children: ReactNode;
+  title?: string
+  subtitle?: string
+  childIcon?: ReactNode
+  children: ReactNode
 }
 
 const SimpleCard: FC<SimpleCardProps> = ({
@@ -70,7 +70,7 @@ const SimpleCard: FC<SimpleCardProps> = ({
 
       <CardContent>{children}</CardContent>
     </CardRoot>
-  );
-};
+  )
+}
 
-export default SimpleCard;
+export default SimpleCard

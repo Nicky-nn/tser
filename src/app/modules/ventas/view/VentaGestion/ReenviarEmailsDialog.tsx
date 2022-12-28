@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from '@mui/lab'
 import {
   Alert,
   Button,
@@ -8,62 +8,62 @@ import {
   DialogTitle,
   Grid,
   TextField,
-} from '@mui/material';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+} from '@mui/material'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 import {
   swalAsyncConfirmDialog,
   swalConfirm,
   swalException,
-} from '../../../../utils/swal';
-import { FacturaProps } from '../../interfaces/factura';
-import { isEmptyValue, validateEmail } from '../../../../utils/helper';
-import { fetchClienteCreate } from '../../../clientes/api/clienteCreate.api';
-import { notSuccess } from '../../../../utils/notification';
-import { apiFcvReenvioEmails } from '../../api/facturaReenvioEmail.api';
+} from '../../../../utils/swal'
+import { FacturaProps } from '../../interfaces/factura'
+import { isEmptyValue, validateEmail } from '../../../../utils/helper'
+import { fetchClienteCreate } from '../../../clientes/api/clienteCreate.api'
+import { notSuccess } from '../../../../utils/notification'
+import { apiFcvReenvioEmails } from '../../api/facturaReenvioEmail.api'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: any) => void;
-  factura: FacturaProps | null;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: any) => void
+  factura: FacturaProps | null
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
-  const { onClose, open, factura, ...other } = props;
-  const [emails, setEmails] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const { onClose, open, factura, ...other } = props
+  const [emails, setEmails] = useState<string>('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (open) {
-      setEmails(factura?.cliente.email || '');
+      setEmails(factura?.cliente.email || '')
     }
-  }, [open]);
+  }, [open])
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = async () => {
-    let aux = true;
+    let aux = true
     if (!factura?._id) {
-      toast.error('Seleccione el documento');
-      aux = false;
+      toast.error('Seleccione el documento')
+      aux = false
     }
     if (isEmptyValue(emails)) {
-      toast.error('Debe registrar al menos un correo electrónico');
-      aux = false;
+      toast.error('Debe registrar al menos un correo electrónico')
+      aux = false
     }
 
-    const newEmails: string[] = emails.split(';');
+    const newEmails: string[] = emails.split(';')
     for (const newEmail of newEmails) {
       if (!validateEmail(newEmail)) {
-        toast.error(`${newEmail} no es un correo electrónico válido`);
-        aux = false;
+        toast.error(`${newEmail} no es un correo electrónico válido`)
+        aux = false
       }
     }
 
@@ -74,18 +74,18 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
             cuf: factura?.cuf!,
             emails: newEmails,
           }).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
@@ -122,7 +122,7 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
                 multiline
                 rows={2}
                 onChange={(event) => {
-                  setEmails(event.target.value);
+                  setEmails(event.target.value)
                 }}
               />
             </Grid>
@@ -151,7 +151,7 @@ const ReenviarEmailsDialog: FunctionComponent<Props> = (props: Props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default ReenviarEmailsDialog;
+export default ReenviarEmailsDialog

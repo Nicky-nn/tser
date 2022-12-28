@@ -1,22 +1,22 @@
-import { Button, FormControl, Grid } from '@mui/material';
-import React, { FunctionComponent, useState } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select, { SingleValue } from 'react-select';
+import { Button, FormControl, Grid } from '@mui/material'
+import React, { FunctionComponent, useState } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select, { SingleValue } from 'react-select'
 
-import AlertLoading from '../../../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard';
-import useQueryTiposProducto from '../../../../tipoProducto/hooks/useQueryTiposProducto';
-import { TipoProductoProps } from '../../../../tipoProducto/interfaces/tipoProducto.interface';
-import TipoProductoDialogRegistro from '../../../../tipoProducto/view/TipoProductoRegistroDialog';
-import { GiftCardInputProps } from '../../../interfaces/giftCard.interface';
+import AlertLoading from '../../../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
+import useQueryTiposProducto from '../../../../tipoProducto/hooks/useQueryTiposProducto'
+import { TipoProductoProps } from '../../../../tipoProducto/interfaces/tipoProducto.interface'
+import TipoProductoDialogRegistro from '../../../../tipoProducto/view/TipoProductoRegistroDialog'
+import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
 
 interface OwnProps {
-  form: UseFormReturn<GiftCardInputProps>;
+  form: UseFormReturn<GiftCardInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const GiftCardClasificador: FunctionComponent<Props> = (props) => {
   const {
@@ -25,10 +25,10 @@ const GiftCardClasificador: FunctionComponent<Props> = (props) => {
       setValue,
       formState: { errors },
     },
-  } = props;
+  } = props
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const { tiposProducto, tpRefetch, tpLoading } = useQueryTiposProducto([openDialog]);
+  const [openDialog, setOpenDialog] = useState(false)
+  const { tiposProducto, tpRefetch, tpLoading } = useQueryTiposProducto([openDialog])
 
   return (
     <SimpleCard title={'Clasificador de Gift Cards'}>
@@ -51,7 +51,7 @@ const GiftCardClasificador: FunctionComponent<Props> = (props) => {
                     placeholder={'Seleccione...'}
                     value={field.value}
                     onChange={(tipoProducto: SingleValue<TipoProductoProps>) => {
-                      field.onChange(tipoProducto);
+                      field.onChange(tipoProducto)
                     }}
                     options={tiposProducto}
                     isClearable={true}
@@ -73,17 +73,17 @@ const GiftCardClasificador: FunctionComponent<Props> = (props) => {
             keepMounted={false}
             open={openDialog}
             onClose={(value?: TipoProductoProps) => {
-              setOpenDialog(false);
+              setOpenDialog(false)
               if (value) {
-                setValue('tipoProducto', value);
-                tpRefetch().then();
+                setValue('tipoProducto', value)
+                tpRefetch().then()
               }
             }}
           />
         </Grid>
       </Grid>
     </SimpleCard>
-  );
-};
+  )
+}
 
-export default GiftCardClasificador;
+export default GiftCardClasificador

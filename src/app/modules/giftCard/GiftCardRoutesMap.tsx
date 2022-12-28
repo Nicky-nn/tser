@@ -19,4 +19,4 @@ export const giftCardRouteMap = {
     path: `/giftcard/emitir`,
     name: 'Emitir Gift Card',
   },
-};
+}

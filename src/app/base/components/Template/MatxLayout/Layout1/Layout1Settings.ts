@@ -1,17 +1,17 @@
-import { ThemeTypeColorsProps } from '../../MatxTheme/themeColors';
+import { ThemeTypeColorsProps } from '../../MatxTheme/themeColors'
 
 export interface LayoutSettingsProps {
   leftSidebar: {
-    show: boolean;
-    mode: 'full' | 'close' | 'compact' | 'mobile';
-    theme: ThemeTypeColorsProps; // View all valid theme colors inside MatxTheme/themeColors.js
-    bgImgURL: string;
-  };
+    show: boolean
+    mode: 'full' | 'close' | 'compact' | 'mobile'
+    theme: ThemeTypeColorsProps // View all valid theme colors inside MatxTheme/themeColors.js
+    bgImgURL: string
+  }
   topbar: {
-    show: boolean;
-    fixed: boolean;
-    theme: ThemeTypeColorsProps; // View all valid theme colors inside MatxTheme/themeColors.js
-  };
+    show: boolean
+    fixed: boolean
+    theme: ThemeTypeColorsProps // View all valid theme colors inside MatxTheme/themeColors.js
+  }
 }
 
 const Layout1Settings: LayoutSettingsProps = {
@@ -26,6 +26,6 @@ const Layout1Settings: LayoutSettingsProps = {
     fixed: true,
     theme: 'whiteBlue', // View all valid theme colors inside MatxTheme/themeColors.js
   },
-};
+}
 
-export default Layout1Settings;
+export default Layout1Settings

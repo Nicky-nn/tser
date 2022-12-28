@@ -1,17 +1,17 @@
-import { Person } from '@mui/icons-material';
-import { Chip, FormControl, Grid, TextField } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Person } from '@mui/icons-material'
+import { Chip, FormControl, Grid, TextField } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { H4 } from '../../../../base/components/Template/Typography';
-import useAuth from '../../../../base/hooks/useAuth';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { H4 } from '../../../../base/components/Template/Typography'
+import useAuth from '../../../../base/hooks/useAuth'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaPerfil: FunctionComponent<Props> = (props) => {
-  const { user } = useAuth();
+  const { user } = useAuth()
   return (
     <>
       <SimpleCard title={'PERFIL DE USUARIO'} childIcon={<Person />}>
@@ -65,7 +65,7 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default CuentaPerfil;
+export default CuentaPerfil

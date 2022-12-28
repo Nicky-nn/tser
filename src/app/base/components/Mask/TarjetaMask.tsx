@@ -1,16 +1,16 @@
-import { forwardRef } from 'react';
-import { IMaskInput } from 'react-imask';
+import { forwardRef } from 'react'
+import { IMaskInput } from 'react-imask'
 
 interface CustomProps {
-  onChange: (event: { target: { name: string; value: string } }) => void;
-  name: string;
+  onChange: (event: { target: { name: string; value: string } }) => void
+  name: string
 }
 
 export const TarjetaMask = forwardRef<HTMLElement, CustomProps>(function TextMaskCustom(
   props,
   ref: any,
 ) {
-  const { onChange, ...other } = props;
+  const { onChange, ...other } = props
   return (
     <IMaskInput
       {...other}
@@ -26,5 +26,5 @@ export const TarjetaMask = forwardRef<HTMLElement, CustomProps>(function TextMas
       }
       overwrite
     />
-  );
-});
+  )
+})

@@ -1,2 +1,2 @@
 // Datos del accessToken
-export const AccessToken: string = 'accessToken';
+export const AccessToken: string = 'accessToken'

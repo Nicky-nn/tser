@@ -1,5 +1,5 @@
-import { NcdRegistroInputProps } from '../api/ncdRegistroApi';
-import { NcdInputProps } from '../interfaces/ncdInterface';
+import { NcdRegistroInputProps } from '../api/ncdRegistroApi'
+import { NcdInputProps } from '../interfaces/ncdInterface'
 
 export const ncdInputCompose = (ncd: NcdInputProps): NcdRegistroInputProps => {
   return {
@@ -8,5 +8,5 @@ export const ncdInputCompose = (ncd: NcdInputProps): NcdRegistroInputProps => {
       itemFactura: item.nroItem,
       cantidad: item.cantidad,
     })),
-  };
-};
+  }
+}

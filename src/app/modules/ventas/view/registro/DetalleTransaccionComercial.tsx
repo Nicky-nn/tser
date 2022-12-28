@@ -1,4 +1,4 @@
-import { Delete, TextIncrease } from '@mui/icons-material';
+import { Delete, TextIncrease } from '@mui/icons-material'
 import {
   Avatar,
   Button,
@@ -11,36 +11,36 @@ import {
   ListItemText,
   Stack,
   Typography,
-} from '@mui/material';
-import InputNumber from 'rc-input-number';
-import React, { FC, Fragment, useEffect, useState } from 'react';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import AsyncSelect from 'react-select/async';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+} from '@mui/material'
+import InputNumber from 'rc-input-number'
+import React, { FC, Fragment, useEffect, useState } from 'react'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
+import AsyncSelect from 'react-select/async'
+import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 
-import AlertLoading from '../../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import useAuth from '../../../../base/hooks/useAuth';
-import { notDanger } from '../../../../utils/notification';
-import { swalException } from '../../../../utils/swal';
-import { apiProductosVariantesBusqueda } from '../../../productos/api/productosVariantesBusqueda.api';
-import ProductoExplorarDialog from '../../../productos/components/ProductoExplorarDialog';
-import { ProductoVarianteProps } from '../../../productos/interfaces/producto.interface';
-import { FacturaDetalleInputProps, FacturaInputProps } from '../../interfaces/factura';
+import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import useAuth from '../../../../base/hooks/useAuth'
+import { notDanger } from '../../../../utils/notification'
+import { swalException } from '../../../../utils/swal'
+import { apiProductosVariantesBusqueda } from '../../../productos/api/productosVariantesBusqueda.api'
+import ProductoExplorarDialog from '../../../productos/components/ProductoExplorarDialog'
+import { ProductoVarianteProps } from '../../../productos/interfaces/producto.interface'
+import { FacturaDetalleInputProps, FacturaInputProps } from '../../interfaces/factura'
 import {
   genCalculoTotalesService,
   montoSubTotal,
-} from '../../services/operacionesService';
-import AgregarArticuloDialog from './AgregarArticuloDialog';
+} from '../../services/operacionesService'
+import AgregarArticuloDialog from './AgregarArticuloDialog'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
+  form: UseFormReturn<FacturaInputProps>
 }
-type Props = OwnProps;
+type Props = OwnProps
 /**
  * @description Detalle de la transaccion comercial
  * @param props
@@ -54,18 +54,18 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
-  const { user } = useAuth();
-  const monedaTienda = user.monedaTienda;
+  } = props
+  const { user } = useAuth()
+  const monedaTienda = user.monedaTienda
 
   const { fields, append, prepend, remove, insert, update } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'detalle', // unique name for your Field Array
-  });
+  })
 
-  const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false);
-  const [openExplorarProducto, setOpenExplorarProducto] = useState(false);
-  const handleFocus = (event: any) => event.target.select();
+  const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false)
+  const [openExplorarProducto, setOpenExplorarProducto] = useState(false)
+  const handleFocus = (event: any) => event.target.select()
 
   const handleChange = async (newInput: ProductoVarianteProps) => {
     if (newInput) {
@@ -79,7 +79,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
         montoDescuento: 0,
         detalleExtra: newInput.detalleExtra,
         subtotal: 0,
-      } as FacturaDetalleInputProps);
+      } as FacturaDetalleInputProps)
       /*
       if (!producto) {
 
@@ -88,37 +88,37 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       }
        */
     }
-  };
+  }
 
   // AÑADIMOS O SETEAMOS A CERO EL DETALLE EXTRA
   const handleAddDetalleExtra = (index: number, newInput: FacturaDetalleInputProps) => {
-    update(index, newInput);
-  };
+    update(index, newInput)
+  }
 
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
       const productos = await apiProductosVariantesBusqueda(
         getValues('actividadEconomica.codigoCaeb'),
         inputValue,
-      );
-      if (productos) return productos;
-      return [];
+      )
+      if (productos) return productos
+      return []
     } catch (e: any) {
-      swalException(e);
-      return [];
+      swalException(e)
+      return []
     }
-  };
+  }
   useEffect(() => {
-    const totales = genCalculoTotalesService(getValues());
-    setValue('montoSubTotal', totales.subTotal);
-    setValue('montoPagar', totales.montoPagar);
-    setValue('inputVuelto', totales.vuelto);
-    setValue('total', totales.total);
-  }, [fields]);
+    const totales = genCalculoTotalesService(getValues())
+    setValue('montoSubTotal', totales.subTotal)
+    setValue('montoPagar', totales.montoPagar)
+    setValue('inputVuelto', totales.vuelto)
+    setValue('total', totales.total)
+  }, [fields])
 
   useEffect(() => {
-    if (getValues('actividadEconomica')) cargarVariantesProductos('').then();
-  }, [getValues('actividadEconomica')]);
+    if (getValues('actividadEconomica')) cargarVariantesProductos('').then()
+  }, [getValues('actividadEconomica')])
 
   if (getValues('actividadEconomica.codigoCaeb')) {
     return (
@@ -250,7 +250,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                       update(index, {
                                         ...item,
                                         cantidad,
-                                      });
+                                      })
                                     }
                                   }
                                 }}
@@ -265,11 +265,11 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 onChange={(precio: number | null) => {
                                   if (precio) {
                                     if (precio >= 0 && precio >= item.montoDescuento) {
-                                      update(index, { ...item, precioUnitario: precio });
+                                      update(index, { ...item, precioUnitario: precio })
                                     } else {
                                       toast.warn(
                                         'El precio no puede ser menor al descuento',
-                                      );
+                                      )
                                     }
                                   }
                                 }}
@@ -288,11 +288,11 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                       update(index, {
                                         ...item,
                                         montoDescuento: montoDescuento!,
-                                      });
+                                      })
                                     } else {
                                       toast.warn(
                                         'El descuento no puede ser mayor al precio',
-                                      );
+                                      )
                                     }
                                   }
                                 }}
@@ -334,18 +334,18 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                     showCancelButton: true,
                                     cancelButtonText: 'Cancelar',
                                     confirmButtonText: 'Agregar Descripción',
-                                  });
+                                  })
                                   handleAddDetalleExtra(index, {
                                     ...item,
                                     detalleExtra: text || '',
-                                  });
+                                  })
                                 }}
                               >
                                 <TextIncrease color="primary" />
                               </IconButton>
                             </td>
                           </tr>
-                        );
+                        )
                       })}
                   </tbody>
                 </table>
@@ -360,8 +360,8 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
             open={openAgregarArticulo}
             codigoActividad={getValues('actividadEconomica.codigoCaeb')}
             onClose={(newProduct: any) => {
-              handleChange(newProduct).then();
-              setOpenAgregarArticulo(false);
+              handleChange(newProduct).then()
+              setOpenAgregarArticulo(false)
             }}
           />
         </>
@@ -374,19 +374,19 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
             onClose={(newProduct?: ProductoVarianteProps[]) => {
               if (newProduct) {
                 for (const pvp of newProduct) {
-                  handleChange(pvp).then();
+                  handleChange(pvp).then()
                 }
               }
-              setOpenExplorarProducto(false);
+              setOpenExplorarProducto(false)
             }}
           />
         </>
       </>
-    );
+    )
   }
   return (
     <>
       <AlertLoading />
     </>
-  );
-};
+  )
+}

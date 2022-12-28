@@ -1,11 +1,11 @@
-import { Stack } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Stack } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
 interface OwnProps {
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[]
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const SimpleRowMenu: FunctionComponent<Props> = (props) => {
   return (
@@ -18,7 +18,7 @@ const SimpleRowMenu: FunctionComponent<Props> = (props) => {
     >
       {props.children}
     </Stack>
-  );
-};
+  )
+}
 
-export default SimpleRowMenu;
+export default SimpleRowMenu

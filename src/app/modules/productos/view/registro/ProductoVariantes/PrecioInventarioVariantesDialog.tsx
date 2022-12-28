@@ -11,92 +11,92 @@ import {
   Grid,
   TextField,
   Typography,
-} from '@mui/material';
-import InputNumber from 'rc-input-number';
-import React, { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
-import Select from 'react-select';
+} from '@mui/material'
+import InputNumber from 'rc-input-number'
+import React, { ChangeEvent, FunctionComponent, useEffect, useState } from 'react'
+import Select from 'react-select'
 
-import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel';
-import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput';
-import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard';
-import { genReplaceEmpty, handleSelect, isEmptyValue } from '../../../../../utils/helper';
-import { notError } from '../../../../../utils/notification';
-import { swalException } from '../../../../../utils/swal';
-import { apiSinUnidadMedida } from '../../../../sin/api/sinUnidadMedida.api';
-import { SinUnidadMedidaProps } from '../../../../sin/interfaces/sin.interface';
-import { apiSucursales } from '../../../../sucursal/api/sucursales.api';
-import { SucursalProps } from '../../../../sucursal/interfaces/sucursal';
-import { ProductoVarianteInputProps } from '../../../interfaces/producto.interface';
+import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
+import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
+import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
+import { genReplaceEmpty, handleSelect, isEmptyValue } from '../../../../../utils/helper'
+import { notError } from '../../../../../utils/notification'
+import { swalException } from '../../../../../utils/swal'
+import { apiSinUnidadMedida } from '../../../../sin/api/sinUnidadMedida.api'
+import { SinUnidadMedidaProps } from '../../../../sin/interfaces/sin.interface'
+import { apiSucursales } from '../../../../sucursal/api/sucursales.api'
+import { SucursalProps } from '../../../../sucursal/interfaces/sucursal'
+import { ProductoVarianteInputProps } from '../../../interfaces/producto.interface'
 
 interface OwnProps {
-  variante: ProductoVarianteInputProps;
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: any) => void;
+  variante: ProductoVarianteInputProps
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: any) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props) => {
-  const { variante, onClose, open, ...other } = props;
-  const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([]);
-  const [sucursales, setSucursales] = useState<SucursalProps[]>([]);
-  const [data, setData] = useState<ProductoVarianteInputProps>(variante);
+  const { variante, onClose, open, ...other } = props
+  const [unidadesMedida, setUnidadesMedida] = useState<SinUnidadMedidaProps[]>([])
+  const [sucursales, setSucursales] = useState<SucursalProps[]>([])
+  const [data, setData] = useState<ProductoVarianteInputProps>(variante)
 
   const fetchUnidadesMedida = async () => {
     await apiSinUnidadMedida()
       .then((data) => {
-        setUnidadesMedida(data);
+        setUnidadesMedida(data)
       })
       .catch((err) => {
-        swalException(err);
-        return [];
-      });
-  };
+        swalException(err)
+        return []
+      })
+  }
 
   const fetchSucursales = async () => {
     try {
-      const sucursales = await apiSucursales();
+      const sucursales = await apiSucursales()
       if (sucursales.length > 0) {
-        setSucursales(sucursales);
+        setSucursales(sucursales)
       } else {
         throw new Error(
           'No se ha podido cargar los datos de la sucursal, vuelva a intentar',
-        );
+        )
       }
     } catch (e: any) {
-      swalException(e);
+      swalException(e)
     }
-  };
+  }
 
   useEffect(() => {
-    setData(variante);
-  }, [open]);
+    setData(variante)
+  }, [open])
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   // REGISTRO Y VALIDACION DE DATOS
   const handleSubmit = async (): Promise<void> => {
     // Verificamos algunos campos
     if (data.costo > data.precio) {
-      notError('El costo debe ser menor al precio');
-      return;
+      notError('El costo debe ser menor al precio')
+      return
     }
     if (isEmptyValue(data.codigoProducto)) {
-      notError('Debe ingresar un codigo de producto válido');
-      return;
+      notError('Debe ingresar un codigo de producto válido')
+      return
     }
-    onClose(data);
-  };
+    onClose(data)
+  }
 
   useEffect(() => {
-    fetchSucursales().then();
-    fetchUnidadesMedida().then();
-  }, []);
+    fetchSucursales().then()
+    fetchUnidadesMedida().then()
+  }, [])
   return (
     <Dialog
       sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 800 } }}
@@ -120,7 +120,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       placeholder={'Seleccione la unidad de medida'}
                       value={data.unidadMedida}
                       onChange={async (unidadMedida: any) => {
-                        setData({ ...data, unidadMedida });
+                        setData({ ...data, unidadMedida })
                       }}
                       options={unidadesMedida}
                       getOptionValue={(item) => item.codigoClasificador}
@@ -139,7 +139,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       value={data.precio}
                       onFocus={handleSelect}
                       onChange={(precio: number | null) => {
-                        setData({ ...data, precio: precio! });
+                        setData({ ...data, precio: precio! })
                       }}
                       formatter={numberWithCommas}
                     />
@@ -155,7 +155,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       value={data.precioComparacion}
                       onFocus={handleSelect}
                       onChange={(precioComparacion: number | null) => {
-                        setData({ ...data, precioComparacion: precioComparacion! });
+                        setData({ ...data, precioComparacion: precioComparacion! })
                       }}
                       formatter={numberWithCommas}
                     />
@@ -171,7 +171,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       value={data.costo}
                       onFocus={handleSelect}
                       onChange={(costo: number | null) => {
-                        setData({ ...data, costo: costo! });
+                        setData({ ...data, costo: costo! })
                       }}
                       formatter={numberWithCommas}
                     />
@@ -191,7 +191,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       label="SKU (Código de producto)"
                       value={data.codigoProducto}
                       onChange={(e) => {
-                        setData({ ...data, codigoProducto: e.target.value });
+                        setData({ ...data, codigoProducto: e.target.value })
                       }}
                       variant="outlined"
                       size="small"
@@ -205,7 +205,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                       label="Código de Barras"
                       value={data.codigoBarras || ''}
                       onChange={(e) => {
-                        setData({ ...data, codigoBarras: e.target.value });
+                        setData({ ...data, codigoBarras: e.target.value })
                       }}
                       variant="outlined"
                       size="small"
@@ -220,7 +220,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                         <Checkbox
                           checked={data.incluirCantidad}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            setData({ ...data, incluirCantidad: e.target.checked });
+                            setData({ ...data, incluirCantidad: e.target.checked })
                           }}
                         />
                       }
@@ -236,7 +236,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                           <Checkbox
                             checked={!data.verificarStock}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                              setData({ ...data, verificarStock: !e.target.checked });
+                              setData({ ...data, verificarStock: !e.target.checked })
                             }}
                           />
                         }
@@ -292,15 +292,15 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                                       )}
                                       onFocus={handleSelect}
                                       onChange={(precioComparacion: number | null) => {
-                                        const newArray = [...data.inventario];
+                                        const newArray = [...data.inventario]
                                         newArray[index] = {
                                           sucursal: s,
                                           stock: precioComparacion!,
-                                        };
+                                        }
                                         setData({
                                           ...data,
                                           inventario: newArray,
-                                        });
+                                        })
                                       }}
                                       formatter={numberWithCommas}
                                     />
@@ -332,7 +332,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default PrecioInventarioVariantesDialog;
+export default PrecioInventarioVariantesDialog

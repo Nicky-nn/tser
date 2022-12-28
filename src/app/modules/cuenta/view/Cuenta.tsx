@@ -1,31 +1,31 @@
-import { Cached, HomeWork, Key, Person, Token } from '@mui/icons-material';
-import { Grid, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { FunctionComponent, useState } from 'react';
+import { Cached, HomeWork, Key, Person, Token } from '@mui/icons-material'
+import { Grid, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { FunctionComponent, useState } from 'react'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import SimpleCard from '../../../base/components/Template/Cards/SimpleCard';
-import CuentaPassword from './Perfil/CuentaPassword';
-import CuentaPerfil from './Perfil/CuentaPerfil';
-import CuentaRecargarCache from './Perfil/CuentaRecargarCache';
-import CuentaSucursal from './Perfil/CuentaSucursal';
-import CuentaTokenDelegado from './Perfil/CuentaTokenDelegado';
-import CuentaSincronizacion from './Perfil/CuentaSincronizacion';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import SimpleCard from '../../../base/components/Template/Cards/SimpleCard'
+import CuentaPassword from './Perfil/CuentaPassword'
+import CuentaPerfil from './Perfil/CuentaPerfil'
+import CuentaRecargarCache from './Perfil/CuentaRecargarCache'
+import CuentaSucursal from './Perfil/CuentaSucursal'
+import CuentaTokenDelegado from './Perfil/CuentaTokenDelegado'
+import CuentaSincronizacion from './Perfil/CuentaSincronizacion'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const Cuenta: FunctionComponent<Props> = (props) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const handleListItemClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number,
   ) => {
-    setSelectedIndex(index);
-  };
+    setSelectedIndex(index)
+  }
 
   return (
     <>
@@ -102,7 +102,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
         <Box py="12px" />
       </SimpleContainer>
     </>
-  );
-};
+  )
+}
 
-export default Cuenta;
+export default Cuenta

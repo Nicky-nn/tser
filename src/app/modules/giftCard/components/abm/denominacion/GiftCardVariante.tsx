@@ -1,35 +1,35 @@
-import { FormControl, FormHelperText, Grid, IconButton } from '@mui/material';
-import React, { FunctionComponent } from 'react';
-import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
-import { GiftCardInputProps } from '../../../interfaces/giftCard.interface';
-import { FormTextField } from '../../../../../base/components/Form';
-import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput';
-import InputNumber from 'rc-input-number';
-import { handleSelect } from '../../../../../utils/helper';
-import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel';
-import { DeleteForever } from '@mui/icons-material';
+import { FormControl, FormHelperText, Grid, IconButton } from '@mui/material'
+import React, { FunctionComponent } from 'react'
+import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form'
+import { GiftCardInputProps } from '../../../interfaces/giftCard.interface'
+import { FormTextField } from '../../../../../base/components/Form'
+import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
+import InputNumber from 'rc-input-number'
+import { handleSelect } from '../../../../../utils/helper'
+import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
+import { DeleteForever } from '@mui/icons-material'
 
 interface OwnProps {
-  form: UseFormReturn<GiftCardInputProps>;
-  itemField: any;
-  varianteField: UseFieldArrayReturn<GiftCardInputProps, 'variantes', 'id'>;
-  index: number;
+  form: UseFormReturn<GiftCardInputProps>
+  itemField: any
+  varianteField: UseFieldArrayReturn<GiftCardInputProps, 'variantes', 'id'>
+  index: number
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const GiftCarVariante: FunctionComponent<Props> = (props) => {
-  const { form, itemField, varianteField, index } = props;
+  const { form, itemField, varianteField, index } = props
   const {
     control,
     setValue,
     watch,
     formState: { errors },
-  } = form;
+  } = form
 
   const eliminarVariante = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    varianteField.remove(index);
-  };
+    varianteField.remove(index)
+  }
 
   return (
     <Grid container sx={{ mt: 2 }} columnSpacing={1} rowSpacing={2}>
@@ -105,7 +105,7 @@ const GiftCarVariante: FunctionComponent<Props> = (props) => {
         </IconButton>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default GiftCarVariante;
+export default GiftCarVariante

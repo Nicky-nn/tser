@@ -1,17 +1,17 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { PageInfoProps, PageInputProps } from '../../../interfaces';
-import { NcdProps } from '../interfaces/ncdInterface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { PageInfoProps, PageInputProps } from '../../../interfaces'
+import { NcdProps } from '../interfaces/ncdInterface'
 
 /**
  * Respuesta de productos
  */
 export interface ApiNotaCreditoDebitoResponse {
-  docs: Array<NcdProps>;
-  pageInfo: PageInfoProps;
+  docs: Array<NcdProps>
+  pageInfo: PageInfoProps
 }
 
 const query = gql`
@@ -96,16 +96,16 @@ const query = gql`
       }
     }
   }
-`;
+`
 
 export const apiNotasCreditoDebito = async (
   pageInfo: PageInputProps,
 ): Promise<ApiNotaCreditoDebitoResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, pageInfo);
-  return data.notasCreditoDebitoFcv;
-};
+  const data: any = await client.request(query, pageInfo)
+  return data.notasCreditoDebitoFcv
+}

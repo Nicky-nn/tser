@@ -1,4 +1,4 @@
 export interface MetodoPagoProp {
-  codigoClasificador: number;
-  descripcion: string;
+  codigoClasificador: number
+  descripcion: string
 }

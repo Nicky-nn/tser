@@ -1,26 +1,26 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material'
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'react';
-import DataTable, { TableColumn } from 'react-data-table-component';
-import { UseFormReturn } from 'react-hook-form';
+} from 'react'
+import DataTable, { TableColumn } from 'react-data-table-component'
+import { UseFormReturn } from 'react-hook-form'
 
-import { FormTextField } from '../../../../base/components/Form';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { DetalleFacturaProps, FacturaProps } from '../../../ventas/interfaces/factura';
-import { NcdInputProps } from '../../interfaces/ncdInterface';
-import NcdFacturaOriginalDialog from './NcdFacturaOriginalDialog';
+import { FormTextField } from '../../../../base/components/Form'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { DetalleFacturaProps, FacturaProps } from '../../../ventas/interfaces/factura'
+import { NcdInputProps } from '../../interfaces/ncdInterface'
+import NcdFacturaOriginalDialog from './NcdFacturaOriginalDialog'
 
 interface OwnProps {
-  form: UseFormReturn<NcdInputProps>;
+  form: UseFormReturn<NcdInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
   const {
@@ -31,11 +31,11 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
+  } = props
 
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false)
 
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([])
 
   const columns = useMemo<TableColumn<DetalleFacturaProps>[]>(
     //column definitions...
@@ -74,9 +74,9 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
       },
     ],
     [], //end
-  );
+  )
   const handleRowSelected = useCallback((state: any) => {
-    setSelectedRows(state.selectedRows);
+    setSelectedRows(state.selectedRows)
     const detalle = state.selectedRows.map((d: DetalleFacturaProps) => ({
       nroItem: d.nroItem,
       cantidadOriginal: d.cantidad,
@@ -85,14 +85,14 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
       montoDescuento: d.montoDescuento,
       precioUnitario: d.precioUnitario,
       subTotal: d.subTotal,
-    }));
-    setValue('detalleFactura', detalle);
-  }, []);
+    }))
+    setValue('detalleFactura', detalle)
+  }, [])
 
   useEffect(() => {
-    setSelectedRows([]);
-    setValue('detalleFactura', []);
-  }, []);
+    setSelectedRows([])
+    setValue('detalleFactura', [])
+  }, [])
 
   return (
     <>
@@ -158,21 +158,21 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
           keepMounted={false}
           open={openDialog}
           onClose={(value?: FacturaProps) => {
-            setOpenDialog(false);
+            setOpenDialog(false)
             if (value) {
-              setValue('numeroFactura', value.numeroFactura.toString());
-              setValue('fechaEmision', value.fechaEmision);
-              setValue('razonSocial', value.cliente.razonSocial);
-              setValue('facturaCuf', value.cuf);
-              setValue('detalleFactura', []);
-              setValue('detalle', value.detalle);
-              setSelectedRows([]);
+              setValue('numeroFactura', value.numeroFactura.toString())
+              setValue('fechaEmision', value.fechaEmision)
+              setValue('razonSocial', value.cliente.razonSocial)
+              setValue('facturaCuf', value.cuf)
+              setValue('detalleFactura', [])
+              setValue('detalle', value.detalle)
+              setSelectedRows([])
             }
           }}
         />
       </>
     </>
-  );
-};
+  )
+}
 
-export default NcdFacturaOriginal;
+export default NcdFacturaOriginal

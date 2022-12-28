@@ -1,7 +1,7 @@
-import { Card, Grid, Icon, IconButton, Tooltip } from '@mui/material';
-import { Box, styled } from '@mui/system';
+import { Card, Grid, Icon, IconButton, Tooltip } from '@mui/material'
+import { Box, styled } from '@mui/system'
 
-import { H3 } from '../../../components/Template/Typography';
+import { H3 } from '../../../components/Template/Typography'
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -13,7 +13,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     padding: '16px !important',
   },
-}));
+}))
 
 const ContentBox = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -27,7 +27,7 @@ const ContentBox = styled('div')(({ theme }) => ({
     fontSize: '44px',
     color: theme.palette.primary.main,
   },
-}));
+}))
 
 const Heading = styled('h6')(({ theme }) => ({
   margin: 0,
@@ -35,7 +35,7 @@ const Heading = styled('h6')(({ theme }) => ({
   fontWeight: '500',
   fontSize: '14px',
   color: theme.palette.primary.main,
-}));
+}))
 
 const StatCards = () => {
   return (
@@ -105,7 +105,7 @@ const StatCards = () => {
         </StyledCard>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default StatCards;
+export default StatCards

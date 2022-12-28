@@ -1,7 +1,7 @@
-import { array, boolean, mixed, number, object, setLocale, string } from 'yup';
-import { es } from 'yup-locales';
+import { array, boolean, mixed, number, object, setLocale, string } from 'yup'
+import { es } from 'yup-locales'
 
-import { ProductoInputProps } from '../interfaces/producto.interface';
+import { ProductoInputProps } from '../interfaces/producto.interface'
 
 export const productoRegistroVarianteValidatorioSchema = {
   id: string().required('Identificador unico de la variante del producto es requerido'),
@@ -28,7 +28,7 @@ export const productoRegistroVarianteValidatorioSchema = {
       descripcion: string().required(),
     })
     .required(),
-};
+}
 
 export const productoRegistroValidationSchema = object({
   actividadEconomica: object({
@@ -55,7 +55,7 @@ export const productoRegistroValidationSchema = object({
     _id: string(),
   }).nullable(),
   variante: object(productoRegistroVarianteValidatorioSchema),
-});
+})
 
 /**
  * Validamos los datos de formulario del producto
@@ -65,9 +65,9 @@ export const productoRegistroValidator = async (
   prod: ProductoInputProps,
 ): Promise<Array<string>> => {
   try {
-    setLocale(es);
-    const schema = productoRegistroValidationSchema;
-    await schema.validate(prod);
+    setLocale(es)
+    const schema = productoRegistroValidationSchema
+    await schema.validate(prod)
 
     // Verificamos si es variante unica
     if (prod.varianteUnica) {
@@ -90,28 +90,28 @@ export const productoRegistroValidator = async (
             stock: number().min(0).nullable(),
           }),
         ),
-      });
-      await schemaVariante.validate(prod.variante);
+      })
+      await schemaVariante.validate(prod.variante)
       // Validando unidad de medida
       if (!prod.variante.unidadMedida) {
-        throw new Error(`Debe seleccionar la Unidad de medida`);
+        throw new Error(`Debe seleccionar la Unidad de medida`)
       }
       if (prod.variante.precioComparacion || 0 > 0) {
         if (prod.variante.precio > prod.variante.precioComparacion!) {
-          throw new Error('El precio de comparación debe ser mayor al precio Original');
+          throw new Error('El precio de comparación debe ser mayor al precio Original')
         }
       }
       if (prod.variante.costo > 0) {
         if (prod.variante.costo > prod.variante.precio) {
-          throw new Error('El precio debe ser mayor al costo');
+          throw new Error('El precio debe ser mayor al costo')
         }
       }
     } else {
       if (prod.opcionesProducto.length === 0) {
-        throw new Error('Debe adicionar al menos una opcion de producto');
+        throw new Error('Debe adicionar al menos una opcion de producto')
       }
       if (prod.variantes.length === 0) {
-        throw new Error('Debe adicionar al menos una Variante de producto');
+        throw new Error('Debe adicionar al menos una Variante de producto')
       }
       for (const variante of prod.variantes) {
         const schemaVariante = object({
@@ -132,32 +132,32 @@ export const productoRegistroValidator = async (
               stock: number().min(0).nullable(),
             }),
           ),
-        });
-        await schemaVariante.validate(variante);
+        })
+        await schemaVariante.validate(variante)
         // Validando unidad de medida
         if (!variante.unidadMedida) {
           throw new Error(
             `Variante ${variante.codigoProducto}: Debe seleccionar la Unidad de medida`,
-          );
+          )
         }
         if (variante.precioComparacion || 0 > 0) {
           if (variante.precio > variante.precioComparacion!) {
             throw new Error(
               `Variante ${variante.codigoProducto}: El precio de comparación debe ser mayor al precio Original`,
-            );
+            )
           }
         }
         if (variante.costo > 0) {
           if (variante.costo > variante.precio) {
             throw new Error(
               `Variante ${variante.codigoProducto} El precio debe ser mayor al costo`,
-            );
+            )
           }
         }
       }
     }
-    return [];
+    return []
   } catch (e: any) {
-    return [e.message];
+    return [e.message]
   }
-};
+}

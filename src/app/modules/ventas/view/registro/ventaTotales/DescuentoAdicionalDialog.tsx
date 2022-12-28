@@ -6,47 +6,47 @@ import {
   DialogTitle,
   Grid,
   Typography,
-} from '@mui/material';
-import InputNumber from 'rc-input-number';
-import { useEffect, useRef, useState } from 'react';
+} from '@mui/material'
+import InputNumber from 'rc-input-number'
+import { useEffect, useRef, useState } from 'react'
 
-import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput';
-import useAuth from '../../../../../base/hooks/useAuth';
+import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
+import useAuth from '../../../../../base/hooks/useAuth'
 
 export interface SimpleDialogProps {
-  id: string;
-  keepMounted: boolean;
-  value: number;
-  open: boolean;
-  onClose: (value?: number) => void;
+  id: string
+  keepMounted: boolean
+  value: number
+  open: boolean
+  onClose: (value?: number) => void
 }
 
 export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
   const {
     user: { monedaTienda },
-  } = useAuth();
-  const { onClose, keepMounted, value: valueProp, open, ...other } = props;
-  const [value, setValue] = useState(valueProp);
-  const inputRef = useRef<HTMLElement>(null);
+  } = useAuth()
+  const { onClose, keepMounted, value: valueProp, open, ...other } = props
+  const [value, setValue] = useState(valueProp)
+  const inputRef = useRef<HTMLElement>(null)
   useEffect(() => {
     if (!open) {
-      setValue(valueProp);
+      setValue(valueProp)
     }
-  }, [valueProp, open]);
+  }, [valueProp, open])
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = () => {
-    onClose(value);
-  };
+    onClose(value)
+  }
 
   const handleEntering = () => {
     if (inputRef.current != null) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  };
+  }
 
   return (
     <Dialog
@@ -83,5 +83,5 @@ export const DescuentoAdicionalDialog = (props: SimpleDialogProps) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}

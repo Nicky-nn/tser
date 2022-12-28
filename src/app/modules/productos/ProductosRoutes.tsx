@@ -1,12 +1,12 @@
-import { lazy } from 'react';
+import { lazy } from 'react'
 
-import { authRoles } from '../../../auth/authRoles';
-import Loadable from '../../base/components/Template/Loadable/Loadable';
-import { productosRouteMap } from './ProductosRoutesMap';
+import { authRoles } from '../../../auth/authRoles'
+import Loadable from '../../base/components/Template/Loadable/Loadable'
+import { productosRouteMap } from './ProductosRoutesMap'
 
-const AppProductosGestion = Loadable(lazy(() => import('./view/Productos')));
-const AppProductoNuevo = Loadable(lazy(() => import('./view/ProductoRegistro')));
-const AppProductoActualizar = Loadable(lazy(() => import('./view/ProductoActualizar')));
+const AppProductosGestion = Loadable(lazy(() => import('./view/Productos')))
+const AppProductoNuevo = Loadable(lazy(() => import('./view/ProductoRegistro')))
+const AppProductoActualizar = Loadable(lazy(() => import('./view/ProductoActualizar')))
 
 const productosRoutes = [
   {
@@ -24,6 +24,6 @@ const productosRoutes = [
     element: <AppProductoActualizar />,
     auth: authRoles.admin,
   },
-];
+]
 
-export default productosRoutes;
+export default productosRoutes

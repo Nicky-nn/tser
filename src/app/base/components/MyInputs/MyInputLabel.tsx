@@ -1,6 +1,6 @@
-import { InputLabel, Theme } from '@mui/material';
-import { InputLabelProps } from '@mui/material/InputLabel/InputLabel';
-import { makeStyles } from '@mui/styles';
+import { InputLabel, Theme } from '@mui/material'
+import { InputLabelProps } from '@mui/material/InputLabel/InputLabel'
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -10,13 +10,13 @@ const useStyles = makeStyles((theme: Theme) => ({
       paddingRight: 6,
     },
   },
-}));
+}))
 
 interface OwnProps extends InputLabelProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 export const MyInputLabel = ({ ...other }: Props): JSX.Element => {
-  const classes = useStyles();
-  return <InputLabel shrink className={classes.root} {...other} />;
-};
+  const classes = useStyles()
+  return <InputLabel shrink className={classes.root} {...other} />
+}

@@ -1,25 +1,25 @@
-import { Alert, AlertTitle, Container, Grid } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Alert, AlertTitle, Container, Grid } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
-import { genReplaceEmpty } from '../../../utils/helper';
+import { genReplaceEmpty } from '../../../utils/helper'
 
 interface OwnProps {
-  mensaje: string;
-  tipo?: 'error' | 'warning' | 'info' | 'success';
+  mensaje: string
+  tipo?: 'error' | 'warning' | 'info' | 'success'
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const tipos = {
   error: 'Error',
   warning: 'Alerta',
   info: 'Información',
   success: 'Satisfactorio',
-};
+}
 
 const AlertError: FunctionComponent<Props> = (props) => {
-  const { mensaje, tipo } = props;
-  const alertTitle = genReplaceEmpty(tipos[tipo || 'error'], 'Error');
+  const { mensaje, tipo } = props
+  const alertTitle = genReplaceEmpty(tipos[tipo || 'error'], 'Error')
   return (
     <>
       <Container>
@@ -33,7 +33,7 @@ const AlertError: FunctionComponent<Props> = (props) => {
         </Grid>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default AlertError;
+export default AlertError

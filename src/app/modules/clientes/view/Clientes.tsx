@@ -1,14 +1,14 @@
-import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { FunctionComponent, useState } from 'react';
+import { Grid } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { FunctionComponent, useState } from 'react'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import ClientesListado from './Listado/ClientesListado';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import ClientesListado from './Listado/ClientesListado'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const Clientes: FunctionComponent<Props> = (props) => {
   return (
@@ -30,7 +30,7 @@ const Clientes: FunctionComponent<Props> = (props) => {
       </form>
       <Box py="12px" />
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default Clientes;
+export default Clientes

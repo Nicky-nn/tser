@@ -1,7 +1,7 @@
-import { QueryKey } from '@tanstack/query-core';
-import { useQuery } from '@tanstack/react-query';
-import { MetodoPagoProp } from '../interfaces/metodoPago';
-import { apiMetodosPago } from '../api/metodosPago.api';
+import { QueryKey } from '@tanstack/query-core'
+import { useQuery } from '@tanstack/react-query'
+import { MetodoPagoProp } from '../interfaces/metodoPago'
+import { apiMetodosPago } from '../api/metodosPago.api'
 
 /**
  * Hook para listado de métodos de págo
@@ -14,14 +14,14 @@ const useQueryMetodosPago = (queryKey: QueryKey = []) => {
     isError: mpIsError,
     error: mpError,
   } = useQuery<MetodoPagoProp[], Error>(['metodosPago', ...queryKey], async () => {
-    const resp = await apiMetodosPago();
+    const resp = await apiMetodosPago()
     if (resp.length > 0) {
-      return resp;
+      return resp
     }
-    return [];
-  });
+    return []
+  })
 
-  return { metodosPago, mpLoading, mpIsError, mpError };
-};
+  return { metodosPago, mpLoading, mpIsError, mpError }
+}
 
-export default useQueryMetodosPago;
+export default useQueryMetodosPago

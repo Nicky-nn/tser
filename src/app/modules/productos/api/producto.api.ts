@@ -1,17 +1,17 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { PageInfoProps, PageInputProps } from '../../../interfaces';
-import { ProductoProps } from '../interfaces/producto.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { PageInfoProps, PageInputProps } from '../../../interfaces'
+import { ProductoProps } from '../interfaces/producto.interface'
 
 /**
  * Respuesta de productos
  */
 export interface ApiProductoResponse {
-  docs: Array<ProductoProps>;
-  pageInfo: PageInfoProps;
+  docs: Array<ProductoProps>
+  pageInfo: PageInfoProps
 }
 
 const query = gql`
@@ -97,16 +97,16 @@ const query = gql`
       }
     }
   }
-`;
+`
 
 export const apiProductos = async (
   pageInfo: PageInputProps,
 ): Promise<ApiProductoResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, pageInfo);
-  return data.fcvProductos;
-};
+  const data: any = await client.request(query, pageInfo)
+  return data.fcvProductos
+}

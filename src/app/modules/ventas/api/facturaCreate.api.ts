@@ -1,18 +1,18 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { ClasificadorProps } from '../../../interfaces';
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { ClasificadorProps } from '../../../interfaces'
+import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
 
 export interface FacturaProps {
-  sinTipoMetodoPago: ClasificadorProps[];
-  sinUnidadMedida: ClasificadorProps[];
-  sinActividades: SinActividadesProps[];
+  sinTipoMetodoPago: ClasificadorProps[]
+  sinUnidadMedida: ClasificadorProps[]
+  sinActividades: SinActividadesProps[]
 }
 
-const genDetalle = () => {};
+const genDetalle = () => {}
 
 export const FCV_ONLINE = gql`
   mutation FCV_ONLINE($input: FacturaCompraVentaInput!) {
@@ -28,14 +28,14 @@ export const FCV_ONLINE = gql`
       }
     }
   }
-`;
+`
 
 export const fetchFacturaCreate = async (input: any): Promise<FacturaProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(FCV_ONLINE, { input });
-  return data.facturaCompraVentaCreate;
-};
+  const data: any = await client.request(FCV_ONLINE, { input })
+  return data.facturaCompraVentaCreate
+}

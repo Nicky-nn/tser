@@ -1,29 +1,29 @@
-import { Card, Grid } from '@mui/material';
-import { styled } from '@mui/system';
-import React, { Fragment } from 'react';
+import { Card, Grid } from '@mui/material'
+import { styled } from '@mui/system'
+import React, { Fragment } from 'react'
 
-import RowCards from './shared/RowCards';
-import StatCards from './shared/StatCards';
-import StatCards2 from './shared/StatCards2';
-import UpgradeCard from './shared/UpgradeCard';
+import RowCards from './shared/RowCards'
+import StatCards from './shared/StatCards'
+import StatCards2 from './shared/StatCards2'
+import UpgradeCard from './shared/UpgradeCard'
 
 const ContentBox = styled('div')(({ theme }) => ({
   margin: '30px',
   [theme.breakpoints.down('sm')]: {
     margin: '16px',
   },
-}));
+}))
 
 const Title = styled('span')(() => ({
   fontSize: '1rem',
   fontWeight: '500',
   textTransform: 'capitalize',
-}));
+}))
 
 const SubTitle = styled('span')(({ theme }) => ({
   fontSize: '0.875rem',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const H4 = styled('h4')(({ theme }) => ({
   fontSize: '1rem',
@@ -31,7 +31,7 @@ const H4 = styled('h4')(({ theme }) => ({
   marginBottom: '16px',
   textTransform: 'capitalize',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const Analytics = () => {
   // const { palette } = useTheme()
@@ -54,7 +54,7 @@ const Analytics = () => {
         </Grid>
       </ContentBox>
     </Fragment>
-  );
-};
+  )
+}
 
-export default Analytics;
+export default Analytics

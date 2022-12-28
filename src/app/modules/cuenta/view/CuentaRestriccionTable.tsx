@@ -1,4 +1,4 @@
-import { ArrowForwardIosSharp, CheckCircle, ExpandMore } from '@mui/icons-material';
+import { ArrowForwardIosSharp, CheckCircle, ExpandMore } from '@mui/icons-material'
 import {
   Divider,
   Grid,
@@ -8,24 +8,24 @@ import {
   ListItemText,
   Tooltip,
   Typography,
-} from '@mui/material';
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
+} from '@mui/material'
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
+import MuiAccordionDetails from '@mui/material/AccordionDetails'
 import MuiAccordionSummary, {
   AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
-import { styled } from '@mui/material/styles';
-import { useQuery } from '@tanstack/react-query';
-import React, { FunctionComponent, useState } from 'react';
+} from '@mui/material/AccordionSummary'
+import { styled } from '@mui/material/styles'
+import { useQuery } from '@tanstack/react-query'
+import React, { FunctionComponent, useState } from 'react'
 
-import AlertError from '../../../base/components/Alert/AlertError';
-import AlertLoading from '../../../base/components/Alert/AlertLoading';
-import useAuth from '../../../base/hooks/useAuth';
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiUsuarioRestriccion } from '../api/usuarioRestriccion.api';
-import { apiUsuarioActualizarRestriccion } from '../api/usuarioRestriccionActualizar.api';
-import { UsuarioSucursalRestriccionProps } from '../interfaces/restriccion.interface';
+import AlertError from '../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../base/components/Alert/AlertLoading'
+import useAuth from '../../../base/hooks/useAuth'
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiUsuarioRestriccion } from '../api/usuarioRestriccion.api'
+import { apiUsuarioActualizarRestriccion } from '../api/usuarioRestriccionActualizar.api'
+import { UsuarioSucursalRestriccionProps } from '../interfaces/restriccion.interface'
 
 /**
  * @description
@@ -47,7 +47,7 @@ const Accordion = styled((props: AccordionProps) => (
     paddingRight: 16,
     paddingBottom: 10,
   },
-}));
+}))
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
@@ -64,24 +64,24 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   '& .MuiAccordionSummary-content': {
     marginLeft: theme.spacing(1),
   },
-}));
+}))
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
-}));
+}))
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-}));
+}))
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
-  const [expanded, setExpanded] = useState<number | false>(false);
-  const { user } = useAuth();
+  const [expanded, setExpanded] = useState<number | false>(false)
+  const { user } = useAuth()
   const {
     data: restriccion,
     isError,
@@ -91,16 +91,16 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
   } = useQuery<UsuarioSucursalRestriccionProps[], Error>(
     ['restriccionUsuario'],
     async () => {
-      const resp = await apiUsuarioRestriccion();
-      return resp.sucursales;
+      const resp = await apiUsuarioRestriccion()
+      return resp.sucursales
     },
     { keepPreviousData: true },
-  );
+  )
 
   const handleChange =
     (panel: number) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false);
-    };
+      setExpanded(newExpanded ? panel : false)
+    }
 
   const changePuntoVenta = async (codigoSucursal: number, codigoPuntoVenta: number) => {
     await swalAsyncConfirmDialog({
@@ -110,21 +110,21 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
           codigoSucursal,
           codigoPuntoVenta,
         }).catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess();
+        notSuccess()
         setTimeout(() => {
-          window.location.reload();
-        }, 1);
+          window.location.reload()
+        }, 1)
       }
-    });
-  };
+    })
+  }
 
-  if (isError) return <AlertError mensaje={error && error.message} />;
+  if (isError) return <AlertError mensaje={error && error.message} />
 
   return (
     <>
@@ -200,7 +200,7 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
         ))
       )}
     </>
-  );
-};
+  )
+}
 
-export default CuentaRestriccionTable;
+export default CuentaRestriccionTable

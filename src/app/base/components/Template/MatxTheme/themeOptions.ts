@@ -1,18 +1,18 @@
-import { red } from '@mui/material/colors';
+import { red } from '@mui/material/colors'
 
-import { components } from './components';
+import { components } from './components'
 
 export interface ThemeOptionsProps {
   typography: {
-    fontSize: number | string;
+    fontSize: number | string
     body1: {
-      fontSize: number | string;
-    };
-  };
+      fontSize: number | string
+    }
+  }
   status: {
-    danger: any;
-  };
-  components: any;
+    danger: any
+  }
+  components: any
 }
 
 const themeOptions: ThemeOptionsProps = {
@@ -28,6 +28,6 @@ const themeOptions: ThemeOptionsProps = {
   components: {
     ...components,
   },
-};
+}
 
-export default themeOptions;
+export default themeOptions

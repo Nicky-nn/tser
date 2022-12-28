@@ -38,4 +38,4 @@ export const localization = {
   ungroupByColumn: 'Desagrupar por {column}',
   unpin: 'Quitar pasador',
   unsorted: 'Sin clasificar',
-};
+}

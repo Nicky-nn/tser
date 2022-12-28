@@ -1,7 +1,7 @@
-import { object, ref, setLocale, string } from 'yup';
-import { es } from 'yup-locales';
+import { object, ref, setLocale, string } from 'yup'
+import { es } from 'yup-locales'
 
-setLocale(es);
+setLocale(es)
 
 export const cambiarPasswordValidationSchema = object({
   password: string().required(),
@@ -10,4 +10,4 @@ export const cambiarPasswordValidationSchema = object({
     .min(8)
     .oneOf([ref('nuevoPassword')], 'Las nuevas contraseñas deben coincidir')
     .required(),
-});
+})

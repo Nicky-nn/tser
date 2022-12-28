@@ -1,16 +1,16 @@
-import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { useContext } from 'react';
+import { Grid } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { useContext } from 'react'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import AuthContext from '../../../base/contexts/JWTAuthContext';
-import { productosRouteMap } from '../../productos/ProductosRoutesMap';
-import ProveedorListado from '../components/ProveedorListado';
-import ClientesListado from '../../clientes/view/Listado/ClientesListado';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import AuthContext from '../../../base/contexts/JWTAuthContext'
+import { productosRouteMap } from '../../productos/ProductosRoutesMap'
+import ProveedorListado from '../components/ProveedorListado'
+import ClientesListado from '../../clientes/view/Listado/ClientesListado'
 
 const Proveedores = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext)
   // in this case *props are stored in the state of parent component
 
   return (
@@ -32,7 +32,7 @@ const Proveedores = () => {
         <Box py="12px" />
       </SimpleContainer>
     </>
-  );
-};
+  )
+}
 
-export default Proveedores;
+export default Proveedores

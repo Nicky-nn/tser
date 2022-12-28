@@ -1,17 +1,17 @@
-import { lazy } from 'react';
+import { lazy } from 'react'
 
-import { authRoles } from '../../../auth/authRoles';
-import Loadable from '../../base/components/Template/Loadable/Loadable';
-import { giftCardRouteMap } from './GiftCardRoutesMap';
+import { authRoles } from '../../../auth/authRoles'
+import Loadable from '../../base/components/Template/Loadable/Loadable'
+import { giftCardRouteMap } from './GiftCardRoutesMap'
 
-const AppGiftCardGestion = Loadable(lazy(() => import('./view/listado/GiftCards')));
-const AppGiftCardNuevo = Loadable(lazy(() => import('./view/registro/GiftCardRegistro')));
+const AppGiftCardGestion = Loadable(lazy(() => import('./view/listado/GiftCards')))
+const AppGiftCardNuevo = Loadable(lazy(() => import('./view/registro/GiftCardRegistro')))
 const AppGiftCardActualizar = Loadable(
   lazy(() => import('./view/actualizar/GiftCardActualizar')),
-);
+)
 const AppGiftCardClientes = Loadable(
   lazy(() => import('./view/clientes/GiftCardClientes')),
-);
+)
 
 const giftCardRoutes = [
   {
@@ -34,6 +34,6 @@ const giftCardRoutes = [
     element: <AppGiftCardClientes />,
     auth: authRoles.admin,
   },
-];
+]
 
-export default giftCardRoutes;
+export default giftCardRoutes

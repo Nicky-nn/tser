@@ -1,31 +1,31 @@
-import { Delete, Edit, Newspaper } from '@mui/icons-material';
-import { Box, Button, Chip, IconButton, Stack } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Delete, Edit, Newspaper } from '@mui/icons-material'
+import { Box, Button, Chip, IconButton, Stack } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
-} from '@tanstack/react-table';
-import { SortingState } from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from '@tanstack/react-table'
+import { SortingState } from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton';
-import { PAGE_DEFAULT, PageInputProps } from '../../../interfaces';
-import { genApiQuery } from '../../../utils/helper';
-import { localization } from '../../../utils/localization';
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiProveedorEliminar } from '../api/proveedorEliminar.api';
-import { apiProveedores } from '../api/proveedores.api';
-import { ProveedorProps } from '../interfaces/proveedor.interface';
-import { proveedorRouteMap } from '../ProveedorRoutesMap';
-import ProveedorRegistroDialog from '../view/ProveedorRegistroDialog';
+import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
+import { PAGE_DEFAULT, PageInputProps } from '../../../interfaces'
+import { genApiQuery } from '../../../utils/helper'
+import { localization } from '../../../utils/localization'
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiProveedorEliminar } from '../api/proveedorEliminar.api'
+import { apiProveedores } from '../api/proveedores.api'
+import { ProveedorProps } from '../interfaces/proveedor.interface'
+import { proveedorRouteMap } from '../ProveedorRoutesMap'
+import ProveedorRegistroDialog from '../view/ProveedorRegistroDialog'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
   {
@@ -61,22 +61,22 @@ const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
     id: 'state',
     header: 'Estado',
   },
-];
+]
 
 const ProveedorListado: FunctionComponent<Props> = (props) => {
-  const navigate = useNavigate();
-  const [openNuevoProveedor, setOpenNuevoProveedor] = useState<boolean>(false);
+  const navigate = useNavigate()
+  const [openNuevoProveedor, setOpenNuevoProveedor] = useState<boolean>(false)
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowCount, setRowCount] = useState(0);
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowCount, setRowCount] = useState(0)
+  const [isRefetching, setIsRefetching] = useState(false)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
   const { data, isError, isLoading, status, refetch } = useQuery<ProveedorProps[]>(
@@ -88,44 +88,44 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageInputProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await apiProveedores(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await apiProveedores(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
     {
       refetchOnWindowFocus: true,
       keepPreviousData: true,
     },
-  );
+  )
 
-  const columns = useMemo(() => tableColumns, []);
+  const columns = useMemo(() => tableColumns, [])
 
   const handleDeleteData = async (data: any) => {
-    const resp = data.map((item: any) => item.original.codigo);
+    const resp = data.map((item: any) => item.original.codigo)
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados, esta operación no se podra revertir',
       preConfirm: () => {
         return apiProveedorEliminar(resp).catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess();
-        setRowSelection({});
-        refetch();
+        notSuccess()
+        setRowSelection({})
+        refetch()
       }
-    });
-  };
+    })
+  }
   return (
     <>
       <Stack
@@ -215,7 +215,7 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
                 Eliminar
               </Button>
             </Box>
-          );
+          )
         }}
       />
       <ProveedorRegistroDialog
@@ -224,13 +224,13 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
         open={openNuevoProveedor}
         onClose={(value?: ProveedorProps) => {
           if (value) {
-            refetch().then();
+            refetch().then()
           }
-          setOpenNuevoProveedor(false);
+          setOpenNuevoProveedor(false)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default ProveedorListado;
+export default ProveedorListado

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { createContext, FC, useEffect, useReducer } from 'react';
+import axios from 'axios'
+import { createContext, FC, useEffect, useReducer } from 'react'
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -7,25 +7,25 @@ const reducer = (state: any, action: any) => {
       return {
         ...state,
         notifications: action.payload,
-      };
+      }
     }
     case 'DELETE_NOTIFICATION': {
       return {
         ...state,
         notifications: action.payload,
-      };
+      }
     }
     case 'CLEAR_NOTIFICATIONS': {
       return {
         ...state,
         notifications: action.payload,
-      };
+      }
     }
     default: {
-      return { ...state };
+      return { ...state }
     }
   }
-};
+}
 
 const NotificationContext = createContext({
   notifications: [],
@@ -33,18 +33,18 @@ const NotificationContext = createContext({
   clearNotifications: () => {},
   getNotifications: () => {},
   createNotification: () => {},
-});
+})
 
 type NotificationProviderProps = {
-  children: JSX.Element;
-  settings: any;
-};
+  children: JSX.Element
+  settings: any
+}
 
 export const NotificationProvider: FC<any> = ({
   settings,
   children,
 }: NotificationProviderProps) => {
-  const [state, dispatch] = useReducer(reducer, []);
+  const [state, dispatch] = useReducer(reducer, [])
 
   const deleteNotification: any = async (notificationID: any) => {
     try {
@@ -58,9 +58,9 @@ export const NotificationProvider: FC<any> = ({
             })
             */
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   const clearNotifications = async () => {
     try {
@@ -72,9 +72,9 @@ export const NotificationProvider: FC<any> = ({
             })
             */
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   const getNotifications = async () => {
     try {
@@ -86,9 +86,9 @@ export const NotificationProvider: FC<any> = ({
             })
              */
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
   const createNotification: any = async (notification: any) => {
     try {
       /*
@@ -101,13 +101,13 @@ export const NotificationProvider: FC<any> = ({
             })
              */
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   useEffect(() => {
-    getNotifications().then();
-  }, []);
+    getNotifications().then()
+  }, [])
 
   return (
     <NotificationContext.Provider
@@ -121,7 +121,7 @@ export const NotificationProvider: FC<any> = ({
     >
       {children}
     </NotificationContext.Provider>
-  );
-};
+  )
+}
 
-export default NotificationContext;
+export default NotificationContext

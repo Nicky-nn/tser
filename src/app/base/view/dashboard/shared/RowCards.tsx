@@ -1,4 +1,4 @@
-import { MoreVert, Start } from '@mui/icons-material';
+import { MoreVert, Start } from '@mui/icons-material'
 import {
   Avatar,
   Card,
@@ -8,12 +8,12 @@ import {
   Hidden,
   Icon,
   IconButton,
-} from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import { format } from 'date-fns';
-import { FC, Fragment } from 'react';
+} from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import { format } from 'date-fns'
+import { FC, Fragment } from 'react'
 
-import { Span } from '../../../components/Template/Typography';
+import { Span } from '../../../components/Template/Typography'
 
 const ProjectName: FC<any> = styled(Span)(({ theme }) => ({
   marginLeft: 24,
@@ -21,30 +21,30 @@ const ProjectName: FC<any> = styled(Span)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     marginLeft: 4,
   },
-}));
+}))
 
 const StarOutline = styled(Fab)(() => ({
   marginLeft: 0,
   boxShadow: 'none',
   background: '#08ad6c !important',
   backgroundColor: 'rgba(9, 182, 109, 1) !important',
-}));
+}))
 
 const DateRange = styled(Fab)(({ theme }) => ({
   marginLeft: 0,
   boxShadow: 'none',
   color: 'white !important',
   background: `${theme.palette.error.main} !important`,
-}));
+}))
 
 const StyledAvatar = styled(Avatar)(() => ({
   width: '32px !important',
   height: '32px !important',
-}));
+}))
 
 const RowCards: any = () => {
-  const { palette } = useTheme();
-  const textMuted = palette.text.secondary;
+  const { palette } = useTheme()
+  const textMuted = palette.text.secondary
 
   return [1, 2, 3, 4].map((id) => (
     <Fragment key={id}>
@@ -96,7 +96,7 @@ const RowCards: any = () => {
       </Card>
       <Box py={1} />
     </Fragment>
-  ));
-};
+  ))
+}
 
-export default RowCards;
+export default RowCards

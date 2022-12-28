@@ -1,28 +1,28 @@
-import { FormControl, FormHelperText, Grid } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import React, { FunctionComponent, useEffect } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select from 'react-select';
+import { FormControl, FormHelperText, Grid } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import React, { FunctionComponent, useEffect } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select from 'react-select'
 
-import AlertError from '../../../../base/components/Alert/AlertError';
-import { FormTextField } from '../../../../base/components/Form';
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import useAuth from '../../../../base/hooks/useAuth';
-import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api';
-import useQueryActividades from '../../../sin/hooks/useQueryActividades';
+import AlertError from '../../../../base/components/Alert/AlertError'
+import { FormTextField } from '../../../../base/components/Form'
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import useAuth from '../../../../base/hooks/useAuth'
+import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api'
+import useQueryActividades from '../../../sin/hooks/useQueryActividades'
 import {
   SinActividadesProps,
   SinProductoServicioProps,
-} from '../../../sin/interfaces/sin.interface';
-import { GiftCardInputProps } from '../../interfaces/giftCard.interface';
+} from '../../../sin/interfaces/sin.interface'
+import { GiftCardInputProps } from '../../interfaces/giftCard.interface'
 
 interface OwnProps {
-  form: UseFormReturn<GiftCardInputProps>;
+  form: UseFormReturn<GiftCardInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
   const {
@@ -33,14 +33,14 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
-  const actividadEconomicaWatch = watch('actividad');
+  } = props
+  const actividadEconomicaWatch = watch('actividad')
 
   // const {values, setFieldValue} = formik
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   // CARGA DATOS DE ACTIVIDADES
-  const { actividades, actIsError, actError, actLoading } = useQueryActividades();
+  const { actividades, actIsError, actError, actLoading } = useQueryActividades()
 
   // CARGA DE DATOS DE PRODUCTOS SERVICIOS
   const { data: productosServicios, error: prodServError } = useQuery<
@@ -49,18 +49,16 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
   >(
     ['productosServicios', actividadEconomicaWatch],
     async () => {
-      return await fetchSinProductoServicioPorActividad(
-        getValues('actividad.codigoCaeb'),
-      );
+      return await fetchSinProductoServicioPorActividad(getValues('actividad.codigoCaeb'))
     },
     {
       keepPreviousData: false,
     },
-  );
+  )
 
   useEffect(() => {
-    setValue('actividad', user.actividadEconomica);
-  }, []);
+    setValue('actividad', user.actividadEconomica)
+  }, [])
 
   return (
     <>
@@ -84,11 +82,11 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
                       menuPosition={'fixed'}
                       value={field.value}
                       onChange={async (actividadEconomica: any) => {
-                        field.onChange(actividadEconomica);
-                        setValue('sinProductoServicio', null);
+                        field.onChange(actividadEconomica)
+                        setValue('sinProductoServicio', null)
                       }}
                       onBlur={async (val) => {
-                        field.onBlur();
+                        field.onBlur()
                       }}
                       isSearchable={false}
                       options={actividades}
@@ -125,7 +123,7 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
                       placeholder={'Seleccione producto para homolgación'}
                       value={field.value || null}
                       onChange={(sinProductoServicio) => {
-                        field.onChange(sinProductoServicio);
+                        field.onChange(sinProductoServicio)
                       }}
                       options={productosServicios}
                       getOptionValue={(ps) => ps.codigoProducto}
@@ -194,7 +192,7 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default GiftCardHomologacion;
+export default GiftCardHomologacion

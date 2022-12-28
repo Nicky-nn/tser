@@ -1,10 +1,10 @@
 export interface ImagenProps {
-  altText: string;
-  url: string;
+  altText: string
+  url: string
 }
 
 export interface MonedaParamsProps {
-  codigo: number;
-  descripcion: string;
-  sigla: string;
+  codigo: number
+  descripcion: string
+  sigla: string
 }

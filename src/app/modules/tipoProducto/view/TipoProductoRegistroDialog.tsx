@@ -1,29 +1,29 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { FormikProps, useFormik } from 'formik';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { FormikProps, useFormik } from 'formik'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiTipoProductoRegistro } from '../api/tipoProductoRegistro.api';
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiTipoProductoRegistro } from '../api/tipoProductoRegistro.api'
 import {
   TIPO_PRODUCTO_INITIAL_VALUES,
   TipoProductoInputProp,
   TipoProductoProps,
-} from '../interfaces/tipoProducto.interface';
-import { tipoProductoRegistroValidationSchema } from '../validator/tipoProductoRegistro.validator';
-import TipoProductoForm from './TipoProductoForm';
+} from '../interfaces/tipoProducto.interface'
+import { tipoProductoRegistroValidationSchema } from '../validator/tipoProductoRegistro.validator'
+import TipoProductoForm from './TipoProductoForm'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: TipoProductoProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: TipoProductoProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
-  const { onClose, open, ...other } = props;
+  const { onClose, open, ...other } = props
 
   const formik: FormikProps<TipoProductoInputProp> = useFormik<TipoProductoInputProp>({
     initialValues: TIPO_PRODUCTO_INITIAL_VALUES,
@@ -32,27 +32,27 @@ const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
       await swalAsyncConfirmDialog({
         preConfirm: () => {
           return apiTipoProductoRegistro(values).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
         text: 'Confirma que desea reagistrar al proveedor',
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     },
-  });
+  })
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   useEffect(() => {
-    formik.resetForm();
-  }, [open]);
+    formik.resetForm()
+  }, [open])
 
   return (
     <>
@@ -88,7 +88,7 @@ const TipoProductoDialogRegistro: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default TipoProductoDialogRegistro;
+export default TipoProductoDialogRegistro

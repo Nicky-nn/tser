@@ -1,30 +1,30 @@
-import { Delete, Edit, PersonAddAltSharp } from '@mui/icons-material';
-import { Box, Button, Chip, IconButton, Stack } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Delete, Edit, PersonAddAltSharp } from '@mui/icons-material'
+import { Box, Button, Chip, IconButton, Stack } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
   SortingState,
-} from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+} from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useMemo, useState } from 'react'
 
-import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
-import { genApiQuery } from '../../../../utils/helper';
-import { localization } from '../../../../utils/localization';
-import { notDanger, notSuccess } from '../../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal';
-import { fetchClienteListado } from '../../api/clienteListado.api';
-import { apiClientesEliminar } from '../../api/clientesEliminar.api';
-import { ClienteProps } from '../../interfaces/cliente';
-import ClienteModificarDialog from '../ClienteModificarDialog';
-import ClienteRegistroDialog from '../ClienteRegistroDialog';
+import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
+import { genApiQuery } from '../../../../utils/helper'
+import { localization } from '../../../../utils/localization'
+import { notDanger, notSuccess } from '../../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { fetchClienteListado } from '../../api/clienteListado.api'
+import { apiClientesEliminar } from '../../api/clientesEliminar.api'
+import { ClienteProps } from '../../interfaces/cliente'
+import ClienteModificarDialog from '../ClienteModificarDialog'
+import ClienteRegistroDialog from '../ClienteRegistroDialog'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
   {
@@ -56,22 +56,22 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
     id: 'state',
     header: 'Estado',
   },
-];
+]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   // DATA TABLE
-  const [rowCount, setRowCount] = useState(0);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowCount, setRowCount] = useState(0)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN DATA TABLE
-  const [openDialog, setOpenDialog] = useState(false);
-  const [cliente, setCliente] = useState<ClienteProps | null>(null);
+  const [openDialog, setOpenDialog] = useState(false)
+  const [cliente, setCliente] = useState<ClienteProps | null>(null)
 
   const {
     data: clientes,
@@ -82,40 +82,40 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
   } = useQuery(
     ['client', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await fetchClienteListado(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await fetchClienteListado(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
     { keepPreviousData: true },
-  );
-  const columns = useMemo(() => tableColumns, []);
+  )
+  const columns = useMemo(() => tableColumns, [])
 
   const handleDeleteData = async (original: any) => {
-    const data = Object.keys(rowSelection);
+    const data = Object.keys(rowSelection)
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir',
       preConfirm: () => {
         return apiClientesEliminar(data).catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess();
-        setRowSelection({});
-        refetch().then();
+        notSuccess()
+        setRowSelection({})
+        refetch().then()
       }
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -186,8 +186,8 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
               {!['99002', '99003'].includes(row.original.numeroDocumento) && (
                 <IconButton
                   onClick={() => {
-                    setCliente(row.original);
-                    setOpenDialog(true);
+                    setCliente(row.original)
+                    setOpenDialog(true)
                   }}
                   color={'primary'}
                   aria-label="delete"
@@ -197,7 +197,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
               )}
               <AuditIconButton row={row.original} />
             </div>
-          );
+          )
         }}
         muiTableHeadCellFilterTextFieldProps={{
           sx: { m: '0.5rem 0', width: '95%' },
@@ -225,7 +225,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
                 Eliminar
               </Button>
             </Box>
-          );
+          )
         }}
       />
 
@@ -237,10 +237,10 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           cliente={cliente!}
           onClose={(value?: ClienteProps) => {
             if (value) {
-              refetch().then();
+              refetch().then()
             }
-            setCliente(null);
-            setOpenDialog(false);
+            setCliente(null)
+            setOpenDialog(false)
           }}
         />
       )}
@@ -251,12 +251,12 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         open={open}
         onClose={(value?: ClienteProps) => {
           if (value) {
-            refetch().then();
+            refetch().then()
           }
-          setOpen(false);
+          setOpen(false)
         }}
       />
     </>
-  );
-};
-export default ClientesListado;
+  )
+}
+export default ClientesListado

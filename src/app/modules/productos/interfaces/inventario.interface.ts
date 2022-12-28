@@ -1,6 +1,6 @@
-import { SucursalProps } from '../../sucursal/interfaces/sucursal';
+import { SucursalProps } from '../../sucursal/interfaces/sucursal'
 
 export interface InventarioProps {
-  sucursal: SucursalProps;
-  stock: number;
+  sucursal: SucursalProps
+  stock: number
 }

@@ -1,24 +1,24 @@
-import { MailOutline, Menu, PowerSettingsNew, Settings } from '@mui/icons-material';
-import { Avatar, Hidden, IconButton, MenuItem, useMediaQuery } from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { MailOutline, Menu, PowerSettingsNew, Settings } from '@mui/icons-material'
+import { Avatar, Hidden, IconButton, MenuItem, useMediaQuery } from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import React, { FC } from 'react'
+import { Link } from 'react-router-dom'
 
-import { cuentaRouteMap } from '../../../../../modules/cuenta/CuentaRoutesMap';
-import { topBarHeight } from '../../../../../utils/constant';
-import { NotificationProvider } from '../../../../contexts/NotificationContext';
-import { ThemeColorBarProvider } from '../../../../contexts/ThemeColorContext';
-import useAuth from '../../../../hooks/useAuth';
-import useSettings from '../../../../hooks/useSettings';
-import MatxMenu from '../../MatxMenu/MatxMenu';
-import { themeShadows } from '../../MatxTheme/themeColors';
-import NotificationBar from '../../NotificationBar/NotificationBar';
-import ThemeColorBar from '../../NotificationBar/ThemeColorBar';
-import { Span } from '../../Typography';
+import { cuentaRouteMap } from '../../../../../modules/cuenta/CuentaRoutesMap'
+import { topBarHeight } from '../../../../../utils/constant'
+import { NotificationProvider } from '../../../../contexts/NotificationContext'
+import { ThemeColorBarProvider } from '../../../../contexts/ThemeColorContext'
+import useAuth from '../../../../hooks/useAuth'
+import useSettings from '../../../../hooks/useSettings'
+import MatxMenu from '../../MatxMenu/MatxMenu'
+import { themeShadows } from '../../MatxTheme/themeColors'
+import NotificationBar from '../../NotificationBar/NotificationBar'
+import ThemeColorBar from '../../NotificationBar/ThemeColorBar'
+import { Span } from '../../Typography'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
-}));
+}))
 
 const TopbarRoot = styled('div')(({ theme }) => ({
   top: 0,
@@ -26,7 +26,7 @@ const TopbarRoot = styled('div')(({ theme }) => ({
   transition: 'all 0.3s ease',
   boxShadow: themeShadows[8],
   height: topBarHeight,
-}));
+}))
 
 const TopbarContainer = styled(Box)(({ theme }) => ({
   padding: '8px',
@@ -45,7 +45,7 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
     paddingLeft: 14,
     paddingRight: 16,
   },
-}));
+}))
 
 const UserMenu = styled(Box)(() => ({
   display: 'flex',
@@ -56,7 +56,7 @@ const UserMenu = styled(Box)(() => ({
   '& span': {
     margin: '0 8px',
   },
-}));
+}))
 
 const StyledItem = styled(MenuItem)(({ theme }) => ({
   display: 'flex',
@@ -72,20 +72,20 @@ const StyledItem = styled(MenuItem)(({ theme }) => ({
     marginRight: '10px',
     color: theme.palette.text.primary,
   },
-}));
+}))
 
 const IconBox = styled('div')(({ theme }) => ({
   display: 'inherit',
   [theme.breakpoints.down('md')]: {
     display: 'none !important',
   },
-}));
+}))
 
 const Layout1Topbar: FC<any> = () => {
-  const theme = useTheme();
-  const { settings, updateSettings }: any = useSettings();
-  const { logout, user }: any = useAuth();
-  const isMdScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const theme = useTheme()
+  const { settings, updateSettings }: any = useSettings()
+  const { logout, user }: any = useAuth()
+  const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const updateSidebarMode = (sidebarSettings: any) => {
     updateSettings({
@@ -94,19 +94,19 @@ const Layout1Topbar: FC<any> = () => {
           ...sidebarSettings,
         },
       },
-    });
-  };
+    })
+  }
 
   const handleSidebarToggle = () => {
-    let { layout1Settings } = settings;
-    let mode;
+    let { layout1Settings } = settings
+    let mode
     if (isMdScreen) {
-      mode = layout1Settings.leftSidebar.mode === 'close' ? 'mobile' : 'close';
+      mode = layout1Settings.leftSidebar.mode === 'close' ? 'mobile' : 'close'
     } else {
-      mode = layout1Settings.leftSidebar.mode === 'full' ? 'close' : 'full';
+      mode = layout1Settings.leftSidebar.mode === 'full' ? 'close' : 'full'
     }
-    updateSidebarMode({ mode });
-  };
+    updateSidebarMode({ mode })
+  }
 
   return (
     <TopbarRoot>
@@ -156,7 +156,7 @@ const Layout1Topbar: FC<any> = () => {
         </Box>
       </TopbarContainer>
     </TopbarRoot>
-  );
-};
+  )
+}
 
-export default React.memo(Layout1Topbar);
+export default React.memo(Layout1Topbar)

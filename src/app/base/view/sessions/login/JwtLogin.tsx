@@ -1,37 +1,37 @@
-import { LoadingButton } from '@mui/lab';
-import { Card, Checkbox, CircularProgress, Grid, TextField } from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { object, string } from 'yup';
+import { LoadingButton } from '@mui/lab'
+import { Card, Checkbox, CircularProgress, Grid, TextField } from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import { useFormik } from 'formik'
+import React, { useEffect, useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { object, string } from 'yup'
 
-import { isEmptyValue } from '../../../../utils/helper';
-import { Paragraph } from '../../../components/Template/Typography';
-import useAuth from '../../../hooks/useAuth';
-import fcvFondo from '/assets/images/fcvFondo.jpg';
+import { isEmptyValue } from '../../../../utils/helper'
+import { Paragraph } from '../../../components/Template/Typography'
+import useAuth from '../../../hooks/useAuth'
+import fcvFondo from '/assets/images/fcvFondo.jpg'
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-}));
+}))
 
 const JustifyBox = styled(FlexBox)(() => ({
   justifyContent: 'center',
   padding: '15px 15px 5px 15px',
-}));
+}))
 
 const ContentBox = styled(Box)(() => ({
   height: '100%',
   padding: '20px',
   position: 'relative',
   background: 'rgba(0, 0, 0, 0.01)',
-}));
+}))
 
 const IMG = styled('img')(() => ({
   width: '100%',
   maxHeight: '90px',
-}));
+}))
 
 const JWTRoot = styled(JustifyBox)(() => ({
   backgroundImage: `url("${fcvFondo}")`,
@@ -44,13 +44,13 @@ const JWTRoot = styled(JustifyBox)(() => ({
     borderRadius: 12,
     margin: '1rem',
   },
-}));
+}))
 
 const StyledProgress = styled(CircularProgress)(() => ({
   position: 'absolute',
   top: '6px',
   left: '25px',
-}));
+}))
 
 const validationSchema = object({
   shop: string().required('Url de la tienda es requerido'),
@@ -58,15 +58,15 @@ const validationSchema = object({
   password: string()
     .min(6, 'Password debe contener al menos 6 caracteres')
     .required('Password es requerido'),
-});
+})
 
 const JwtLogin = () => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const { login }: any = useAuth();
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const { login }: any = useAuth()
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('')
   const formik = useFormik({
     initialValues: {
       shop: '',
@@ -76,29 +76,29 @@ const JwtLogin = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      const { shop, email, password, remember } = values;
+      setLoading(true)
+      const { shop, email, password, remember } = values
       try {
         if (remember) {
-          localStorage.setItem('shop', shop);
+          localStorage.setItem('shop', shop)
         } else {
-          localStorage.removeItem('shop');
+          localStorage.removeItem('shop')
         }
-        await login(shop, email, password);
-        navigate('/');
+        await login(shop, email, password)
+        navigate('/')
       } catch (e: any) {
-        console.log(e);
-        setMessage(e.message);
-        setLoading(false);
+        console.log(e)
+        setMessage(e.message)
+        setLoading(false)
       }
     },
-  });
+  })
 
   useEffect(() => {
     if (!isEmptyValue(localStorage.getItem('shop'))) {
-      formik.setFieldValue('shop', localStorage.getItem('shop'));
+      formik.setFieldValue('shop', localStorage.getItem('shop'))
     }
-  }, []);
+  }, [])
 
   return (
     <JWTRoot>
@@ -196,7 +196,7 @@ const JwtLogin = () => {
         </Grid>
       </Card>
     </JWTRoot>
-  );
-};
+  )
+}
 
-export default JwtLogin;
+export default JwtLogin

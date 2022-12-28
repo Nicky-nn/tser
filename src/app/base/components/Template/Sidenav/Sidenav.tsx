@@ -1,16 +1,16 @@
-import { styled } from '@mui/system';
-import { FC, Fragment } from 'react';
-import Scrollbar from 'react-perfect-scrollbar';
+import { styled } from '@mui/system'
+import { FC, Fragment } from 'react'
+import Scrollbar from 'react-perfect-scrollbar'
 
-import { navigations } from '../../../../navigations';
-import useSettings from '../../../hooks/useSettings';
-import MatxVerticalNav from '../MatxVerticalNav/MatxVerticalNav';
+import { navigations } from '../../../../navigations'
+import useSettings from '../../../hooks/useSettings'
+import MatxVerticalNav from '../MatxVerticalNav/MatxVerticalNav'
 
 const StyledScrollBar: FC<any> = styled(Scrollbar)(() => ({
   paddingLeft: '1rem',
   paddingRight: '1rem',
   position: 'relative',
-}));
+}))
 
 const SideNavMobile = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -24,17 +24,17 @@ const SideNavMobile = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     display: 'none',
   },
-}));
+}))
 
 type SidenavProps = {
-  children: JSX.Element;
-};
+  children: JSX.Element
+}
 const Sidenav: FC<any> = ({ children }: SidenavProps) => {
-  const { settings, updateSettings }: any = useSettings();
+  const { settings, updateSettings }: any = useSettings()
 
   const updateSidebarMode = (sidebarSettings: any) => {
-    let activeLayoutSettingsName = settings.activeLayout + 'Settings';
-    let activeLayoutSettings = settings[activeLayoutSettingsName];
+    let activeLayoutSettingsName = settings.activeLayout + 'Settings'
+    let activeLayoutSettings = settings[activeLayoutSettingsName]
 
     updateSettings({
       ...settings,
@@ -45,8 +45,8 @@ const Sidenav: FC<any> = ({ children }: SidenavProps) => {
           ...sidebarSettings,
         },
       },
-    });
-  };
+    })
+  }
 
   return (
     <Fragment>
@@ -57,7 +57,7 @@ const Sidenav: FC<any> = ({ children }: SidenavProps) => {
 
       <SideNavMobile onClick={() => updateSidebarMode({ mode: 'close' })} />
     </Fragment>
-  );
-};
+  )
+}
 
-export default Sidenav;
+export default Sidenav

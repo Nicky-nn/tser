@@ -1,8 +1,8 @@
-import { Fab, Icon, IconButton } from '@mui/material';
-import { styled, useTheme } from '@mui/system';
-import clsx from 'clsx';
+import { Fab, Icon, IconButton } from '@mui/material'
+import { styled, useTheme } from '@mui/system'
+import clsx from 'clsx'
 
-import useSettings from '../../../hooks/useSettings';
+import useSettings from '../../../hooks/useSettings'
 
 const Toggle = styled('div')(() => ({
   position: 'fixed',
@@ -13,16 +13,16 @@ const Toggle = styled('div')(() => ({
   '&.open': {
     right: '10px',
   },
-}));
+}))
 
 const SecondarySidebarToggle = () => {
-  const { settings, updateSettings }: any = useSettings();
+  const { settings, updateSettings }: any = useSettings()
 
   const toggle = () => {
     updateSettings({
       secondarySidebar: { open: !settings.secondarySidebar.open },
-    });
-  };
+    })
+  }
 
   // useEffect(() => {
   //   updateSettings({
@@ -30,8 +30,8 @@ const SecondarySidebarToggle = () => {
   //   });
   // }, [isMobile]);
 
-  const { palette } = useTheme();
-  const textColor = palette.primary.contrastText;
+  const { palette } = useTheme()
+  const textColor = palette.primary.contrastText
 
   return (
     <Toggle className={clsx({ open: settings.secondarySidebar.open })}>
@@ -46,7 +46,7 @@ const SecondarySidebarToggle = () => {
         </Fab>
       )}
     </Toggle>
-  );
-};
+  )
+}
 
-export default SecondarySidebarToggle;
+export default SecondarySidebarToggle

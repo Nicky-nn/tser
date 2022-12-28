@@ -9,15 +9,15 @@ import {
   Link,
   ThemeProvider,
   Tooltip,
-} from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import React, { Fragment, useState } from 'react';
-import Scrollbar from 'react-perfect-scrollbar';
+} from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import React, { Fragment, useState } from 'react'
+import Scrollbar from 'react-perfect-scrollbar'
 
-import useSettings from '../../../hooks/useSettings';
-import { themeShadows } from '../MatxTheme/themeColors';
-import { H1, H5, Span } from '../Typography';
-import BadgeSelected from './BadgeSelected';
+import useSettings from '../../../hooks/useSettings'
+import { themeShadows } from '../MatxTheme/themeColors'
+import { H1, H5, Span } from '../Typography'
+import BadgeSelected from './BadgeSelected'
 
 const Label = styled(Span)(({ theme }) => ({
   color: theme.palette.secondary.main,
@@ -34,7 +34,7 @@ const Label = styled(Span)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.secondary.contrastText,
   },
-}));
+}))
 
 const MaxCustomaizer = styled('div')(({ theme }) => ({
   height: '100vh',
@@ -51,7 +51,7 @@ const MaxCustomaizer = styled('div')(({ theme }) => ({
   '& .helpText': {
     margin: '0px .5rem 1rem',
   },
-}));
+}))
 
 const LayoutBox = styled(BadgeSelected)(() => ({
   width: '100%',
@@ -72,7 +72,7 @@ const LayoutBox = styled(BadgeSelected)(() => ({
     background: 'rgba(0,0,0,0.3)',
     zIndex: 12,
   },
-}));
+}))
 
 const Controller = styled('div')(() => ({
   minHeight: 58,
@@ -82,31 +82,31 @@ const Controller = styled('div')(() => ({
   justifyContent: 'space-between',
   marginBottom: '16px',
   boxShadow: themeShadows[6],
-}));
+}))
 
 const IMG = styled('img')(() => ({
   width: '100%',
-}));
+}))
 
 const StyledScrollBar = styled(Scrollbar)(() => ({
   paddingLeft: '16px',
   paddingRight: '16px',
-}));
+}))
 
 const MatxCustomizer = () => {
-  const [open, setOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
-  const { settings, updateSettings }: any = useSettings();
-  const theme = useTheme();
-  const secondary = theme.palette.text.secondary;
+  const [open, setOpen] = useState(false)
+  const [tabIndex, setTabIndex] = useState(0)
+  const { settings, updateSettings }: any = useSettings()
+  const theme = useTheme()
+  const secondary = theme.palette.text.secondary
 
   const tooglePanel = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
   const handleTabChange = (index: any) => {
-    setTabIndex(index);
-  };
-  let activeTheme = { ...settings.themes[settings.activeTheme] };
+    setTabIndex(index)
+  }
+  let activeTheme = { ...settings.themes[settings.activeTheme] }
 
   return (
     <Fragment>
@@ -196,8 +196,8 @@ const MatxCustomizer = () => {
         </Drawer>
       </ThemeProvider>
     </Fragment>
-  );
-};
+  )
+}
 
 const demoLayouts = [
   {
@@ -263,6 +263,6 @@ const demoLayouts = [
       },
     },
   },
-];
+]
 
-export default MatxCustomizer;
+export default MatxCustomizer

@@ -1,6 +1,6 @@
 // noinspection DuplicatedCode
 
-import { InvertColors } from '@mui/icons-material';
+import { InvertColors } from '@mui/icons-material'
 import {
   Badge,
   Button,
@@ -9,15 +9,15 @@ import {
   Icon,
   IconButton,
   ThemeProvider,
-} from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import { FC, Fragment, useState } from 'react';
-import Scrollbar from 'react-perfect-scrollbar';
+} from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import { FC, Fragment, useState } from 'react'
+import Scrollbar from 'react-perfect-scrollbar'
 
-import useSettings from '../../../hooks/useSettings';
-import BadgeSelected from '../MatxCustomizer/BadgeSelected';
-import { themeShadows } from '../MatxTheme/themeColors';
-import { H5 } from '../Typography';
+import useSettings from '../../../hooks/useSettings'
+import BadgeSelected from '../MatxCustomizer/BadgeSelected'
+import { themeShadows } from '../MatxTheme/themeColors'
+import { H5 } from '../Typography'
 
 const MaxCustomaizer = styled('div')(({ theme }) => ({
   height: '100vh',
@@ -34,7 +34,7 @@ const MaxCustomaizer = styled('div')(({ theme }) => ({
   '& .helpText': {
     margin: '0px .5rem 1rem',
   },
-}));
+}))
 
 const LayoutBox = styled(BadgeSelected)(() => ({
   width: '100%',
@@ -55,7 +55,7 @@ const LayoutBox = styled(BadgeSelected)(() => ({
     background: 'rgba(0,0,0,0.3)',
     zIndex: 12,
   },
-}));
+}))
 
 const Controller = styled('div')(() => ({
   minHeight: 58,
@@ -65,34 +65,34 @@ const Controller = styled('div')(() => ({
   justifyContent: 'space-between',
   marginBottom: '16px',
   boxShadow: themeShadows[6],
-}));
+}))
 
 const IMG = styled('img')(() => ({
   width: '100%',
-}));
+}))
 
 const StyledScrollBar = styled(Scrollbar)(() => ({
   paddingLeft: '16px',
   paddingRight: '16px',
-}));
+}))
 
 const ThemeColorBar: FC<any> = ({ container }: any) => {
-  const [open, setOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
-  const { settings, updateSettings }: any = useSettings();
-  const theme = useTheme();
-  const secondary = theme.palette.text.secondary;
+  const [open, setOpen] = useState(false)
+  const [tabIndex, setTabIndex] = useState(0)
+  const { settings, updateSettings }: any = useSettings()
+  const theme = useTheme()
+  const secondary = theme.palette.text.secondary
 
   const tooglePanel = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
 
   const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
-  let activeTheme = { ...settings.themes[settings.activeTheme] };
-  const { palette } = useTheme();
-  const textColor = palette.text.primary;
+    setOpen(!open)
+  }
+  let activeTheme = { ...settings.themes[settings.activeTheme] }
+  const { palette } = useTheme()
+  const textColor = palette.text.primary
   return (
     <Fragment>
       <IconButton onClick={handleDrawerToggle}>
@@ -166,8 +166,8 @@ const ThemeColorBar: FC<any> = ({ container }: any) => {
         </Drawer>
       </ThemeProvider>
     </Fragment>
-  );
-};
+  )
+}
 
 const demoLayouts = [
   {
@@ -233,6 +233,6 @@ const demoLayouts = [
       },
     },
   },
-];
+]
 
-export default ThemeColorBar;
+export default ThemeColorBar

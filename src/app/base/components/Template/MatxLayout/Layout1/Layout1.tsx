@@ -1,22 +1,22 @@
-import { Box, styled, ThemeProvider, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/system';
-import React, { useEffect, useRef } from 'react';
-import Scrollbar from 'react-perfect-scrollbar';
-import { Outlet } from 'react-router-dom';
+import { Box, styled, ThemeProvider, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/system'
+import React, { useEffect, useRef } from 'react'
+import Scrollbar from 'react-perfect-scrollbar'
+import { Outlet } from 'react-router-dom'
 
-import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant';
-import useSettings from '../../../../hooks/useSettings';
-import LayoutRestriccion from '../../../LayoutRestriccion/LayoutRestriccion';
-import Footer from '../../Footer/Footer';
-import MatxSuspense from '../../MatxSuspense/MatxSuspense';
-import SidenavTheme from '../../MatxTheme/SidenavTheme/SidenavTheme';
-import Layout1Sidenav from './Layout1Sidenav';
-import Layout1Topbar from './Layout1Topbar';
+import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
+import useSettings from '../../../../hooks/useSettings'
+import LayoutRestriccion from '../../../LayoutRestriccion/LayoutRestriccion'
+import Footer from '../../Footer/Footer'
+import MatxSuspense from '../../MatxSuspense/MatxSuspense'
+import SidenavTheme from '../../MatxTheme/SidenavTheme/SidenavTheme'
+import Layout1Sidenav from './Layout1Sidenav'
+import Layout1Topbar from './Layout1Topbar'
 
 const Layout1Root = styled(Box)(({ theme }) => ({
   display: 'flex',
   background: theme.palette.background.default,
-}));
+}))
 
 const ContentBox = styled(Box)(() => ({
   height: '100%',
@@ -25,7 +25,7 @@ const ContentBox = styled(Box)(() => ({
   overflowX: 'hidden',
   flexDirection: 'column',
   justifyContent: 'space-between',
-}));
+}))
 
 const StyledScrollBar = styled(Scrollbar)(() => ({
   height: '100%',
@@ -33,12 +33,12 @@ const StyledScrollBar = styled(Scrollbar)(() => ({
   display: 'flex',
   flexGrow: '1',
   flexDirection: 'column',
-}));
+}))
 
 type LayoutContainerProps = {
-  width: string | number;
-  secondary_sidebar: any;
-};
+  width: string | number
+  secondary_sidebar: any
+}
 
 const LayoutContainer = styled(Box)(
   ({ width, secondary_sidebar }: LayoutContainerProps) => ({
@@ -53,45 +53,45 @@ const LayoutContainer = styled(Box)(
     transition: 'all 0.3s ease',
     marginRight: secondary_sidebar.open ? 50 : 0,
   }),
-);
+)
 
 const Layout1 = () => {
-  const { settings, updateSettings } = useSettings();
-  const { layout1Settings, secondarySidebar } = settings;
+  const { settings, updateSettings } = useSettings()
+  const { layout1Settings, secondarySidebar } = settings
   // @ts-ignore
-  const topbarTheme = settings.themes[layout1Settings.topbar.theme];
+  const topbarTheme = settings.themes[layout1Settings.topbar.theme]
   const {
     leftSidebar: { mode: sidenavMode, show: showSidenav },
-  } = layout1Settings;
+  } = layout1Settings
 
   const getSidenavWidth = () => {
     switch (sidenavMode) {
       case 'full':
-        return sideNavWidth;
+        return sideNavWidth
 
       case 'compact':
-        return sidenavCompactWidth;
+        return sidenavCompactWidth
 
       default:
-        return '0px';
+        return '0px'
     }
-  };
+  }
 
-  const sidenavWidth = getSidenavWidth();
-  const theme = useTheme();
-  const isMdScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const sidenavWidth = getSidenavWidth()
+  const theme = useTheme()
+  const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const ref = useRef({ isMdScreen, settings });
-  const layoutClasses = `theme-${theme.palette.type}`;
+  const ref = useRef({ isMdScreen, settings })
+  const layoutClasses = `theme-${theme.palette.type}`
 
   useEffect(() => {
-    let { settings } = ref.current;
-    let sidebarMode = settings.layout1Settings.leftSidebar.mode;
+    let { settings } = ref.current
+    let sidebarMode = settings.layout1Settings.leftSidebar.mode
     if (settings.layout1Settings.leftSidebar.show) {
-      let mode = isMdScreen ? 'close' : sidebarMode;
-      updateSettings({ layout1Settings: { leftSidebar: { mode } } });
+      let mode = isMdScreen ? 'close' : sidebarMode
+      updateSettings({ layout1Settings: { leftSidebar: { mode } } })
     }
-  }, [isMdScreen]);
+  }, [isMdScreen])
 
   return (
     <Layout1Root className={layoutClasses}>
@@ -153,7 +153,7 @@ const Layout1 = () => {
 
       {/*settings.secondarySidebar.show && <SecondarySidebar/>*/}
     </Layout1Root>
-  );
-};
+  )
+}
 
-export default React.memo(Layout1);
+export default React.memo(Layout1)

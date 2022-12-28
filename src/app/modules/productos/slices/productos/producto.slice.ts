@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-import { RootState } from '../../../../store/store';
-import { genRandomString } from '../../../../utils/helper';
+import { RootState } from '../../../../store/store'
+import { genRandomString } from '../../../../utils/helper'
 import {
   PRODUCTO_INITIAL_VALUES,
   ProductoInputProps,
-} from '../../interfaces/producto.interface';
+} from '../../interfaces/producto.interface'
 
-const initialState: ProductoInputProps = PRODUCTO_INITIAL_VALUES;
+const initialState: ProductoInputProps = PRODUCTO_INITIAL_VALUES
 
 export const productoSlice = createSlice({
   name: 'producto',
@@ -20,24 +20,24 @@ export const productoSlice = createSlice({
     }),
     setProducto: (state, action) => action.payload,
     setDescripcionProducto: (state, action) => {
-      state.descripcion = action.payload;
+      state.descripcion = action.payload
     },
     setProdOpciones: (state, action) => {
-      state.opcionesProducto = action.payload;
+      state.opcionesProducto = action.payload
     },
     setProdTipo: (state, action) => {
-      state.tipoProducto = action.payload;
+      state.tipoProducto = action.payload
     },
     setProdTipoPersonalizado: (state, action) => {
-      state.tipoProductoPersonalizado = action.payload;
+      state.tipoProductoPersonalizado = action.payload
     },
     setProdProveedor: (state, action) => {
-      state.proveedor = action.payload;
+      state.proveedor = action.payload
     },
   },
-});
+})
 
-export const selectProducto = (state: RootState): ProductoInputProps => state.producto;
+export const selectProducto = (state: RootState): ProductoInputProps => state.producto
 export const {
   productoReset,
   setProducto,
@@ -46,6 +46,6 @@ export const {
   setProdTipo,
   setProdTipoPersonalizado,
   setProdProveedor,
-} = productoSlice.actions;
+} = productoSlice.actions
 
-export default productoSlice.reducer;
+export default productoSlice.reducer

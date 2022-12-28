@@ -1,8 +1,8 @@
-import { QueryKey } from '@tanstack/query-core';
-import { QueryObserverOptions, useQuery } from '@tanstack/react-query';
+import { QueryKey } from '@tanstack/query-core'
+import { QueryObserverOptions, useQuery } from '@tanstack/react-query'
 
-import { fetchSinTipoDocumentoIdentidad } from '../api/sinTipoDocumentoIdentidad.api';
-import { SinTipoDocumentoIdentidadProps } from '../interfaces/sin.interface';
+import { fetchSinTipoDocumentoIdentidad } from '../api/sinTipoDocumentoIdentidad.api'
+import { SinTipoDocumentoIdentidadProps } from '../interfaces/sin.interface'
 
 /**
  * Hook para listado básico de tipos de producto
@@ -20,16 +20,16 @@ const useQueryTipoDocumentoIdentidad = (
   } = useQuery<SinTipoDocumentoIdentidadProps[], Error>(
     ['tipoDocumentoIdentidad', ...queryKey],
     async () => {
-      const resp = await fetchSinTipoDocumentoIdentidad();
+      const resp = await fetchSinTipoDocumentoIdentidad()
       if (resp.length > 0) {
-        return resp;
+        return resp
       }
-      return [];
+      return []
     },
     <Omit<any, any>>{ ...options },
-  );
+  )
 
-  return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError };
-};
+  return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError }
+}
 
-export default useQueryTipoDocumentoIdentidad;
+export default useQueryTipoDocumentoIdentidad

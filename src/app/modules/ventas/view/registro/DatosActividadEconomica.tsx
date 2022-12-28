@@ -1,23 +1,23 @@
-import { FormControl, FormHelperText } from '@mui/material';
-import React, { FunctionComponent, useEffect } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select from 'react-select';
+import { FormControl, FormHelperText } from '@mui/material'
+import React, { FunctionComponent, useEffect } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select from 'react-select'
 
-import AlertError from '../../../../base/components/Alert/AlertError';
-import AlertLoading from '../../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import useAuth from '../../../../base/hooks/useAuth';
-import useQueryActividades from '../../../sin/hooks/useQueryActividades';
-import { SinActividadesProps } from '../../../sin/interfaces/sin.interface';
-import { FacturaInputProps } from '../../interfaces/factura';
+import AlertError from '../../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import useAuth from '../../../../base/hooks/useAuth'
+import useQueryActividades from '../../../sin/hooks/useQueryActividades'
+import { SinActividadesProps } from '../../../sin/interfaces/sin.interface'
+import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
+  form: UseFormReturn<FacturaInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
   const {
@@ -28,16 +28,16 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors, isSubmitted, isSubmitSuccessful },
     },
-  } = props;
-  const { user } = useAuth();
-  const { actividades, actIsError, actError, actLoading } = useQueryActividades();
+  } = props
+  const { user } = useAuth()
+  const { actividades, actIsError, actError, actLoading } = useQueryActividades()
 
   useEffect(() => {
-    setValue('actividadEconomica', user.actividadEconomica);
-  }, []);
+    setValue('actividadEconomica', user.actividadEconomica)
+  }, [])
 
   if (actIsError) {
-    return <AlertError mensaje={actError?.message!} />;
+    return <AlertError mensaje={actError?.message!} />
   }
 
   return (
@@ -59,11 +59,11 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
                   placeholder={'Seleccione la actividad económica'}
                   value={field.value}
                   onChange={async (val: any) => {
-                    field.onChange(val);
-                    setValue('detalle', []);
+                    field.onChange(val)
+                    setValue('detalle', [])
                   }}
                   onBlur={async (val) => {
-                    field.onBlur();
+                    field.onBlur()
                   }}
                   isSearchable={false}
                   options={actividades}
@@ -81,7 +81,7 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
         )}
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default DatosActividadEconomica;
+export default DatosActividadEconomica

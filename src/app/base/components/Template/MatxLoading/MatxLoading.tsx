@@ -1,5 +1,5 @@
-import { Box, CircularProgress } from '@mui/material';
-import { styled } from '@mui/system';
+import { Box, CircularProgress } from '@mui/material'
+import { styled } from '@mui/system'
 
 const StyledLoading = styled('div')(() => ({
   width: '100%',
@@ -17,7 +17,7 @@ const StyledLoading = styled('div')(() => ({
     right: 0,
     top: 'calc(50% - 25px)',
   },
-}));
+}))
 
 const Loading = () => {
   return (
@@ -27,7 +27,7 @@ const Loading = () => {
         <CircularProgress className="circleProgress" />
       </Box>
     </StyledLoading>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

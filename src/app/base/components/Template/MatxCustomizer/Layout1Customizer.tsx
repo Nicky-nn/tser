@@ -10,31 +10,31 @@ import {
   RadioGroup,
   Switch,
   Tooltip,
-} from '@mui/material';
-import { Box, styled } from '@mui/system';
-import { get } from 'lodash';
-import React, { Fragment } from 'react';
+} from '@mui/material'
+import { Box, styled } from '@mui/system'
+import { get } from 'lodash'
+import React, { Fragment } from 'react'
 
-import { themeColors, ThemeTypeColorsProps } from '../MatxTheme/themeColors';
-import { themeShadows } from '../MatxTheme/themeColors';
-import BadgeSelected from './BadgeSelected';
-import { mainSidebarThemes, topbarThemes } from './customizerOptions';
+import { themeColors, ThemeTypeColorsProps } from '../MatxTheme/themeColors'
+import { themeShadows } from '../MatxTheme/themeColors'
+import BadgeSelected from './BadgeSelected'
+import { mainSidebarThemes, topbarThemes } from './customizerOptions'
 
 const sidebarBG = [
   '/assets/images/sidebar/sidebar-bg-dark.jpg',
   '/assets/images/sidebar/sidebar-bg-light.jpg',
-];
+]
 
 const ThemeName = styled('div')(({ theme }) => ({
   marginBottom: '16px',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const ToolbarContainer = styled('div')(() => ({
   margin: '8px',
   display: 'flex',
   flexWrap: 'wrap',
-}));
+}))
 
 const ToolbarContent = styled('div')(({ color }: { color: ThemeTypeColorsProps }) => ({
   width: 40,
@@ -47,13 +47,13 @@ const ToolbarContent = styled('div')(({ color }: { color: ThemeTypeColorsProps }
   justifyContent: 'center',
   boxShadow: themeShadows[3],
   background: themeColors[color].palette.primary.main,
-}));
+}))
 
 const IMG = styled('img')(() => ({
   width: '100%',
   maxHeight: 152,
   display: 'block',
-}));
+}))
 
 const Layout1Customizer = ({ settings, handleChange, handleControlChange }: any) => {
   return (
@@ -185,7 +185,7 @@ const Layout1Customizer = ({ settings, handleChange, handleControlChange }: any)
         </FormControl>
       </Box>
     </Fragment>
-  );
-};
+  )
+}
 
-export default Layout1Customizer;
+export default Layout1Customizer

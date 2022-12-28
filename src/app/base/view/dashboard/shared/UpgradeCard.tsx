@@ -1,8 +1,8 @@
-import { Button, Card } from '@mui/material';
-import { styled } from '@mui/system';
-import React from 'react';
+import { Button, Card } from '@mui/material'
+import { styled } from '@mui/system'
+import React from 'react'
 
-import { convertHexToRGB } from '../../../../utils/utils';
+import { convertHexToRGB } from '../../../../utils/utils'
 
 const CardRoot = styled(Card)(({ theme }) => ({
   marginBottom: '24px',
@@ -10,7 +10,7 @@ const CardRoot = styled(Card)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     paddingLeft: '16px !important',
   },
-}));
+}))
 
 const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: 'none',
@@ -21,14 +21,14 @@ const StyledCard = styled(Card)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     padding: '16px !important',
   },
-}));
+}))
 
 const Paragraph = styled('p')(({ theme }) => ({
   margin: 0,
   paddingTop: '24px',
   paddingBottom: '24px',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const UpgradeCard = () => {
   return (
@@ -48,7 +48,7 @@ const UpgradeCard = () => {
         </Button>
       </StyledCard>
     </CardRoot>
-  );
-};
+  )
+}
 
-export default UpgradeCard;
+export default UpgradeCard

@@ -51,4 +51,4 @@ module.exports = {
     JSX: true,
     TypeScript: true,
   },
-};
+}

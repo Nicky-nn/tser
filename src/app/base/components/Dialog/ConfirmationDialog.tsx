@@ -8,16 +8,16 @@ import {
   DialogContentText,
   DialogProps,
   DialogTitle,
-} from '@mui/material';
-import { green } from '@mui/material/colors';
-import React, { FC, useState } from 'react';
+} from '@mui/material'
+import { green } from '@mui/material/colors'
+import React, { FC, useState } from 'react'
 
 type Props = DialogProps & {
-  title: string;
-  description: string;
-  onCancel: (event: any) => void;
-  onConfirm: (event: any, setLoading: any) => void;
-};
+  title: string
+  description: string
+  onCancel: (event: any) => void
+  onConfirm: (event: any, setLoading: any) => void
+}
 
 const ConfirmationDialog: FC<Props> = ({
   title,
@@ -26,7 +26,7 @@ const ConfirmationDialog: FC<Props> = ({
   onConfirm,
   ...props
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   return (
     <Dialog {...props}>
@@ -49,8 +49,8 @@ const ConfirmationDialog: FC<Props> = ({
             variant="outlined"
             size={'small'}
             onClick={(e) => {
-              setLoading(true);
-              onConfirm(e, setLoading);
+              setLoading(true)
+              onConfirm(e, setLoading)
             }}
             disabled={loading}
           >
@@ -72,7 +72,7 @@ const ConfirmationDialog: FC<Props> = ({
         </Box>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ConfirmationDialog;
+export default ConfirmationDialog

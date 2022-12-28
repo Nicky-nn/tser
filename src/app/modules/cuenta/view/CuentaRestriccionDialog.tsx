@@ -1,23 +1,23 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
-import { ProveedorInputProp } from '../../proveedor/interfaces/proveedor.interface';
-import CuentaRestriccionTable from './CuentaRestriccionTable';
+import { ProveedorInputProp } from '../../proveedor/interfaces/proveedor.interface'
+import CuentaRestriccionTable from './CuentaRestriccionTable'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: ProveedorInputProp) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: ProveedorInputProp) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaRestriccionDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, open, ...other } = props;
+  const { onClose, open, ...other } = props
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <>
@@ -45,7 +45,7 @@ const CuentaRestriccionDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default CuentaRestriccionDialog;
+export default CuentaRestriccionDialog

@@ -1,4 +1,4 @@
-import { FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material';
+import { FileOpen, MenuOpen, PictureAsPdf } from '@mui/icons-material'
 import {
   Button,
   Dialog,
@@ -6,27 +6,25 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-} from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+} from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
   SortingState,
-} from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+} from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useMemo, useState } from 'react'
 
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import SimpleMenu, {
-  StyledMenuItem,
-} from '../../../../base/components/MyMenu/SimpleMenu';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
-import { genApiQuery, openInNewTab } from '../../../../utils/helper';
-import { localization } from '../../../../utils/localization';
-import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils';
-import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api';
-import { FacturaProps } from '../../../ventas/interfaces/factura';
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
+import { genApiQuery, openInNewTab } from '../../../../utils/helper'
+import { localization } from '../../../../utils/localization'
+import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils'
+import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api'
+import { FacturaProps } from '../../../ventas/interfaces/factura'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -79,35 +77,35 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     id: 'state',
     header: 'ESTADO',
   },
-];
+]
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: FacturaProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: FacturaProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, open, ...other } = props;
+  const { onClose, open, ...other } = props
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: 5,
-  });
-  const [rowCount, setRowCount] = useState(0);
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowCount, setRowCount] = useState(0)
+  const [isRefetching, setIsRefetching] = useState(false)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
   const { data, isError, isLoading, refetch } = useQuery<FacturaProps[]>(
@@ -119,24 +117,24 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters, ['state=VALIDADA']);
+      const query = genApiQuery(columnFilters, ['state=VALIDADA'])
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
-  );
-  const columns = useMemo(() => tableColumns, []);
+  )
+  const columns = useMemo(() => tableColumns, [])
 
   const setNotaCreditoDebito = (factura: FacturaProps) => {
-    onClose(factura);
-  };
+    onClose(factura)
+  }
 
   return (
     <>
@@ -204,7 +202,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                 >
                   <StyledMenuItem
                     onClick={() => {
-                      openInNewTab(row.original.representacionGrafica.pdf);
+                      openInNewTab(row.original.representacionGrafica.pdf)
                     }}
                   >
                     <PictureAsPdf /> Pdf Medio Oficio
@@ -212,7 +210,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
 
                   <StyledMenuItem
                     onClick={() => {
-                      openInNewTab(row.original.representacionGrafica.xml);
+                      openInNewTab(row.original.representacionGrafica.xml)
                     }}
                   >
                     <FileOpen /> Xml
@@ -220,7 +218,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
 
                   <StyledMenuItem
                     onClick={() => {
-                      openInNewTab(row.original.representacionGrafica.sin);
+                      openInNewTab(row.original.representacionGrafica.sin)
                     }}
                   >
                     <FileOpen /> Url S.I.N.
@@ -267,7 +265,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default NcdFacturaOriginalDialog;
+export default NcdFacturaOriginalDialog

@@ -1,4 +1,4 @@
-import { styled } from '@mui/system';
+import { styled } from '@mui/system'
 
 const SimpleContainer = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -11,5 +11,5 @@ const SimpleContainer = styled('div')(({ theme }) => ({
       marginBottom: '16px',
     },
   },
-}));
-export default SimpleContainer;
+}))
+export default SimpleContainer

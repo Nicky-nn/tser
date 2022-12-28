@@ -1,8 +1,8 @@
-import { Menu, MenuItem, ThemeProvider } from '@mui/material';
-import { alpha, Box, styled } from '@mui/system';
-import React, { Children, FC, Fragment, useState } from 'react';
+import { Menu, MenuItem, ThemeProvider } from '@mui/material'
+import { alpha, Box, styled } from '@mui/system'
+import React, { Children, FC, Fragment, useState } from 'react'
 
-import useSettings from '../../hooks/useSettings';
+import useSettings from '../../hooks/useSettings'
 
 const MenuButton = styled(Box)(({ theme }) => ({
   display: 'inline-block',
@@ -10,7 +10,7 @@ const MenuButton = styled(Box)(({ theme }) => ({
   '& div:hover': {
     backgroundColor: theme.palette.action.hover,
   },
-}));
+}))
 
 export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   display: 'flex',
@@ -40,28 +40,28 @@ export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
       theme.palette.action.selectedOpacity,
     ),
   },
-}));
+}))
 
 interface SimpleMenuProps {
-  children: JSX.Element | JSX.Element[];
-  menuButton: JSX.Element;
-  shouldCloseOnItemClick?: boolean;
-  horizontalPosition?: number | 'right' | 'left' | 'center';
+  children: JSX.Element | JSX.Element[]
+  menuButton: JSX.Element
+  shouldCloseOnItemClick?: boolean
+  horizontalPosition?: number | 'right' | 'left' | 'center'
 }
 
 const SimpleMenu: FC<SimpleMenuProps> = (props: SimpleMenuProps) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const children = Children.toArray(props.children);
-  let { shouldCloseOnItemClick = true, horizontalPosition = 'right' } = props;
-  const { settings } = useSettings();
+  const [anchorEl, setAnchorEl] = useState(null)
+  const children = Children.toArray(props.children)
+  let { shouldCloseOnItemClick = true, horizontalPosition = 'right' } = props
+  const { settings } = useSettings()
 
   const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
     <Fragment>
@@ -89,7 +89,7 @@ const SimpleMenu: FC<SimpleMenuProps> = (props: SimpleMenuProps) => {
         </Menu>
       </ThemeProvider>
     </Fragment>
-  );
-};
+  )
+}
 
-export default SimpleMenu;
+export default SimpleMenu

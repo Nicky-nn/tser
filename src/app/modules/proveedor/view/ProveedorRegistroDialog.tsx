@@ -1,30 +1,30 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { FormikProps, useFormik } from 'formik';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { FormikProps, useFormik } from 'formik'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { genRandomString } from '../../../utils/helper';
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiProveedorRegistro } from '../api/proveedorRegistro.api';
+import { genRandomString } from '../../../utils/helper'
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiProveedorRegistro } from '../api/proveedorRegistro.api'
 import {
   PROVEEDOR_INITIAL_VALUES,
   ProveedorInputProp,
   ProveedorProps,
-} from '../interfaces/proveedor.interface';
-import { proveedorRegistroValidationSchema } from '../validator/proveedorRegistro.validator';
-import ProveedorForm from './ProveedorForm';
+} from '../interfaces/proveedor.interface'
+import { proveedorRegistroValidationSchema } from '../validator/proveedorRegistro.validator'
+import ProveedorForm from './ProveedorForm'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: ProveedorProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: ProveedorProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProveedorRegistro: FunctionComponent<Props> = (props) => {
-  const { onClose, open, ...other } = props;
+  const { onClose, open, ...other } = props
 
   const formik: FormikProps<ProveedorInputProp> = useFormik<ProveedorInputProp>({
     initialValues: PROVEEDOR_INITIAL_VALUES,
@@ -33,28 +33,28 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
       await swalAsyncConfirmDialog({
         preConfirm: () => {
           return apiProveedorRegistro(values).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
         text: 'Confirma que desea reagistrar al proveedor',
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     },
-  });
+  })
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   useEffect(() => {
-    formik.resetForm();
-    formik.setFieldValue('codigo', genRandomString().toUpperCase());
-  }, [open]);
+    formik.resetForm()
+    formik.setFieldValue('codigo', genRandomString().toUpperCase())
+  }, [open])
 
   return (
     <Dialog
@@ -88,7 +88,7 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ProveedorRegistro;
+export default ProveedorRegistro

@@ -1,16 +1,16 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
+import { AccessToken } from '../../../base/models/paramsModel'
 import {
   SinProductoServicioProps,
   SinUnidadMedidaProps,
-} from '../../sin/interfaces/sin.interface';
+} from '../../sin/interfaces/sin.interface'
 
 interface ApiProductoServicioUnidadMedidaResponse {
-  sinProductoServicioPorActividad: SinProductoServicioProps[];
-  sinUnidadMedida: SinUnidadMedidaProps[];
+  sinProductoServicioPorActividad: SinProductoServicioProps[]
+  sinUnidadMedida: SinUnidadMedidaProps[]
 }
 
 const gqlQuery = gql`
@@ -25,15 +25,15 @@ const gqlQuery = gql`
       descripcion
     }
   }
-`;
+`
 
 export const apiProductoServicioUnidadMedida = async (
   codigoActividad: string,
 ): Promise<ApiProductoServicioUnidadMedidaResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
-  const data: any = await client.request(gqlQuery, { codigoActividad });
-  return data;
-};
+  client.setHeader('authorization', `Bearer ${token}`)
+  const data: any = await client.request(gqlQuery, { codigoActividad })
+  return data
+}

@@ -1,28 +1,28 @@
-import { Visibility } from '@mui/icons-material';
-import { Box, IconButton, Popover, Tooltip } from '@mui/material';
-import React, { FunctionComponent, useState } from 'react';
+import { Visibility } from '@mui/icons-material'
+import { Box, IconButton, Popover, Tooltip } from '@mui/material'
+import React, { FunctionComponent, useState } from 'react'
 
-import { AuditoriaProps } from '../../../interfaces';
+import { AuditoriaProps } from '../../../interfaces'
 
 interface OwnProps {
-  row: AuditoriaProps | any;
+  row: AuditoriaProps | any
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const AuditIconButton: FunctionComponent<Props> = ({ row }: Props) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <>
@@ -87,7 +87,7 @@ const AuditIconButton: FunctionComponent<Props> = ({ row }: Props) => {
         </Box>
       </Popover>
     </>
-  );
-};
+  )
+}
 
-export default AuditIconButton;
+export default AuditIconButton

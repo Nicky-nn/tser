@@ -5,39 +5,39 @@ import {
   Mail,
   MenuOpen,
   PictureAsPdf,
-} from '@mui/icons-material';
-import { Button, Chip, Grid, IconButton } from '@mui/material';
-import { Box } from '@mui/system';
-import { useQuery } from '@tanstack/react-query';
+} from '@mui/icons-material'
+import { Button, Chip, Grid, IconButton } from '@mui/material'
+import { Box } from '@mui/system'
+import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
   SortingState,
-} from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FC, useMemo, useState } from 'react';
+} from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FC, useMemo, useState } from 'react'
 
-import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton';
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import { SimpleItem } from '../../../base/components/Container/SimpleItem';
-import SimpleRowMenu from '../../../base/components/Container/SimpleRow';
-import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput';
-import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces';
-import { genApiQuery, openInNewTab } from '../../../utils/helper';
-import { localization } from '../../../utils/localization';
+import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import { SimpleItem } from '../../../base/components/Container/SimpleItem'
+import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
+import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
+import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
+import { genApiQuery, openInNewTab } from '../../../utils/helper'
+import { localization } from '../../../utils/localization'
 import {
   muiTableApiEstado,
   muiTableHeadCellFilterTextFieldProps,
-} from '../../../utils/materialReactTableUtils';
-import { fetchFacturaListado } from '../api/factura.listado.api';
-import { FacturaProps } from '../interfaces/factura';
-import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog';
-import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog';
-import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog';
-import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog';
+} from '../../../utils/materialReactTableUtils'
+import { fetchFacturaListado } from '../api/factura.listado.api'
+import { FacturaProps } from '../interfaces/factura'
+import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog'
+import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
+import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
+import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -135,23 +135,23 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     filterFn: (row, id, filterValue) =>
       row.original.state.toLowerCase().startsWith(filterValue.toLowerCase()),
   },
-];
+]
 
 const VentaGestion: FC<any> = () => {
-  const [openAnularDocumento, setOpenAnularDocumento] = useState(false);
-  const [factura, setFactura] = useState<FacturaProps | null>(null);
-  const [openExport, setOpenExport] = useState(false);
-  const [openExportDetalle, setOpenExportDetalle] = useState(false);
-  const [openReenviarEmails, setOpenReenviarEmails] = useState(false);
+  const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
+  const [factura, setFactura] = useState<FacturaProps | null>(null)
+  const [openExport, setOpenExport] = useState(false)
+  const [openExportDetalle, setOpenExportDetalle] = useState(false)
+  const [openReenviarEmails, setOpenReenviarEmails] = useState(false)
   // DATA TABLE
-  const [rowCount, setRowCount] = useState(0);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowCount, setRowCount] = useState(0)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN DATA TABLE
 
   const {
@@ -169,20 +169,20 @@ const VentaGestion: FC<any> = () => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
-  );
-  const columns = useMemo(() => tableColumns, []);
+  )
+  const columns = useMemo(() => tableColumns, [])
   return (
     <>
       <SimpleContainer>
@@ -282,9 +282,9 @@ const VentaGestion: FC<any> = () => {
                   >
                     <StyledMenuItem
                       onClick={(e) => {
-                        e.preventDefault();
-                        setOpenAnularDocumento(true);
-                        setFactura(row.original);
+                        e.preventDefault()
+                        setOpenAnularDocumento(true)
+                        setFactura(row.original)
                       }}
                     >
                       <LayersClear /> Anular Documento
@@ -292,7 +292,7 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.pdf);
+                        openInNewTab(row.original.representacionGrafica.pdf)
                       }}
                     >
                       <PictureAsPdf /> Pdf Medio Oficio
@@ -300,7 +300,7 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.rollo);
+                        openInNewTab(row.original.representacionGrafica.rollo)
                       }}
                     >
                       <PictureAsPdf /> Pdf Rollo
@@ -308,7 +308,7 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.xml);
+                        openInNewTab(row.original.representacionGrafica.xml)
                       }}
                     >
                       <FileOpen /> Xml
@@ -316,7 +316,7 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.sin);
+                        openInNewTab(row.original.representacionGrafica.sin)
                       }}
                     >
                       <FileOpen /> Url S.I.N.
@@ -324,9 +324,9 @@ const VentaGestion: FC<any> = () => {
 
                     <StyledMenuItem
                       onClick={(e) => {
-                        e.preventDefault();
-                        setOpenReenviarEmails(true);
-                        setFactura(row.original);
+                        e.preventDefault()
+                        setOpenReenviarEmails(true)
+                        setFactura(row.original)
                       }}
                     >
                       <Mail /> Reenviar Correo
@@ -349,10 +349,10 @@ const VentaGestion: FC<any> = () => {
           factura={factura}
           onClose={async (val) => {
             if (val) {
-              await refetch();
+              await refetch()
             }
-            setFactura(null);
-            setOpenAnularDocumento(false);
+            setFactura(null)
+            setOpenAnularDocumento(false)
           }}
         />
       </SimpleContainer>
@@ -362,8 +362,8 @@ const VentaGestion: FC<any> = () => {
         keepMounted={true}
         open={openExport}
         onClose={() => {
-          setOpenExport(false);
-          console.log('saliendo');
+          setOpenExport(false)
+          console.log('saliendo')
         }}
       />
 
@@ -372,8 +372,8 @@ const VentaGestion: FC<any> = () => {
         keepMounted={true}
         open={openExportDetalle}
         onClose={() => {
-          setOpenExportDetalle(false);
-          console.log('saliendo exportación detalle');
+          setOpenExportDetalle(false)
+          console.log('saliendo exportación detalle')
         }}
       />
 
@@ -382,13 +382,13 @@ const VentaGestion: FC<any> = () => {
         keepMounted={true}
         open={openReenviarEmails}
         onClose={() => {
-          setFactura(null);
-          setOpenReenviarEmails(false);
+          setFactura(null)
+          setOpenReenviarEmails(false)
         }}
         factura={factura}
       />
     </>
-  );
-};
+  )
+}
 
-export default VentaGestion;
+export default VentaGestion

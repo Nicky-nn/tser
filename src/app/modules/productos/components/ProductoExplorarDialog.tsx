@@ -1,27 +1,27 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import React, { FunctionComponent, useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import React, { FunctionComponent, useState } from 'react'
 
-import { ProductoVarianteProps } from '../interfaces/producto.interface';
-import ProductosVariantes from './ProductosVariantes';
+import { ProductoVarianteProps } from '../interfaces/producto.interface'
+import ProductosVariantes from './ProductosVariantes'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: ProductoVarianteProps[]) => void;
-  codigoActividad: string;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: ProductoVarianteProps[]) => void
+  codigoActividad: string
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, codigoActividad, open, ...other } = props;
-  const [rowSelection, setProductosVariantes] = useState<ProductoVarianteProps[]>([]);
+  const { onClose, codigoActividad, open, ...other } = props
+  const [rowSelection, setProductosVariantes] = useState<ProductoVarianteProps[]>([])
   const handleAddProds = () => {
     if (rowSelection.length > 0) {
-      onClose(rowSelection);
+      onClose(rowSelection)
     }
-  };
+  }
 
   return (
     <>
@@ -62,7 +62,7 @@ const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default ProductoExplorarDialog;
+export default ProductoExplorarDialog

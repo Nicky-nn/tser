@@ -1,8 +1,8 @@
-import { ButtonBase, Icon } from '@mui/material';
-import { Box, styled } from '@mui/system';
-import clsx from 'clsx';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { ButtonBase, Icon } from '@mui/material'
+import { Box, styled } from '@mui/system'
+import clsx from 'clsx'
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const NavExpandRoot = styled('div')(({ theme }) => ({
   '& .expandIcon': {
@@ -27,7 +27,7 @@ const NavExpandRoot = styled('div')(({ theme }) => ({
     '& .itemText': { display: 'none' },
     '& .itemIcon': { display: 'none' },
   },
-}));
+}))
 
 const BaseButton = styled(ButtonBase)(({ theme }) => ({
   height: 44,
@@ -48,7 +48,7 @@ const BaseButton = styled(ButtonBase)(({ theme }) => ({
     paddingRight: '16px',
     verticalAlign: 'middle',
   },
-}));
+}))
 
 const BulletIcon = styled('div')(({ theme }) => ({
   width: 4,
@@ -60,67 +60,67 @@ const BulletIcon = styled('div')(({ theme }) => ({
   borderRadius: '300px !important',
   // background: theme.palette.primary.contrastText,
   background: theme.palette.text.primary,
-}));
+}))
 
 const ItemText = styled('span')(() => ({
   fontSize: '0.875rem',
   paddingLeft: '0.8rem',
   verticalAlign: 'middle',
-}));
+}))
 
 const BadgeValue = styled('div')(() => ({
   padding: '1px 4px',
   overflow: 'hidden',
   borderRadius: '300px',
-}));
+}))
 
 type MatxVerticalNavExpansionPanelProps = {
-  item: any;
-  children: JSX.Element;
-  mode: any;
-};
+  item: any
+  children: JSX.Element
+  mode: any
+}
 
 const MatxVerticalNavExpansionPanel: FC<any> = ({
   item,
   children,
   mode,
 }: MatxVerticalNavExpansionPanelProps) => {
-  const [collapsed, setCollapsed] = useState(true);
-  const elementRef: any = useRef(null);
-  const componentHeight = useRef(0);
-  const { pathname } = useLocation();
-  const { name, icon, iconText, badge } = item;
+  const [collapsed, setCollapsed] = useState(true)
+  const elementRef: any = useRef(null)
+  const componentHeight = useRef(0)
+  const { pathname } = useLocation()
+  const { name, icon, iconText, badge } = item
 
   const handleClick = () => {
-    componentHeight.current = 0;
-    calcaulateHeight(elementRef.current);
-    setCollapsed(!collapsed);
-  };
+    componentHeight.current = 0
+    calcaulateHeight(elementRef.current)
+    setCollapsed(!collapsed)
+  }
 
   const calcaulateHeight = useCallback((node: any) => {
     if (node.name !== 'child') {
       for (let child of node.children) {
-        calcaulateHeight(child);
+        calcaulateHeight(child)
       }
     }
 
-    if (node.name === 'child') componentHeight.current += node.scrollHeight;
-    else componentHeight.current += 44; //here 44 is node height
-    return;
-  }, []);
+    if (node.name === 'child') componentHeight.current += node.scrollHeight
+    else componentHeight.current += 44 //here 44 is node height
+    return
+  }, [])
 
   useEffect(() => {
-    if (!elementRef) return;
+    if (!elementRef) return
 
-    calcaulateHeight(elementRef.current);
+    calcaulateHeight(elementRef.current)
 
     // OPEN DROPDOWN IF CHILD IS ACTIVE
     for (let child of elementRef.current.children) {
       if (child.getAttribute('href') === pathname) {
-        setCollapsed(false);
+        setCollapsed(false)
       }
     }
-  }, [pathname, calcaulateHeight]);
+  }, [pathname, calcaulateHeight])
 
   return (
     <NavExpandRoot>
@@ -163,7 +163,7 @@ const MatxVerticalNavExpansionPanel: FC<any> = ({
         {children}
       </div>
     </NavExpandRoot>
-  );
-};
+  )
+}
 
-export default MatxVerticalNavExpansionPanel;
+export default MatxVerticalNavExpansionPanel

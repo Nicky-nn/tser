@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from '@mui/lab'
 import {
   Button,
   Dialog,
@@ -10,66 +10,66 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@mui/material';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+} from '@mui/material'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 
-import { useMounted } from '../../../../hooks/useMounted';
-import { swalConfirm, swalException } from '../../../../utils/swal';
-import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api';
-import { SinMotivoAnulacionProps } from '../../../sin/interfaces/sin.interface';
-import { fetchFacturaAnular } from '../../api/facturaAnular.api';
-import { FacturaProps } from '../../interfaces/factura';
+import { useMounted } from '../../../../hooks/useMounted'
+import { swalConfirm, swalException } from '../../../../utils/swal'
+import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api'
+import { SinMotivoAnulacionProps } from '../../../sin/interfaces/sin.interface'
+import { fetchFacturaAnular } from '../../api/facturaAnular.api'
+import { FacturaProps } from '../../interfaces/factura'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: any) => void;
-  factura: FacturaProps | null;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: any) => void
+  factura: FacturaProps | null
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
-  const { onClose, open, factura, ...other } = props;
-  const isMounted = useMounted();
-  const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { onClose, open, factura, ...other } = props
+  const isMounted = useMounted()
+  const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([])
+  const [loading, setLoading] = useState(false)
   const initalValues: any = {
     codigoMotivo: null,
-  };
-  const [value, setValue] = useState(initalValues);
+  }
+  const [value, setValue] = useState(initalValues)
 
   useEffect(() => {
     if (open) {
-      setValue(initalValues);
+      setValue(initalValues)
     }
-  }, [open]);
+  }, [open])
 
   useEffect(() => {
     const fetch = async (): Promise<void> => {
       await fetchSinMotivoAnulacion().then((res) => {
-        setMotivosAnulacion(res || []);
-      });
-    };
-    fetch().then();
-  }, []);
+        setMotivosAnulacion(res || [])
+      })
+    }
+    fetch().then()
+  }, [])
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = async () => {
-    let aux = true;
+    let aux = true
     if (!value.codigoMotivo) {
-      toast.error('Seleccione el motivo de la anulación');
-      aux = false;
+      toast.error('Seleccione el motivo de la anulación')
+      aux = false
     }
     if (!factura?._id) {
-      toast.error('Seleccione el documento');
-      aux = false;
+      toast.error('Seleccione el documento')
+      aux = false
     }
     if (aux) {
       Swal.fire({
@@ -77,26 +77,26 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
         html: '¿Confirma que desea anular el documento? <br> este proceso no se podra revertir',
         showLoaderOnConfirm: true,
         preConfirm: () => {
-          setLoading(true);
-          const input = { id: factura?._id, codigoMotivo: value.codigoMotivo };
-          return fetchFacturaAnular(factura?._id || '', value.codigoMotivo);
+          setLoading(true)
+          const input = { id: factura?._id, codigoMotivo: value.codigoMotivo }
+          return fetchFacturaAnular(factura?._id || '', value.codigoMotivo)
         },
         allowOutsideClick: () => !Swal.isLoading(),
       })
         .then((result) => {
-          console.log(result);
+          console.log(result)
           if (result.isConfirmed) {
-            toast.success('Documento Anulado correctamente');
-            onClose(true);
-            setLoading(false);
+            toast.success('Documento Anulado correctamente')
+            onClose(true)
+            setLoading(false)
           }
         })
         .catch((err) => {
-          swalException(err);
-          setLoading(false);
-        });
+          swalException(err)
+          setLoading(false)
+        })
     }
-  };
+  }
 
   return (
     <>
@@ -122,7 +122,7 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
                   value={value.codigoMotivo || ''}
                   label="Motivo de la anulación"
                   onChange={(e) => {
-                    setValue({ ...value, codigoMotivo: parseInt(e.target.value) });
+                    setValue({ ...value, codigoMotivo: parseInt(e.target.value) })
                   }}
                 >
                   {motivosAnulacion.map((ma) => (
@@ -145,7 +145,7 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default AnularDocumentoDialog;
+export default AnularDocumentoDialog

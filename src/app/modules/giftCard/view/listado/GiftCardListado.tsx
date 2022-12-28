@@ -1,38 +1,38 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Box, Button, Chip, IconButton } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Delete, Edit } from '@mui/icons-material'
+import { Box, Button, Chip, IconButton } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
-} from '@tanstack/react-table';
-import { SortingState } from '@tanstack/react-table';
-import { sumBy } from 'lodash';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from '@tanstack/react-table'
+import { SortingState } from '@tanstack/react-table'
+import { sumBy } from 'lodash'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
-import { genApiQuery, genReplaceEmpty } from '../../../../utils/helper';
-import { localization } from '../../../../utils/localization';
-import { notSuccess } from '../../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal';
-import { apiGiftCardEliminar } from '../../api/giftCardEliminar.api';
-import { apiGiftCards } from '../../api/giftCards.api';
-import { giftCardRouteMap } from '../../GiftCardRoutesMap';
-import { GiftCardProps } from '../../interfaces/giftCard.interface';
+import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
+import { genApiQuery, genReplaceEmpty } from '../../../../utils/helper'
+import { localization } from '../../../../utils/localization'
+import { notSuccess } from '../../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { apiGiftCardEliminar } from '../../api/giftCardEliminar.api'
+import { apiGiftCards } from '../../api/giftCards.api'
+import { giftCardRouteMap } from '../../GiftCardRoutesMap'
+import { GiftCardProps } from '../../interfaces/giftCard.interface'
 import {
   DisplayColumnDefOptions,
   MuiSearchTextFieldProps,
   MuiTableHeadCellFilterTextFieldProps,
   MuiTableProps,
   MuiToolbarAlertBannerProps,
-} from '../../../../utils/materialReactTableUtils';
+} from '../../../../utils/materialReactTableUtils'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const tableColumns: MRT_ColumnDef<GiftCardProps>[] = [
   {
@@ -44,8 +44,8 @@ const tableColumns: MRT_ColumnDef<GiftCardProps>[] = [
   {
     accessorFn: (row) => {
       const cantidad = sumBy(row.variantes, (item) => {
-        return sumBy(item.inventario, (inv) => inv.stock!);
-      });
+        return sumBy(item.inventario, (inv) => inv.stock!)
+      })
       if (!row.varianteUnica) {
         return (
           <Chip
@@ -53,9 +53,9 @@ const tableColumns: MRT_ColumnDef<GiftCardProps>[] = [
             label={`${cantidad} items para ${row.variantes.length} variantes`}
             color={'info'}
           />
-        );
+        )
       }
-      return <Chip size={'small'} label={`${cantidad} items`} color={'default'} />;
+      return <Chip size={'small'} label={`${cantidad} items`} color={'default'} />
     },
     id: 'inventario',
     header: 'Inventario',
@@ -76,22 +76,22 @@ const tableColumns: MRT_ColumnDef<GiftCardProps>[] = [
     id: 'state',
     header: 'Estado',
   },
-];
+]
 
 const GiftCardListado: FunctionComponent<Props> = (props) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowCount, setRowCount] = useState(0);
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowCount, setRowCount] = useState(0)
+  const [isRefetching, setIsRefetching] = useState(false)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery<GiftCardProps[]>(
@@ -103,44 +103,44 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await apiGiftCards(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await apiGiftCards(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
     {
       refetchOnWindowFocus: true,
       keepPreviousData: true,
     },
-  );
+  )
 
-  const columns = useMemo(() => tableColumns, []);
+  const columns = useMemo(() => tableColumns, [])
 
   const handleDeleteData = async (data: any) => {
-    const products = data.map((item: any) => item.original._id);
+    const products = data.map((item: any) => item.original._id)
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir',
       preConfirm: () => {
         return apiGiftCardEliminar(products).catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess();
-        setRowSelection({});
-        refetch();
+        notSuccess()
+        setRowSelection({})
+        refetch()
       }
-    });
-  };
+    })
+  }
   return (
     <>
       <MaterialReactTable
@@ -202,13 +202,13 @@ const GiftCardListado: FunctionComponent<Props> = (props) => {
                 Eliminar
               </Button>
             </Box>
-          );
+          )
         }}
         muiTableProps={MuiTableProps}
         displayColumnDefOptions={DisplayColumnDefOptions}
       />
     </>
-  );
-};
+  )
+}
 
-export default GiftCardListado;
+export default GiftCardListado

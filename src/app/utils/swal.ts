@@ -1,8 +1,8 @@
-import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
+import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
 
 interface Props extends SweetAlertOptions<any, any> {
-  title?: string;
-  text?: string;
+  title?: string
+  text?: string
 }
 
 export const swalConfirm = {
@@ -11,13 +11,13 @@ export const swalConfirm = {
   allowOutsideClick: false,
   confirmButtonText: 'Confirmar',
   showLoaderOnConfirm: true,
-};
+}
 
 export const swalErrorMsg = (
   msg: string | Array<any>,
   size: 'sm' | 'md' | 'lg' = 'lg',
 ) => {
-  const width = size === 'sm' ? 450 : size === 'md' ? 600 : size === 'lg' ? 800 : 450;
+  const width = size === 'sm' ? 450 : size === 'md' ? 600 : size === 'lg' ? 800 : 450
   Swal.fire({
     title: 'Alerta!!',
     width,
@@ -25,10 +25,10 @@ export const swalErrorMsg = (
     allowEscapeKey: false,
     allowOutsideClick: false,
     html: msg,
-  }).then();
-};
+  }).then()
+}
 
-export const swalSuccessMsg = (msg: string) => {};
+export const swalSuccessMsg = (msg: string) => {}
 
 /**
  * Custom error para excepciones
@@ -42,8 +42,8 @@ export const swalException = (e: Error) => {
     allowEscapeKey: false,
     allowOutsideClick: false,
     html: e.message,
-  }).then();
-};
+  }).then()
+}
 
 /**
  * @description Dialog de confirmación devuelve un Promise en then
@@ -54,8 +54,8 @@ export const swalConfirmDialog = async ({
   title = 'Confirmación',
   text = 'Confirma que desea realizar la acción',
 }: {
-  title?: string;
-  text?: string;
+  title?: string
+  text?: string
 }): Promise<SweetAlertResult<any>> => {
   return Swal.fire({
     title,
@@ -63,8 +63,8 @@ export const swalConfirmDialog = async ({
     showCancelButton: true,
     confirmButtonText: 'Si, Confirmar',
     cancelButtonText: 'Cancelar',
-  });
-};
+  })
+}
 
 /**
  * @description Confirmación para datos asincronos, usado para api rest, debe usar preConfirm(), y then
@@ -77,9 +77,9 @@ export const swalAsyncConfirmDialog = async ({
   text = 'Confirma que desea realizar la acción',
   preConfirm,
 }: {
-  title?: string;
-  text?: string;
-  preConfirm: ({ ...props }: any) => any;
+  title?: string
+  text?: string
+  preConfirm: ({ ...props }: any) => any
 }): Promise<SweetAlertResult<Awaited<any>>> => {
   return Swal.fire({
     title,
@@ -91,8 +91,8 @@ export const swalAsyncConfirmDialog = async ({
     showLoaderOnConfirm: true,
     preConfirm,
     // allowOutsideClick: () => !Swal.isLoading()
-  });
-};
+  })
+}
 /**
  * Creamos una carga de loading
  */
@@ -103,13 +103,13 @@ export const swalLoading = (): void => {
     allowOutsideClick: false,
     didOpen: () => {
       // @ts-ignore
-      Swal.showLoading();
+      Swal.showLoading()
     },
-  }).then();
-};
+  }).then()
+}
 /**
  * Cerramos algun dialog abierto
  */
 export const swalClose = () => {
-  Swal.close();
-};
+  Swal.close()
+}

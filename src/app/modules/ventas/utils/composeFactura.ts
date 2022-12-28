@@ -1,17 +1,17 @@
-import { array, number, object, setLocale, string } from 'yup';
-import { es } from 'yup-locales';
+import { array, number, object, setLocale, string } from 'yup'
+import { es } from 'yup-locales'
 
-import { FacturaInputProps } from '../interfaces/factura';
-import { genRound } from '../../../utils/utils';
-import { genReplaceEmpty } from '../../../utils/helper';
+import { FacturaInputProps } from '../interfaces/factura'
+import { genRound } from '../../../utils/utils'
+import { genReplaceEmpty } from '../../../utils/helper'
 
 const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
   try {
-    return genRound(monto * tipoCambioBs);
+    return genRound(monto * tipoCambioBs)
   } catch (e) {
-    return monto;
+    return monto
   }
-};
+}
 
 export const composeFactura = (fcv: FacturaInputProps): any => {
   const input = {
@@ -33,14 +33,14 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
       montoDescuento: calculoMonedaBs(item.montoDescuento, fcv.tipoCambio),
       detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
     })),
-  };
-  if (fcv.numeroTarjeta) {
-    return { ...input, numeroTarjeta: fcv.numeroTarjeta };
   }
-  return input;
-};
+  if (fcv.numeroTarjeta) {
+    return { ...input, numeroTarjeta: fcv.numeroTarjeta }
+  }
+  return input
+}
 export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
-  setLocale(es);
+  setLocale(es)
   const schema = object({
     codigoCliente: string()
       .min(1)
@@ -68,7 +68,7 @@ export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
         }),
       )
       .min(1, 'Debe seleccionar al menos 1 productos / servicio para el detalle'),
-  });
-  await schema.validate(fcv);
-  return true;
-};
+  })
+  await schema.validate(fcv)
+  return true
+}

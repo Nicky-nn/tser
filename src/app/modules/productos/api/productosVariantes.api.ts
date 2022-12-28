@@ -1,11 +1,11 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { PageInfoProps, PageProps } from '../../../interfaces';
-import { FacturaProps } from '../../ventas/interfaces/factura';
-import { ProductoVarianteProps } from '../interfaces/producto.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { PageInfoProps, PageProps } from '../../../interfaces'
+import { FacturaProps } from '../../ventas/interfaces/factura'
+import { ProductoVarianteProps } from '../interfaces/producto.interface'
 
 const reqQuery = gql`
   query FCV_PRODUCTOS_VARIANTES(
@@ -95,23 +95,23 @@ const reqQuery = gql`
       }
     }
   }
-`;
+`
 /**
  * Respuesta de productos
  */
 export interface ApiProductoVarianteResponse {
-  docs: Array<ProductoVarianteProps>;
-  pageInfo: PageInfoProps;
+  docs: Array<ProductoVarianteProps>
+  pageInfo: PageInfoProps
 }
 
 export const apiProductosVariantes = async (
   pageInfo: PageProps,
 ): Promise<ApiProductoVarianteResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(reqQuery, pageInfo);
-  return data?.fcvProductosVariantes || [];
-};
+  const data: any = await client.request(reqQuery, pageInfo)
+  return data?.fcvProductosVariantes || []
+}

@@ -1,6 +1,6 @@
 // noinspection GraphQLUnresolvedReference
 
-import { MonetizationOn, Paid } from '@mui/icons-material';
+import { MonetizationOn, Paid } from '@mui/icons-material'
 import {
   Button,
   Divider,
@@ -12,50 +12,50 @@ import {
   ListItem,
   ListItemText,
   Typography,
-} from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import InputNumber from 'rc-input-number';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form';
-import Select from 'react-select';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+} from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import InputNumber from 'rc-input-number'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
+import Select from 'react-select'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
-import AlertLoading from '../../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import useAuth from '../../../../base/hooks/useAuth';
-import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper';
+import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import useAuth from '../../../../base/hooks/useAuth'
+import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper'
 import {
   swalAsyncConfirmDialog,
   swalErrorMsg,
   swalException,
-} from '../../../../utils/swal';
-import { genRound } from '../../../../utils/utils';
-import { apiMonedas } from '../../../base/moneda/api/monedaListado.api';
-import { MonedaProps } from '../../../base/moneda/interfaces/moneda';
-import { fetchFacturaCreate } from '../../api/facturaCreate.api';
-import { FacturaInitialValues, FacturaInputProps } from '../../interfaces/factura';
+} from '../../../../utils/swal'
+import { genRound } from '../../../../utils/utils'
+import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
+import { MonedaProps } from '../../../base/moneda/interfaces/moneda'
+import { fetchFacturaCreate } from '../../api/facturaCreate.api'
+import { FacturaInitialValues, FacturaInputProps } from '../../interfaces/factura'
 import {
   genCalculoTotalesService,
   montoSubTotal,
-} from '../../services/operacionesService';
-import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura';
-import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog';
+} from '../../services/operacionesService'
+import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
+import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
+  form: UseFormReturn<FacturaInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const VentaTotales: FunctionComponent<Props> = (props) => {
   const {
     user: { moneda, monedaTienda },
-  } = useAuth();
+  } = useAuth()
   const {
     form: {
       control,
@@ -65,32 +65,32 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
-  const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false);
-  const mySwal = withReactContent(Swal);
-  const inputMoneda = getValues('moneda');
-  const tipoCambio = getValues('tipoCambio');
+  } = props
+  const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false)
+  const mySwal = withReactContent(Swal)
+  const inputMoneda = getValues('moneda')
+  const tipoCambio = getValues('tipoCambio')
 
-  const handleFocus = (event: any) => event.target.select();
+  const handleFocus = (event: any) => event.target.select()
   const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
-    const inputFactura = composeFactura(data);
+    const inputFactura = composeFactura(data)
     const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
-      swalErrorMsg(err.message);
-    });
+      swalErrorMsg(err.message)
+    })
     if (validator) {
       await swalAsyncConfirmDialog({
         text: '¿Confirma que desea emitir el documento fiscal?',
         preConfirm: () => {
           return fetchFacturaCreate(inputFactura).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
       }).then((resp) => {
         if (resp.isConfirmed) {
-          const { value }: any = resp;
-          reset({ ...FacturaInitialValues, actividadEconomica: data.actividadEconomica });
-          openInNewTab(value.representacionGrafica.pdf);
+          const { value }: any = resp
+          reset({ ...FacturaInitialValues, actividadEconomica: data.actividadEconomica })
+          openInNewTab(value.representacionGrafica.pdf)
           mySwal.fire({
             title: `Documento generado correctamente`,
             html: (
@@ -98,11 +98,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                 representacionGrafica={value.representacionGrafica}
               />
             ),
-          });
+          })
         }
-      });
+      })
     }
-  };
+  }
 
   const {
     data: monedas,
@@ -110,38 +110,38 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     isError: monedasIsError,
     error: monedasError,
   } = useQuery<MonedaProps[], Error>(['apiMonedas'], async () => {
-    const resp = await apiMonedas();
+    const resp = await apiMonedas()
     if (resp.length > 0) {
       // monedaUsuario
       const sessionMoneda = resp.find(
         (i) => i.codigo === genReplaceEmpty(inputMoneda?.codigo, moneda.codigo),
-      );
+      )
       // montoTienda
-      const mt = resp.find((i) => i.codigo === monedaTienda.codigo);
+      const mt = resp.find((i) => i.codigo === monedaTienda.codigo)
       if (sessionMoneda && mt) {
-        setValue('moneda', sessionMoneda);
-        setValue('tipoCambio', mt.tipoCambio);
+        setValue('moneda', sessionMoneda)
+        setValue('tipoCambio', mt.tipoCambio)
       }
-      return resp;
+      return resp
     }
-    return [];
-  });
+    return []
+  })
 
   const calculoMoneda = (monto: number): number => {
     try {
-      return genRound((monto * tipoCambio) / genRound(inputMoneda!.tipoCambio));
+      return genRound((monto * tipoCambio) / genRound(inputMoneda!.tipoCambio))
     } catch (e) {
-      return monto;
+      return monto
     }
-  };
+  }
 
   useEffect(() => {
-    const totales = genCalculoTotalesService(getValues());
-    setValue('montoSubTotal', totales.subTotal);
-    setValue('montoPagar', totales.montoPagar);
-    setValue('inputVuelto', totales.vuelto);
-    setValue('total', totales.total);
-  }, [getValues('descuentoAdicional'), getValues('inputMontoPagar')]);
+    const totales = genCalculoTotalesService(getValues())
+    setValue('montoSubTotal', totales.subTotal)
+    setValue('montoPagar', totales.montoPagar)
+    setValue('inputVuelto', totales.vuelto)
+    setValue('total', totales.total)
+  }, [getValues('descuentoAdicional'), getValues('inputMontoPagar')])
 
   return (
     <>
@@ -169,10 +169,10 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   placeholder={'Seleccione la moneda de venta'}
                   value={field.value}
                   onChange={async (val: any) => {
-                    field.onChange(val);
+                    field.onChange(val)
                   }}
                   onBlur={async (val) => {
-                    field.onBlur();
+                    field.onBlur()
                   }}
                   isSearchable={false}
                   options={monedas}
@@ -227,9 +227,9 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   keepMounted={false}
                   open={openDescuentoAdicional}
                   onClose={(newValue) => {
-                    setOpenDescuentoAdicional(false);
+                    setOpenDescuentoAdicional(false)
                     if (newValue || newValue === 0) {
-                      setValue('descuentoAdicional', newValue);
+                      setValue('descuentoAdicional', newValue)
                     }
                   }}
                   value={getValues('descuentoAdicional') || 0}
@@ -300,7 +300,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     value={field.value}
                     onFocus={handleFocus}
                     onChange={(value: number | null) => {
-                      field.onChange(value);
+                      field.onChange(value)
                     }}
                     formatter={numberWithCommas}
                   />
@@ -329,6 +329,6 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
-export default VentaTotales;
+  )
+}
+export default VentaTotales

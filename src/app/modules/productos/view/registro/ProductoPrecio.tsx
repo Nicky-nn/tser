@@ -1,24 +1,24 @@
-import { FormControl, FormHelperText, Grid } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import InputNumber from 'rc-input-number';
-import React, { FunctionComponent } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select, { SingleValue } from 'react-select';
+import { FormControl, FormHelperText, Grid } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import InputNumber from 'rc-input-number'
+import React, { FunctionComponent } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select, { SingleValue } from 'react-select'
 
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { handleSelect } from '../../../../utils/helper';
-import { apiSinUnidadMedida } from '../../../sin/api/sinUnidadMedida.api';
-import { SinUnidadMedidaProps } from '../../../sin/interfaces/sin.interface';
-import { ProductoInputProps } from '../../interfaces/producto.interface';
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { handleSelect } from '../../../../utils/helper'
+import { apiSinUnidadMedida } from '../../../sin/api/sinUnidadMedida.api'
+import { SinUnidadMedidaProps } from '../../../sin/interfaces/sin.interface'
+import { ProductoInputProps } from '../../interfaces/producto.interface'
 
 interface OwnProps {
-  form: UseFormReturn<ProductoInputProps>;
+  form: UseFormReturn<ProductoInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoPrecio: FunctionComponent<Props> = (props) => {
   const {
@@ -28,16 +28,16 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
+  } = props
 
-  const [variantesWatch, varianteWatch] = watch(['variantes', 'variante']);
+  const [variantesWatch, varianteWatch] = watch(['variantes', 'variante'])
 
   const { data: unidadesMedida } = useQuery<SinUnidadMedidaProps[], Error>(
     ['unidadesMedida'],
     () => {
-      return apiSinUnidadMedida();
+      return apiSinUnidadMedida()
     },
-  );
+  )
 
   return (
     <SimpleCard title={'PRECIO'}>
@@ -60,14 +60,14 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   placeholder={'Seleccione la unidad de medida'}
                   value={field.value}
                   onChange={async (unidadMedida: SingleValue<SinUnidadMedidaProps>) => {
-                    field.onChange(unidadMedida);
+                    field.onChange(unidadMedida)
                     setValue(
                       'variantes',
                       variantesWatch.map((vs) => ({
                         ...vs,
                         unidadMedida,
                       })),
-                    );
+                    )
                   }}
                   options={unidadesMedida}
                   getOptionValue={(item) => item.codigoClasificador}
@@ -95,7 +95,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   value={field.value}
                   onFocus={handleSelect}
                   onChange={(precio: number | null) => {
-                    field.onChange(precio);
+                    field.onChange(precio)
                   }}
                   onBlur={(e) => {
                     setValue(
@@ -104,7 +104,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         ...vs,
                         precio: parseFloat(e.target.value),
                       })),
-                    );
+                    )
                   }}
                   formatter={numberWithCommas}
                 />
@@ -129,7 +129,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   value={field.value}
                   onFocus={handleSelect}
                   onChange={(precioComparacion: number | null) => {
-                    field.onChange(precioComparacion);
+                    field.onChange(precioComparacion)
                   }}
                   onBlur={(e) => {
                     setValue(
@@ -138,7 +138,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         ...vs,
                         precioComparacion: parseFloat(e.target.value),
                       })),
-                    );
+                    )
                   }}
                   formatter={numberWithCommas}
                 />
@@ -163,7 +163,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   value={field.value}
                   onFocus={handleSelect}
                   onChange={(costo: number | null) => {
-                    field.onChange(costo);
+                    field.onChange(costo)
                   }}
                   onBlur={(e) => {
                     setValue(
@@ -172,7 +172,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                         ...vs,
                         costo: parseFloat(e.target.value),
                       })),
-                    );
+                    )
                   }}
                   formatter={numberWithCommas}
                 />
@@ -183,7 +183,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
     </SimpleCard>
-  );
-};
+  )
+}
 
-export default ProductoPrecio;
+export default ProductoPrecio

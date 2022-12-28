@@ -1,4 +1,4 @@
-import { themeShadows } from './themeColors';
+import { themeShadows } from './themeColors'
 
 export const components = {
   MuiTable: {
@@ -179,4 +179,4 @@ export const components = {
       },
     },
   },
-};
+}

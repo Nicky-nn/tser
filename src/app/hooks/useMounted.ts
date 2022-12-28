@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react'
 /**
  * This hook provides a function that returns whether the component is still mounted.
  * This is useful as a check before calling set state operations which will generates
@@ -6,17 +6,17 @@ import { useCallback, useEffect, useRef } from 'react';
  * @returns a function
  */
 export function useMounted(): () => boolean {
-  const mountedRef = useRef(false);
+  const mountedRef = useRef(false)
   useEffect(function useMountedEffect() {
-    mountedRef.current = true;
+    mountedRef.current = true
     return function useMountedEffectCleanup() {
-      mountedRef.current = false;
-    };
-  }, []);
+      mountedRef.current = false
+    }
+  }, [])
   return useCallback(
     function isMounted() {
-      return mountedRef.current;
+      return mountedRef.current
     },
     [mountedRef],
-  );
+  )
 }

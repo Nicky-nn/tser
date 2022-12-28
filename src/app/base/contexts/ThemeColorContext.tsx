@@ -1,4 +1,4 @@
-import { createContext, FC, useEffect, useReducer } from 'react';
+import { createContext, FC, useEffect, useReducer } from 'react'
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -6,36 +6,36 @@ const reducer = (state: any, action: any) => {
       return {
         ...state,
         themeColor: action.payload,
-      };
+      }
     }
     case 'SET_THEME_COLOR': {
       return {
         ...state,
         themeColor: action.payload,
-      };
+      }
     }
     default: {
-      return { ...state };
+      return { ...state }
     }
   }
-};
+}
 
 const ThemeColorBarContext = createContext({
   themeColor: '',
   setThemeColorBar: () => {},
   getThemeColorBar: () => {},
-});
+})
 
 type ThemeColorBarProviderProps = {
-  children: JSX.Element;
-  settings: any;
-};
+  children: JSX.Element
+  settings: any
+}
 
 export const ThemeColorBarProvider: FC<any> = ({
   settings,
   children,
 }: ThemeColorBarProviderProps) => {
-  const [state, dispatch]: any = useReducer(reducer, []);
+  const [state, dispatch]: any = useReducer(reducer, [])
 
   const getThemeColorBar = async () => {
     try {
@@ -45,11 +45,11 @@ export const ThemeColorBarProvider: FC<any> = ({
       dispatch({
         type: 'LOAD_THEME_COLOR',
         payload: 'blue',
-      });
+      })
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
   const setThemeColorBar: any = async (themeColor: string) => {
     try {
       /*
@@ -60,18 +60,18 @@ export const ThemeColorBarProvider: FC<any> = ({
       dispatch({
         type: 'SET_THEME_COLOR',
         payload: themeColor,
-      });
+      })
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      await getThemeColorBar();
-    };
-    fetchData().catch((r) => console.log(r));
-  }, []);
+      await getThemeColorBar()
+    }
+    fetchData().catch((r) => console.log(r))
+  }, [])
 
   return (
     <ThemeColorBarContext.Provider
@@ -83,7 +83,7 @@ export const ThemeColorBarProvider: FC<any> = ({
     >
       {children}
     </ThemeColorBarContext.Provider>
-  );
-};
+  )
+}
 
-export default ThemeColorBarContext;
+export default ThemeColorBarContext

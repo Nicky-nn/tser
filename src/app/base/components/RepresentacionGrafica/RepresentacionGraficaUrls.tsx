@@ -1,28 +1,28 @@
-import { Button, Container, List, ListItem, ListItemText } from '@mui/material';
-import React, { FunctionComponent } from 'react';
-import { openInNewTab } from '../../../utils/helper';
+import { Button, Container, List, ListItem, ListItemText } from '@mui/material'
+import React, { FunctionComponent } from 'react'
+import { openInNewTab } from '../../../utils/helper'
 import {
   FileOpen,
   PictureAsPdfOutlined,
   PostAdd,
   ScreenSearchDesktop,
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 
 interface OwnProps {
   representacionGrafica: {
-    pdf: string;
-    xml: string;
-    rollo: string;
-    sin: string;
-  };
+    pdf: string
+    xml: string
+    rollo: string
+    sin: string
+  }
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const RepresentacionGraficaUrls: FunctionComponent<Props> = (props) => {
   const {
     representacionGrafica: { pdf, xml, sin, rollo },
-  } = props;
+  } = props
   return (
     <>
       <Container>
@@ -86,7 +86,7 @@ const RepresentacionGraficaUrls: FunctionComponent<Props> = (props) => {
         </List>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default RepresentacionGraficaUrls;
+export default RepresentacionGraficaUrls

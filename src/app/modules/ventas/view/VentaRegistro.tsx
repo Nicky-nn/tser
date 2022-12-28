@@ -1,23 +1,23 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Divider, Grid } from '@mui/material';
-import { Box } from '@mui/system';
-import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Divider, Grid } from '@mui/material'
+import { Box } from '@mui/system'
+import { useForm } from 'react-hook-form'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import SimpleCard from '../../../base/components/Template/Cards/SimpleCard';
-import useAuth from '../../../base/hooks/useAuth';
-import { FacturaInitialValues, FacturaInputProps } from '../interfaces/factura';
-import { VentaRegistroValidator } from '../validator/ventaRegistroValidator';
-import DatosActividadEconomica from './registro/DatosActividadEconomica';
-import { DatosTransaccionComercial } from './registro/DatosTransaccionComercial';
-import { DetalleTransaccionComercial } from './registro/DetalleTransaccionComercial';
-import FacturaDetalleExtra from './registro/FacturaDetalleExtra';
-import MetodosPago from './registro/MetodosPago';
-import VentaTotales from './registro/VentaTotales';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import SimpleCard from '../../../base/components/Template/Cards/SimpleCard'
+import useAuth from '../../../base/hooks/useAuth'
+import { FacturaInitialValues, FacturaInputProps } from '../interfaces/factura'
+import { VentaRegistroValidator } from '../validator/ventaRegistroValidator'
+import DatosActividadEconomica from './registro/DatosActividadEconomica'
+import { DatosTransaccionComercial } from './registro/DatosTransaccionComercial'
+import { DetalleTransaccionComercial } from './registro/DetalleTransaccionComercial'
+import FacturaDetalleExtra from './registro/FacturaDetalleExtra'
+import MetodosPago from './registro/MetodosPago'
+import VentaTotales from './registro/VentaTotales'
 
 const VentaRegistro = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   const form = useForm<FacturaInputProps>({
     defaultValues: {
@@ -25,7 +25,7 @@ const VentaRegistro = () => {
       actividadEconomica: user.actividadEconomica,
     },
     resolver: yupResolver(VentaRegistroValidator),
-  });
+  })
 
   return (
     <SimpleContainer>
@@ -62,7 +62,7 @@ const VentaRegistro = () => {
       </form>
       <Box py="12px" />
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default VentaRegistro;
+export default VentaRegistro

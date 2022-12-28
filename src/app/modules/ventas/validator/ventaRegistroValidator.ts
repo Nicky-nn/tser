@@ -1,4 +1,4 @@
-import { array, number, object, string } from 'yup';
+import { array, number, object, string } from 'yup'
 
 export const VentaRegistroValidator = object({
   actividadEconomica: object({
@@ -11,4 +11,4 @@ export const VentaRegistroValidator = object({
     .nullable()
     .required(),
   emailCliente: string().email().nullable().required(),
-});
+})

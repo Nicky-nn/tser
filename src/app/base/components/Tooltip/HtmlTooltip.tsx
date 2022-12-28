@@ -1,4 +1,4 @@
-import { styled, Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
+import { styled, Tooltip, tooltipClasses, TooltipProps } from '@mui/material'
 
 export const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -10,4 +10,4 @@ export const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
     fontSize: theme.typography.pxToRem(12),
     border: '1px solid #dadde9',
   },
-}));
+}))

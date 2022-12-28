@@ -1,39 +1,39 @@
-import { Card, Fab, Grid, Icon } from '@mui/material';
-import { lighten, styled, useTheme } from '@mui/system';
-import { FC } from 'react';
+import { Card, Fab, Grid, Icon } from '@mui/material'
+import { lighten, styled, useTheme } from '@mui/system'
+import { FC } from 'react'
 
-import { H2 } from '../../../components/Template/Typography';
+import { H2 } from '../../../components/Template/Typography'
 
 const ContentBox: any = styled('div')(({ theme }: any): any => ({
   display: 'flex',
   flexWrap: 'wra,p',
   alignItems: 'center',
-}));
+}))
 
 const FabIcon = styled(Fab)(() => ({
   width: '44px !important',
   height: '44px !important',
   boxShadow: 'none !important',
-}));
+}))
 
 const H3: FC<any> = styled('h3')(({ textcolor }: any) => ({
   margin: 0,
   fontWeight: '500',
   marginLeft: '12px',
   color: textcolor,
-}));
+}))
 
 const H1: FC<any> = styled('h1')(({ theme }) => ({
   margin: 0,
   flexGrow: 1,
   color: theme.palette.text.secondary,
-}));
+}))
 
 const Span: FC<any> = styled('span')(({ textcolor }: any) => ({
   fontSize: '13px',
   color: textcolor,
   marginLeft: '4px',
-}));
+}))
 
 const IconBox = styled('div')(({ theme }) => ({
   width: 16,
@@ -44,12 +44,12 @@ const IconBox = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   '& .icon': { fontSize: '14px' },
-}));
+}))
 
 const StatCards2 = () => {
-  const { palette } = useTheme();
-  const textError = palette.error.main;
-  const bgError = lighten(palette.error.main, 0.85);
+  const { palette } = useTheme()
+  const textError = palette.error.main
+  const bgError = lighten(palette.error.main, 0.85)
 
   return (
     <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -88,7 +88,7 @@ const StatCards2 = () => {
         </Card>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default StatCards2;
+export default StatCards2

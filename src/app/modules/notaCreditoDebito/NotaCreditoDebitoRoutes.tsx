@@ -1,11 +1,11 @@
-import { lazy } from 'react';
+import { lazy } from 'react'
 
-import { authRoles } from '../../../auth/authRoles';
-import Loadable from '../../base/components/Template/Loadable/Loadable';
-import { ncdRouteMap } from './NotaCreditoDebitoRoutesMap';
+import { authRoles } from '../../../auth/authRoles'
+import Loadable from '../../base/components/Template/Loadable/Loadable'
+import { ncdRouteMap } from './NotaCreditoDebitoRoutesMap'
 
-const AppNcdGestion = Loadable(lazy(() => import('./view/NcdGestion')));
-const AppNcdRegistro = Loadable(lazy(() => import('./view/NcdRegistro')));
+const AppNcdGestion = Loadable(lazy(() => import('./view/NcdGestion')))
+const AppNcdRegistro = Loadable(lazy(() => import('./view/NcdRegistro')))
 
 const notaCreditoDebitoRoutes = [
   {
@@ -18,6 +18,6 @@ const notaCreditoDebitoRoutes = [
     element: <AppNcdRegistro />,
     auth: authRoles.admin,
   },
-];
+]
 
-export default notaCreditoDebitoRoutes;
+export default notaCreditoDebitoRoutes

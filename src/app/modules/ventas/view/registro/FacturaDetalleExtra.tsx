@@ -5,21 +5,21 @@ import {
   Box,
   Tooltip,
   Typography,
-} from '@mui/material';
-import { Editor } from '@tinymce/tinymce-react';
-import React, { FunctionComponent } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+} from '@mui/material'
+import { Editor } from '@tinymce/tinymce-react'
+import React, { FunctionComponent } from 'react'
+import { UseFormReturn } from 'react-hook-form'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template';
-import { FacturaInputProps } from '../../interfaces/factura';
-import { ExpandMore } from '@mui/icons-material';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template'
+import { FacturaInputProps } from '../../interfaces/factura'
+import { ExpandMore } from '@mui/icons-material'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
+  form: UseFormReturn<FacturaInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
   const {
@@ -29,7 +29,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
+  } = props
   return (
     <>
       <Accordion sx={{ backgroundColor: '#EFEFEF' }}>
@@ -47,12 +47,12 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
               value={getValues('detalleExtra') || ''}
               onInit={(evt, editor) => {
                 editor.on('blur', (e) => {
-                  setValue('detalleExtraText', editor.getContent({ format: 'text' }));
-                  console.log(getValues('detalleExtra'), getValues('detalleExtraText'));
-                });
+                  setValue('detalleExtraText', editor.getContent({ format: 'text' }))
+                  console.log(getValues('detalleExtra'), getValues('detalleExtraText'))
+                })
               }}
               onEditorChange={(newValue, editor) => {
-                setValue('detalleExtra', editor.getContent());
+                setValue('detalleExtra', editor.getContent())
                 // dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
               }}
               init={{
@@ -73,7 +73,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
         </AccordionDetails>
       </Accordion>
     </>
-  );
-};
+  )
+}
 
-export default FacturaDetalleExtra;
+export default FacturaDetalleExtra

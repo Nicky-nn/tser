@@ -4,7 +4,7 @@
  * Copyright (c) 2022 Ephox Corporation DBA Tiny Technologies, Inc.
  * Licensed under the Tiny commercial license. See https://www.tiny.cloud/legal/
  */
-import tinymce from 'tinymce';
+import tinymce from 'tinymce'
 
 tinymce.addI18n('es', {
   Redo: 'Rehacer',
@@ -428,4 +428,4 @@ tinymce.addI18n('es', {
   'ImageProxy HTTP error: Could not find Image Proxy': '',
   'ImageProxy HTTP error: Incorrect Image Proxy URL': '',
   'ImageProxy HTTP error: Unknown ImageProxy error': '',
-});
+})

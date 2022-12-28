@@ -1,16 +1,16 @@
-import { Home, Person } from '@mui/icons-material';
-import React, { FunctionComponent } from 'react';
+import { Home, Person } from '@mui/icons-material'
+import React, { FunctionComponent } from 'react'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { H4 } from '../../../../base/components/Template/Typography';
-import useAuth from '../../../../base/hooks/useAuth';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { H4 } from '../../../../base/components/Template/Typography'
+import useAuth from '../../../../base/hooks/useAuth'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaSucursal: FunctionComponent<Props> = (props) => {
-  const { user } = useAuth();
+  const { user } = useAuth()
   return (
     <>
       <SimpleCard
@@ -82,7 +82,7 @@ const CuentaSucursal: FunctionComponent<Props> = (props) => {
         </div>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default CuentaSucursal;
+export default CuentaSucursal

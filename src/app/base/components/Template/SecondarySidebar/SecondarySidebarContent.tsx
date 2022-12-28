@@ -1,13 +1,13 @@
-import { Theme, useTheme } from '@mui/material';
-import { styled } from '@mui/system';
+import { Theme, useTheme } from '@mui/material'
+import { styled } from '@mui/system'
 
-import MatxCustomizer from '../MatxCustomizer/MatxCustomizer';
-import { Span } from '../Typography';
+import MatxCustomizer from '../MatxCustomizer/MatxCustomizer'
+import { Span } from '../Typography'
 
 type SidebarRootProps = {
-  theme: Theme;
-  width: string | number;
-};
+  theme: Theme
+  width: string | number
+}
 
 const SidebarRoot = styled('div')(({ theme, width }: SidebarRootProps): any => ({
   position: 'fixed',
@@ -39,10 +39,10 @@ const SidebarRoot = styled('div')(({ theme, width }: SidebarRootProps): any => (
       },
     },
   },
-}));
+}))
 
 const SecondarySidebarContent = () => {
-  const theme = useTheme();
+  const theme = useTheme()
   // const textColor = palette.primary.contrastText
   return (
     <SidebarRoot width={'50px'} theme={theme} className="secondary-sidebar">
@@ -50,7 +50,7 @@ const SecondarySidebarContent = () => {
       <MatxCustomizer />
       <Span sx={{ m: 'auto' }}></Span>
     </SidebarRoot>
-  );
-};
+  )
+}
 
-export default SecondarySidebarContent;
+export default SecondarySidebarContent

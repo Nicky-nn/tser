@@ -1,29 +1,29 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useFormik } from 'formik';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useFormik } from 'formik'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { fetchClienteCreate } from '../api/clienteCreate.api';
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { fetchClienteCreate } from '../api/clienteCreate.api'
 import {
   CLIENTE_DEFAULT_INPUT,
   ClienteInputProps,
   ClienteProps,
-} from '../interfaces/cliente';
-import { clienteInputValidator } from '../validator/clienteInputValidator';
-import ClienteForm from './ClienteForm';
+} from '../interfaces/cliente'
+import { clienteInputValidator } from '../validator/clienteInputValidator'
+import ClienteForm from './ClienteForm'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: ClienteProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: ClienteProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, keepMounted, open, ...other } = props;
+  const { onClose, keepMounted, open, ...other } = props
 
   const clienteForm = useFormik<ClienteInputProps>({
     initialValues: CLIENTE_DEFAULT_INPUT,
@@ -37,26 +37,26 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
               values.codigoTipoDocumentoIdentidad.toString(),
             ),
           }).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
         text: 'Confirma que desea registrar al nuevo cliente',
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     },
-  });
+  })
 
   useEffect(() => {
     if (open) {
-      clienteForm.resetForm();
+      clienteForm.resetForm()
       // clienteForm.setValues(CLIENTE_DEFAULT_INPUT)
     }
-  }, [open]);
+  }, [open])
 
   return (
     <>
@@ -78,7 +78,7 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             size={'small'}
             onClick={() => {
-              onClose();
+              onClose()
             }}
           >
             Cancelar
@@ -94,7 +94,7 @@ const ClienteRegistroDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default ClienteRegistroDialog;
+export default ClienteRegistroDialog

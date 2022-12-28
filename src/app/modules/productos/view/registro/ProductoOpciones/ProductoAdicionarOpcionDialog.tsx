@@ -6,73 +6,73 @@ import {
   DialogTitle,
   FormControl,
   Grid,
-} from '@mui/material';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { OnChangeValue } from 'react-select';
-import CreatableSelect from 'react-select/creatable';
+} from '@mui/material'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { OnChangeValue } from 'react-select'
+import CreatableSelect from 'react-select/creatable'
 
-import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect';
-import { SelectInputLabel } from '../../../../../base/components/ReactSelect/SelectInputLabel';
+import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
+import { SelectInputLabel } from '../../../../../base/components/ReactSelect/SelectInputLabel'
 import {
   genRandomString,
   genReplaceEmpty,
   isEmptyValue,
-} from '../../../../../utils/helper';
-import { OpcionesProductoProps } from '../../../interfaces/producto.interface';
-import { OPCIONES_PRODUCTO } from '../../../utils/clasificadores';
+} from '../../../../../utils/helper'
+import { OpcionesProductoProps } from '../../../interfaces/producto.interface'
+import { OPCIONES_PRODUCTO } from '../../../utils/clasificadores'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  opcion?: OpcionesProductoProps;
-  onClose: (value?: any) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  opcion?: OpcionesProductoProps
+  onClose: (value?: any) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const components = {
   DropdownIndicator: null,
-};
+}
 
 interface SelectOption {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
 
 const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, open, opcion, ...other } = props;
-  const [tipo, setTipo] = useState<OnChangeValue<SelectOption, false>>(null);
-  const [valor, setValor] = useState<OnChangeValue<SelectOption, true>>([]);
-  const [idValor, setIdValor] = useState<string | null>(null);
+  const { onClose, open, opcion, ...other } = props
+  const [tipo, setTipo] = useState<OnChangeValue<SelectOption, false>>(null)
+  const [valor, setValor] = useState<OnChangeValue<SelectOption, true>>([])
+  const [idValor, setIdValor] = useState<string | null>(null)
 
   useEffect(() => {
     if (open) {
       if (!isEmptyValue(opcion)) {
-        setTipo({ value: opcion?.nombre!, label: opcion?.nombre! });
+        setTipo({ value: opcion?.nombre!, label: opcion?.nombre! })
         setValor(
           opcion!.valores!.map((item: string) => {
-            return { label: item!, value: item! };
+            return { label: item!, value: item! }
           }),
-        );
-        setIdValor(opcion!.id!);
+        )
+        setIdValor(opcion!.id!)
       } else {
-        setTipo(null);
-        setValor([]);
-        setIdValor(null);
+        setTipo(null)
+        setValor([])
+        setIdValor(null)
       }
     }
-  }, [open]);
+  }, [open])
 
   const handleChangeTipo = (option: any) => {
-    setTipo(option);
-    setValor([]);
-  };
+    setTipo(option)
+    setValor([])
+  }
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   // REGISTRO Y VALIDACION DE DATOS
   const handleSubmit = async () => {
@@ -80,12 +80,12 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
       id: genReplaceEmpty(idValor, genRandomString()),
       nombre: tipo?.value,
       valores: valor.map((v) => v.value),
-    });
-  };
+    })
+  }
 
   const handleChangeValor = (value: OnChangeValue<SelectOption, true>) => {
-    setValor(value);
-  };
+    setValor(value)
+  }
 
   return (
     <Dialog
@@ -144,7 +144,7 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ProductoAdicionarOpcionDialog;
+export default ProductoAdicionarOpcionDialog

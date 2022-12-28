@@ -1,30 +1,30 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useFormik } from 'formik';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useFormik } from 'formik'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { notSuccess } from '../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal';
-import { apiClienteUpdate } from '../api/clienteUpdate.api';
+import { notSuccess } from '../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
+import { apiClienteUpdate } from '../api/clienteUpdate.api'
 import {
   ClienteInputProps,
   clienteInputUpdateDefault,
   ClienteProps,
-} from '../interfaces/cliente';
-import { clienteInputValidator } from '../validator/clienteInputValidator';
-import ClienteForm from './ClienteForm';
+} from '../interfaces/cliente'
+import { clienteInputValidator } from '../validator/clienteInputValidator'
+import ClienteForm from './ClienteForm'
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  cliente: ClienteProps;
-  onClose: (value?: ClienteProps) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  cliente: ClienteProps
+  onClose: (value?: ClienteProps) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, cliente, open, ...other } = props;
+  const { onClose, cliente, open, ...other } = props
 
   const clienteForm = useFormik<ClienteInputProps>({
     initialValues: clienteInputUpdateDefault(cliente),
@@ -38,25 +38,25 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
               values.codigoTipoDocumentoIdentidad.toString(),
             ),
           }).catch((err) => {
-            swalException(err);
-            return false;
-          });
+            swalException(err)
+            return false
+          })
         },
         text: 'Confirma que desea actualizar los datos del cliente',
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
-          onClose(resp.value);
+          notSuccess()
+          onClose(resp.value)
         }
-      });
+      })
     },
-  });
+  })
 
   useEffect(() => {
     if (open) {
       // clienteForm.resetForm()
     }
-  }, [open]);
+  }, [open])
 
   return (
     <>
@@ -77,7 +77,7 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             size={'small'}
             onClick={() => {
-              onClose();
+              onClose()
             }}
           >
             Cancelar
@@ -93,7 +93,7 @@ const ClienteModificarDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default ClienteModificarDialog;
+export default ClienteModificarDialog

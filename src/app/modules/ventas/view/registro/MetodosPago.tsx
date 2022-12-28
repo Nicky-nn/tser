@@ -4,24 +4,24 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-} from '@mui/material';
-import { replace } from 'lodash';
-import React, { FunctionComponent, useEffect } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import Select from 'react-select';
+} from '@mui/material'
+import { replace } from 'lodash'
+import React, { FunctionComponent, useEffect } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import Select from 'react-select'
 
-import { TarjetaMask } from '../../../../base/components/Mask/TarjetaMask';
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import useQueryMetodosPago from '../../../base/metodoPago/hooks/useQueryMetodosPago';
-import { MetodoPagoProp } from '../../../base/metodoPago/interfaces/metodoPago';
-import { FacturaInputProps } from '../../interfaces/factura';
+import { TarjetaMask } from '../../../../base/components/Mask/TarjetaMask'
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import useQueryMetodosPago from '../../../base/metodoPago/hooks/useQueryMetodosPago'
+import { MetodoPagoProp } from '../../../base/metodoPago/interfaces/metodoPago'
+import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
+  form: UseFormReturn<FacturaInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 const MetodosPago: FunctionComponent<Props> = (props) => {
   const {
     form: {
@@ -31,17 +31,17 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
-  const codigoMetodoPagoValue = watch('codigoMetodoPago');
+  } = props
+  const codigoMetodoPagoValue = watch('codigoMetodoPago')
 
-  const { metodosPago, mpIsError, mpError, mpLoading } = useQueryMetodosPago();
+  const { metodosPago, mpIsError, mpError, mpLoading } = useQueryMetodosPago()
 
   useEffect(() => {
-    const metodoPago = codigoMetodoPagoValue.codigoClasificador;
+    const metodoPago = codigoMetodoPagoValue.codigoClasificador
     if (metodoPago === 1) {
-      setValue('numeroTarjeta', '');
+      setValue('numeroTarjeta', '')
     }
-  }, [codigoMetodoPagoValue]);
+  }, [codigoMetodoPagoValue])
 
   return (
     <>
@@ -66,10 +66,10 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
                 placeholder={'Seleccione el método de págo'}
                 value={field.value}
                 onChange={async (val: any) => {
-                  field.onChange(val);
+                  field.onChange(val)
                 }}
                 onBlur={async (val) => {
-                  field.onBlur();
+                  field.onBlur()
                 }}
                 isSearchable={false}
                 options={metodosPago}
@@ -106,8 +106,8 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
                         '',
                       )
                         .replace(/_/g, '')
-                        .trim();
-                      field.onChange(numeroTarjeta);
+                        .trim()
+                      field.onChange(numeroTarjeta)
                     }}
                     name="numeroTarjeta"
                     inputComponent={TarjetaMask as any}
@@ -120,7 +120,7 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
         )}
       </Stack>
     </>
-  );
-};
+  )
+}
 
-export default MetodosPago;
+export default MetodosPago

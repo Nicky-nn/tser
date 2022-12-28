@@ -1,4 +1,4 @@
-import { PersonAddAlt1Outlined, TableChart } from '@mui/icons-material';
+import { PersonAddAlt1Outlined, TableChart } from '@mui/icons-material'
 import {
   Button,
   FormControl,
@@ -8,30 +8,30 @@ import {
   ListItem,
   ListItemText,
   TextField,
-} from '@mui/material';
-import React, { FC, useState } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import { SingleValue } from 'react-select';
-import AsyncSelect from 'react-select/async';
+} from '@mui/material'
+import React, { FC, useState } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
+import { SingleValue } from 'react-select'
+import AsyncSelect from 'react-select/async'
 
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect';
-import { PerfilProps } from '../../../../base/models/loginModel';
-import { genReplaceEmpty } from '../../../../utils/helper';
-import { swalException } from '../../../../utils/swal';
-import { apiClienteBusqueda } from '../../../clientes/api/clienteBusqueda.api';
-import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarDialog';
-import { ClienteProps } from '../../../clientes/interfaces/cliente';
-import ClienteRegistroDialog from '../../../clientes/view/ClienteRegistroDialog';
-import { FacturaInputProps } from '../../interfaces/factura';
-import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog';
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { PerfilProps } from '../../../../base/models/loginModel'
+import { genReplaceEmpty } from '../../../../utils/helper'
+import { swalException } from '../../../../utils/swal'
+import { apiClienteBusqueda } from '../../../clientes/api/clienteBusqueda.api'
+import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarDialog'
+import { ClienteProps } from '../../../clientes/interfaces/cliente'
+import ClienteRegistroDialog from '../../../clientes/view/ClienteRegistroDialog'
+import { FacturaInputProps } from '../../interfaces/factura'
+import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog'
 
 interface OwnProps {
-  form: UseFormReturn<FacturaInputProps>;
-  user: PerfilProps;
+  form: UseFormReturn<FacturaInputProps>
+  user: PerfilProps
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 export const DatosTransaccionComercial: FC<Props> = (props) => {
   const {
@@ -42,24 +42,24 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
-  const [openNuevoCliente, setNuevoCliente] = useState(false);
-  const [openExplorarCliente, setExplorarCliente] = useState(false);
-  const [openCliente99001, setCliente99001] = useState(false);
-  const watchAllFields = watch();
+  } = props
+  const [openNuevoCliente, setNuevoCliente] = useState(false)
+  const [openExplorarCliente, setExplorarCliente] = useState(false)
+  const [openCliente99001, setCliente99001] = useState(false)
+  const watchAllFields = watch()
 
   const fetchClientes = async (inputValue: string): Promise<any[]> => {
     try {
       if (inputValue.length > 2) {
-        const clientes = await apiClienteBusqueda(inputValue);
-        if (clientes) return clientes;
+        const clientes = await apiClienteBusqueda(inputValue)
+        if (clientes) return clientes
       }
-      return [];
+      return []
     } catch (e: any) {
-      swalException(e);
-      return [];
+      swalException(e)
+      return []
     }
-  };
+  }
 
   return (
     <>
@@ -89,8 +89,8 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
                     } - ${item.tipoDocumentoIdentidad.descripcion}`
                   }
                   onChange={(cliente: SingleValue<ClienteProps>) => {
-                    field.onChange(cliente);
-                    setValue('emailCliente', genReplaceEmpty(cliente?.email, ''));
+                    field.onChange(cliente)
+                    setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                   }}
                   onBlur={field.onBlur}
                   noOptionsMessage={() =>
@@ -187,12 +187,12 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           open={openNuevoCliente}
           onClose={async (value?: ClienteProps) => {
             if (value) {
-              setValue('cliente', value);
-              setValue('emailCliente', value.email);
-              await fetchClientes(value.codigoCliente);
-              setNuevoCliente(false);
+              setValue('cliente', value)
+              setValue('emailCliente', value.email)
+              await fetchClientes(value.codigoCliente)
+              setNuevoCliente(false)
             } else {
-              setNuevoCliente(false);
+              setNuevoCliente(false)
             }
           }}
         />
@@ -204,12 +204,12 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           open={openExplorarCliente}
           onClose={async (value?: ClienteProps) => {
             if (value) {
-              setValue('cliente', value);
-              setValue('emailCliente', value.email);
-              await fetchClientes(value.codigoCliente);
-              setExplorarCliente(false);
+              setValue('cliente', value)
+              setValue('emailCliente', value.email)
+              await fetchClientes(value.codigoCliente)
+              setExplorarCliente(false)
             } else {
-              setExplorarCliente(false);
+              setExplorarCliente(false)
             }
           }}
         />
@@ -221,16 +221,16 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           open={openCliente99001}
           onClose={async (value?: ClienteProps) => {
             if (value) {
-              setValue('cliente', value);
-              setValue('emailCliente', value.email);
-              await fetchClientes(value.codigoCliente);
-              setCliente99001(false);
+              setValue('cliente', value)
+              setValue('emailCliente', value.email)
+              await fetchClientes(value.codigoCliente)
+              setCliente99001(false)
             } else {
-              setCliente99001(false);
+              setCliente99001(false)
             }
           }}
         />
       </>
     </>
-  );
-};
+  )
+}

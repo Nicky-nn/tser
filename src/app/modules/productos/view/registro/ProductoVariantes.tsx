@@ -1,26 +1,26 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Grid, IconButton } from '@mui/material';
-import { FunctionComponent, useState } from 'react';
-import DataTable, { TableColumn } from 'react-data-table-component';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { Delete, Edit } from '@mui/icons-material'
+import { Grid, IconButton } from '@mui/material'
+import { FunctionComponent, useState } from 'react'
+import DataTable, { TableColumn } from 'react-data-table-component'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
 
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { notError } from '../../../../utils/notification';
-import { swalConfirmDialog } from '../../../../utils/swal';
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { notError } from '../../../../utils/notification'
+import { swalConfirmDialog } from '../../../../utils/swal'
 import {
   PRODUCTO_VARIANTE_INITIAL_VALUES,
   ProductoInputProps,
   ProductoVarianteInputProps,
-} from '../../interfaces/producto.interface';
-import PrecioInventarioDetalle from './ProductoVariantes/PrecioInventarioDetalle';
-import PrecioInventarioVariantesDialog from './ProductoVariantes/PrecioInventarioVariantesDialog';
+} from '../../interfaces/producto.interface'
+import PrecioInventarioDetalle from './ProductoVariantes/PrecioInventarioDetalle'
+import PrecioInventarioVariantesDialog from './ProductoVariantes/PrecioInventarioVariantesDialog'
 
 interface OwnProps {
-  form: UseFormReturn<ProductoInputProps>;
+  form: UseFormReturn<ProductoInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoVariantes: FunctionComponent<Props> = (props) => {
   const {
@@ -29,18 +29,18 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
+  } = props
   const { replace } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'variantes', // unique name for your Field Array
-  });
-  const [varianteWatch, variantesWatch] = watch(['variante', 'variantes']);
-  const varianteUnicaWatch = watch('varianteUnica');
+  })
+  const [varianteWatch, variantesWatch] = watch(['variante', 'variantes'])
+  const varianteUnicaWatch = watch('varianteUnica')
 
   const [variante, setVariante] = useState<ProductoVarianteInputProps>(
     PRODUCTO_VARIANTE_INITIAL_VALUES,
-  );
-  const [openDialog, setOpenDialog] = useState(false);
+  )
+  const [openDialog, setOpenDialog] = useState(false)
 
   const columns: TableColumn<ProductoVarianteInputProps>[] = [
     {
@@ -70,8 +70,8 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
             aria-label="delete"
             color={'primary'}
             onClick={() => {
-              setVariante(row);
-              setOpenDialog(true);
+              setVariante(row)
+              setOpenDialog(true)
             }}
           >
             <Edit />
@@ -83,12 +83,12 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
               if (variantesWatch.length > 1) {
                 await swalConfirmDialog({}).then((resp) => {
                   if (resp.isConfirmed) {
-                    const newVariantes = variantesWatch.filter((v) => v.id !== row.id);
-                    replace(newVariantes);
+                    const newVariantes = variantesWatch.filter((v) => v.id !== row.id)
+                    replace(newVariantes)
                   }
-                });
+                })
               } else {
-                notError('Debe existe al menos 1 variante de producto');
+                notError('Debe existe al menos 1 variante de producto')
               }
             }}
           >
@@ -97,11 +97,9 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
         </>
       ),
     },
-  ];
+  ]
 
-  const ExpandedComponent = ({ data }: any) => (
-    <PrecioInventarioDetalle variante={data} />
-  );
+  const ExpandedComponent = ({ data }: any) => <PrecioInventarioDetalle variante={data} />
 
   return (
     <>
@@ -130,18 +128,18 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
             onClose={(data: ProductoVarianteInputProps | undefined) => {
               if (data) {
                 const newVariantes = variantesWatch.map((v) => {
-                  if (v.id === data.id) return data;
-                  return v;
-                });
-                replace(newVariantes);
+                  if (v.id === data.id) return data
+                  return v
+                })
+                replace(newVariantes)
               }
-              setOpenDialog(false);
+              setOpenDialog(false)
             }}
           />
         </>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ProductoVariantes;
+export default ProductoVariantes

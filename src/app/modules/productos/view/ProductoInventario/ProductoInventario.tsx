@@ -8,26 +8,26 @@ import {
   Grid,
   TextField,
   Typography,
-} from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { sortBy } from 'lodash';
-import InputNumber from 'rc-input-number';
-import React, { ChangeEvent, FunctionComponent } from 'react';
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
+} from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import { sortBy } from 'lodash'
+import InputNumber from 'rc-input-number'
+import React, { ChangeEvent, FunctionComponent } from 'react'
+import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form'
 
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { genReplaceEmpty, handleSelect, isEmptyValue } from '../../../../utils/helper';
-import { apiSucursales } from '../../../sucursal/api/sucursales.api';
-import { SucursalProps } from '../../../sucursal/interfaces/sucursal';
-import { ProductoInputProps } from '../../interfaces/producto.interface';
+import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { genReplaceEmpty, handleSelect, isEmptyValue } from '../../../../utils/helper'
+import { apiSucursales } from '../../../sucursal/api/sucursales.api'
+import { SucursalProps } from '../../../sucursal/interfaces/sucursal'
+import { ProductoInputProps } from '../../interfaces/producto.interface'
 
 interface OwnProps {
-  form: UseFormReturn<ProductoInputProps>;
+  form: UseFormReturn<ProductoInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoInventario: FunctionComponent<Props> = (props) => {
   const {
@@ -38,12 +38,12 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
+  } = props
   const { replace } = useFieldArray({
     control,
     name: 'variantes', // unique name for your Field Array
-  });
-  const [varianteWatch, variantesWatch] = watch(['variante', 'variantes']);
+  })
+  const [varianteWatch, variantesWatch] = watch(['variante', 'variantes'])
 
   const crearInventario = (data: SucursalProps[]): Array<any> => {
     return sortBy(data, 'codigo').map((sucursal) => ({
@@ -53,23 +53,23 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
           ?.stock,
         0,
       ),
-    }));
-  };
+    }))
+  }
 
   const { data: sucursales } = useQuery<SucursalProps[], Error>(
     ['sucursales'],
     async () => {
-      const data = await apiSucursales();
+      const data = await apiSucursales()
       if (data.length > 0) {
         if (getValues('variante.inventario').length === 0) {
-          const inventario = crearInventario(data);
-          setValue('variante.inventario', inventario);
+          const inventario = crearInventario(data)
+          setValue('variante.inventario', inventario)
         }
       }
-      return data || [];
+      return data || []
     },
     { keepPreviousData: true },
-  );
+  )
 
   return (
     <SimpleCard title={'INVENTARIO'}>
@@ -86,7 +86,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                   name={'variante.codigoProducto'}
                   value={field.value}
                   onChange={(e) => {
-                    field.onChange(e.target.value);
+                    field.onChange(e.target.value)
                   }}
                   onBlur={(e) => {
                     if (variantesWatch.length > 0) {
@@ -97,7 +97,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                             ? `${e.target.value}-${index + 1}`
                             : e.target.value,
                         })),
-                      );
+                      )
                     }
                   }}
                   variant="outlined"
@@ -124,7 +124,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                   onChange={(
                     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
                   ) => {
-                    field.onChange(e.target.value);
+                    field.onChange(e.target.value)
                   }}
                   onBlur={(e) => {
                     if (variantesWatch.length > 0) {
@@ -135,7 +135,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                             ? `${e.target.value}-${index + 1}`
                             : e.target.value,
                         })),
-                      );
+                      )
                     }
                   }}
                   variant="outlined"
@@ -158,14 +158,14 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                       {...field}
                       checked={field.value}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        field.onChange(e.target.checked);
+                        field.onChange(e.target.checked)
                         // Actulizamos las variantes de los stocks
                         replace(
                           variantesWatch.map((v) => ({
                             ...v,
                             incluirCantidad: e.target.checked,
                           })),
-                        );
+                        )
                       }}
                     />
                   }
@@ -189,14 +189,14 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                           {...field}
                           checked={!field.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            field.onChange(!e.target.checked);
+                            field.onChange(!e.target.checked)
                             // Actulizamos las variantes de los stocks
                             replace(
                               variantesWatch.map((v) => ({
                                 ...v,
                                 verificarStock: !e.target.checked,
                               })),
-                            );
+                            )
                           }}
                         />
                       }
@@ -256,9 +256,9 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                             ...item,
                                             stock,
                                           }
-                                        : item;
+                                        : item
                                     }),
-                                  );
+                                  )
                                 }
                               }}
                               onBlur={(eventStock) => {
@@ -272,7 +272,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
                                         stock: parseFloat(eventStock.target.value),
                                       })),
                                     })),
-                                  );
+                                  )
                                 }
                               }}
                               formatter={numberWithCommas}
@@ -290,7 +290,7 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
     </SimpleCard>
-  );
-};
+  )
+}
 
-export default ProductoInventario;
+export default ProductoInventario

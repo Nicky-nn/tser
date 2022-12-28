@@ -1,17 +1,17 @@
-import React, { FunctionComponent } from 'react';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { Person } from '@mui/icons-material';
-import { Button, Grid } from '@mui/material';
-import { H4 } from '../../../../base/components/Template/Typography';
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal';
-import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api';
-import { notSuccess } from '../../../../utils/notification';
-import { apiSincronizarCufd } from '../../api/sincronizarCufd.api';
-import { apiSincronizarCatalogos } from '../../api/sincronizarCatalogos.api';
+import React, { FunctionComponent } from 'react'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { Person } from '@mui/icons-material'
+import { Button, Grid } from '@mui/material'
+import { H4 } from '../../../../base/components/Template/Typography'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { apiUsuarioVaciarCache } from '../../api/usuarioVaciarCache.api'
+import { notSuccess } from '../../../../utils/notification'
+import { apiSincronizarCufd } from '../../api/sincronizarCufd.api'
+import { apiSincronizarCatalogos } from '../../api/sincronizarCatalogos.api'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaSincronizacion: FunctionComponent<Props> = (props) => {
   const fetchSincronizarCatalogos = async () => {
@@ -19,31 +19,31 @@ const CuentaSincronizacion: FunctionComponent<Props> = (props) => {
       text: 'Confirma que desea realizar la acción, este proceso podria demorar varios minutos',
       preConfirm: () => {
         return apiSincronizarCatalogos().catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess('Sincronización realizada correctamente');
+        notSuccess('Sincronización realizada correctamente')
       }
-    });
-  };
+    })
+  }
 
   const fetchSincronizarCufd = async () => {
     await swalAsyncConfirmDialog({
       preConfirm: () => {
         return apiSincronizarCufd().catch((err) => {
-          swalException(err);
-          return false;
-        });
+          swalException(err)
+          return false
+        })
       },
     }).then((resp) => {
       if (resp.isConfirmed) {
-        notSuccess('CUFD se ha sincronizado correctamente');
+        notSuccess('CUFD se ha sincronizado correctamente')
       }
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -88,7 +88,7 @@ const CuentaSincronizacion: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default CuentaSincronizacion;
+export default CuentaSincronizacion

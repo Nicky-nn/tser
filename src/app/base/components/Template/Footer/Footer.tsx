@@ -1,10 +1,10 @@
-import { AppBar, ThemeProvider, Toolbar } from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import React, { FC } from 'react';
+import { AppBar, ThemeProvider, Toolbar } from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import React, { FC } from 'react'
 
-import { topBarHeight } from '../../../../utils/constant';
-import useSettings from '../../../hooks/useSettings';
-import { Paragraph, Span } from '../Typography';
+import { topBarHeight } from '../../../../utils/constant'
+import useSettings from '../../../hooks/useSettings'
+import { Paragraph, Span } from '../Typography'
 
 const AppFooter = styled(Toolbar)(() => ({
   display: 'flex',
@@ -22,7 +22,7 @@ const AppFooter = styled(Toolbar)(() => ({
       },
     },
   },
-}));
+}))
 
 const FooterContent = styled('div')(() => ({
   width: '100%',
@@ -31,13 +31,13 @@ const FooterContent = styled('div')(() => ({
   padding: '0px 1rem',
   maxWidth: '1170px',
   margin: '0 auto',
-}));
+}))
 
 const Footer: FC<any> = () => {
-  const theme = useTheme();
-  const { settings } = useSettings();
+  const theme = useTheme()
+  const { settings } = useSettings()
 
-  const footerTheme = settings.themes[settings.footer.theme] || theme;
+  const footerTheme = settings.themes[settings.footer.theme] || theme
 
   return (
     <ThemeProvider theme={footerTheme}>
@@ -60,7 +60,7 @@ const Footer: FC<any> = () => {
         </AppFooter>
       </AppBar>
     </ThemeProvider>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

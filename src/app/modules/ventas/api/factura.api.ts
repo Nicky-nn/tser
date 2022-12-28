@@ -1,15 +1,15 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { ClasificadorProps } from '../../../interfaces';
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { ClasificadorProps } from '../../../interfaces'
+import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
 
 export interface FacturaProps {
-  sinTipoMetodoPago: ClasificadorProps[];
-  sinUnidadMedida: ClasificadorProps[];
-  sinActividades: SinActividadesProps[];
+  sinTipoMetodoPago: ClasificadorProps[]
+  sinUnidadMedida: ClasificadorProps[]
+  sinActividades: SinActividadesProps[]
 }
 
 const query = gql`
@@ -28,14 +28,14 @@ const query = gql`
       tipoActividad
     }
   }
-`;
+`
 
 export const fetchFacturaParams = async (): Promise<FacturaProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query);
-  return data;
-};
+  const data: any = await client.request(query)
+  return data
+}

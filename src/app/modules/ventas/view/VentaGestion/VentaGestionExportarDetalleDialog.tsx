@@ -1,5 +1,5 @@
-import { ImportExport } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
+import { ImportExport } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import {
   Button,
   Dialog,
@@ -8,57 +8,57 @@ import {
   DialogTitle,
   Grid,
   TextField,
-} from '@mui/material';
-import es from 'date-fns/locale/es';
-import dayjs from 'dayjs';
-import exportFromJSON from 'export-from-json';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import DatePicker, { registerLocale } from 'react-datepicker';
+} from '@mui/material'
+import es from 'date-fns/locale/es'
+import dayjs from 'dayjs'
+import exportFromJSON from 'export-from-json'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import DatePicker, { registerLocale } from 'react-datepicker'
 
-import { SimpleItem } from '../../../../base/components/Container/SimpleItem';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
-import { notDanger } from '../../../../utils/notification';
-import { fetchFacturaListado } from '../../api/factura.listado.api';
-import { genReplaceEmpty } from '../../../../utils/helper';
-import { convert } from 'html-to-text';
+import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
+import { notDanger } from '../../../../utils/notification'
+import { fetchFacturaListado } from '../../api/factura.listado.api'
+import { genReplaceEmpty } from '../../../../utils/helper'
+import { convert } from 'html-to-text'
 
-registerLocale('es', es);
+registerLocale('es', es)
 
 interface OwnProps {
-  id: string;
-  keepMounted: boolean;
-  open: boolean;
-  onClose: (value?: any) => void;
+  id: string
+  keepMounted: boolean
+  open: boolean
+  onClose: (value?: any) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
-  const { onClose, open, ...other } = props;
-  const [loading, setLoading] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const { onClose, open, ...other } = props
+  const [loading, setLoading] = useState(false)
+  const [startDate, setStartDate] = useState<Date | null>(new Date())
+  const [endDate, setEndDate] = useState<Date | null>(null)
   const onChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
+    const [start, end] = dates
+    setStartDate(start)
+    setEndDate(end)
+  }
 
   const exportarDatos = async () => {
-    setLoading(true);
-    const sd = dayjs(startDate).format('YYYY-MM-DD');
-    const ed = dayjs(endDate).format('YYYY-MM-DD');
-    const query = `fechaEmision<=${ed} 24:00:00&fechaEmision>=${sd} 00:00:00`;
+    setLoading(true)
+    const sd = dayjs(startDate).format('YYYY-MM-DD')
+    const ed = dayjs(endDate).format('YYYY-MM-DD')
+    const query = `fechaEmision<=${ed} 24:00:00&fechaEmision>=${sd} 00:00:00`
     const fetchPagination: PageProps = {
       ...PAGE_DEFAULT,
       limit: 100000,
       reverse: false,
       query,
-    };
-    const { docs } = await fetchFacturaListado(fetchPagination);
-    setLoading(false);
+    }
+    const { docs } = await fetchFacturaListado(fetchPagination)
+    setLoading(false)
     if (docs.length > 0) {
-      const dataExport: any = [];
+      const dataExport: any = []
       for (const doc of docs) {
         doc.detalle.map((item) => {
           dataExport.push({
@@ -92,25 +92,25 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             tipoCambio: doc.tipoCambio,
             estado: doc.state,
             usuario: doc.usuario,
-          });
-        });
+          })
+        })
       }
       exportFromJSON({
         data: dataExport,
         fileName: 'reporte_detalle_ventas',
         exportType: exportFromJSON.types.csv,
         withBOM: true,
-      });
+      })
     } else {
-      notDanger('No se han encontrado registros para el periodo seleccionado');
+      notDanger('No se han encontrado registros para el periodo seleccionado')
     }
-  };
+  }
   useEffect(() => {
     if (open) {
-      setStartDate(new Date());
-      setEndDate(new Date());
+      setStartDate(new Date())
+      setEndDate(new Date())
     }
-  }, [open]);
+  }, [open])
 
   return (
     <>
@@ -163,7 +163,7 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             size={'small'}
             onClick={() => {
-              onClose();
+              onClose()
             }}
           >
             Cancelar
@@ -183,7 +183,7 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default VentaGestionExportarDetalleDialog;
+export default VentaGestionExportarDetalleDialog

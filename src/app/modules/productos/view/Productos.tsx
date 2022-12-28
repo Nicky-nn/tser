@@ -1,16 +1,16 @@
-import { Newspaper } from '@mui/icons-material';
-import { Button, Grid, Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Newspaper } from '@mui/icons-material'
+import { Button, Grid, Stack } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { useContext } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import AuthContext from '../../../base/contexts/JWTAuthContext';
-import ProductosListado from './listado/ProductosListado';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import AuthContext from '../../../base/contexts/JWTAuthContext'
+import ProductosListado from './listado/ProductosListado'
 
 const Productos = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext)
   // in this case *props are stored in the state of parent component
 
   return (
@@ -49,7 +49,7 @@ const Productos = () => {
       </Grid>
       <Box py="12px" />
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default Productos;
+export default Productos

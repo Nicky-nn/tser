@@ -1,11 +1,11 @@
-import { Box, BoxProps, styled, Theme } from '@mui/material';
-import clsx from 'clsx';
-import { FC, ReactNode } from 'react';
+import { Box, BoxProps, styled, Theme } from '@mui/material'
+import clsx from 'clsx'
+import { FC, ReactNode } from 'react'
 
 interface StyledBoxProps extends BoxProps {
-  theme?: Theme;
-  textTransformStyle?: any;
-  ellipsis?: boolean;
+  theme?: Theme
+  textTransformStyle?: any
+  ellipsis?: boolean
 }
 
 const StyledBox = styled(Box)<StyledBoxProps>(
@@ -15,12 +15,12 @@ const StyledBox = styled(Box)<StyledBoxProps>(
     overflow: ellipsis ? 'hidden' : '',
     textOverflow: ellipsis ? 'ellipsis' : '',
   }),
-);
+)
 
 interface H1Props extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const H1: FC<H1Props> = ({
@@ -45,14 +45,14 @@ export const H1: FC<H1Props> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface H2Props extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  ellipsis?: any;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  ellipsis?: any
+  textTransform?: any
 }
 
 export const H2: FC<H2Props> = ({
@@ -77,15 +77,15 @@ export const H2: FC<H2Props> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 type H3Props = {
-  children: ReactNode;
-  className?: string;
-  ellipsis?: any;
-  textTransform?: any;
-};
+  children: ReactNode
+  className?: string
+  ellipsis?: any
+  textTransform?: any
+}
 
 export const H3 = ({
   children,
@@ -109,15 +109,15 @@ export const H3 = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 type H4Props = {
-  children: ReactNode;
-  className?: string;
-  ellipsis?: any;
-  textTransform?: any;
-};
+  children: ReactNode
+  className?: string
+  ellipsis?: any
+  textTransform?: any
+}
 export const H4 = ({
   children,
   className,
@@ -142,13 +142,13 @@ export const H4 = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface H5Props extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const H5: FC<H5Props> = ({
@@ -175,13 +175,13 @@ export const H5: FC<H5Props> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface H6Props extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const H6: FC<any> = ({
@@ -208,13 +208,13 @@ export const H6: FC<any> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface ParagraphProps extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const Paragraph: FC<any> = ({
@@ -239,13 +239,13 @@ export const Paragraph: FC<any> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface SmallProps extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const Small: FC<any> = ({
@@ -270,13 +270,13 @@ export const Small: FC<any> = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}
 
 interface SpanProps extends StyledBoxProps {
-  children?: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children?: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const Span: any = ({
@@ -299,13 +299,13 @@ export const Span: any = ({
     >
       {children}
     </StyledBox>
-  ) as any;
-};
+  ) as any
+}
 
 interface TinyProps extends StyledBoxProps {
-  children: ReactNode;
-  className?: string;
-  textTransform?: any;
+  children: ReactNode
+  className?: string
+  textTransform?: any
 }
 
 export const Tiny = ({
@@ -329,5 +329,5 @@ export const Tiny = ({
     >
       {children}
     </StyledBox>
-  );
-};
+  )
+}

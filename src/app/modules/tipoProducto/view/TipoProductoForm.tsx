@@ -1,31 +1,31 @@
-import { FormControl, FormHelperText, Grid, TextField } from '@mui/material';
-import { FormikProps } from 'formik';
-import React, { FunctionComponent } from 'react';
-import Select, { SingleValue } from 'react-select';
+import { FormControl, FormHelperText, Grid, TextField } from '@mui/material'
+import { FormikProps } from 'formik'
+import React, { FunctionComponent } from 'react'
+import Select, { SingleValue } from 'react-select'
 
-import AlertError from '../../../base/components/Alert/AlertError';
-import AlertLoading from '../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../base/components/MySelect/ReactSelect';
-import { genReplaceEmpty } from '../../../utils/helper';
-import useQueryTiposProducto from '../hooks/useQueryTiposProducto';
+import AlertError from '../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../base/components/MySelect/ReactSelect'
+import { genReplaceEmpty } from '../../../utils/helper'
+import useQueryTiposProducto from '../hooks/useQueryTiposProducto'
 import {
   TipoProductoInputProp,
   TipoProductoProps,
-} from '../interfaces/tipoProducto.interface';
+} from '../interfaces/tipoProducto.interface'
 
 interface OwnProps {
-  formik: FormikProps<TipoProductoInputProp>;
+  formik: FormikProps<TipoProductoInputProp>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const TipoProductoForm: FunctionComponent<Props> = (props) => {
-  const { formik } = props;
+  const { formik } = props
 
-  const { tiposProducto, tpLoading, tpError, tpIsError } = useQueryTiposProducto();
+  const { tiposProducto, tpLoading, tpError, tpIsError } = useQueryTiposProducto()
 
-  if (tpIsError) return <AlertError mensaje={tpError!.message!} />;
+  if (tpIsError) return <AlertError mensaje={tpError!.message!} />
 
   return (
     <>
@@ -58,7 +58,7 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
                     formik.setFieldValue(
                       'codigoParent',
                       genReplaceEmpty(tipoProducto?._id, null),
-                    );
+                    )
                   }}
                   isSearchable={false}
                   options={tiposProducto}
@@ -86,7 +86,7 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
         </Grid>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default TipoProductoForm;
+export default TipoProductoForm

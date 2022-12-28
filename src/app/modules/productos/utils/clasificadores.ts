@@ -4,4 +4,4 @@ export const OPCIONES_PRODUCTO: Array<{ value: string; label: string }> = [
   { value: 'Color', label: 'Color' },
   { value: 'Material', label: 'Material' },
   { value: 'Estilo', label: 'Estilo' },
-];
+]

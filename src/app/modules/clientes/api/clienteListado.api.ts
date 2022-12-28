@@ -1,14 +1,14 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { PageInfoProps, PageProps } from '../../../interfaces';
-import { ClienteProps } from '../interfaces/cliente';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { PageInfoProps, PageProps } from '../../../interfaces'
+import { ClienteProps } from '../interfaces/cliente'
 
 interface ClienteListadoProps {
-  pageInfo: PageInfoProps;
-  docs: ClienteProps[];
+  pageInfo: PageInfoProps
+  docs: ClienteProps[]
 }
 
 const query = gql`
@@ -44,16 +44,16 @@ const query = gql`
       }
     }
   }
-`;
+`
 
 export const fetchClienteListado = async (
   pageInfo: PageProps,
 ): Promise<ClienteListadoProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, pageInfo);
-  return data.clientesAll;
-};
+  const data: any = await client.request(query, pageInfo)
+  return data.clientesAll
+}

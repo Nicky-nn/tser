@@ -1,4 +1,4 @@
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material'
 import {
   Button,
   Checkbox,
@@ -9,31 +9,27 @@ import {
   Grid,
   IconButton,
   Tooltip,
-} from '@mui/material';
-import React, { ChangeEvent, FunctionComponent, useState } from 'react';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { arrayMove, List } from 'react-movable';
+} from '@mui/material'
+import React, { ChangeEvent, FunctionComponent, useState } from 'react'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
+import { arrayMove, List } from 'react-movable'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import {
-  cartesianProduct,
-  genRandomString,
-  isEmptyValue,
-} from '../../../../utils/helper';
-import { notError } from '../../../../utils/notification';
-import { swalConfirmDialog } from '../../../../utils/swal';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { cartesianProduct, genRandomString, isEmptyValue } from '../../../../utils/helper'
+import { notError } from '../../../../utils/notification'
+import { swalConfirmDialog } from '../../../../utils/swal'
 import {
   OpcionesProductoProps,
   ProductoInputProps,
   ProductoVarianteInputProps,
-} from '../../interfaces/producto.interface';
-import ProductoAdicionarOpcionDialog from './ProductoOpciones/ProductoAdicionarOpcionDialog';
+} from '../../interfaces/producto.interface'
+import ProductoAdicionarOpcionDialog from './ProductoOpciones/ProductoAdicionarOpcionDialog'
 
 interface OwnProps {
-  form: UseFormReturn<ProductoInputProps>;
+  form: UseFormReturn<ProductoInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoOpciones: FunctionComponent<Props> = (props) => {
   const {
@@ -44,28 +40,28 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
       watch,
       formState: { errors },
     },
-  } = props;
+  } = props
   const { replace } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'variantes', // unique name for your Field Array
-  });
+  })
   const [varianteWatch, opcionesProducto, varianteUnica] = watch([
     'variante',
     'opcionesProducto',
     'varianteUnica',
-  ]);
+  ])
 
-  const [openProductOpcion, setOpenProductOpcion] = useState<boolean>(false);
+  const [openProductOpcion, setOpenProductOpcion] = useState<boolean>(false)
   const [opcionesEdit, setOpcionesEdit] = useState<OpcionesProductoProps | undefined>(
     undefined,
-  );
+  )
 
   // Generacion de variantes de productos
   const generarVariantes = (opciones: any): ProductoVarianteInputProps[] | void => {
-    const preVariantes: any = [];
+    const preVariantes: any = []
     opciones.forEach((op: any) => {
-      preVariantes.push(op.valores);
-    });
+      preVariantes.push(op.valores)
+    })
     const variantes =
       cartesianProduct(preVariantes).map((pv: any, index) => ({
         ...varianteWatch,
@@ -78,16 +74,16 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
           : '',
         titulo: pv.join(' / '),
         nombre: `${getValues('titulo')} ${pv.join(' / ')}`,
-      })) || [];
+      })) || []
 
     // Generamos las nuevas opciones y variantes
-    setValue('opcionesProducto', opciones);
-    replace(variantes);
-  };
+    setValue('opcionesProducto', opciones)
+    replace(variantes)
+  }
 
   // Eliminamos un determinado valor del item
   const eliminarVariante = async (opcion: OpcionesProductoProps, valor: string) => {
-    const newValor = opcion.valores.filter((op) => op !== valor);
+    const newValor = opcion.valores.filter((op) => op !== valor)
     if (newValor.length > 0) {
       await swalConfirmDialog({
         text: `Confirma que desea eliminar <strong>${opcion.nombre} ${valor}</strong>. 
@@ -101,14 +97,14 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                   valores: newValor,
                 }
               : op,
-          );
-          generarVariantes(newOpcionesProducto);
+          )
+          generarVariantes(newOpcionesProducto)
         }
-      });
+      })
     } else {
-      notError('Debe existir al menos 1 valor presente');
+      notError('Debe existir al menos 1 valor presente')
     }
-  };
+  }
 
   // Eliminamos todo el item
   const eliminarOpcion = async (opcion: OpcionesProductoProps) => {
@@ -118,16 +114,16 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
       if (resp.isConfirmed) {
         const newOpcionesProducto = opcionesProducto.filter(
           (op) => op.nombre !== opcion.nombre,
-        );
-        generarVariantes(newOpcionesProducto);
+        )
+        generarVariantes(newOpcionesProducto)
       }
-    });
-  };
+    })
+  }
 
   const modificarOpciones = async (opcion: OpcionesProductoProps) => {
-    setOpcionesEdit(opcion);
-    setOpenProductOpcion(true);
-  };
+    setOpcionesEdit(opcion)
+    setOpenProductOpcion(true)
+  }
   return (
     <>
       <SimpleCard title={'OPCIONES'}>
@@ -140,7 +136,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                     <Checkbox
                       checked={!varianteUnica}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setValue('varianteUnica', !e.target.checked);
+                        setValue('varianteUnica', !e.target.checked)
                       }}
                     />
                   }
@@ -154,7 +150,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
               <Button
                 size={'small'}
                 onClick={() => {
-                  setOpenProductOpcion(true);
+                  setOpenProductOpcion(true)
                 }}
               >
                 Adicionar Opción de producto
@@ -163,7 +159,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
               <List
                 values={opcionesProducto}
                 onChange={({ oldIndex, newIndex }) => {
-                  generarVariantes(arrayMove(opcionesProducto, oldIndex, newIndex));
+                  generarVariantes(arrayMove(opcionesProducto, oldIndex, newIndex))
                 }}
                 renderList={({ children, props, isDragged }) => (
                   <div className="responsive-table">
@@ -235,14 +231,14 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
                         </div>
                       </td>
                     </tr>
-                  );
+                  )
                   return isDragged ? (
                     <table style={{ ...props.style, borderSpacing: 0 }}>
                       <tbody>{row}</tbody>
                     </table>
                   ) : (
                     row
-                  );
+                  )
                 }}
               />
             </Grid>
@@ -256,31 +252,31 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
         opcion={opcionesEdit}
         open={openProductOpcion}
         onClose={(val) => {
-          setOpcionesEdit(undefined);
+          setOpcionesEdit(undefined)
           if (val) {
-            const repetido = opcionesProducto.filter((op) => op.id === val.id);
+            const repetido = opcionesProducto.filter((op) => op.id === val.id)
             if (repetido.length === 0) {
-              const newValue = [...opcionesProducto, { ...val }];
-              generarVariantes(newValue);
-              setOpenProductOpcion(false);
+              const newValue = [...opcionesProducto, { ...val }]
+              generarVariantes(newValue)
+              setOpenProductOpcion(false)
             } else {
               // Buscamos y actualizamos el registro
               const updateValue = opcionesProducto.map((item) => {
                 if (item.id === val.id) {
-                  return val;
+                  return val
                 }
-                return item;
-              });
-              generarVariantes(updateValue);
-              setOpenProductOpcion(false);
+                return item
+              })
+              generarVariantes(updateValue)
+              setOpenProductOpcion(false)
             }
           } else {
-            setOpenProductOpcion(false);
+            setOpenProductOpcion(false)
           }
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default ProductoOpciones;
+export default ProductoOpciones

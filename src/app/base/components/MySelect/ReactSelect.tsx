@@ -1,6 +1,6 @@
-import Select, { StylesConfig } from 'react-select';
+import Select, { StylesConfig } from 'react-select'
 
-export const ReactSelect = Select;
+export const ReactSelect = Select
 
 export const reactSelectStyles: StylesConfig<any> | undefined = {
   menuPortal: (base) => ({
@@ -11,4 +11,4 @@ export const reactSelectStyles: StylesConfig<any> | undefined = {
     ...base,
     color: '#a4a4a4',
   }),
-};
+}

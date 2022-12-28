@@ -51,4 +51,4 @@ export const TINYMCE_TEMPLATES = [
         <b>TITULO 5</b> DESCRIPCION 5<br>
         </p>`,
   },
-];
+]

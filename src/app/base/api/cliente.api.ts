@@ -1,13 +1,13 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { ClienteProps } from '../../modules/clientes/interfaces/cliente';
-import { AccessToken } from '../models/paramsModel';
+import { ClienteProps } from '../../modules/clientes/interfaces/cliente'
+import { AccessToken } from '../models/paramsModel'
 
 export interface SinTipoDocumentoIdentidad {
-  codigoClasificador: string;
-  descripcion: string;
+  codigoClasificador: string
+  descripcion: string
 }
 
 const clientesListadoQuery = gql`
@@ -30,14 +30,14 @@ const clientesListadoQuery = gql`
       }
     }
   }
-`;
+`
 
 export const fetchClientesList = async (): Promise<ClienteProps[]> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(clientesListadoQuery);
-  return data.clientesAll.docs || [];
-};
+  const data: any = await client.request(clientesListadoQuery)
+  return data.clientesAll.docs || []
+}

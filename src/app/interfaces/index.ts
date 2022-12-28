@@ -1,6 +1,6 @@
 export interface ClasificadorProps {
-  codigoClasificador: string;
-  descripcion: string;
+  codigoClasificador: string
+  descripcion: string
 }
 
 /**
@@ -17,22 +17,22 @@ export const apiEstado = {
   paqueteObservado: 'OBSERVADA',
   anulado: 'ANULADO',
   eliminado: 'ELIMINADO',
-};
+}
 
 export interface AuditoriaProps {
-  usucre: string;
-  createdAt: string;
-  usumod: string;
-  updatedAt: string;
+  usucre: string
+  createdAt: string
+  usumod: string
+  updatedAt: string
 }
 
 export interface PageInfoProps {
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  totalDocs: number;
-  limit: number;
-  page: number;
-  totalPages: number;
+  hasNextPage: boolean
+  hasPrevPage: boolean
+  totalDocs: number
+  limit: number
+  page: number
+  totalPages: number
 }
 
 export const PAGE_INFO_DEFAULT: PageInfoProps = {
@@ -42,20 +42,20 @@ export const PAGE_INFO_DEFAULT: PageInfoProps = {
   limit: 10,
   page: 1,
   totalPages: 1,
-};
+}
 
 export interface PageProps {
-  limit: number;
-  page: number;
-  reverse: boolean;
-  query?: string;
+  limit: number
+  page: number
+  reverse: boolean
+  query?: string
 }
 
 export interface PageInputProps {
-  limit: number;
-  page: number;
-  reverse: boolean;
-  query?: string;
+  limit: number
+  page: number
+  reverse: boolean
+  query?: string
 }
 
 export const PAGE_DEFAULT: PageInputProps = {
@@ -63,5 +63,4 @@ export const PAGE_DEFAULT: PageInputProps = {
   page: 0,
   reverse: true,
   query: '',
-};
-
+}

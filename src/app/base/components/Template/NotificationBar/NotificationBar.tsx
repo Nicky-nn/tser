@@ -1,4 +1,4 @@
-import { Notifications } from '@mui/icons-material';
+import { Notifications } from '@mui/icons-material'
 import {
   Badge,
   Button,
@@ -7,17 +7,17 @@ import {
   Icon,
   IconButton,
   ThemeProvider,
-} from '@mui/material';
-import { Box, styled, useTheme } from '@mui/system';
-import { FC, Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+} from '@mui/material'
+import { Box, styled, useTheme } from '@mui/system'
+import { FC, Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { sideNavWidth, topBarHeight } from '../../../../utils/constant';
-import { getTimeDifference } from '../../../../utils/utils';
-import useNotification from '../../../hooks/useNotification';
-import useSettings from '../../../hooks/useSettings';
-import { themeShadows } from '../MatxTheme/themeColors';
-import { Paragraph, Small } from '../Typography';
+import { sideNavWidth, topBarHeight } from '../../../../utils/constant'
+import { getTimeDifference } from '../../../../utils/utils'
+import useNotification from '../../../hooks/useNotification'
+import useSettings from '../../../hooks/useSettings'
+import { themeShadows } from '../MatxTheme/themeColors'
+import { Paragraph, Small } from '../Typography'
 
 const Notification = styled('div')(() => ({
   padding: '16px',
@@ -32,7 +32,7 @@ const Notification = styled('div')(() => ({
     marginBottom: 0,
     fontWeight: '500',
   },
-}));
+}))
 
 const NotificationCard = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -48,7 +48,7 @@ const NotificationCard = styled(Box)(({ theme }) => ({
     color: theme.palette.text.secondary,
   },
   '& .icon': { fontSize: '1.25rem' },
-}));
+}))
 
 const DeleteButton = styled(IconButton)(({ theme }) => ({
   opacity: '0',
@@ -57,7 +57,7 @@ const DeleteButton = styled(IconButton)(({ theme }) => ({
   marginTop: 9,
   marginRight: '24px',
   background: 'rgba(0, 0, 0, 0.01)',
-}));
+}))
 
 const CardLeftContent = styled('div')(({ theme }) => ({
   padding: '12px 8px',
@@ -70,28 +70,27 @@ const CardLeftContent = styled('div')(({ theme }) => ({
     marginLeft: '16px',
     color: theme.palette.text.secondary,
   },
-}));
+}))
 
 const Heading = styled('span')(({ theme }) => ({
   fontWeight: '500',
   marginLeft: '16px',
   color: theme.palette.text.secondary,
-}));
+}))
 
 const NotificationBar: FC<any> = ({ container }: any) => {
-  const { settings } = useSettings();
-  const theme = useTheme();
-  const secondary = theme.palette.text.secondary;
-  const [panelOpen, setPanelOpen] = useState(false);
-  const { deleteNotification, clearNotifications, notifications }: any =
-    useNotification();
+  const { settings } = useSettings()
+  const theme = useTheme()
+  const secondary = theme.palette.text.secondary
+  const [panelOpen, setPanelOpen] = useState(false)
+  const { deleteNotification, clearNotifications, notifications }: any = useNotification()
 
   const handleDrawerToggle = () => {
-    setPanelOpen(!panelOpen);
-  };
+    setPanelOpen(!panelOpen)
+  }
 
-  const { palette } = useTheme();
-  const textColor = palette.text.primary;
+  const { palette } = useTheme()
+  const textColor = palette.text.primary
 
   return (
     <Fragment>
@@ -163,7 +162,7 @@ const NotificationBar: FC<any> = ({ container }: any) => {
         </Drawer>
       </ThemeProvider>
     </Fragment>
-  );
-};
+  )
+}
 
-export default NotificationBar;
+export default NotificationBar

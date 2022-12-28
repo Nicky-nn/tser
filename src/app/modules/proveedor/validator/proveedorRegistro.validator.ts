@@ -1,7 +1,7 @@
-import { object, setLocale, string } from 'yup';
-import { es } from 'yup-locales';
+import { object, setLocale, string } from 'yup'
+import { es } from 'yup-locales'
 
-setLocale(es);
+setLocale(es)
 
 export const proveedorRegistroValidationSchema = object({
   codigo: string().required('Código es requerido'),
@@ -11,4 +11,4 @@ export const proveedorRegistroValidationSchema = object({
   contacto: string().required('Nombre de contacto es requerido'),
   correo: string().email('Ingrese Correo válido').required('Correo es requerido'),
   telefono: string(),
-});
+})

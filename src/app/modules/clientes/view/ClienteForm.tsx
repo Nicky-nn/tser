@@ -1,32 +1,32 @@
-import { FormControl, FormHelperText, Grid, TextField } from '@mui/material';
-import { FormikProps } from 'formik';
-import React, { FunctionComponent } from 'react';
-import Select, { SingleValue } from 'react-select';
+import { FormControl, FormHelperText, Grid, TextField } from '@mui/material'
+import { FormikProps } from 'formik'
+import React, { FunctionComponent } from 'react'
+import Select, { SingleValue } from 'react-select'
 
-import AlertError from '../../../base/components/Alert/AlertError';
-import AlertLoading from '../../../base/components/Alert/AlertLoading';
-import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel';
-import { reactSelectStyles } from '../../../base/components/MySelect/ReactSelect';
-import { SelectInputLabel } from '../../../base/components/ReactSelect/SelectInputLabel';
-import { genReplaceEmpty, isEmptyValue } from '../../../utils/helper';
-import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento';
-import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface';
-import { ClienteInputProps } from '../interfaces/cliente';
+import AlertError from '../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../base/components/Alert/AlertLoading'
+import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
+import { reactSelectStyles } from '../../../base/components/MySelect/ReactSelect'
+import { SelectInputLabel } from '../../../base/components/ReactSelect/SelectInputLabel'
+import { genReplaceEmpty, isEmptyValue } from '../../../utils/helper'
+import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
+import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface'
+import { ClienteInputProps } from '../interfaces/cliente'
 
 interface OwnProps {
-  formik: FormikProps<ClienteInputProps>;
+  formik: FormikProps<ClienteInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ClienteForm: FunctionComponent<Props> = (props) => {
-  const { formik, ...other } = props;
+  const { formik, ...other } = props
 
   const { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError } =
-    useQueryTipoDocumentoIdentidad();
+    useQueryTipoDocumentoIdentidad()
 
   if (tdiIsError) {
-    return <AlertError mensaje={tdiError?.message!} />;
+    return <AlertError mensaje={tdiError?.message!} />
   }
 
   return (
@@ -66,7 +66,7 @@ const ClienteForm: FunctionComponent<Props> = (props) => {
                   formik.setFieldValue(
                     'codigoTipoDocumentoIdentidad',
                     genReplaceEmpty(tipoDocumento?.codigoClasificador, null),
-                  );
+                  )
                 }}
                 isSearchable={false}
                 getOptionValue={(item) => item.codigoClasificador.toString()}
@@ -142,7 +142,7 @@ const ClienteForm: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
     </form>
-  );
-};
+  )
+}
 
-export default ClienteForm;
+export default ClienteForm

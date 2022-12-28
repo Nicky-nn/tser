@@ -1,16 +1,16 @@
-import { Grid } from '@mui/material';
-import React, { FunctionComponent } from 'react';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { NcdInputProps } from '../../interfaces/ncdInterface';
-import InputNumber from 'rc-input-number';
+import { Grid } from '@mui/material'
+import React, { FunctionComponent } from 'react'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { NcdInputProps } from '../../interfaces/ncdInterface'
+import InputNumber from 'rc-input-number'
 
 interface OwnProps {
-  form: UseFormReturn<NcdInputProps>;
+  form: UseFormReturn<NcdInputProps>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
   const {
@@ -19,12 +19,12 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors },
     },
-  } = props;
+  } = props
 
   const { update } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'detalleFactura', // unique name for your Field Array
-  });
+  })
   return (
     <>
       <SimpleCard title={'DATOS DE LA DEVOLUCIÓN'}>
@@ -66,7 +66,7 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
                                     update(index, {
                                       ...item,
                                       cantidad,
-                                    });
+                                    })
                                   }
                                 }
                               }}
@@ -81,7 +81,7 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
                             {numberWithCommas(item.montoDescuento, {})}
                           </td>
                         </tr>
-                      );
+                      )
                     })}
                 </tbody>
               </table>
@@ -90,7 +90,7 @@ const NcdFacturaDevolucion: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default NcdFacturaDevolucion;
+export default NcdFacturaDevolucion

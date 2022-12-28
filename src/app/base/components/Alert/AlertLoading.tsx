@@ -1,32 +1,32 @@
-import { Alert, LinearProgress } from '@mui/material';
-import React, { FunctionComponent, useEffect } from 'react';
+import { Alert, LinearProgress } from '@mui/material'
+import React, { FunctionComponent, useEffect } from 'react'
 
 interface OwnProps {
-  mensaje?: string;
-  tipo?: 'error' | 'warning' | 'info' | 'success';
+  mensaje?: string
+  tipo?: 'error' | 'warning' | 'info' | 'success'
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const AlertLoading: FunctionComponent<Props> = (props) => {
-  const { mensaje, tipo } = props;
-  const [progress, setProgress] = React.useState(0);
+  const { mensaje, tipo } = props
+  const [progress, setProgress] = React.useState(0)
 
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress === 100) {
-          return 0;
+          return 0
         }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+        const diff = Math.random() * 10
+        return Math.min(oldProgress + diff, 100)
+      })
+    }, 500)
 
     return () => {
-      clearInterval(timer);
-    };
-  }, []);
+      clearInterval(timer)
+    }
+  }, [])
 
   return (
     <>
@@ -35,7 +35,7 @@ const AlertLoading: FunctionComponent<Props> = (props) => {
       </Alert>
       <LinearProgress variant="determinate" value={progress} />
     </>
-  );
-};
+  )
+}
 
-export default AlertLoading;
+export default AlertLoading

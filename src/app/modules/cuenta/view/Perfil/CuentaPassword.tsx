@@ -1,18 +1,18 @@
-import { Key } from '@mui/icons-material';
-import { Button, FormControl, Grid, TextField } from '@mui/material';
-import { FormikProps, useFormik } from 'formik';
-import React, { FunctionComponent } from 'react';
+import { Key } from '@mui/icons-material'
+import { Button, FormControl, Grid, TextField } from '@mui/material'
+import { FormikProps, useFormik } from 'formik'
+import React, { FunctionComponent } from 'react'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard';
-import { notSuccess } from '../../../../utils/notification';
-import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal';
-import { apiUsuarioCambiarPassword } from '../../api/usuarioCambiarPassword.api';
-import { UsuarioCambiarPasswordInputProps } from '../../interfaces/cuenta.interface';
-import { cambiarPasswordValidationSchema } from '../../validator/cambiarPassword.validator';
+import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { notSuccess } from '../../../../utils/notification'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { apiUsuarioCambiarPassword } from '../../api/usuarioCambiarPassword.api'
+import { UsuarioCambiarPasswordInputProps } from '../../interfaces/cuenta.interface'
+import { cambiarPasswordValidationSchema } from '../../validator/cambiarPassword.validator'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const CuentaPassword: FunctionComponent<Props> = (props) => {
   const formik: FormikProps<UsuarioCambiarPasswordInputProps> =
@@ -27,20 +27,20 @@ const CuentaPassword: FunctionComponent<Props> = (props) => {
         await swalAsyncConfirmDialog({
           preConfirm: () => {
             return apiUsuarioCambiarPassword(values).catch((err) => {
-              swalException(err);
-              return false;
-            });
+              swalException(err)
+              return false
+            })
           },
           text: '¿Confirma que desea cambiar la contraseña?',
         }).then((resp) => {
           if (resp.isConfirmed) {
             notSuccess(
               'Se ha cambiado la contraseña correctamente, esta se aplica a partir del proximo reinicio de sesión',
-            );
+            )
           }
-        });
+        })
       },
-    });
+    })
 
   return (
     <>
@@ -117,7 +117,7 @@ const CuentaPassword: FunctionComponent<Props> = (props) => {
         </Grid>
       </SimpleCard>
     </>
-  );
-};
+  )
+}
 
-export default CuentaPassword;
+export default CuentaPassword

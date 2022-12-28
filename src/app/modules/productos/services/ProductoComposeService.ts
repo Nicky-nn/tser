@@ -1,11 +1,11 @@
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface';
+import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
 import {
   ProductoInputApiProps,
   ProductoInputProps,
   ProductoProps,
   ProductoVarianteApiProps,
   ProductoVarianteInputProps,
-} from '../interfaces/producto.interface';
+} from '../interfaces/producto.interface'
 
 /**
  * Componemos el producto para su posterior guardado
@@ -14,10 +14,10 @@ import {
 export const productoComposeService = (
   prod: ProductoInputProps,
 ): ProductoInputApiProps => {
-  const variantes: ProductoVarianteApiProps[] = [];
+  const variantes: ProductoVarianteApiProps[] = []
   if (prod.varianteUnica) {
     // VARIANTE UNICA
-    const v = prod.variante;
+    const v = prod.variante
     variantes.push({
       id: v.id,
       codigoProducto: v.codigoProducto,
@@ -33,7 +33,7 @@ export const productoComposeService = (
       })),
       verificarStock: v.verificarStock,
       incluirCantidad: v.incluirCantidad,
-    });
+    })
   } else {
     // MULTIPLES VARIANTES
     prod.variantes.forEach((item) => {
@@ -52,8 +52,8 @@ export const productoComposeService = (
         })),
         verificarStock: item.verificarStock,
         incluirCantidad: item.incluirCantidad,
-      });
-    });
+      })
+    })
   }
 
   return {
@@ -69,15 +69,15 @@ export const productoComposeService = (
     varianteUnica: prod.varianteUnica,
     codigoProveedor: prod.proveedor?.codigo || null,
     variantes,
-  };
-};
+  }
+}
 
 export const productoInputComposeService = (
   prod: ProductoProps,
   actividadEconomica: SinActividadesProps,
 ): ProductoInputProps => {
-  let variantes: ProductoVarianteInputProps[] = [];
-  const inputVariante = prod.variantes[0];
+  let variantes: ProductoVarianteInputProps[] = []
+  const inputVariante = prod.variantes[0]
   const variante: ProductoVarianteInputProps = {
     id: inputVariante.id,
     sinProductoServicio: inputVariante.sinProductoServicio.codigoProducto,
@@ -94,7 +94,7 @@ export const productoInputComposeService = (
     unidadMedida: inputVariante.unidadMedida,
     incluirCantidad: inputVariante.incluirCantidad,
     verificarStock: inputVariante.verificarStock,
-  };
+  }
 
   if (!prod.varianteUnica) {
     variantes = prod.variantes.map((value) => ({
@@ -115,7 +115,7 @@ export const productoInputComposeService = (
       unidadMedida: value.unidadMedida,
       incluirCantidad: value.incluirCantidad,
       verificarStock: value.verificarStock,
-    }));
+    }))
   }
   return {
     actividadEconomica,
@@ -132,5 +132,5 @@ export const productoInputComposeService = (
     variantes,
     variantesTemp: variantes,
     proveedor: prod.proveedor,
-  };
-};
+  }
+}

@@ -1,34 +1,34 @@
-import { Edit } from '@mui/icons-material';
-import { Box, Button, Chip } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Edit } from '@mui/icons-material'
+import { Box, Button, Chip } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
   PaginationState,
   RowSelectionState,
-} from '@tanstack/react-table';
-import { SortingState } from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from '@tanstack/react-table'
+import { SortingState } from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton';
-import { PAGE_DEFAULT, PageProps } from '../../../../interfaces';
-import { genApiQuery } from '../../../../utils/helper';
-import { localization } from '../../../../utils/localization';
-import { apiGiftCardClientes } from '../../api/giftCardsClientes.api';
-import { GiftCardClienteProps } from '../../interfaces/giftCardCliente.interface';
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput';
+import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
+import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
+import { genApiQuery } from '../../../../utils/helper'
+import { localization } from '../../../../utils/localization'
+import { apiGiftCardClientes } from '../../api/giftCardsClientes.api'
+import { GiftCardClienteProps } from '../../interfaces/giftCardCliente.interface'
+import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import {
   DisplayColumnDefOptions,
   MuiSearchTextFieldProps,
   MuiTableHeadCellFilterTextFieldProps,
   MuiTableProps,
   MuiToolbarAlertBannerProps,
-} from '../../../../utils/materialReactTableUtils';
+} from '../../../../utils/materialReactTableUtils'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const tableColumns: MRT_ColumnDef<GiftCardClienteProps>[] = [
   {
@@ -81,22 +81,22 @@ const tableColumns: MRT_ColumnDef<GiftCardClienteProps>[] = [
     id: 'state',
     header: 'Estado',
   },
-];
+]
 
 const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
-  const [rowCount, setRowCount] = useState(0);
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  })
+  const [rowCount, setRowCount] = useState(0)
+  const [isRefetching, setIsRefetching] = useState(false)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery<
@@ -110,25 +110,25 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await apiGiftCardClientes(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await apiGiftCardClientes(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
     {
       refetchOnWindowFocus: true,
       keepPreviousData: true,
     },
-  );
+  )
 
-  const columns = useMemo(() => tableColumns, []);
+  const columns = useMemo(() => tableColumns, [])
 
   return (
     <>
@@ -182,13 +182,13 @@ const GiftCardClientesListado: FunctionComponent<Props> = (props) => {
                 Rectificar
               </Button>
             </Box>
-          );
+          )
         }}
         muiTableProps={MuiTableProps}
         displayColumnDefOptions={DisplayColumnDefOptions}
       />
     </>
-  );
-};
+  )
+}
 
-export default GiftCardClientesListado;
+export default GiftCardClientesListado

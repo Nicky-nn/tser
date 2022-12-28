@@ -1,9 +1,9 @@
-import { object, setLocale, string } from 'yup';
-import { es } from 'yup-locales';
+import { object, setLocale, string } from 'yup'
+import { es } from 'yup-locales'
 
-setLocale(es);
+setLocale(es)
 
 export const tipoProductoRegistroValidationSchema = object({
   codigoParent: string().nullable(),
   descripcion: string().required(),
-});
+})

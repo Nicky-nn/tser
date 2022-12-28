@@ -1,8 +1,8 @@
-import { QueryKey } from '@tanstack/query-core';
-import { useQuery } from '@tanstack/react-query';
+import { QueryKey } from '@tanstack/query-core'
+import { useQuery } from '@tanstack/react-query'
 
-import { fetchSinActividadesPorDocumentoSector } from '../api/sinActividadesPorDocumentoSector';
-import { SinActividadesProps } from '../interfaces/sin.interface';
+import { fetchSinActividadesPorDocumentoSector } from '../api/sinActividadesPorDocumentoSector'
+import { SinActividadesProps } from '../interfaces/sin.interface'
 
 /**
  * Hook para listado básico de tipos de producto
@@ -17,15 +17,15 @@ const useQueryActividades = (queryKey: QueryKey = []) => {
   } = useQuery<SinActividadesProps[], Error>(
     ['actividadesPorDocumentoSector', ...queryKey],
     async () => {
-      const resp = await fetchSinActividadesPorDocumentoSector();
+      const resp = await fetchSinActividadesPorDocumentoSector()
       if (resp.length > 0) {
-        return resp;
+        return resp
       }
-      return [];
+      return []
     },
-  );
+  )
 
-  return { actividades, actLoading, actIsError, actError };
-};
+  return { actividades, actLoading, actIsError, actError }
+}
 
-export default useQueryActividades;
+export default useQueryActividades

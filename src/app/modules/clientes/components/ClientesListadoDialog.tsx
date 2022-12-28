@@ -1,15 +1,15 @@
-import { SelectAll } from '@mui/icons-material';
-import { Button, Chip } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { SelectAll } from '@mui/icons-material'
+import { Button, Chip } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
-import { PAGE_DEFAULT, PageProps } from '../../../interfaces';
-import { genApiQuery } from '../../../utils/helper';
-import { localization } from '../../../utils/localization';
-import { fetchClienteListado } from '../api/clienteListado.api';
-import { ClienteProps } from '../interfaces/cliente';
+import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
+import { genApiQuery } from '../../../utils/helper'
+import { localization } from '../../../utils/localization'
+import { fetchClienteListado } from '../api/clienteListado.api'
+import { ClienteProps } from '../interfaces/cliente'
 
 const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
   {
@@ -36,24 +36,24 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
     id: 'tipoDocumentoIdentidad.descripcion',
     header: 'Tipo Documento',
   },
-];
+]
 
 interface OwnProps {
-  setRowCliente: React.Dispatch<React.SetStateAction<ClienteProps | null>>;
+  setRowCliente: React.Dispatch<React.SetStateAction<ClienteProps | null>>
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
-  const { setRowCliente } = props;
+  const { setRowCliente } = props
   // DATA TABLE
-  const [rowCount, setRowCount] = useState(0);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowCount, setRowCount] = useState(0)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
-  });
+  })
 
   // FIN DATA TABLE
   const {
@@ -64,21 +64,21 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
   } = useQuery(
     ['client', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
     async () => {
-      const query = genApiQuery(columnFilters);
+      const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         reverse: sorting.length <= 0,
         query,
-      };
-      const { pageInfo, docs } = await fetchClienteListado(fetchPagination);
-      setRowCount(pageInfo.totalDocs);
-      return docs;
+      }
+      const { pageInfo, docs } = await fetchClienteListado(fetchPagination)
+      setRowCount(pageInfo.totalDocs)
+      return docs
     },
     { keepPreviousData: true },
-  );
-  const columns = useMemo<MRT_ColumnDef<ClienteProps>[]>(() => tableColumns, []);
+  )
+  const columns = useMemo<MRT_ColumnDef<ClienteProps>[]>(() => tableColumns, [])
 
   return (
     <>
@@ -133,7 +133,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
               color="primary"
               size={'small'}
               onClick={() => {
-                setRowCliente(row.original);
+                setRowCliente(row.original)
               }}
             >
               Seleccionar
@@ -142,7 +142,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
         )}
       />
     </>
-  );
-};
+  )
+}
 
-export default ClientesListadoDialog;
+export default ClientesListadoDialog

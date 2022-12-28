@@ -1,9 +1,9 @@
 // noinspection GraphQLUnresolvedReference
 
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request'
 
-import { AccessToken } from '../../../base/models/paramsModel';
-import { GiftCardProps } from '../interfaces/giftCard.interface';
+import { AccessToken } from '../../../base/models/paramsModel'
+import { GiftCardProps } from '../interfaces/giftCard.interface'
 
 const query = gql`
   query GIFT_CARD($id: ID!) {
@@ -41,14 +41,14 @@ const query = gql`
       }
     }
   }
-`;
+`
 
 export const apiGiftCard = async (id: string): Promise<GiftCardProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL);
-  const token = localStorage.getItem(AccessToken);
+  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+  const token = localStorage.getItem(AccessToken)
   // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`);
+  client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, { id });
-  return data.giftCard;
-};
+  const data: any = await client.request(query, { id })
+  return data.giftCard
+}

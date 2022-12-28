@@ -1,52 +1,52 @@
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
-import { Description, Save } from '@mui/icons-material';
-import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material';
-import React, { FunctionComponent, useEffect } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { Description, Save } from '@mui/icons-material'
+import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material'
+import React, { FunctionComponent, useEffect } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import SimpleContainer from '../../../base/components/Container/SimpleContainer';
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb';
-import { genRandomString, isEmptyValue } from '../../../utils/helper';
-import { notDanger, notError, notSuccess } from '../../../utils/notification';
+import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import { genRandomString, isEmptyValue } from '../../../utils/helper'
+import { notDanger, notError, notSuccess } from '../../../utils/notification'
 import {
   swalAsyncConfirmDialog,
   swalClose,
   swalException,
   swalLoading,
-} from '../../../utils/swal';
-import { fetchSinActividadesPorDocumentoSector } from '../../sin/api/sinActividadesPorDocumentoSector';
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface';
-import { apiProductoModificar } from '../api/productoModificar.api';
-import { apiProductoPorId } from '../api/productoPorId.api';
+} from '../../../utils/swal'
+import { fetchSinActividadesPorDocumentoSector } from '../../sin/api/sinActividadesPorDocumentoSector'
+import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
+import { apiProductoModificar } from '../api/productoModificar.api'
+import { apiProductoPorId } from '../api/productoPorId.api'
 import {
   PRODUCTO_INITIAL_VALUES,
   ProductoInputProps,
-} from '../interfaces/producto.interface';
-import { productosRouteMap } from '../ProductosRoutesMap';
+} from '../interfaces/producto.interface'
+import { productosRouteMap } from '../ProductosRoutesMap'
 import {
   productoComposeService,
   productoInputComposeService,
-} from '../services/ProductoComposeService';
+} from '../services/ProductoComposeService'
 import {
   productoRegistroValidationSchema,
   productoRegistroValidator,
-} from '../validator/productoRegistroValidator';
-import ProductoInventario from './ProductoInventario/ProductoInventario';
-import ProductoClasificador from './registro/ProductoClasificador';
-import Homologacion from './registro/ProductoHomologacion';
-import ProductoOpciones from './registro/ProductoOpciones';
-import ProductoPrecio from './registro/ProductoPrecio';
-import ProductoProveedor from './registro/ProductoProveedor';
-import ProductoVariantes from './registro/ProductoVariantes';
+} from '../validator/productoRegistroValidator'
+import ProductoInventario from './ProductoInventario/ProductoInventario'
+import ProductoClasificador from './registro/ProductoClasificador'
+import Homologacion from './registro/ProductoHomologacion'
+import ProductoOpciones from './registro/ProductoOpciones'
+import ProductoPrecio from './registro/ProductoPrecio'
+import ProductoProveedor from './registro/ProductoProveedor'
+import ProductoVariantes from './registro/ProductoVariantes'
 
 interface OwnProps {}
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const ProductoActualizar: FunctionComponent<Props> = (props) => {
-  const { id }: { id?: string } = useParams();
-  const navigate = useNavigate();
+  const { id }: { id?: string } = useParams()
+  const navigate = useNavigate()
 
   const form = useForm<ProductoInputProps>({
     defaultValues: {
@@ -54,72 +54,72 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
       variante: { ...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(5) },
     },
     resolver: yupResolver(productoRegistroValidationSchema),
-  });
+  })
 
-  const varianteUnicaTempWatch = form.watch('varianteUnicaTemp');
+  const varianteUnicaTempWatch = form.watch('varianteUnicaTemp')
 
   const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
-    const val = await productoRegistroValidator(values);
+    const val = await productoRegistroValidator(values)
     if (val.length > 0) {
-      notError(val.join('<br>'));
+      notError(val.join('<br>'))
     } else {
-      const apiInput = productoComposeService(values);
+      const apiInput = productoComposeService(values)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
           const resp: any = await apiProductoModificar(id!, apiInput).catch((err) => ({
             error: err,
-          }));
+          }))
           if (resp.error) {
-            swalException(resp.error);
-            return false;
+            swalException(resp.error)
+            return false
           }
-          return resp;
+          return resp
         },
       }).then((resp) => {
         if (resp.isConfirmed) {
-          notSuccess();
+          notSuccess()
         }
         if (resp.isDenied) {
-          swalException(resp.value);
+          swalException(resp.value)
         }
-        return;
-      });
+        return
+      })
     }
-  };
+  }
 
   const fetchProductoPorId = async (id: string) => {
     try {
-      swalLoading();
-      const response = await apiProductoPorId(id);
-      swalClose();
+      swalLoading()
+      const response = await apiProductoPorId(id)
+      swalClose()
       if (response) {
         const actividades: SinActividadesProps[] =
-          await fetchSinActividadesPorDocumentoSector();
+          await fetchSinActividadesPorDocumentoSector()
         const actividad = actividades.find(
           (item) =>
             item.codigoCaeb === response.variantes[0].sinProductoServicio.codigoActividad,
-        );
-        const prodInput = productoInputComposeService(response, actividad!);
-        form.reset(prodInput);
+        )
+        const prodInput = productoInputComposeService(response, actividad!)
+        form.reset(prodInput)
       } else {
-        notDanger('No se ha podido encontrar datos del producto');
-        navigate(-1);
+        notDanger('No se ha podido encontrar datos del producto')
+        navigate(-1)
       }
     } catch (e: any) {
-      swalException(e);
+      swalException(e)
     }
-  };
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (!isEmptyValue(id)) {
-        await fetchProductoPorId(id!).then();
+        await fetchProductoPorId(id!).then()
       } else {
-        notDanger('Require codigo del producto');
-        navigate(-1);
+        notDanger('Require codigo del producto')
+        navigate(-1)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <SimpleContainer>
@@ -152,7 +152,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             onClick={() => {
               // dispatch(productoReset());
-              navigate(productosRouteMap.nuevo);
+              navigate(productosRouteMap.nuevo)
             }}
           >
             Nuevo Producto
@@ -206,7 +206,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
     </SimpleContainer>
-  );
-};
+  )
+}
 
-export default ProductoActualizar;
+export default ProductoActualizar

@@ -1,16 +1,16 @@
-import './App.css';
+import './App.css'
 
-import { Provider } from 'react-redux';
-import { useRoutes } from 'react-router-dom';
+import { Provider } from 'react-redux'
+import { useRoutes } from 'react-router-dom'
 
-import MatxTheme from './app/base/components/Template/MatxTheme/MatxTheme';
-import { AuthProvider } from './app/base/contexts/JWTAuthContext';
-import { SettingsProvider } from './app/base/contexts/SettingsContext';
-import { appRoutes } from './app/routes/routes';
-import { store } from './app/store/store';
+import MatxTheme from './app/base/components/Template/MatxTheme/MatxTheme'
+import { AuthProvider } from './app/base/contexts/JWTAuthContext'
+import { SettingsProvider } from './app/base/contexts/SettingsContext'
+import { appRoutes } from './app/routes/routes'
+import { store } from './app/store/store'
 
 function App() {
-  const content = useRoutes(appRoutes);
+  const content = useRoutes(appRoutes)
   return (
     <Provider store={store}>
       <SettingsProvider>
@@ -19,7 +19,7 @@ function App() {
         </MatxTheme>
       </SettingsProvider>
     </Provider>
-  );
+  )
 }
 
-export default App;
+export default App

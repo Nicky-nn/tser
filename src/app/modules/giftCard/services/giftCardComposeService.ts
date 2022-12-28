@@ -4,7 +4,7 @@ import {
   GiftCardProps,
   GiftCardVarianteApiInputProps,
   GiftCardVarianteInputProps,
-} from '../interfaces/giftCard.interface';
+} from '../interfaces/giftCard.interface'
 
 /**
  * Componemos el producto para su posterior guardado
@@ -13,7 +13,7 @@ import {
 export const giftCardComposeService = (
   prod: GiftCardInputProps,
 ): GiftCardApiInputProps => {
-  const variantes: GiftCardVarianteApiInputProps[] = [];
+  const variantes: GiftCardVarianteApiInputProps[] = []
   // MULTIPLES VARIANTES
   prod.variantes.forEach((item) => {
     variantes.push({
@@ -25,8 +25,8 @@ export const giftCardComposeService = (
       incluirCantidad: false,
       verificarStock: false,
       inventario: [],
-    });
-  });
+    })
+  })
 
   return {
     titulo: prod.titulo,
@@ -36,15 +36,15 @@ export const giftCardComposeService = (
     tipoProductoId: prod.tipoProducto?._id || null,
     codigoProveedor: prod.proveedor?.codigo || null,
     variantes: variantes,
-  };
-};
+  }
+}
 
 /**
  * Descomponemos la gift card para autorrellenar el formulario
  * @param prod
  */
 export const giftCardComposeInputService = (prod: GiftCardProps): GiftCardInputProps => {
-  const variantes: GiftCardVarianteInputProps[] = [];
+  const variantes: GiftCardVarianteInputProps[] = []
   // MULTIPLES VARIANTES
   prod.variantes.forEach((item) => {
     variantes.push({
@@ -56,8 +56,8 @@ export const giftCardComposeInputService = (prod: GiftCardProps): GiftCardInputP
       incluirCantidad: item.incluirCantidad,
       verificarStock: item.verificarStock,
       inventario: item.inventario,
-    });
-  });
+    })
+  })
 
   return {
     actividad: prod.actividadEconomica,
@@ -69,5 +69,5 @@ export const giftCardComposeInputService = (prod: GiftCardProps): GiftCardInputP
     tipoProducto: prod.tipoProducto || null,
     titulo: prod.titulo,
     variantes: variantes,
-  };
-};
+  }
+}
