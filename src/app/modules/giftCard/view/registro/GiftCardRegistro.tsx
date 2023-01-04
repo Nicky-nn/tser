@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Save } from '@mui/icons-material'
-import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material'
+import { Button, CssBaseline, Paper, Stack } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -10,10 +10,6 @@ import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcru
 import { notError, notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
-import GiftCardClasificador from '../../components/abm/clasificador/GiftCardClasificador'
-import GiftCardDenominacion from '../../components/abm/GiftCardDenominacion'
-import GiftCardHomologacion from '../../components/abm/GiftCardHomologacion'
-import GiftCardProveedor from '../../components/abm/proveedor/GiftCardProveedor'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,

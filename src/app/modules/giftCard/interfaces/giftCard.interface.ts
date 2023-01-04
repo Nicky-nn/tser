@@ -9,6 +9,10 @@ import {
 } from '../../sin/interfaces/sin.interface'
 import { TipoProductoProps } from '../../tipoProducto/interfaces/tipoProducto.interface'
 
+export interface GiftCardEstadoProps {
+  key: string | number
+  value: string
+}
 export interface GiftCardVarianteProps {
   _id: string
   codigoBarras: string
@@ -78,6 +82,8 @@ export interface GiftCardInputProps {
   tipoProducto: TipoProductoProps | null
   titulo: string
   variantes: GiftCardVarianteInputProps[]
+  estado: GiftCardEstadoProps
+  fechaInicio: Date
 }
 
 /**
@@ -107,6 +113,11 @@ export interface GiftCardApiInputProps {
   variantes: GiftCardVarianteApiInputProps[]
 }
 
+export const GIFT_CARD_ESTADO_VALUES: GiftCardEstadoProps[] = [
+  { key: 1, value: 'ACTIVO' },
+  { key: 0, value: 'INACTIVO' },
+]
+
 /**
  * Valores iniciales para una variante
  */
@@ -133,4 +144,6 @@ export const GIFT_CARD_INITIAL_VALUES: GiftCardInputProps = {
   tipoProducto: null,
   titulo: '',
   variantes: [GIFT_CARD_VARIANTE_INITIAL_VALUES],
+  estado: GIFT_CARD_ESTADO_VALUES.find((k) => k.key === 1)!,
+  fechaInicio: new Date(),
 }
