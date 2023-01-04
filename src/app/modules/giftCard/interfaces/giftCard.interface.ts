@@ -1,5 +1,4 @@
 import { ImagenProps } from '../../../base/interfaces/base'
-import { genRandomString } from '../../../utils/helper'
 import { ProductoVarianteInventarioProps } from '../../productos/interfaces/producto.interface'
 import { ProveedorProps } from '../../proveedor/interfaces/proveedor.interface'
 import {
@@ -13,6 +12,7 @@ export interface GiftCardEstadoProps {
   key: string | number
   value: string
 }
+
 export interface GiftCardVarianteProps {
   _id: string
   codigoBarras: string
@@ -62,7 +62,6 @@ export interface GiftCardProps {
 }
 
 export interface GiftCardVarianteInputProps {
-  id: string
   codigoProducto: string // identificador o codigo unico
   titulo: string // nombre propio
   codigoBarras: string | null
@@ -81,9 +80,11 @@ export interface GiftCardInputProps {
   descripcionHtml: string
   tipoProducto: TipoProductoProps | null
   titulo: string
+  variante: GiftCardVarianteInputProps
   variantes: GiftCardVarianteInputProps[]
   estado: GiftCardEstadoProps
   fechaInicio: Date
+  incluirCantidad: boolean
 }
 
 /**
@@ -122,7 +123,6 @@ export const GIFT_CARD_ESTADO_VALUES: GiftCardEstadoProps[] = [
  * Valores iniciales para una variante
  */
 export const GIFT_CARD_VARIANTE_INITIAL_VALUES: GiftCardVarianteInputProps = {
-  id: genRandomString(10),
   codigoProducto: '',
   titulo: '',
   codigoBarras: null,
@@ -143,7 +143,9 @@ export const GIFT_CARD_INITIAL_VALUES: GiftCardInputProps = {
   sinProductoServicio: null,
   tipoProducto: null,
   titulo: '',
+  variante: GIFT_CARD_VARIANTE_INITIAL_VALUES,
   variantes: [GIFT_CARD_VARIANTE_INITIAL_VALUES],
   estado: GIFT_CARD_ESTADO_VALUES.find((k) => k.key === 1)!,
   fechaInicio: new Date(),
+  incluirCantidad: false,
 }
