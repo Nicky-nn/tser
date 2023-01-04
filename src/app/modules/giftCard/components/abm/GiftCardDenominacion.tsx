@@ -1,14 +1,14 @@
 import { Button, Grid } from '@mui/material'
 import React, { FunctionComponent } from 'react'
-import { useFieldArray, UseFormReturn } from 'react-hook-form'
+import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { genRandomString } from '../../../../utils/helper'
 import {
   GIFT_CARD_VARIANTE_INITIAL_VALUES,
   GiftCardInputProps,
 } from '../../interfaces/giftCard.interface'
 import GiftCardVariante from './denominacion/GiftCardVariante'
+import { FormTextField } from '../../../../base/components/Form'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>
@@ -38,7 +38,19 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <SimpleCard title={'DENOMINACIONES'}>
+    <>
+      <Grid container item sx={{ mb: 2 }}>
+        <Grid item lg={3} md={3} xs={12}>
+          <FormTextField
+            name={`codigos`}
+            label="Generar Código"
+            value={''}
+            onChange={() => console.log}
+          />
+        </Grid>
+      </Grid>
+      <hr />
+
       <Grid container item rowSpacing={2}>
         {variantesField.fields.map((item, index) => (
           <GiftCardVariante
@@ -50,7 +62,8 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
           />
         ))}
       </Grid>
-      <Grid container item sx={{ mt: 2, mr: 20 }} direction={'row-reverse'}>
+
+      <Grid container item sx={{ mt: 2, mr: 20 }}>
         <Button
           variant={'outlined'}
           size={'small'}
@@ -59,7 +72,7 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
           Agregar Denominación
         </Button>
       </Grid>
-    </SimpleCard>
+    </>
   )
 }
 

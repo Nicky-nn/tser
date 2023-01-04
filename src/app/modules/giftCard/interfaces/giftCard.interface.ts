@@ -10,7 +10,7 @@ import {
 import { TipoProductoProps } from '../../tipoProducto/interfaces/tipoProducto.interface'
 
 export interface GiftCardVarianteProps {
-  _id?: string
+  _id: string
   codigoBarras: string
   codigoProducto: string
   createdAt: string
@@ -28,6 +28,14 @@ export interface GiftCardVarianteProps {
   usucre: string
   usumod: string
   verificarStock: boolean
+  giftCard: {
+    _id: string
+    titulo: string
+    actividadEconomica: SinActividadesProps
+    descripcion: string
+    totalVariantes: number
+    imagenDestacada: ImagenProps
+  }
 }
 
 export interface GiftCardProps {

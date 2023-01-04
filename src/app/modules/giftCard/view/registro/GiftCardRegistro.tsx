@@ -24,6 +24,7 @@ import {
   giftCardRegistroValidationSchema,
   giftCardRegistroValidator,
 } from '../../validator/giftCardRegistroValidator'
+import GiftCardForm from '../../components/GiftCardForm'
 
 interface OwnProps {}
 
@@ -106,29 +107,7 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
           </Button>
         </Stack>
       </Paper>
-
-      <Grid container spacing={2}>
-        <Grid item lg={8} md={8} xs={12}>
-          <Grid container spacing={1}>
-            <Grid item lg={12} md={12} xs={12}>
-              <GiftCardHomologacion form={form} />
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              <GiftCardDenominacion form={form} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item lg={4} md={4} xs={12}>
-          <Grid container spacing={1}>
-            <Grid item lg={12} md={12} xs={12}>
-              {<GiftCardClasificador form={form} />}
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              {<GiftCardProveedor form={form} />}
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+      <GiftCardForm form={form} />
     </SimpleContainer>
   )
 }

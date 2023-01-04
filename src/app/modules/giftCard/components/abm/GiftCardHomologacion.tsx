@@ -62,135 +62,116 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <SimpleCard title={'HOMOLOGACIÓN'}>
-        <Grid container spacing={3}>
-          <Grid item lg={12} md={12} xs={12}>
-            {actError ? (
-              <AlertError mensaje={actError.message} />
-            ) : (
-              <Controller
-                name="actividad"
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <MyInputLabel shrink>Actividad Económica</MyInputLabel>
-                    <Select<SinActividadesProps>
-                      {...field}
-                      styles={reactSelectStyles}
-                      name="actividadEconomica"
-                      placeholder={'Seleccione la actividad económica'}
-                      menuPosition={'fixed'}
-                      value={field.value}
-                      onChange={async (actividadEconomica: any) => {
-                        field.onChange(actividadEconomica)
-                        setValue('sinProductoServicio', null)
-                      }}
-                      onBlur={async (val) => {
-                        field.onBlur()
-                      }}
-                      isSearchable={false}
-                      options={actividades}
-                      getOptionValue={(item) => item.codigoCaeb}
-                      getOptionLabel={(item) =>
-                        `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`
-                      }
-                    />
-                  </FormControl>
-                )}
-              />
-            )}
-          </Grid>
-
-          <Grid item lg={12} md={12} xs={12}>
-            {prodServError ? (
-              <AlertError mensaje={prodServError.message} />
-            ) : (
-              <Controller
-                name={'sinProductoServicio'}
-                control={control}
-                render={({ field }) => (
-                  <FormControl
-                    fullWidth
-                    component={'div'}
-                    error={Boolean(errors.sinProductoServicio)}
-                  >
-                    <MyInputLabel shrink>Producto Homologado</MyInputLabel>
-                    <Select<SinProductoServicioProps>
-                      {...field}
-                      styles={reactSelectStyles}
-                      menuPosition={'fixed'}
-                      name="sinProductoServicio"
-                      placeholder={'Seleccione producto para homolgación'}
-                      value={field.value || null}
-                      onChange={(sinProductoServicio) => {
-                        field.onChange(sinProductoServicio)
-                      }}
-                      options={productosServicios}
-                      getOptionValue={(ps) => ps.codigoProducto}
-                      getOptionLabel={(ps) =>
-                        `${ps.codigoProducto} - ${ps.descripcionProducto}`
-                      }
-                    />
-                    <FormHelperText>{errors.sinProductoServicio?.message}</FormHelperText>
-                  </FormControl>
-                )}
-              />
-            )}
-          </Grid>
-          <Grid item lg={4} md={4} xs={12}>
+      <Grid container spacing={3}>
+        <Grid item lg={12} md={12} xs={12}>
+          {actError ? (
+            <AlertError mensaje={actError.message} />
+          ) : (
             <Controller
-              control={control}
-              name={'codigo'}
-              render={({ field }) => (
-                <FormTextField
-                  name="codigo"
-                  label="Código / SKU"
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={Boolean(errors.codigo)}
-                  helperText={errors.codigo?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item lg={8} md={8} xs={12}>
-            <Controller
-              control={control}
-              name={'titulo'}
-              render={({ field }) => (
-                <FormTextField
-                  name="titulo"
-                  label="Nombre Producto"
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={Boolean(errors.titulo)}
-                  helperText={errors.titulo?.message}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item lg={12} md={12} xs={12}>
-            <Controller
-              name={'descripcion'}
+              name="actividad"
               control={control}
               render={({ field }) => (
-                <FormTextField
-                  name="descripcion"
-                  label="Descripcion"
-                  multiline
-                  minRows={3}
-                  maxRows={5}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                />
+                <FormControl fullWidth>
+                  <MyInputLabel shrink>Actividad Económica</MyInputLabel>
+                  <Select<SinActividadesProps>
+                    {...field}
+                    styles={reactSelectStyles}
+                    name="actividadEconomica"
+                    placeholder={'Seleccione la actividad económica'}
+                    menuPosition={'fixed'}
+                    value={field.value}
+                    onChange={async (actividadEconomica: any) => {
+                      field.onChange(actividadEconomica)
+                      setValue('sinProductoServicio', null)
+                    }}
+                    onBlur={async (val) => {
+                      field.onBlur()
+                    }}
+                    isSearchable={false}
+                    options={actividades}
+                    getOptionValue={(item) => item.codigoCaeb}
+                    getOptionLabel={(item) =>
+                      `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`
+                    }
+                  />
+                </FormControl>
               )}
             />
-          </Grid>
+          )}
         </Grid>
-      </SimpleCard>
+
+        <Grid item lg={12} md={12} xs={12}>
+          {prodServError ? (
+            <AlertError mensaje={prodServError.message} />
+          ) : (
+            <Controller
+              name={'sinProductoServicio'}
+              control={control}
+              render={({ field }) => (
+                <FormControl
+                  fullWidth
+                  component={'div'}
+                  error={Boolean(errors.sinProductoServicio)}
+                >
+                  <MyInputLabel shrink>Producto Homologado</MyInputLabel>
+                  <Select<SinProductoServicioProps>
+                    {...field}
+                    styles={reactSelectStyles}
+                    menuPosition={'fixed'}
+                    name="sinProductoServicio"
+                    placeholder={'Seleccione producto para homolgación'}
+                    value={field.value || null}
+                    onChange={(sinProductoServicio) => {
+                      field.onChange(sinProductoServicio)
+                    }}
+                    options={productosServicios}
+                    getOptionValue={(ps) => ps.codigoProducto}
+                    getOptionLabel={(ps) =>
+                      `${ps.codigoProducto} - ${ps.descripcionProducto}`
+                    }
+                  />
+                  <FormHelperText>{errors.sinProductoServicio?.message}</FormHelperText>
+                </FormControl>
+              )}
+            />
+          )}
+        </Grid>
+        <Grid item lg={12} md={12} xs={12}>
+          <Controller
+            control={control}
+            name={'titulo'}
+            render={({ field }) => (
+              <FormTextField
+                name="titulo"
+                label="Nombre Producto"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={Boolean(errors.titulo)}
+                helperText={errors.titulo?.message}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item lg={12} md={12} xs={12}>
+          <Controller
+            name={'descripcion'}
+            control={control}
+            render={({ field }) => (
+              <FormTextField
+                name="descripcion"
+                label="Descripcion"
+                multiline
+                minRows={3}
+                maxRows={5}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            )}
+          />
+        </Grid>
+      </Grid>
     </>
   )
 }

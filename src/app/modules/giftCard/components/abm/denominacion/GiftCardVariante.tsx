@@ -34,7 +34,7 @@ const GiftCarVariante: FunctionComponent<Props> = (props) => {
 
   return (
     <Grid container sx={{ mt: 2 }} columnSpacing={1} rowSpacing={2}>
-      <Grid item lg={2} md={2} xs={12}>
+      <Grid item lg={3} md={3} xs={12}>
         <Controller
           control={control}
           name={`variantes.${index}.codigoProducto`}
@@ -70,7 +70,7 @@ const GiftCarVariante: FunctionComponent<Props> = (props) => {
         />
       </Grid>
 
-      <Grid item lg={4} md={4} xs={10}>
+      <Grid item lg={3} md={4} xs={10}>
         <Controller
           control={control}
           name={`variantes.${index}.precio`}
