@@ -35,7 +35,7 @@ interface OwnProps {
 
 type Props = OwnProps
 
-const GiftCarVariante: FunctionComponent<Props> = (props) => {
+const GiftCarActualizarVariante: FunctionComponent<Props> = (props) => {
   const { form, variantes, field, index } = props
   const {
     control,
@@ -61,6 +61,7 @@ const GiftCarVariante: FunctionComponent<Props> = (props) => {
                 variant={'outlined'}
                 size={'small'}
                 error={Boolean(errors.variantes?.[index]?.codigoProducto)}
+                disabled={true}
               >
                 <InputLabel>Código Tarjeta Regalo</InputLabel>
                 <OutlinedInput
@@ -164,4 +165,4 @@ const GiftCarVariante: FunctionComponent<Props> = (props) => {
   )
 }
 
-export default GiftCarVariante
+export default GiftCarActualizarVariante

@@ -24,7 +24,7 @@ export const giftCardComposeService = (
     variantes.push({
       codigoProducto: item.codigoProducto,
       codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
-      titulo: `${prod.titulo} ${item.titulo}`,
+      titulo: `${item.titulo}`,
       precio: item.precio,
       incluirCantidad: item.incluirCantidad,
       verificarStock: false,

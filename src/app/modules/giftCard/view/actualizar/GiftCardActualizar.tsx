@@ -16,7 +16,6 @@ import {
   swalLoading,
 } from '../../../../utils/swal'
 import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
-import GiftCardForm from '../../components/GiftCardForm'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,
@@ -31,6 +30,7 @@ import {
   giftCardRegistroValidator,
 } from '../../validator/giftCardRegistroValidator'
 import { apiGiftCard } from '../../api/giftCard.api'
+import GiftCardActualizarForm from '../../components/GiftCardActualizarForm'
 
 interface OwnProps {}
 
@@ -143,7 +143,7 @@ const GiftCardActualizar: FunctionComponent<Props> = (props) => {
           </Button>
         </Stack>
       </Paper>
-      <GiftCardForm form={form} />
+      <GiftCardActualizarForm form={form} />
     </SimpleContainer>
   )
 }

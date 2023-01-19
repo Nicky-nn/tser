@@ -11,6 +11,7 @@ import GiftCardHomologacion from './abm/GiftCardHomologacion'
 import GiftCardInventario from './abm/GiftCardInventario'
 import GiftCardProgramacion from './abm/GiftCardProgramacion'
 import GiftCardProveedor from './abm/proveedor/GiftCardProveedor'
+import GiftCardActualizarDenominacion from './abm/GiftCardActualizarDenominacion'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>
@@ -18,7 +19,7 @@ interface OwnProps {
 
 type Props = OwnProps
 
-const GiftCardForm: FunctionComponent<Props> = (props) => {
+const GiftCardActualizarForm: FunctionComponent<Props> = (props) => {
   const { form } = props
 
   return (
@@ -34,18 +35,13 @@ const GiftCardForm: FunctionComponent<Props> = (props) => {
             </Grid>
 
             <Grid item lg={12} md={12} xs={12}>
-              <SimpleCard title={'INVENTARIO'}>
-                <GiftCardInventario form={form} />
-              </SimpleCard>
-            </Grid>
-
-            <Grid item lg={12} md={12} xs={12}>
               <SimpleCard title={'Denominaciones'}>
-                <GiftCardDenominacion form={form} />
+                <GiftCardActualizarDenominacion form={form} />
               </SimpleCard>
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item lg={3} md={4} xs={12}>
           <Grid container spacing={1}>
             <Grid item lg={12} md={12} xs={12}>
@@ -71,4 +67,4 @@ const GiftCardForm: FunctionComponent<Props> = (props) => {
   )
 }
 
-export default GiftCardForm
+export default GiftCardActualizarForm

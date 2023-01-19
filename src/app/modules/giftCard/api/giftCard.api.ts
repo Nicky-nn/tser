@@ -10,6 +10,7 @@ const query = gql`
     giftCard(id: $id) {
       _id
       titulo
+      descripcion
       state
       usucre
       createdAt
@@ -29,9 +30,17 @@ const query = gql`
       tipoProducto {
         _id
         descripcion
+        codigoParent
+        parientes
+        state
+        usucre
+        createdAt
+        usumod
+        UpdatedAt
       }
       variantes {
         titulo
+        nombre
         _id
         incluirCantidad
         verificarStock
