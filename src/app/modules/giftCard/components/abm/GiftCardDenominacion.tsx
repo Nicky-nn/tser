@@ -1,14 +1,12 @@
 import { Button, Grid } from '@mui/material'
 import React, { FunctionComponent } from 'react'
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form'
-
-import { genRandomString } from '../../../../utils/helper'
+import { useFieldArray, UseFormReturn } from 'react-hook-form'
 import {
   GIFT_CARD_VARIANTE_INITIAL_VALUES,
   GiftCardInputProps,
 } from '../../interfaces/giftCard.interface'
 import GiftCardVariante from './denominacion/GiftCardVariante'
-import { FormTextField } from '../../../../base/components/Form'
+import { genRandomString } from '../../../../utils/helper'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>
@@ -20,44 +18,27 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
   const { form } = props
   const {
     control,
-    setValue,
     watch,
+    getValues,
     formState: { errors },
   } = form
 
-  const [variantesWatch] = watch(['variantes'])
+  const [varianteWatch] = watch(['variante'])
+
   const variantesField = useFieldArray({
     control,
     name: 'variantes',
   })
-  const agregarDenominacion = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    variantesField.append({
-      ...GIFT_CARD_VARIANTE_INITIAL_VALUES,
-      id: genRandomString(10),
-    })
-  }
 
   return (
     <>
-      <Grid container item sx={{ mb: 2 }}>
-        <Grid item lg={3} md={3} xs={12}>
-          <FormTextField
-            name={`codigos`}
-            label="Generar Código"
-            value={''}
-            onChange={() => console.log}
-          />
-        </Grid>
-      </Grid>
-      <hr />
-
       <Grid container item rowSpacing={2}>
-        {variantesField.fields.map((item, index) => (
+        {variantesField.fields.map((field, index) => (
           <GiftCardVariante
-            key={item.id}
+            key={field.id}
             form={form}
-            itemField={item}
-            varianteField={variantesField}
+            field={field}
+            variantes={variantesField}
             index={index}
           />
         ))}
@@ -67,7 +48,13 @@ const GiftCardDenominacion: FunctionComponent<Props> = (props) => {
         <Button
           variant={'outlined'}
           size={'small'}
-          onClick={(event) => agregarDenominacion(event)}
+          onClick={() => {
+            variantesField.append({
+              ...GIFT_CARD_VARIANTE_INITIAL_VALUES,
+              inventario: varianteWatch.inventario,
+              id: genRandomString(),
+            })
+          }}
         >
           Agregar Denominación
         </Button>

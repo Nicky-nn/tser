@@ -7,7 +7,10 @@ import Select from 'react-select'
 import AlertError from '../../../../base/components/Alert/AlertError'
 import { FormTextField } from '../../../../base/components/Form'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import {
+  reactSelectStyle,
+  reactSelectStyles,
+} from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api'
@@ -116,7 +119,11 @@ const GiftCardHomologacion: FunctionComponent<Props> = (props) => {
                   <MyInputLabel shrink>Producto Homologado</MyInputLabel>
                   <Select<SinProductoServicioProps>
                     {...field}
-                    styles={reactSelectStyles}
+                    styles={reactSelectStyle(Boolean(errors.sinProductoServicio))}
+                    classNames={{
+                      control: (state) =>
+                        state.isFocused ? 'border-red-600' : 'border-grey-300',
+                    }}
                     menuPosition={'fixed'}
                     name="sinProductoServicio"
                     placeholder={'Seleccione producto para homolgación'}

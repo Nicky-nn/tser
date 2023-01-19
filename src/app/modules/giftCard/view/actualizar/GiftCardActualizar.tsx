@@ -1,13 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Save } from '@mui/icons-material'
-import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material'
+import { Button, CssBaseline, Paper, Stack } from '@mui/material'
 import React, { FunctionComponent, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import SimpleContainer from '../../../../base/components/Container/SimpleContainer'
 import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcrumb'
-import { isEmptyValue } from '../../../../utils/helper'
+import { genRandomString, isEmptyValue } from '../../../../utils/helper'
 import { notDanger, notError, notSuccess } from '../../../../utils/notification'
 import {
   swalAsyncConfirmDialog,
@@ -15,37 +15,36 @@ import {
   swalException,
   swalLoading,
 } from '../../../../utils/swal'
-import { apiGiftCard } from '../../api/giftCard.api'
 import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
-import GiftCardClasificador from '../../components/abm/clasificador/GiftCardClasificador'
-import GiftCardDenominacion from '../../components/abm/GiftCardDenominacion'
-import GiftCardHomologacion from '../../components/abm/GiftCardHomologacion'
-import GiftCardProveedor from '../../components/abm/proveedor/GiftCardProveedor'
+import GiftCardForm from '../../components/GiftCardForm'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,
   GiftCardInputProps,
 } from '../../interfaces/giftCard.interface'
 import {
-  giftCardComposeInputService,
   giftCardComposeService,
+  giftCardDecomposeService,
 } from '../../services/giftCardComposeService'
 import {
   giftCardRegistroValidationSchema,
   giftCardRegistroValidator,
 } from '../../validator/giftCardRegistroValidator'
+import { apiGiftCard } from '../../api/giftCard.api'
 
 interface OwnProps {}
 
 type Props = OwnProps
 
-const GiftCardRegistro: FunctionComponent<Props> = (props) => {
+const GiftCardActualizar: FunctionComponent<Props> = (props) => {
   const { id }: { id?: string } = useParams()
   const navigate = useNavigate()
 
   const form = useForm<GiftCardInputProps>({
     defaultValues: {
       ...GIFT_CARD_INITIAL_VALUES,
+      variante: { ...GIFT_CARD_INITIAL_VALUES.variante, id: genRandomString() },
+      action: 'UPDATE',
     },
     resolver: yupResolver(giftCardRegistroValidationSchema),
   })
@@ -58,10 +57,11 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       const apiInput = giftCardComposeService(values)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
-          const resp: any = await apiGiftCardRegistro(apiInput).catch((err) => ({
-            error: err,
+          const resp: any = await apiGiftCardRegistro(apiInput).catch((e) => ({
+            error: e,
           }))
           if (resp.error) {
+            console.log(resp)
             swalException(resp.error)
             return false
           }
@@ -70,7 +70,6 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       }).then((resp) => {
         if (resp.isConfirmed) {
           notSuccess()
-          console.log(resp)
           navigate(`${giftCardRouteMap.modificar.path}/${resp.value._id}`, {
             replace: true,
           })
@@ -91,8 +90,7 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       const response = await apiGiftCard(id)
       swalClose()
       if (response) {
-        const prodInput = giftCardComposeInputService(response)
-        console.log(prodInput)
+        const prodInput = giftCardDecomposeService(response)
         form.reset(prodInput)
       } else {
         notDanger('No se ha podido encontrar datos del producto')
@@ -113,7 +111,6 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       }
     })()
   }, [])
-
   return (
     <SimpleContainer>
       <div className="breadcrumb">
@@ -146,31 +143,9 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
           </Button>
         </Stack>
       </Paper>
-
-      <Grid container spacing={2}>
-        <Grid item lg={8} md={8} xs={12}>
-          <Grid container spacing={1}>
-            <Grid item lg={12} md={12} xs={12}>
-              <GiftCardHomologacion form={form} />
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              <GiftCardDenominacion form={form} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item lg={4} md={4} xs={12}>
-          <Grid container spacing={1}>
-            <Grid item lg={12} md={12} xs={12}>
-              {<GiftCardClasificador form={form} />}
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              {<GiftCardProveedor form={form} />}
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+      <GiftCardForm form={form} />
     </SimpleContainer>
   )
 }
 
-export default GiftCardRegistro
+export default GiftCardActualizar

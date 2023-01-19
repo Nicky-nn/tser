@@ -58,10 +58,13 @@ export interface GiftCardProps {
   usucre: string
   usumod: string
   variantes: [GiftCardVarianteProps]
+  activo: boolean
+  disponibilidad: string // string tipo date
   varianteUnica: boolean
 }
 
 export interface GiftCardVarianteInputProps {
+  id: string
   codigoProducto: string // identificador o codigo unico
   titulo: string // nombre propio
   codigoBarras: string | null
@@ -72,33 +75,32 @@ export interface GiftCardVarianteInputProps {
 }
 
 export interface GiftCardInputProps {
+  titulo: string
+  descripcion: string
+  descripcionHtml: string
   actividad: SinActividadesProps | null
   proveedor: ProveedorProps | null
   sinProductoServicio: SinProductoServicioProps | null
   codigo: string
-  descripcion: string
-  descripcionHtml: string
   tipoProducto: TipoProductoProps | null
-  titulo: string
   variante: GiftCardVarianteInputProps
   variantes: GiftCardVarianteInputProps[]
   estado: GiftCardEstadoProps
   fechaInicio: Date
-  incluirCantidad: boolean
+  action: 'REGISTER' | 'UPDATE'
 }
 
 /**
  * API Variante de producto
  */
 export interface GiftCardVarianteApiInputProps {
-  id: string
   codigoProducto: string
   codigoProductoSin: string
   titulo: string
   precio: number
   incluirCantidad: boolean
   verificarStock: boolean
-  inventario: []
+  inventario: { codigoSucursal: number; stock: number }[]
 }
 
 /**
@@ -111,6 +113,8 @@ export interface GiftCardApiInputProps {
   codigoActividad: string
   tipoProductoId: string | null
   codigoProveedor: string | null
+  disponibilidad: string | null
+  activo: boolean
   variantes: GiftCardVarianteApiInputProps[]
 }
 
@@ -123,6 +127,7 @@ export const GIFT_CARD_ESTADO_VALUES: GiftCardEstadoProps[] = [
  * Valores iniciales para una variante
  */
 export const GIFT_CARD_VARIANTE_INITIAL_VALUES: GiftCardVarianteInputProps = {
+  id: 'init',
   codigoProducto: '',
   titulo: '',
   codigoBarras: null,
@@ -147,5 +152,5 @@ export const GIFT_CARD_INITIAL_VALUES: GiftCardInputProps = {
   variantes: [GIFT_CARD_VARIANTE_INITIAL_VALUES],
   estado: GIFT_CARD_ESTADO_VALUES.find((k) => k.key === 1)!,
   fechaInicio: new Date(),
-  incluirCantidad: false,
+  action: 'REGISTER',
 }

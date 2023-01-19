@@ -15,14 +15,27 @@ const query = gql`
       createdAt
       usumod
       createdAt
+      disponibilidad
+      activo
       actividadEconomica {
         codigoCaeb
         descripcion
         tipoActividad
       }
+      proveedor {
+        codigo
+        nombre
+      }
+      tipoProducto {
+        _id
+        descripcion
+      }
       variantes {
         titulo
         _id
+        incluirCantidad
+        verificarStock
+        codigoBarras
         sinProductoServicio {
           codigoActividad
           codigoProducto
@@ -37,6 +50,21 @@ const query = gql`
         unidadMedida {
           codigoClasificador
           descripcion
+        }
+        inventario {
+          sucursal {
+            codigo
+            direccion
+            telefono
+            departamento {
+              codigo
+              codigoPais
+              sigla
+              departamento
+            }
+            municipio
+          }
+          stock
         }
       }
     }

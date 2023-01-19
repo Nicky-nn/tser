@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom'
 
 import SimpleContainer from '../../../../base/components/Container/SimpleContainer'
 import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcrumb'
+import { genRandomString } from '../../../../utils/helper'
 import { notError, notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
+import GiftCardForm from '../../components/GiftCardForm'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,
@@ -20,7 +22,6 @@ import {
   giftCardRegistroValidationSchema,
   giftCardRegistroValidator,
 } from '../../validator/giftCardRegistroValidator'
-import GiftCardForm from '../../components/GiftCardForm'
 
 interface OwnProps {}
 
@@ -32,6 +33,7 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
   const form = useForm<GiftCardInputProps>({
     defaultValues: {
       ...GIFT_CARD_INITIAL_VALUES,
+      variante: { ...GIFT_CARD_INITIAL_VALUES.variante, id: genRandomString() },
     },
     resolver: yupResolver(giftCardRegistroValidationSchema),
   })
@@ -44,10 +46,11 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       const apiInput = giftCardComposeService(values)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
-          const resp: any = await apiGiftCardRegistro(apiInput).catch((err) => ({
-            error: err,
+          const resp: any = await apiGiftCardRegistro(apiInput).catch((e) => ({
+            error: e,
           }))
           if (resp.error) {
+            console.log(resp)
             swalException(resp.error)
             return false
           }
@@ -56,7 +59,6 @@ const GiftCardRegistro: FunctionComponent<Props> = (props) => {
       }).then((resp) => {
         if (resp.isConfirmed) {
           notSuccess()
-          console.log(resp)
           navigate(`${giftCardRouteMap.modificar.path}/${resp.value._id}`, {
             replace: true,
           })

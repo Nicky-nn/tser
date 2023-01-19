@@ -27,7 +27,7 @@ const GiftCardInventario: FunctionComponent<Props> = (props) => {
       formState: { errors },
     },
   } = props
-  const { fields, append, prepend, remove, swap, move, insert, replace } = useFieldArray({
+  const { replace } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'variantes', // unique name for your Field Array
   })
@@ -52,6 +52,7 @@ const GiftCardInventario: FunctionComponent<Props> = (props) => {
         if (getValues('variante.inventario').length === 0) {
           const inventario = crearInventario(data)
           setValue('variante.inventario', inventario)
+          setValue('variantes.0.inventario', inventario)
         }
       }
       return data || []
@@ -64,7 +65,7 @@ const GiftCardInventario: FunctionComponent<Props> = (props) => {
       <Grid item lg={12}>
         <Controller
           control={control}
-          name={'incluirCantidad'}
+          name={'variante.incluirCantidad'}
           render={({ field }) => (
             <FormControl>
               <FormControlLabel
@@ -114,14 +115,14 @@ const GiftCardInventario: FunctionComponent<Props> = (props) => {
                       {s.municipio} - {s.direccion}
                     </td>
                     <td data-label="CANTIDAD" style={{ textAlign: 'right' }}>
-                      {variantesWatch.incluirCantidad ? (
+                      {varianteWatch.incluirCantidad ? (
                         <FormControl fullWidth component={'div'}>
                           <MyInputLabel shrink>Cantidad</MyInputLabel>
                           <InputNumber
                             min={0}
                             placeholder={'0.00'}
                             value={genReplaceEmpty(
-                              variantesWatch.inventario.find(
+                              varianteWatch.inventario.find(
                                 (inv) => inv.sucursal.codigo === s.codigo,
                               )?.stock,
                               0,

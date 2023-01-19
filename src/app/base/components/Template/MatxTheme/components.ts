@@ -152,6 +152,15 @@ export const components = {
       },
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        '& fieldset': {
+          fontSize: '18px',
+        },
+      },
+    },
+  },
   MuiSelect: {
     styleOverrides: {
       root: {

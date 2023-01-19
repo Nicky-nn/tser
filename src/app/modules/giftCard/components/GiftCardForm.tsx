@@ -1,15 +1,16 @@
 import { Grid } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { GiftCardInputProps } from '../interfaces/giftCard.interface'
-import GiftCardHomologacion from './abm/GiftCardHomologacion'
-import GiftCardDenominacion from './abm/GiftCardDenominacion'
-import GiftCardClasificador from './abm/clasificador/GiftCardClasificador'
-import GiftCardProveedor from './abm/proveedor/GiftCardProveedor'
+
 import SimpleCard from '../../../base/components/Template/Cards/SimpleCard'
+import { GiftCardInputProps } from '../interfaces/giftCard.interface'
+import GiftCardClasificador from './abm/clasificador/GiftCardClasificador'
+import GiftCardDenominacion from './abm/GiftCardDenominacion'
 import GiftCardEstado from './abm/GiftCardEstado'
-import GiftCardProgramacion from './abm/GiftCardProgramacion'
+import GiftCardHomologacion from './abm/GiftCardHomologacion'
 import GiftCardInventario from './abm/GiftCardInventario'
+import GiftCardProgramacion from './abm/GiftCardProgramacion'
+import GiftCardProveedor from './abm/proveedor/GiftCardProveedor'
 
 interface OwnProps {
   form: UseFormReturn<GiftCardInputProps>
@@ -31,11 +32,15 @@ const GiftCardForm: FunctionComponent<Props> = (props) => {
                 <GiftCardHomologacion form={form} />
               </SimpleCard>
             </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              <SimpleCard title={'INVENTARIO'}>
-                <GiftCardInventario form={form} />
-              </SimpleCard>
-            </Grid>
+
+            {form.getValues('action') === 'REGISTER' && (
+              <Grid item lg={12} md={12} xs={12}>
+                <SimpleCard title={'INVENTARIO'}>
+                  <GiftCardInventario form={form} />
+                </SimpleCard>
+              </Grid>
+            )}
+
             <Grid item lg={12} md={12} xs={12}>
               <SimpleCard title={'Denominaciones'}>
                 <GiftCardDenominacion form={form} />
