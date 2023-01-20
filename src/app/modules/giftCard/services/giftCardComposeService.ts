@@ -23,7 +23,6 @@ export const giftCardComposeService = (
   prod.variantes.forEach((item) => {
     variantes.push({
       codigoProducto: item.codigoProducto,
-      codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
       titulo: `${item.titulo}`,
       precio: item.precio,
       incluirCantidad: item.incluirCantidad,
@@ -40,6 +39,7 @@ export const giftCardComposeService = (
     descripcion: prod.descripcion,
     descripcionHtml: prod.descripcionHtml,
     codigoActividad: prod.actividad?.codigoCaeb!,
+    codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
     tipoProductoId: prod.tipoProducto?._id || null,
     codigoProveedor: prod.proveedor?.codigo || null,
     disponibilidad: dayjs(prod.fechaInicio).format('DD/MM/YYYY HH:mm:ss').toString(),
@@ -74,7 +74,7 @@ export const giftCardDecomposeService = (input: GiftCardProps): GiftCardInputPro
     descripcionHtml: input.descripcionHtml,
     actividad: input.actividadEconomica,
     proveedor: input.proveedor || null,
-    sinProductoServicio: input.variantes[0].sinProductoServicio,
+    sinProductoServicio: input.sinProductoServicio,
     codigo: '',
     tipoProducto: input.tipoProducto,
     variante: variantes[0],

@@ -23,6 +23,11 @@ const query = gql`
         descripcion
         tipoActividad
       }
+      sinProductoServicio {
+        codigoActividad
+        codigoProducto
+        descripcionProducto
+      }
       proveedor {
         codigo
         nombre

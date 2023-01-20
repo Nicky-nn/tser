@@ -87,7 +87,7 @@ export const swalAsyncConfirmDialog = async ({
     confirmButtonText: 'Confirmar',
     cancelButtonText: 'Cancelar',
     backdrop: true,
-    text,
+    html: text,
     showLoaderOnConfirm: true,
     preConfirm,
     // allowOutsideClick: () => !Swal.isLoading()

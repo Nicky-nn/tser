@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     '&.MuiInputLabel-shrink': {
-      backgroundColor: theme.palette.primary.contrastText,
+      background: `linear-gradient(180deg, rgba(255,0,0,0) 25%, rgba(255,0,0,0) 25% 50%, ${theme.palette.background.default} 50% 75%, rgba(255,0,0,0) 75%)`,
       paddingLeft: 6,
       paddingRight: 6,
     },

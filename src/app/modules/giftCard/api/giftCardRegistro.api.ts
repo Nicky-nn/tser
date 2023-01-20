@@ -21,6 +21,5 @@ export const apiGiftCardRegistro = async (
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
   const data: any = await client.request(gqlQuery, { input })
-  console.log(data)
   return data.giftCardRegistro
 }

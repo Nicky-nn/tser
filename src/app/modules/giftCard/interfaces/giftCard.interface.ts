@@ -45,6 +45,7 @@ export interface GiftCardVarianteProps {
 export interface GiftCardProps {
   _id: string
   actividadEconomica: SinActividadesProps
+  sinProductoServicio: SinProductoServicioProps
   createdAt: string
   descripcion: string
   descripcionHtml: string
@@ -95,7 +96,6 @@ export interface GiftCardInputProps {
  */
 export interface GiftCardVarianteApiInputProps {
   codigoProducto: string
-  codigoProductoSin: string
   titulo: string
   precio: number
   incluirCantidad: boolean
@@ -111,6 +111,7 @@ export interface GiftCardApiInputProps {
   descripcion: string
   descripcionHtml: string
   codigoActividad: string
+  codigoProductoSin: string
   tipoProductoId: string | null
   codigoProveedor: string | null
   disponibilidad: string | null
