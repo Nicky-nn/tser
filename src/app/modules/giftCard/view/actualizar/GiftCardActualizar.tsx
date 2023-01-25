@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Save } from '@mui/icons-material'
+import { AddCard, Save } from '@mui/icons-material'
 import { Button, CssBaseline, Paper, Stack } from '@mui/material'
 import React, { FunctionComponent, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -15,14 +15,13 @@ import {
   swalException,
   swalLoading,
 } from '../../../../utils/swal'
-import { apiGiftCardRegistro } from '../../api/giftCardRegistro.api'
 import { giftCardRouteMap } from '../../GiftCardRoutesMap'
 import {
   GIFT_CARD_INITIAL_VALUES,
   GiftCardInputProps,
 } from '../../interfaces/giftCard.interface'
 import {
-  giftCardComposeService,
+  giftCardActualizarComposeService,
   giftCardDecomposeService,
 } from '../../services/giftCardComposeService'
 import {
@@ -31,6 +30,7 @@ import {
 } from '../../validator/giftCardRegistroValidator'
 import { apiGiftCard } from '../../api/giftCard.api'
 import GiftCardActualizarForm from '../../components/GiftCardActualizarForm'
+import { apiGiftCardActualizar } from '../../api/giftCardActualizar.api'
 
 interface OwnProps {}
 
@@ -54,10 +54,10 @@ const GiftCardActualizar: FunctionComponent<Props> = (props) => {
     if (val.length > 0) {
       notError(val.join('<br>'))
     } else {
-      const apiInput = giftCardComposeService(values)
+      const apiInput = giftCardActualizarComposeService(values)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
-          const resp: any = await apiGiftCardRegistro(apiInput).catch((e) => ({
+          const resp: any = await apiGiftCardActualizar(id!, apiInput).catch((e) => ({
             error: e,
           }))
           if (resp.error) {
@@ -70,9 +70,6 @@ const GiftCardActualizar: FunctionComponent<Props> = (props) => {
       }).then((resp) => {
         if (resp.isConfirmed) {
           notSuccess()
-          navigate(`${giftCardRouteMap.modificar.path}/${resp.value._id}`, {
-            replace: true,
-          })
         }
         if (resp.isDenied) {
           swalException(resp.value)
@@ -133,6 +130,14 @@ const GiftCardActualizar: FunctionComponent<Props> = (props) => {
           spacing={{ xs: 1, sm: 1, md: 1, xl: 1 }}
           justifyContent="flex-end"
         >
+          <Button
+            color={'primary'}
+            startIcon={<AddCard />}
+            variant={'contained'}
+            onClick={form.handleSubmit(onSubmit, onError)}
+          >
+            Agregar Denominación
+          </Button>
           <Button
             color={'success'}
             startIcon={<Save />}

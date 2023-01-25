@@ -1,5 +1,7 @@
+import { parse } from 'date-fns'
 import dayjs from 'dayjs'
 
+import { genRandomString } from '../../../utils/helper'
 import {
   GIFT_CARD_ESTADO_VALUES,
   GiftCardApiInputProps,
@@ -8,8 +10,6 @@ import {
   GiftCardVarianteApiInputProps,
   GiftCardVarianteInputProps,
 } from '../interfaces/giftCard.interface'
-import { genRandomString } from '../../../utils/helper'
-import { parse } from 'date-fns'
 
 /**
  * Componemos el producto para su posterior guardado
@@ -82,5 +82,23 @@ export const giftCardDecomposeService = (input: GiftCardProps): GiftCardInputPro
     fechaInicio: parse(input.disponibilidad, 'dd/MM/yyyy HH:mm:ss', new Date()),
     action: 'UPDATE',
     estado: GIFT_CARD_ESTADO_VALUES.find((k) => k.key === (input.activo ? 1 : 0))!,
+  }
+}
+
+/**
+ * Componemos el producto para su posterior guardado
+ * @param prod
+ */
+export const giftCardActualizarComposeService = (prod: GiftCardInputProps): any => {
+  return {
+    titulo: prod.titulo,
+    descripcion: prod.descripcion,
+    descripcionHtml: prod.descripcionHtml,
+    codigoActividad: prod.actividad?.codigoCaeb!,
+    codigoProductoSin: prod.sinProductoServicio?.codigoProducto!,
+    tipoProductoId: prod.tipoProducto?._id || null,
+    codigoProveedor: prod.proveedor?.codigo || null,
+    disponibilidad: dayjs(prod.fechaInicio).format('DD/MM/YYYY HH:mm:ss').toString(),
+    activo: prod.estado.key === 1,
   }
 }
