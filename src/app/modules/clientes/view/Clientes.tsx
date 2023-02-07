@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
@@ -15,10 +15,7 @@ const Clientes: FunctionComponent<Props> = (props) => {
     <SimpleContainer>
       <div className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: 'Clientes', path: '/clientes/gestion' },
-            { name: 'Gestión de clientes' },
-          ]}
+          routeSegments={[{ name: 'Gestion de clientes', path: '/clientes/gestion' }]}
         />
       </div>
       <form noValidate>

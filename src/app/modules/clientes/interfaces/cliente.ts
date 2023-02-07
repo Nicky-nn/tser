@@ -1,5 +1,4 @@
-import { AuditoriaProps } from '../../../interfaces'
-import { genReplaceEmpty } from '../../../utils/helper'
+import { actionForm, ActionFormProps, AuditoriaProps } from '../../../interfaces'
 import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface'
 
 export interface ClienteProps extends AuditoriaProps {
@@ -14,47 +13,64 @@ export interface ClienteProps extends AuditoriaProps {
   razonSocial: string
   tipoDocumentoIdentidad: SinTipoDocumentoIdentidadProps
   state: string
+  telefono: string
 }
 
 export interface ClienteInputProps {
-  codigoTipoDocumentoIdentidad: number
+  sinTipoDocumento: SinTipoDocumentoIdentidadProps | null
   razonSocial: string
   numeroDocumento: string
   complemento: string
   email: string
   nombres: string
   apellidos: string
+  telefono: string
+  action: ActionFormProps
 }
 
 export interface Cliente99001InputProps {
   codigoCliente: string
   razonSocial: string
   email: string
+  action: ActionFormProps
+  apellidos?: string
+  nombres?: string
+}
+
+export interface ClienteApiInputProps {
+  nombres: string
+  apellidos: string
+  codigoTipoDocumentoIdentidad: number
+  numeroDocumento: string
+  complemento: string
+  email: string
+  razonSocial: string
+  telefono: string
+}
+
+export interface Cliente99001ApiInputProps {
+  apellidos: string
+  codigoCliente: string
+  email: string
+  nombres: string
+  razonSocial: string
 }
 
 export const CLIENTE_99001_DEFAULT_INPUT: Cliente99001InputProps = {
   codigoCliente: '',
   razonSocial: '',
   email: '',
+  action: actionForm.REGISTER,
 }
 
 export const CLIENTE_DEFAULT_INPUT: ClienteInputProps = {
-  codigoTipoDocumentoIdentidad: 1,
+  sinTipoDocumento: null,
   razonSocial: '',
   numeroDocumento: '',
   complemento: '',
   email: '',
   nombres: '',
   apellidos: '',
+  telefono: '',
+  action: actionForm.REGISTER,
 }
-
-export const clienteInputUpdateDefault = (cliente: ClienteProps) => ({
-  codigoTipoDocumentoIdentidad: cliente.tipoDocumentoIdentidad.codigoClasificador,
-  razonSocial: cliente.razonSocial,
-  numeroDocumento: cliente.numeroDocumento,
-  complemento: genReplaceEmpty(cliente.complemento, ''),
-  email: cliente.email,
-  nombres: cliente.nombres,
-  codigoExcepcion: cliente.codigoExcepcion,
-  apellidos: cliente.apellidos,
-})

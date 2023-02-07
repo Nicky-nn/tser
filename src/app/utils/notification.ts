@@ -1,7 +1,13 @@
 import { toast } from 'react-toastify'
+import { ToastOptions } from 'react-toastify/dist/types'
+
+const options: ToastOptions = {
+  position: 'top-center',
+  theme: 'colored',
+}
 
 export const notError = (msg: string) => {
-  toast.error(msg)
+  toast.error(msg, { ...options })
 }
 
 /**
@@ -9,12 +15,12 @@ export const notError = (msg: string) => {
  * @param msg
  */
 export const notSuccess = (msg: string = 'Acción realizada correctamente') => {
-  toast.success(msg)
+  toast.success(msg, { ...options })
 }
 /**
  * @description Notificacion de de alerta
  * @param msg
  */
 export const notDanger = (msg: string) => {
-  toast.warning(msg)
+  toast.warning(msg, { ...options })
 }

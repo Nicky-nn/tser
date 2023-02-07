@@ -15,6 +15,7 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
   {
     accessorKey: 'codigoCliente',
     header: 'Código Cliente',
+    size: 120,
   },
   {
     accessorKey: 'razonSocial',
@@ -25,6 +26,7 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
       `${row.numeroDocumento}${row.complemento ? `-${row.complemento}` : ''}`,
     id: 'numeroDocumento',
     header: 'Nro. Documento',
+    size: 120,
   },
   {
     id: 'email',

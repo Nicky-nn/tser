@@ -45,6 +45,7 @@ import {
 } from '../../services/operacionesService'
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
+import { notError } from '../../../../utils/notification'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -75,7 +76,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
     const inputFactura = composeFactura(data)
     const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
-      swalErrorMsg(err.message)
+      notError(err.message)
     })
     if (validator) {
       await swalAsyncConfirmDialog({

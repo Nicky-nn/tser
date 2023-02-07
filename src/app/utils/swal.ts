@@ -1,4 +1,5 @@
 import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
+import { swalExceptionMsg } from '../base/services/swalExceptionMsg'
 
 interface Props extends SweetAlertOptions<any, any> {
   title?: string
@@ -34,14 +35,14 @@ export const swalSuccessMsg = (msg: string) => {}
  * Custom error para excepciones
  * @param e
  */
-export const swalException = (e: Error) => {
+export const swalException = (e: Error | any) => {
   Swal.fire({
-    title: 'Alert!!',
-    width: 800,
+    title: 'Alerta!!',
+    width: 700,
     customClass: 'swalError',
     allowEscapeKey: false,
-    allowOutsideClick: false,
-    html: e.message,
+    allowOutsideClick: true,
+    html: swalExceptionMsg(e),
   }).then()
 }
 

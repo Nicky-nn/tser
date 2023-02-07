@@ -1,0 +1,62 @@
+/* Accordion styles */
+.accordionTabs {
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #E0E0E0;
+}
+
+.accordionTabs .tab {
+    width: 100%;
+    overflow: hidden;
+}
+.accordionTabs .tab-label {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background: #F5F5F5;
+    cursor: pointer;
+    font-weight: 400;
+    /* Icon */
+}
+.accordionTabs .tab-label:hover {
+    background: #EEEEEE;
+}
+.accordionTabs .tab-label::after {
+    content: "❯";
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    transition: all 0.35s;
+}
+.accordionTabs .tab-content {
+    max-height: 0;
+    padding: 0 1em;
+    transition: all 0.35s;
+}
+.accordionTabs .tab-close {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1em;
+    font-size: 0.75em;
+    background: #e0e0e0;
+    cursor: pointer;
+}
+.accordionTabs .tab-close:hover {
+    background: #e0e0e0;
+}
+
+.accordionTabs input:checked + .tab-label {
+    background: #e0e0e0;
+}
+.accordionTabs input:checked + .tab-label::after {
+    transform: rotate(90deg);
+}
+.accordionTabs input:checked ~ .tab-content {
+    max-height: 100vh;
+    padding: 1em;
+}
+.accordionTabs input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}

@@ -19,6 +19,14 @@ export const apiEstado = {
   eliminado: 'ELIMINADO',
 }
 
+export type ActionFormProps = 'REGISTER' | 'UPDATE' | 'DELETE'
+
+export const actionForm: Record<ActionFormProps, ActionFormProps> = {
+  REGISTER: 'REGISTER',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+}
+
 export interface AuditoriaProps {
   usucre: string
   createdAt: string

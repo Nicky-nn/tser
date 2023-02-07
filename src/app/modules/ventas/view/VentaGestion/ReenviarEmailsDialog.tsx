@@ -20,7 +20,7 @@ import {
   swalConfirm,
   swalException,
 } from '../../../../utils/swal'
-import { fetchClienteCreate } from '../../../clientes/api/clienteCreate.api'
+import { fetchClienteCreate } from '../../../clientes/api/clienteRegistro.api'
 import { apiFcvReenvioEmails } from '../../api/facturaReenvioEmail.api'
 import { FacturaProps } from '../../interfaces/factura'
 

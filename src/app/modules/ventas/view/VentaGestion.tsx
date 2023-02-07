@@ -38,6 +38,7 @@ import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog'
 import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
 import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
+import MisVentasDialog from './VentaGestion/MisVentasDialog'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -115,6 +116,11 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     header: 'C.U.F.',
   },
   {
+    accessorKey: 'usuario',
+    id: 'usuario',
+    header: 'Usuario',
+  },
+  {
     accessorKey: 'state',
     header: 'Estado',
     accessorFn: (row) => (
@@ -143,6 +149,7 @@ const VentaGestion: FC<any> = () => {
   const [openExport, setOpenExport] = useState(false)
   const [openExportDetalle, setOpenExportDetalle] = useState(false)
   const [openReenviarEmails, setOpenReenviarEmails] = useState(false)
+  const [openMisVentas, setOpenMisVentas] = useState(false)
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -196,6 +203,17 @@ const VentaGestion: FC<any> = () => {
         </div>
 
         <SimpleRowMenu>
+          <SimpleItem>
+            <Button
+              size={'small'}
+              startIcon={<ImportExport />}
+              onClick={() => setOpenMisVentas(true)}
+              variant={'outlined'}
+            >
+              MIS VENTAS
+            </Button>
+          </SimpleItem>
+
           <SimpleItem>
             <Button
               size={'small'}
@@ -373,6 +391,16 @@ const VentaGestion: FC<any> = () => {
         open={openExportDetalle}
         onClose={() => {
           setOpenExportDetalle(false)
+          console.log('saliendo exportación detalle')
+        }}
+      />
+
+      <MisVentasDialog
+        id={'misVentasDialog'}
+        keepMounted={false}
+        open={openMisVentas}
+        onClose={() => {
+          setOpenMisVentas(false)
           console.log('saliendo exportación detalle')
         }}
       />

@@ -15,16 +15,16 @@ import { SingleValue } from 'react-select'
 import AsyncSelect from 'react-select/async'
 
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import { PerfilProps } from '../../../../base/models/loginModel'
 import { genReplaceEmpty } from '../../../../utils/helper'
 import { swalException } from '../../../../utils/swal'
 import { apiClienteBusqueda } from '../../../clientes/api/clienteBusqueda.api'
-import Cliente99001RegistroDialog from '../../../clientes/components/Cliente99001RegistroDialog'
 import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../../clientes/interfaces/cliente'
-import ClienteRegistroDialog from '../../../clientes/view/ClienteRegistroDialog'
 import { FacturaInputProps } from '../../interfaces/factura'
+import ClienteRegistroDialog from '../../../clientes/view/registro/ClienteRegistroDialog'
+import Cliente99001RegistroDialog from '../../../clientes/view/registro/Cliente99001RegistroDialog'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -75,7 +75,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
                   {...field}
                   cacheOptions={false}
                   defaultOptions={true}
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(Boolean(errors.cliente))}
                   menuPosition={'fixed'}
                   name="clientes"
                   placeholder={'Seleccione Cliente'}

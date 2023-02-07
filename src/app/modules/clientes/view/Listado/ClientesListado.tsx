@@ -1,5 +1,5 @@
-import { Delete, Edit, PersonAddAltSharp } from '@mui/icons-material'
-import { Box, Button, Chip, IconButton, Stack } from '@mui/material'
+import { Delete, PersonAddAltSharp } from '@mui/icons-material'
+import { Box, Button, Chip, Stack } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
@@ -10,17 +10,24 @@ import {
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
-import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery } from '../../../../utils/helper'
 import { localization } from '../../../../utils/localization'
+import {
+  DisplayColumnDefOptions,
+  MuiSearchTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../../utils/materialReactTableUtils'
 import { notDanger, notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { fetchClienteListado } from '../../api/clienteListado.api'
 import { apiClientesEliminar } from '../../api/clientesEliminar.api'
 import { ClienteProps } from '../../interfaces/cliente'
-import ClienteModificarDialog from '../ClienteModificarDialog'
-import ClienteRegistroDialog from '../ClienteRegistroDialog'
+import ClienteRegistroDialog from '../registro/ClienteRegistroDialog'
+import ClientesMenu from './ClientesMenu'
+import Cliente99001RegistroDialog from '../registro/Cliente99001RegistroDialog'
 
 interface OwnProps {}
 
@@ -59,7 +66,8 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
 ]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
-  const [open, setOpen] = useState(false)
+  const [openClienteRegistro, setOpenClienteRegistro] = useState(false)
+  const [openCliente99001Registro, setOpenCliente99001Registro] = useState(false)
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -69,9 +77,6 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
     pageSize: PAGE_DEFAULT.limit,
   })
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-  // FIN DATA TABLE
-  const [openDialog, setOpenDialog] = useState(false)
-  const [cliente, setCliente] = useState<ClienteProps | null>(null)
 
   const {
     data: clientes,
@@ -99,7 +104,11 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
   const columns = useMemo(() => tableColumns, [])
 
   const handleDeleteData = async (original: any) => {
-    const data = Object.keys(rowSelection)
+    const data = original.map((o: any) => o.original.codigoCliente)
+    if (data.length === 0) {
+      notDanger('No se ha seleccionado ningun registro, vuelva a intentar')
+      return
+    }
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir',
       preConfirm: () => {
@@ -128,7 +137,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         <Button
           size={'small'}
           variant="contained"
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenClienteRegistro(true)}
           startIcon={<PersonAddAltSharp />}
           color={'primary'}
         >
@@ -138,10 +147,10 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         <Button
           size={'small'}
           variant="contained"
-          onClick={() => notDanger('Opcion aun no disponible')}
+          onClick={() => setOpenCliente99001Registro(true)}
           color={'primary'}
         >
-          Nuevo Cliente Extranjero
+          Nuevo Cliente (99001)
         </Button>
       </Stack>
 
@@ -152,25 +161,18 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         manualFiltering
         manualPagination
         manualSorting
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
-        localization={localization}
-        enableRowNumbers={true}
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: 'error',
-                children: 'Error loading data',
-              }
-            : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
+        enableDensityToggle={false}
+        enableGlobalFilter={false}
         rowCount={rowCount}
+        localization={localization}
+        enableRowNumbers={true}
         state={{
-          columnFilters,
           isLoading,
+          columnFilters,
           pagination,
           showAlertBanner: isError,
           showProgressBars: isFetching,
@@ -179,35 +181,16 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           rowSelection,
         }}
         enableRowActions
-        positionActionsColumn={'last'}
-        renderRowActions={({ row }) => {
-          return (
-            <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
-              {!['99002', '99003'].includes(row.original.numeroDocumento) && (
-                <IconButton
-                  onClick={() => {
-                    setCliente(row.original)
-                    setOpenDialog(true)
-                  }}
-                  color={'primary'}
-                  aria-label="delete"
-                >
-                  <Edit />
-                </IconButton>
-              )}
-              <AuditIconButton row={row.original} />
-            </div>
-          )
-        }}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
-        getRowId={(row) => row.codigoCliente}
+        positionActionsColumn={'first'}
+        renderRowActions={({ row }) => (
+          <ClientesMenu row={row.original} refetch={refetch} />
+        )}
+        muiSearchTextFieldProps={MuiSearchTextFieldProps}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
+        muiTableProps={MuiTableProps}
+        displayColumnDefOptions={DisplayColumnDefOptions}
         onRowSelectionChange={setRowSelection}
         enableRowSelection
-        enableSelectAll={false}
         muiSelectCheckboxProps={({ row }) => ({
           disabled: ['99003', '99002'].includes(row.getValue('numeroDocumento')),
         })}
@@ -228,32 +211,26 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           )
         }}
       />
-
-      {cliente && (
-        <ClienteModificarDialog
-          id={'clienteModificar'}
-          keepMounted
-          open={openDialog}
-          cliente={cliente!}
-          onClose={(value?: ClienteProps) => {
-            if (value) {
-              refetch().then()
-            }
-            setCliente(null)
-            setOpenDialog(false)
-          }}
-        />
-      )}
-
       <ClienteRegistroDialog
-        id={'clienteRegistroDialog'}
-        keepMounted
-        open={open}
-        onClose={(value?: ClienteProps) => {
-          if (value) {
+        id={'clienteRegistroDialgo'}
+        keepMounted={false}
+        open={openClienteRegistro}
+        onClose={(resp?: ClienteProps) => {
+          if (resp) {
             refetch().then()
           }
-          setOpen(false)
+          setOpenClienteRegistro(false)
+        }}
+      />
+      <Cliente99001RegistroDialog
+        id={'cliente99001Registro'}
+        keepMounted={false}
+        open={openCliente99001Registro}
+        onClose={(resp?: ClienteProps) => {
+          setOpenCliente99001Registro(false)
+          if (resp) {
+            refetch().then()
+          }
         }}
       />
     </>

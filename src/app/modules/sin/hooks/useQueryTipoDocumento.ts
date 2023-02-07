@@ -17,6 +17,7 @@ const useQueryTipoDocumentoIdentidad = (
     isLoading: tdiLoading,
     isError: tdiIsError,
     error: tdiError,
+    isSuccess: tdIsSuccess,
   } = useQuery<SinTipoDocumentoIdentidadProps[], Error>(
     ['tipoDocumentoIdentidad', ...queryKey],
     async () => {
@@ -29,7 +30,7 @@ const useQueryTipoDocumentoIdentidad = (
     <Omit<any, any>>{ ...options },
   )
 
-  return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError }
+  return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError, tdIsSuccess }
 }
 
 export default useQueryTipoDocumentoIdentidad

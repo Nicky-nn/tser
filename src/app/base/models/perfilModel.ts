@@ -2,6 +2,7 @@
 
 import { gql, GraphQLClient } from 'graphql-request'
 
+import { MyGraphQlError } from '../services/GraphqlError'
 import { PerfilProps } from './loginModel'
 import { AccessToken } from './paramsModel'
 
@@ -15,6 +16,7 @@ const query = gql`
         codigoAmbiente
         fechaValidezToken
       }
+      usuario
       razonSocial
       nombres
       apellidos
@@ -68,10 +70,14 @@ const query = gql`
 `
 
 export const perfilModel = async (): Promise<PerfilProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
-  const data: any = await client.request(query)
-  return data.perfil
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
+    const data: any = await client.request(query)
+    return data.perfil
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

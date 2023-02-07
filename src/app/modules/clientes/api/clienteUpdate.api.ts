@@ -3,7 +3,12 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
-import { ClienteInputProps, ClienteProps } from '../interfaces/cliente'
+import {
+  ClienteApiInputProps,
+  ClienteInputProps,
+  ClienteProps,
+} from '../interfaces/cliente'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 
 const query = gql`
   mutation CLIENTE_ACTUALIZACION($id: ID!, $input: ClienteUpdateInput!) {
@@ -25,15 +30,19 @@ const query = gql`
   }
 `
 
-export const apiClienteUpdate = async (
+export const apiClienteActualizar = async (
   id: string,
-  input: ClienteInputProps,
+  input: ClienteApiInputProps,
 ): Promise<ClienteProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, { id, input })
-  return data.clienteUpdate
+    const data: any = await client.request(query, { id, input })
+    return data.clienteUpdate
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

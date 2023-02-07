@@ -3,9 +3,11 @@ import { es } from 'yup-locales'
 
 setLocale(es)
 export const clienteInputValidator = object({
-  codigoTipoDocumentoIdentidad: number()
-    .min(1, 'Tipo documento identidad es requerido')
-    .required('Tipo documento de identidad es requerido'),
+  sinTipoDocumento: object({
+    codigoClasificador: number().integer().required(),
+  })
+    .required()
+    .nullable(),
   razonSocial: string().required('Razon social es un campo requerido'),
   numeroDocumento: string().required('Número de documento es un campo obligatorio'),
   complemento: string(),

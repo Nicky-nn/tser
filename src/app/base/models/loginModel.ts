@@ -6,6 +6,7 @@ import { PuntoVentaProps } from '../../modules/puntoVenta/interfaces/puntoVenta'
 import { SinActividadesProps } from '../../modules/sin/interfaces/sin.interface'
 import { SucursalProps } from '../../modules/sucursal/interfaces/sucursal'
 import { MonedaParamsProps } from '../interfaces/base'
+import { MyGraphQlError } from '../services/GraphqlError'
 
 export interface PerfilProps {
   nombres: string
@@ -17,6 +18,7 @@ export interface PerfilProps {
   rol: string
   sigla: string
   dominio: string[]
+  usuario: string
   tipo: 'SA' | 'ADMIN' | 'GUEST' | 'USER'
   vigente: string
   sucursal: SucursalProps
@@ -53,6 +55,7 @@ const mutation = gql`
           codigoAmbiente
           fechaValidezToken
         }
+        usuario
         razonSocial
         nombres
         apellidos
@@ -111,10 +114,14 @@ export const loginModel = async (
   email: string,
   password: string,
 ): Promise<UserProps> => {
-  const variables = { shop, email, password }
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  // Set a single header
-  // client.setHeader('authorization', 'Bearer MY_TOKEN')
-  const data: any = await client.request(mutation, variables)
-  return data.login
+  try {
+    const variables = { shop, email, password }
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    // Set a single header
+    // client.setHeader('authorization', 'Bearer MY_TOKEN')
+    const data: any = await client.request(mutation, variables)
+    return data.login
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

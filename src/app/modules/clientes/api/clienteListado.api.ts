@@ -36,6 +36,7 @@ const query = gql`
           codigoClasificador
           descripcion
         }
+        telefono
         state
         usucre
         createdAt

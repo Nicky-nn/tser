@@ -11,8 +11,9 @@ export const reactSelectStyle = (
 ): StylesConfig<any> | undefined => ({
   menuPortal: (base) => ({
     ...base,
-    zIndex: 99999,
+    zIndex: 9999,
   }),
+  menu: (provided) => ({ ...provided, zIndex: 9999 }),
   placeholder: (base) => ({
     ...base,
     color: !error ? '#a4a4a4' : '#FF3D57',
