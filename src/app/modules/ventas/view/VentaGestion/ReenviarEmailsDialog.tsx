@@ -11,16 +11,10 @@ import {
 } from '@mui/material'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import Swal from 'sweetalert2'
 
 import { isEmptyValue, validateEmail } from '../../../../utils/helper'
 import { notSuccess } from '../../../../utils/notification'
-import {
-  swalAsyncConfirmDialog,
-  swalConfirm,
-  swalException,
-} from '../../../../utils/swal'
-import { fetchClienteCreate } from '../../../clientes/api/clienteRegistro.api'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiFcvReenvioEmails } from '../../api/facturaReenvioEmail.api'
 import { FacturaProps } from '../../interfaces/factura'
 

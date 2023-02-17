@@ -140,3 +140,11 @@ export const validateEmail = (mail: string): boolean => {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return res.test(String(mail).toLowerCase())
 }
+
+/**
+ * @description Limpiamos los saltos vacios en una cadena
+ * @param str
+ */
+export const clearAllLineBreak = (str: string) => {
+  return str.replace(/(\r\n|\n|\r)/gm, ' ')
+}

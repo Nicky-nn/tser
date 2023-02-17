@@ -19,6 +19,7 @@ import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
 import AlertError from '../../../../base/components/Alert/AlertError'
+import { clearAllLineBreak } from '../../../../utils/helper'
 
 registerLocale('es', es)
 
@@ -79,10 +80,12 @@ const MisVentasDialog: FunctionComponent<Props> = (props) => {
         montoTotal: item.montoTotal,
         montoTotalMoneda: item.montoTotalMoneda,
         moneda: item.moneda.descripcion,
-        detalleExtra: convert(item.detalleExtra, {
-          preserveNewlines: false,
-          wordwrap: null,
-        }),
+        detalleExtra: clearAllLineBreak(
+          convert(item.detalleExtra, {
+            preserveNewlines: false,
+            wordwrap: null,
+          }),
+        ),
         estado: item.state,
         usucre: item.usucre,
         usuario: item.usuario,

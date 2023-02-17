@@ -18,7 +18,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 
 import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
-import { genReplaceEmpty } from '../../../../utils/helper'
+import { clearAllLineBreak, genReplaceEmpty } from '../../../../utils/helper'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
 
@@ -75,13 +75,15 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             nroItem: item.nroItem,
             actividadEconomica: item.actividadEconomica.codigoCaeb,
             productoServicio: item.productoServicio.descripcionProducto,
-            producto: item.producto,
-            descripcion: item.descripcion,
-            detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
-            detalleExtraGeneral: convert(doc.detalleExtra, {
-              preserveNewlines: false,
-              wordwrap: null,
-            }),
+            producto: clearAllLineBreak(item.producto),
+            descripcion: clearAllLineBreak(item.descripcion),
+            detalleExtra: clearAllLineBreak(genReplaceEmpty(item.detalleExtra, '')),
+            detalleExtraGeneral: clearAllLineBreak(
+              convert(doc.detalleExtra, {
+                preserveNewlines: false,
+                wordwrap: null,
+              }),
+            ),
             cantidad: item.cantidad,
             unidadMedida: item.unidadMedida.descripcion,
             precioUnitario: item.precioUnitario,

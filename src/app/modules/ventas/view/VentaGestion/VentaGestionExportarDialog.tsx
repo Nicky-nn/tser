@@ -20,6 +20,7 @@ import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
+import { clearAllLineBreak } from '../../../../utils/helper'
 
 registerLocale('es', es)
 
@@ -71,10 +72,12 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
         montoTotal: item.montoTotal,
         montoTotalMoneda: item.montoTotalMoneda,
         moneda: item.moneda.descripcion,
-        detalleExtra: convert(item.detalleExtra, {
-          preserveNewlines: false,
-          wordwrap: null,
-        }),
+        detalleExtra: clearAllLineBreak(
+          convert(item.detalleExtra, {
+            preserveNewlines: false,
+            wordwrap: null,
+          }),
+        ),
         estado: item.state,
         usuario: item.usuario,
       }))

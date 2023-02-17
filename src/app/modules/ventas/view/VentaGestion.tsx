@@ -381,7 +381,6 @@ const VentaGestion: FC<any> = () => {
         open={openExport}
         onClose={() => {
           setOpenExport(false)
-          console.log('saliendo')
         }}
       />
 
@@ -391,7 +390,6 @@ const VentaGestion: FC<any> = () => {
         open={openExportDetalle}
         onClose={() => {
           setOpenExportDetalle(false)
-          console.log('saliendo exportación detalle')
         }}
       />
 
@@ -401,7 +399,6 @@ const VentaGestion: FC<any> = () => {
         open={openMisVentas}
         onClose={() => {
           setOpenMisVentas(false)
-          console.log('saliendo exportación detalle')
         }}
       />
 
