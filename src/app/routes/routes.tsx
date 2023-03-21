@@ -7,7 +7,6 @@ import NotFound from '../base/view/sessions/NotFound'
 import sessionRoutes from '../base/view/sessions/SessionRoutes'
 import clientesRoutes from '../modules/clientes/ClientesRoutes'
 import cuentaRoutes from '../modules/cuenta/CuentaRoutes'
-import giftCardRoutes from '../modules/giftCard/GiftCardRoutes'
 import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes'
 import productosRoutes from '../modules/productos/ProductosRoutes'
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes'
@@ -24,7 +23,6 @@ export const appRoutes = [
       ...dashboardRoutes,
       ...ventasRoutes,
       ...productosRoutes,
-      ...giftCardRoutes,
       ...clientesRoutes,
       ...cuentaRoutes,
       ...proveedorRoutes,

@@ -12,6 +12,8 @@ import { isEmptyValue } from '../../../../utils/helper'
 import { Paragraph } from '../../../components/Template/Typography'
 import useAuth from '../../../hooks/useAuth'
 
+const fondo = import.meta.env.ISI_FONDO || fcvFondo
+
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -35,7 +37,7 @@ const IMG = styled('img')(() => ({
 }))
 
 const JWTRoot = styled(JustifyBox)(() => ({
-  backgroundImage: `url("${fcvFondo}")`,
+  backgroundImage: `url("${fondo}")`,
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',

@@ -13,12 +13,11 @@ import dayjs from 'dayjs'
 import exportFromJSON from 'export-from-json'
 import { convert } from 'html-to-text'
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import DatePicker, { CalendarContainer, registerLocale } from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import useAuth from '../../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
-import AlertError from '../../../../base/components/Alert/AlertError'
 import { clearAllLineBreak } from '../../../../utils/helper'
 
 registerLocale('es', es)

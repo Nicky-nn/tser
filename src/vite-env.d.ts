@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly ISI_API_URL: string
   readonly ISI_BASE_URL: string
   readonly ISI_DOCUMENTO_SECTOR: number
+  readonly ISI_FONDO: string
   // more env variables...
 }
 

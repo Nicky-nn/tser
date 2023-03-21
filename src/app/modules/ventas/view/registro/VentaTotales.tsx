@@ -29,11 +29,7 @@ import RepresentacionGraficaUrls from '../../../../base/components/Representacio
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper'
-import {
-  swalAsyncConfirmDialog,
-  swalErrorMsg,
-  swalException,
-} from '../../../../utils/swal'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { genRound } from '../../../../utils/utils'
 import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
 import { MonedaProps } from '../../../base/moneda/interfaces/moneda'

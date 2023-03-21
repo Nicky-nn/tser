@@ -1,12 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Divider, Grid } from '@mui/material'
 import { Box } from '@mui/system'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import AlertLoading from '../../../base/components/Alert/AlertLoading'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import SimpleCard from '../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../base/hooks/useAuth'
+import { PlantillaDetalleExtra } from '../../../interfaces'
+import usePlantillaDetalleExtra from '../../base/detalleExtra/hook/usePlantillaDetalleExtra'
 import { FacturaInitialValues, FacturaInputProps } from '../interfaces/factura'
 import { VentaRegistroValidator } from '../validator/ventaRegistroValidator'
 import DatosActividadEconomica from './registro/DatosActividadEconomica'
@@ -27,6 +31,8 @@ const VentaRegistro = () => {
     resolver: yupResolver(VentaRegistroValidator),
   })
 
+  const { pdeLoading, plantillaDetalleExtra } = usePlantillaDetalleExtra()
+
   return (
     <SimpleContainer>
       <div className="breadcrumb">
@@ -43,7 +49,11 @@ const VentaRegistro = () => {
             <DatosActividadEconomica form={form} />
           </Grid>
           <Grid item lg={12} md={12} xs={12}>
-            <FacturaDetalleExtra form={form} />
+            {pdeLoading ? (
+              <AlertLoading mensaje={'Cargando...'} />
+            ) : (
+              <FacturaDetalleExtra form={form} detalleExtra={plantillaDetalleExtra} />
+            )}
           </Grid>
           <Grid item lg={12} md={12} xs={12}>
             <DetalleTransaccionComercial form={form} />

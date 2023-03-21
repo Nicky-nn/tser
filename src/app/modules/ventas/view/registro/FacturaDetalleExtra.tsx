@@ -8,15 +8,14 @@ import {
   Typography,
 } from '@mui/material'
 import { Editor } from '@tinymce/tinymce-react'
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
-import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
-import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template'
 import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
+  detalleExtra: any
 }
 
 type Props = OwnProps
@@ -29,7 +28,9 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
       getValues,
       formState: { errors },
     },
+    detalleExtra,
   } = props
+
   return (
     <>
       <Accordion sx={{ backgroundColor: '#EFEFEF' }}>
@@ -48,7 +49,6 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
               onInit={(evt, editor) => {
                 editor.on('blur', (e) => {
                   setValue('detalleExtraText', editor.getContent({ format: 'text' }))
-                  console.log(getValues('detalleExtra'), getValues('detalleExtraText'))
                 })
               }}
               onEditorChange={(newValue, editor) => {
@@ -66,7 +66,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                 min_height: 250,
                 height: 250,
                 max_height: 500,
-                templates: TINYMCE_TEMPLATES,
+                templates: detalleExtra,
               }}
             />
           </Box>
