@@ -1,10 +1,10 @@
+import { genReplaceEmpty } from '../../../utils/helper'
 import {
   Cliente99001ApiInputProps,
   Cliente99001InputProps,
   ClienteApiInputProps,
   ClienteInputProps,
 } from '../interfaces/cliente'
-import { genReplaceEmpty } from '../../../utils/helper'
 
 /**
  * Componemos el input a valores que acepta el servicio

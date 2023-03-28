@@ -1,11 +1,11 @@
+import { actionForm, ActionFormProps } from '../../../interfaces'
+import { genReplaceEmpty } from '../../../utils/helper'
+import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface'
 import {
   ClienteApiInputProps,
   ClienteInputProps,
   ClienteProps,
 } from '../interfaces/cliente'
-import { genReplaceEmpty } from '../../../utils/helper'
-import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface'
-import { actionForm, ActionFormProps } from '../../../interfaces'
 
 /**
  * Decomponemos al cliente para el formulario

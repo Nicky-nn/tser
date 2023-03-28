@@ -1,3 +1,4 @@
+import { logg } from '../../../utils/helper'
 import { ClienteInputProps } from '../interfaces/cliente'
 
 /**
@@ -8,6 +9,7 @@ export const clienteRegistroValidator = async (
   input: ClienteInputProps,
 ): Promise<Array<string>> => {
   try {
+    logg('BEGIN')
     return []
   } catch (e: any) {
     return [e.message]

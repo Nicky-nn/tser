@@ -112,6 +112,6 @@ export const apiProductosVariantes = async (
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(reqQuery, pageInfo)
+  const data: any = await client.request(reqQuery, { ...pageInfo })
   return data?.fcvProductosVariantes || []
 }

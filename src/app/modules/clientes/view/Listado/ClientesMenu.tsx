@@ -5,8 +5,8 @@ import React, { FunctionComponent, useState } from 'react'
 import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
 import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
 import { ClienteProps } from '../../interfaces/cliente'
-import ClienteActualizarDialog from '../actualizar/ClienteActualizarDialog'
 import Cliente99001ActualizarDialog from '../actualizar/Cliente99001ActualizarDialog'
+import ClienteActualizarDialog from '../actualizar/ClienteActualizarDialog'
 
 interface OwnProps {
   row: ClienteProps

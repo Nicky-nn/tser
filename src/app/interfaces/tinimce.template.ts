@@ -40,15 +40,13 @@ export const TINYMCE_TEMPLATES = [
         </table>`,
   },
   {
-    title: 'Parrafo de multiples items',
-    description: 'Detalles sin tablas',
+    title: 'Titulo-Descripcion',
+    description: 'Párrafo simple de tipo TITULO - DESCRIPCIÓN',
     content: `
         <p>
-        <b>TITULO 1</b> DESCRIPCION 1 <br>
+        <b>TITULO 1</b> DESCRIPCION 1<br>
         <b>TITULO 2</b> DESCRIPCION 2<br>
         <b>TITULO 3</b> DESCRIPCION 3<br>
-        <b>TITULO 4</b> DESCRIPCION 4<br>
-        <b>TITULO 5</b> DESCRIPCION 5<br>
         </p>`,
   },
 ]

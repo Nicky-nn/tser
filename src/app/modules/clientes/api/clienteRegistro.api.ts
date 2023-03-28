@@ -3,8 +3,8 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
-import { ClienteApiInputProps, ClienteProps } from '../interfaces/cliente'
 import { MyGraphQlError } from '../../../base/services/GraphqlError'
+import { ClienteApiInputProps, ClienteProps } from '../interfaces/cliente'
 
 const query = gql`
   mutation CLIENTE_REGISTRO($input: ClienteInput!) {

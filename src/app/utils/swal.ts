@@ -1,4 +1,5 @@
 import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
+
 import { swalExceptionMsg } from '../base/services/swalExceptionMsg'
 
 interface Props extends SweetAlertOptions<any, any> {

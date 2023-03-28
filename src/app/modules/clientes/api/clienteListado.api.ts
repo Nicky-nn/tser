@@ -55,6 +55,6 @@ export const fetchClienteListado = async (
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, pageInfo)
+  const data: any = await client.request(query, { ...pageInfo })
   return data.clientesAll
 }

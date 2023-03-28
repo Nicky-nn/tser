@@ -29,6 +29,7 @@ import RepresentacionGraficaUrls from '../../../../base/components/Representacio
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper'
+import { notError } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { genRound } from '../../../../utils/utils'
 import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
@@ -41,7 +42,6 @@ import {
 } from '../../services/operacionesService'
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
-import { notError } from '../../../../utils/notification'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>

@@ -25,9 +25,9 @@ import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { fetchClienteListado } from '../../api/clienteListado.api'
 import { apiClientesEliminar } from '../../api/clientesEliminar.api'
 import { ClienteProps } from '../../interfaces/cliente'
+import Cliente99001RegistroDialog from '../registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../registro/ClienteRegistroDialog'
 import ClientesMenu from './ClientesMenu'
-import Cliente99001RegistroDialog from '../registro/Cliente99001RegistroDialog'
 
 interface OwnProps {}
 

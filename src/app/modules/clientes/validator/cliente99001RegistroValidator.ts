@@ -1,4 +1,5 @@
-import { Cliente99001InputProps, ClienteInputProps } from '../interfaces/cliente'
+import { logg } from '../../../utils/helper'
+import { Cliente99001InputProps } from '../interfaces/cliente'
 
 /**
  * Validamos los datos de formulario del producto
@@ -8,6 +9,7 @@ export const cliente99001RegistroValidator = async (
   input: Cliente99001InputProps,
 ): Promise<Array<string>> => {
   try {
+    logg('begin')
     return []
   } catch (e: any) {
     return [e.message]

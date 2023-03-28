@@ -22,9 +22,9 @@ import { swalException } from '../../../../utils/swal'
 import { apiClienteBusqueda } from '../../../clientes/api/clienteBusqueda.api'
 import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../../clientes/interfaces/cliente'
-import { FacturaInputProps } from '../../interfaces/factura'
-import ClienteRegistroDialog from '../../../clientes/view/registro/ClienteRegistroDialog'
 import Cliente99001RegistroDialog from '../../../clientes/view/registro/Cliente99001RegistroDialog'
+import ClienteRegistroDialog from '../../../clientes/view/registro/ClienteRegistroDialog'
+import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>

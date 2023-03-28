@@ -3,12 +3,12 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import {
   ClienteApiInputProps,
   ClienteInputProps,
   ClienteProps,
 } from '../interfaces/cliente'
-import { MyGraphQlError } from '../../../base/services/GraphqlError'
 
 const query = gql`
   mutation CLIENTE_ACTUALIZACION($id: ID!, $input: ClienteUpdateInput!) {

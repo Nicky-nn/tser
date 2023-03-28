@@ -3,8 +3,8 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
-import { ClienteProps } from '../interfaces/cliente'
 import { MyGraphQlError } from '../../../base/services/GraphqlError'
+import { ClienteProps } from '../interfaces/cliente'
 
 const queryGql = gql`
   query CLIENTES_BUSQUEDA($query: String!) {

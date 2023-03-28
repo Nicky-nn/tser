@@ -1,5 +1,5 @@
-import { ClienteApiInputProps, ClienteInputProps } from '../interfaces/cliente'
 import { genReplaceEmpty } from '../../../utils/helper'
+import { ClienteApiInputProps, ClienteInputProps } from '../interfaces/cliente'
 
 /**
  * Componemos el input a valores que acepta el servicio, para modificación, no se envia el valor de tipo de documento por estar bloqueado

@@ -47,7 +47,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
               apiKey="niud727ae46xgl3s5morxk4v03hq6rrv7lpkvustyt2ilp2k"
               value={getValues('detalleExtra') || ''}
               onInit={(evt, editor) => {
-                editor.on('blur', (e) => {
+                editor.on('blur', (e: any) => {
                   setValue('detalleExtraText', editor.getContent({ format: 'text' }))
                 })
               }}

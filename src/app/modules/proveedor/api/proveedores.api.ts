@@ -47,6 +47,6 @@ export const apiProveedores = async (
   const token = localStorage.getItem(AccessToken)
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
-  const data: any = await client.request(gqlQuery, pageInfo)
+  const data: any = await client.request(gqlQuery, { ...pageInfo })
   return data.proveedores
 }
