@@ -8,15 +8,17 @@ export const clienteInputValidator = object({
   })
     .required()
     .nullable(),
-  razonSocial: string().required('Razon social es un campo requerido'),
-  numeroDocumento: string().required('Número de documento es un campo obligatorio'),
+  razonSocial: string().trim().required('Razon social es un campo requerido'),
+  numeroDocumento: string()
+    .trim()
+    .required('Número de documento es un campo obligatorio'),
   complemento: string(),
-  email: string().email('Ingrese email válido').required('Email es requerido'),
-  apellidos: string(),
+  email: string().trim().email('Ingrese email válido').required('Email es requerido'),
+  apellidos: string().trim(),
 })
 
 export const cliente99001InputValidator = object({
-  razonSocial: string().required('Razon social es un campo requerido'),
-  codigoCliente: string().required('Código Cliente es un campo obligatorio'),
-  email: string().email('Ingrese email válido').required('Email es requerido'),
+  razonSocial: string().trim().required('Razon social es un campo requerido'),
+  codigoCliente: string().trim().required('Código Cliente es un campo obligatorio'),
+  email: string().trim().email('Ingrese email válido').required('Email es requerido'),
 })

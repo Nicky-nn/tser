@@ -25,7 +25,6 @@ import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInp
 import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
-import { notDanger } from '../../../../utils/notification'
 import { swalException } from '../../../../utils/swal'
 import { apiProductosVariantesBusqueda } from '../../../productos/api/productosVariantesBusqueda.api'
 import ProductoExplorarDialog from '../../../productos/components/ProductoExplorarDialog'
@@ -40,6 +39,7 @@ import AgregarArticuloDialog from './AgregarArticuloDialog'
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
 }
+
 type Props = OwnProps
 /**
  * @description Detalle de la transaccion comercial
@@ -279,19 +279,24 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                             <td data-label={`DESCUENTO (${monedaTienda.sigla})`}>
                               <InputNumber
                                 min={0}
-                                max={item.precioUnitario - 0.1}
+                                max={item.cantidad * item.precioUnitario - 0.1}
                                 value={item.montoDescuento || 0}
                                 onFocus={handleFocus}
                                 onChange={(montoDescuento: number | null) => {
                                   if (montoDescuento! >= 0) {
-                                    if (montoDescuento! <= item.precioUnitario) {
+                                    if (
+                                      montoDescuento! <=
+                                      item.precioUnitario * item.cantidad
+                                    ) {
                                       update(index, {
                                         ...item,
                                         montoDescuento: montoDescuento!,
                                       })
                                     } else {
                                       toast.warn(
-                                        'El descuento no puede ser mayor al precio',
+                                        `El descuento no puede ser mayor ${
+                                          item.cantidad * item.precioUnitario
+                                        }`,
                                       )
                                     }
                                   }

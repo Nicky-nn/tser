@@ -29,6 +29,7 @@ export const apiPlantillaDetalleExtra = async (): Promise<PlantillaDetalleExtra[
     const data: any = await client.request(query)
     return data.plantillasDetalleExtra
   } catch (e: any) {
-    throw new MyGraphQlError(e)
+    return []
+    // throw new MyGraphQlError(e)
   }
 }

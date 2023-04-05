@@ -11,6 +11,7 @@ import { Editor } from '@tinymce/tinymce-react'
 import { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
+import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template'
 import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
@@ -66,7 +67,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                 min_height: 250,
                 height: 250,
                 max_height: 500,
-                templates: detalleExtra,
+                templates: detalleExtra.length > 0 ? detalleExtra : TINYMCE_TEMPLATES,
               }}
             />
           </Box>
