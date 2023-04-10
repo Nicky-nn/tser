@@ -2,14 +2,17 @@ import { AllInclusive } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import useAuth from '../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../utils/helper'
-import { localization } from '../../../utils/localization'
-import { muiTableHeadCellFilterTextFieldProps } from '../../../utils/materialReactTableUtils'
+import {
+  muiTableHeadCellFilterTextFieldProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../utils/materialReactTableUtils'
 import { apiProductosVariantes } from '../api/productosVariantes.api'
 import { ProductoVarianteProps } from '../interfaces/producto.interface'
 
@@ -127,18 +130,11 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: true }}
-        localization={localization}
+        localization={MRT_Localization_ES}
         manualFiltering
         manualPagination
         manualSorting
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: 'error',
-                children: 'Error en cargar los datos',
-              }
-            : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
@@ -155,18 +151,20 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
           density: 'compact',
           rowSelection,
         }}
-        muiTableHeadCellFilterTextFieldProps={{
-          ...muiTableHeadCellFilterTextFieldProps,
-        }}
+        muiTableHeadCellFilterTextFieldProps={muiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         enableSelectAll={false}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row._id}
         muiTableContainerProps={{
           sx: {
-            maxHeight: '650px',
+            maxHeight: '100%',
           },
         }}
+        muiTableBodyRowProps={({ row }) => ({
+          onClick: row.getToggleSelectedHandler(),
+          sx: { cursor: 'pointer' },
+        })}
       />
     </>
   )

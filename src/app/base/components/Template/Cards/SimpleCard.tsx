@@ -1,7 +1,7 @@
 import { ArrowRight } from '@mui/icons-material'
-import { Avatar, Card, CardContent, CardHeader, CSSObject } from '@mui/material'
-import { styled } from '@mui/system'
-import { FC, PropsWithChildren, ReactNode } from 'react'
+import { Avatar, Card, CardContent, CardHeader, CSSObject, SxProps } from '@mui/material'
+import { styled, Theme } from '@mui/system'
+import { CSSProperties, FC, PropsWithChildren, ReactNode } from 'react'
 
 import { H4 } from '../Typography'
 
@@ -43,6 +43,8 @@ export interface SimpleCardProps {
   subtitle?: string
   childIcon?: ReactNode
   children: ReactNode
+  style?: CSSProperties
+  sx?: SxProps<Theme> | undefined
 }
 
 const SimpleCard: FC<SimpleCardProps> = ({
@@ -50,7 +52,11 @@ const SimpleCard: FC<SimpleCardProps> = ({
   title,
   subtitle,
   childIcon,
+  style,
+  sx,
 }: SimpleCardProps) => {
+  const Nstyle: CSSProperties = { ...style }
+  const Nsx: SxProps<Theme> | undefined = { ...sx }
   return (
     <CardRoot elevation={6}>
       {title && (
