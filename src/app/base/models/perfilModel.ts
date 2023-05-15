@@ -69,6 +69,9 @@ const query = gql`
   }
 `
 
+/**
+ * @description Obtenemos los datos de perfil, la información generada es exactamente igual al del login
+ */
 export const perfilModel = async (): Promise<PerfilProps> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)

@@ -20,7 +20,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <StyledEngineProvider injectFirst>
       <BrowserRouter>
         <QueryClientProvider client={new QueryClient()}>
-          <CssBaseline />
           <App />
           <ToastContainer limit={3} />
         </QueryClientProvider>

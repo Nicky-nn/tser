@@ -108,7 +108,12 @@ const mutation = gql`
     }
   }
 `
-
+/**
+ * @description Login del usuario
+ * @param shop
+ * @param email
+ * @param password
+ */
 export const loginModel = async (
   shop: string,
   email: string,

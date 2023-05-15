@@ -9,7 +9,6 @@ import withReactContent from 'sweetalert2-react-content'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
-import useAuth from '../../../base/hooks/useAuth'
 import { openInNewTab } from '../../../utils/helper'
 import { notSuccess } from '../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
@@ -18,11 +17,10 @@ import { NcdInputProps } from '../interfaces/ncdInterface'
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
 import { ncdInputCompose } from '../services/ncdInputCompose'
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator'
-import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion'
-import NcdFacturaOriginal from './registro/NcdFacturaOriginal'
+import NcdFacturaOriginal from './Registro/NcdFacturaOriginal'
+import NcdFacturaDevolucion from './Registro/NcdFacturaDevolucion'
 
 const NcdRegistro = () => {
-  const { user } = useAuth()
   const mySwal = withReactContent(Swal)
 
   const form = useForm<NcdInputProps>({

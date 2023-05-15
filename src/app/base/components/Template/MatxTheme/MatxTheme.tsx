@@ -1,13 +1,18 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 
 import useSettings from '../../../hooks/useSettings'
 import { CreateMatxThemesProps } from './themeColors'
 
 type MatxThemeProps = {
-  children: JSX.Element | JSX.Element[]
+  children: ReactElement | ReactElement[] | null
 }
 
+/**
+ * Inicio y creación de la plantilla matx
+ * @param children
+ * @constructor
+ */
 const MatxTheme: FC<MatxThemeProps> = ({ children }: MatxThemeProps) => {
   const { settings } = useSettings()
   // @ts-ignore
