@@ -39,6 +39,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
   }
   return input
 }
+
 export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
   setLocale(es)
   const schema = object({
