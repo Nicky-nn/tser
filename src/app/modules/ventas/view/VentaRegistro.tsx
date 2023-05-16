@@ -24,7 +24,6 @@ const VentaRegistro = () => {
   const form = useForm<FacturaInputProps>({
     defaultValues: {
       ...FacturaInitialValues,
-      actividadEconomica: user.actividadEconomica,
     },
     resolver: yupResolver(VentaRegistroValidator),
   })

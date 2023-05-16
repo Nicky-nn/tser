@@ -1,8 +1,8 @@
-import { array, number, object, string } from 'yup'
+import { object, string } from 'yup'
 
 export const VentaRegistroValidator = object({
   actividadEconomica: object({
-    codigoCaeb: string().required(),
+    codigoActividad: string().required(),
   }),
   tipoCliente: string().required(),
   cliente: object({

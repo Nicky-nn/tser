@@ -9,8 +9,10 @@ import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
+import { genReplaceEmpty, isEmptyValue } from '../../../../utils/helper'
 import useQueryActividades from '../../../sin/hooks/useQueryActividades'
-import { SinActividadesProps } from '../../../sin/interfaces/sin.interface'
+import useQueryActividadesPorDocumentoSector from '../../../sin/hooks/useQueryActividadesPorDocumentoSector'
+import { SinActividadesPorDocumentoSector } from '../../../sin/interfaces/sin.interface'
 import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
@@ -29,12 +31,17 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
       formState: { errors, isSubmitted, isSubmitSuccessful },
     },
   } = props
-  const { user } = useAuth()
-  const { actividades, actIsError, actError, actLoading } = useQueryActividades()
+  const { actividades, actIsError, actError, actLoading } =
+    useQueryActividadesPorDocumentoSector()
 
   useEffect(() => {
-    setValue('actividadEconomica', user.actividadEconomica)
-  }, [])
+    if (!actLoading && genReplaceEmpty(actividades, []).length > 0) {
+      if (isEmptyValue(getValues('actividadEconomica'))) {
+        setValue('actividadEconomica', actividades![0])
+      }
+    }
+    // setValue('actividadEconomica', user.actividadEconomica)
+  }, [actLoading])
 
   if (actIsError) {
     return <AlertError mensaje={actError?.message!} />
@@ -52,7 +59,7 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
             render={({ field }) => (
               <FormControl fullWidth error={Boolean(errors.actividadEconomica)}>
                 <MyInputLabel shrink>Actividad Económica</MyInputLabel>
-                <Select<SinActividadesProps>
+                <Select<SinActividadesPorDocumentoSector>
                   {...field}
                   styles={reactSelectStyles}
                   name="actividadEconomica"
@@ -67,9 +74,9 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
                   }}
                   isSearchable={false}
                   options={actividades}
-                  getOptionValue={(item) => item.codigoCaeb}
+                  getOptionValue={(item) => item.codigoActividad}
                   getOptionLabel={(item) =>
-                    `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`
+                    `${item.tipoActividad} - ${item.codigoActividad} - ${item.actividadEconomica}`
                   }
                 />
                 {errors.actividadEconomica && (

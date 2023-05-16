@@ -98,7 +98,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
       const productos = await apiProductosVariantesBusqueda(
-        getValues('actividadEconomica.codigoCaeb'),
+        getValues('actividadEconomica.codigoActividad'),
         inputValue,
       )
       if (productos) return productos
@@ -120,7 +120,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     if (getValues('actividadEconomica')) cargarVariantesProductos('').then()
   }, [getValues('actividadEconomica')])
 
-  if (getValues('actividadEconomica.codigoCaeb')) {
+  if (getValues('actividadEconomica.codigoActividad')) {
     return (
       <>
         <SimpleCard title="Productos">
@@ -363,7 +363,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
             id={'agregarArticulo'}
             keepMounted={false}
             open={openAgregarArticulo}
-            codigoActividad={getValues('actividadEconomica.codigoCaeb')}
+            codigoActividad={getValues('actividadEconomica.codigoActividad')}
             onClose={(newProduct: any) => {
               handleChange(newProduct).then()
               setOpenAgregarArticulo(false)
@@ -375,7 +375,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
             id={'explorarProductos'}
             keepMounted={false}
             open={openExplorarProducto}
-            codigoActividad={getValues('actividadEconomica.codigoCaeb')}
+            codigoActividad={getValues('actividadEconomica.codigoActividad')}
             onClose={(newProduct?: ProductoVarianteProps[]) => {
               if (newProduct) {
                 for (const pvp of newProduct) {

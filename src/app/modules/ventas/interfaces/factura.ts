@@ -4,6 +4,7 @@ import { ClienteProps } from '../../clientes/interfaces/cliente'
 import { ProductoVarianteProps } from '../../productos/interfaces/producto.interface'
 import { PuntoVentaProps } from '../../puntoVenta/interfaces/puntoVenta'
 import {
+  SinActividadesDocumentoSectorProps,
   SinActividadesProps,
   SinCufdProps,
   SinCuisProps,
@@ -33,7 +34,7 @@ export interface FacturaDetalleInputProps extends ProductoVarianteProps {
 }
 
 export interface FacturaInputProps {
-  actividadEconomica: SinActividadesProps
+  actividadEconomica: SinActividadesDocumentoSectorProps | null
   tipoCliente: 'N' | '99002' | '99003'
   cliente: ClienteProps | null
   codigoCliente: string
@@ -60,7 +61,7 @@ export interface FacturaInputProps {
  * Valores iniciales del formulario
  */
 export const FacturaInitialValues: FacturaInputProps = {
-  actividadEconomica: {} as SinActividadesProps,
+  actividadEconomica: null,
   tipoCliente: 'N',
   cliente: null,
   codigoCliente: '',

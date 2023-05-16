@@ -15,7 +15,7 @@ import {
   swalException,
   swalLoading,
 } from '../../../utils/swal'
-import { fetchSinActividadesPorDocumentoSector } from '../../sin/api/sinActividadesPorDocumentoSector'
+import { fetchSinActividades } from '../../sin/api/sinActividadEconomica.api'
 import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
 import { apiProductoModificar } from '../api/productoModificar.api'
 import { apiProductoPorId } from '../api/productoPorId.api'
@@ -93,8 +93,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
       const response = await apiProductoPorId(id)
       swalClose()
       if (response) {
-        const actividades: SinActividadesProps[] =
-          await fetchSinActividadesPorDocumentoSector()
+        const actividades: SinActividadesProps[] = await fetchSinActividades()
         const actividad = actividades.find(
           (item) =>
             item.codigoCaeb === response.variantes[0].sinProductoServicio.codigoActividad,

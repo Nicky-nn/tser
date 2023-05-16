@@ -16,7 +16,7 @@ const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
 export const composeFactura = (fcv: FacturaInputProps): any => {
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
-    actividadEconomica: fcv.actividadEconomica.codigoCaeb,
+    actividadEconomica: fcv.actividadEconomica?.codigoActividad,
     codigoMetodoPago: fcv.codigoMetodoPago.codigoClasificador,
     descuentoAdicional: calculoMonedaBs(fcv.descuentoAdicional, fcv.tipoCambio),
     detalleExtra: fcv.detalleExtra,
