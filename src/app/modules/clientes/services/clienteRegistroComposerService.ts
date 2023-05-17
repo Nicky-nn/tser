@@ -17,5 +17,6 @@ export const clienteRegistroComposeService = (
     email: input.email,
     razonSocial: input.razonSocial,
     telefono: genReplaceEmpty(input.telefono, null),
+    codigoExcepcion: 1,
   }
 }

@@ -25,6 +25,7 @@ export interface ClienteInputProps {
   nombres: string
   apellidos: string
   telefono: string
+  codigoExcepcion: number
   action: ActionFormProps
 }
 
@@ -46,6 +47,7 @@ export interface ClienteApiInputProps {
   email: string
   razonSocial: string
   telefono: string
+  codigoExcepcion: number
 }
 
 export interface Cliente99001ApiInputProps {
@@ -72,5 +74,6 @@ export const CLIENTE_DEFAULT_INPUT: ClienteInputProps = {
   nombres: '',
   apellidos: '',
   telefono: '',
+  codigoExcepcion: 1,
   action: actionForm.REGISTER,
 }

@@ -10,7 +10,6 @@ import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSel
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty, isEmptyValue } from '../../../../utils/helper'
-import useQueryActividades from '../../../sin/hooks/useQueryActividades'
 import useQueryActividadesPorDocumentoSector from '../../../sin/hooks/useQueryActividadesPorDocumentoSector'
 import { SinActividadesPorDocumentoSector } from '../../../sin/interfaces/sin.interface'
 import { FacturaInputProps } from '../../interfaces/factura'
@@ -22,6 +21,7 @@ interface OwnProps {
 type Props = OwnProps
 
 const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
+  const { user } = useAuth()
   const {
     form: {
       control,
@@ -37,7 +37,14 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     if (!actLoading && genReplaceEmpty(actividades, []).length > 0) {
       if (isEmptyValue(getValues('actividadEconomica'))) {
-        setValue('actividadEconomica', actividades![0])
+        const tempActividades = actividades!.find(
+          (a) => a.codigoActividad === user.actividadEconomica.codigoCaeb,
+        )
+        if (tempActividades) {
+          setValue('actividadEconomica', tempActividades)
+        } else {
+          setValue('actividadEconomica', actividades![0])
+        }
       }
     }
     // setValue('actividadEconomica', user.actividadEconomica)
