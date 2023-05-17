@@ -1,11 +1,6 @@
-import { actionForm, ActionFormProps } from '../../../interfaces'
+import { ActionFormProps } from '../../../interfaces'
 import { genReplaceEmpty } from '../../../utils/helper'
-import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interface'
-import {
-  ClienteApiInputProps,
-  ClienteInputProps,
-  ClienteProps,
-} from '../interfaces/cliente'
+import { ClienteInputProps, ClienteProps } from '../interfaces/cliente'
 
 /**
  * Decomponemos al cliente para el formulario
@@ -25,6 +20,7 @@ export const clienteDecomposeService = (
     nombres: genReplaceEmpty(input.nombres, ''),
     apellidos: genReplaceEmpty(input.apellidos, ''),
     telefono: genReplaceEmpty(input.telefono, ''),
+    codigoExcepcion: genReplaceEmpty(input.codigoExcepcion, 1),
     action,
   }
 }
