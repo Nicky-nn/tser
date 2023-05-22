@@ -20,6 +20,7 @@ import {
 import { SucursalProps } from '../../sucursal/interfaces/sucursal'
 
 export interface FacturaDetalleInputProps extends ProductoVarianteProps {
+  codigoActividad?: string | null
   verificarStock: boolean
   codigoProductoSin: string
   descripcion: string

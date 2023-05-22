@@ -3,11 +3,12 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import { ProductoVarianteProps } from '../interfaces/producto.interface'
 
 const reqQuery = gql`
-  query FCV_PRODUCTOS_VARIANTES_BUSQUEDA($codigoActividad: String!, $query: String) {
-    fcvProductosVariantesBusqueda(codigoActividad: $codigoActividad, query: $query) {
+  query FCV_PRODUCTOS_VARIANTES_BUSQUEDA($query: String) {
+    fcvProductosVariantesBusqueda(query: $query) {
       _id
       id
       sinProductoServicio {
@@ -54,15 +55,22 @@ const reqQuery = gql`
   }
 `
 
+/**
+ * @description Buscamos las variantes, actividad economica
+ * @param query
+ */
 export const apiProductosVariantesBusqueda = async (
-  codigoActividad: string,
   query: string,
 ): Promise<ProductoVarianteProps[]> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(reqQuery, { codigoActividad, query })
-  return data?.fcvProductosVariantesBusqueda || []
+    const data: any = await client.request(reqQuery, { query })
+    return data?.fcvProductosVariantesBusqueda || []
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

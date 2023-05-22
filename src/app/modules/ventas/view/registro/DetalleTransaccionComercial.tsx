@@ -80,13 +80,6 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
         detalleExtra: newInput.detalleExtra,
         subtotal: 0,
       } as FacturaDetalleInputProps)
-      /*
-      if (!producto) {
-
-      } else {
-        notDanger('El producto ya se adicionó');
-      }
-       */
     }
   }
 
@@ -97,10 +90,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
 
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
-      const productos = await apiProductosVariantesBusqueda(
-        getValues('actividadEconomica.codigoActividad'),
-        inputValue,
-      )
+      const productos = await apiProductosVariantesBusqueda(inputValue)
       if (productos) return productos
       return []
     } catch (e: any) {

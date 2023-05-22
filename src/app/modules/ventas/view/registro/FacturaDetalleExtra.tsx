@@ -57,7 +57,7 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
                 // dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
               }}
               init={{
-                plugins: 'table template code',
+                plugins: ['table', 'template', 'code'],
                 toolbar:
                   'undo redo | bold italic | alignleft aligncenter alignright alignjustify | table | template | code',
                 menubar: false,

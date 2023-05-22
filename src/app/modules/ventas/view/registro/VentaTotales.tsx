@@ -69,6 +69,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   const tipoCambio = getValues('tipoCambio')
 
   const handleFocus = (event: any) => event.target.select()
+
+  /**
+   * @description validacion, Composición y envio del formulario de factura
+   * @param data
+   */
   const onSubmit: SubmitHandler<FacturaInputProps> = async (data) => {
     const inputFactura = composeFactura(data)
     const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
