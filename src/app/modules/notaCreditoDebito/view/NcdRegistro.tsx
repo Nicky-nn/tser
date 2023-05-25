@@ -1,16 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Save } from '@mui/icons-material'
-import { Button, Grid, Paper, Stack } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { Box } from '@mui/system'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { openInNewTab } from '../../../utils/helper'
-import { notSuccess } from '../../../utils/notification'
+import { notError, notSuccess } from '../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
 import { apiNcdRegistro } from '../api/ncdRegistroApi'
 import { NcdInputProps } from '../interfaces/ncdInterface'
@@ -35,44 +37,52 @@ const NcdRegistro = () => {
     resolver: yupResolver(ncdRegistroValidationSchema),
   })
 
+  /**
+   * @description Guardamos la nota
+   * @param values
+   */
   const onSubmit: SubmitHandler<NcdInputProps> = async (values) => {
-    const apiInput = ncdInputCompose(values)
-    await swalAsyncConfirmDialog({
-      preConfirm: async () => {
-        const resp: any = await apiNcdRegistro(apiInput).catch((err) => ({
-          error: err,
-        }))
-        if (resp.error) {
-          swalException(resp.error)
-          return false
+    if (values.detalleFactura.length > 0) {
+      const apiInput = ncdInputCompose(values)
+      await swalAsyncConfirmDialog({
+        preConfirm: async () => {
+          const resp: any = await apiNcdRegistro(apiInput).catch((err) => ({
+            error: err,
+          }))
+          if (resp.error) {
+            swalException(resp.error)
+            return false
+          }
+          return resp
+        },
+      }).then((resp) => {
+        if (resp.isConfirmed) {
+          const { value } = resp
+          const { representacionGrafica } = value
+          mySwal.fire({
+            title: `Documento generado correctamente`,
+            html: (
+              <RepresentacionGraficaUrls representacionGrafica={representacionGrafica} />
+            ),
+          })
+          form.reset({
+            numeroFactura: '',
+            fechaEmision: '',
+            razonSocial: '',
+            facturaCuf: '',
+            detalleFactura: [],
+          })
+          notSuccess()
+          openInNewTab(representacionGrafica.pdf)
         }
-        return resp
-      },
-    }).then((resp) => {
-      if (resp.isConfirmed) {
-        const { value } = resp
-        const { representacionGrafica } = value
-        mySwal.fire({
-          title: `Documento generado correctamente`,
-          html: (
-            <RepresentacionGraficaUrls representacionGrafica={representacionGrafica} />
-          ),
-        })
-        form.reset({
-          numeroFactura: '',
-          fechaEmision: '',
-          razonSocial: '',
-          facturaCuf: '',
-          detalleFactura: [],
-        })
-        notSuccess()
-        openInNewTab(representacionGrafica.pdf)
-      }
-      if (resp.isDenied) {
-        swalException(resp.value)
-      }
-      return
-    })
+        if (resp.isDenied) {
+          swalException(resp.value)
+        }
+        return
+      })
+    } else {
+      notError('Seleccione el item o los items a ser devueltos')
+    }
   }
 
   return (
@@ -85,19 +95,8 @@ const NcdRegistro = () => {
           ]}
         />
       </div>
-      <Paper
-        elevation={0}
-        variant="elevation"
-        square
-        sx={{ mb: 2, p: 0.5 }}
-        className={'asideSidebarFixed'}
-      >
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          style={{ marginTop: 2 }}
-          spacing={{ xs: 1, sm: 1, md: 1, xl: 1 }}
-          justifyContent="flex-end"
-        >
+      <StackMenu asideSidebarFixed>
+        <StackMenuItem>
           <Button
             color={'success'}
             startIcon={<Save />}
@@ -106,11 +105,12 @@ const NcdRegistro = () => {
           >
             Registrar Nota
           </Button>
-        </Stack>
-      </Paper>
+        </StackMenuItem>
+      </StackMenu>
+
       <form>
         <Grid container spacing={2}>
-          <Grid item lg={12}>
+          <Grid item lg={12} xs={12} md={12}>
             <NcdFacturaOriginal form={form} />
           </Grid>
           <Grid item lg={12}>

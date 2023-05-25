@@ -20,17 +20,17 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
-import { SimpleItem } from '../../../base/components/Container/SimpleItem'
-import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
 import {
   muiTableApiEstado,
-  muiTableHeadCellFilterTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
 } from '../../../utils/materialReactTableUtils'
 import { apiNotasCreditoDebito } from '../api/ncd.api'
 import { NcdProps } from '../interfaces/ncdInterface'
@@ -173,10 +173,9 @@ const NcdGestion: FC<any> = () => {
           />
         </div>
 
-        <SimpleRowMenu>
-          <SimpleItem>
+        <StackMenu asideSidebarFixed>
+          <StackMenuItem>
             <Button
-              size={'small'}
               startIcon={<DocumentScanner />}
               variant={'contained'}
               color={'success'}
@@ -185,8 +184,8 @@ const NcdGestion: FC<any> = () => {
             >
               Nueva Nota de Crédito Debito
             </Button>
-          </SimpleItem>
-        </SimpleRowMenu>
+          </StackMenuItem>
+        </StackMenu>
 
         <Grid container spacing={2}>
           <Grid item lg={12} md={12} xs={12}>
@@ -284,9 +283,7 @@ const NcdGestion: FC<any> = () => {
                   <AuditIconButton row={row.original} />
                 </div>
               )}
-              muiTableHeadCellFilterTextFieldProps={{
-                ...muiTableHeadCellFilterTextFieldProps,
-              }}
+              muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
             />
           </Grid>
         </Grid>

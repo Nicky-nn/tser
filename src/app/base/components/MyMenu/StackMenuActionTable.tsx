@@ -3,12 +3,10 @@ import { Box, IconButton, Stack, styled, Tooltip } from '@mui/material'
 import { StackProps } from '@mui/material/Stack/Stack'
 import { FC, ReactElement } from 'react'
 
-import { Span } from '../Template/Typography'
-
 /**
  * @description Item para lo StackMenu y StackMenuActionTable
  */
-export const StackMenuItem = styled(Span)(({ theme }) => ({
+export const StackMenuItem = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
   color: theme.palette.text.secondary,
 }))

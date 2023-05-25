@@ -88,10 +88,16 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     update(index, newInput)
   }
 
+  /**
+   * @description Cargamos los productos a travez de la busqueda por expresion regular
+   * @param inputValue
+   */
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
-      const productos = await apiProductosVariantesBusqueda(inputValue)
-      if (productos) return productos
+      if (inputValue.trim().length > 3) {
+        const productos = await apiProductosVariantesBusqueda(inputValue)
+        if (productos) return productos
+      }
       return []
     } catch (e: any) {
       swalException(e)

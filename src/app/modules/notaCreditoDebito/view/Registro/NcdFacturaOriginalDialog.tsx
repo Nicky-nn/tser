@@ -22,7 +22,7 @@ import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/S
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../../utils/helper'
 import { localization } from '../../../../utils/localization'
-import { muiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils'
+import { MuiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils'
 import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api'
 import { FacturaProps } from '../../../ventas/interfaces/factura'
 
@@ -234,9 +234,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                 </Button>
               </>
             )}
-            muiTableHeadCellFilterTextFieldProps={{
-              ...muiTableHeadCellFilterTextFieldProps,
-            }}
+            muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
             muiTableProps={{
               sx: {
                 tableLayout: 'fixed',

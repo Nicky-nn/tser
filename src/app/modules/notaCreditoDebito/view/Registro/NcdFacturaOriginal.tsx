@@ -1,17 +1,19 @@
 import { Button, Grid, Typography } from '@mui/material'
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import DataTable, { TableColumn } from 'react-data-table-component'
+import MaterialReactTable, {
+  MRT_ColumnDef,
+  MRT_RowSelectionState,
+} from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { FormTextField } from '../../../../base/components/Form'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import {
+  DisplayColumnDefOptions,
+  MuiTableProps,
+} from '../../../../utils/materialReactTableUtils'
 import { DetalleFacturaProps, FacturaProps } from '../../../ventas/interfaces/factura'
 import { NcdInputProps } from '../../interfaces/ncdInterface'
 import NcdFacturaOriginalDialog from './NcdFacturaOriginalDialog'
@@ -34,71 +36,99 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
   } = props
 
   const [openDialog, setOpenDialog] = useState(false)
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
 
   const [selectedRows, setSelectedRows] = useState([])
 
-  const columns = useMemo<TableColumn<DetalleFacturaProps>[]>(
-    //column definitions...
+  const columns = useMemo<MRT_ColumnDef<DetalleFacturaProps>[]>(
     () => [
       {
-        name: 'Nro. Item',
-        selector: (row) => row.nroItem,
-        width: '100px',
+        accessorKey: 'nroItem',
+        header: 'Nro. Item',
+        size: 50,
       },
       {
-        name: 'Cantidad',
-        selector: (row) => row.cantidad,
-        width: '100px',
+        accessorKey: 'cantidad',
+        header: 'Cantidad',
+        size: 80,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue<number>(), {})}</span>,
       },
       {
-        name: 'Descripción',
-        selector: (row) => row.descripcion,
+        accessorKey: 'descripcion',
+        header: 'Descripción',
+        minSize: 300,
+        maxSize: 800,
+        size: 100,
       },
       {
-        name: 'Descuento',
-        selector: (row) => numberWithCommas(row.montoDescuento as number, {}),
-        right: true,
-        width: '160px',
+        accessorKey: 'montoDescuento',
+        header: 'Descuento',
+        size: 100,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue<number>(), {})}</span>,
       },
       {
-        name: 'Precio Unitario',
-        selector: (row) => numberWithCommas(row.precioUnitario as number, {}),
-        right: true,
-        width: '160px',
+        accessorKey: 'precioUnitario',
+        header: 'Precio Unitario',
+        size: 100,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue<number>(), {})}</span>,
       },
       {
-        name: 'Sub Total',
-        selector: (row) => numberWithCommas(row.subTotal as number, {}),
-        right: true,
-        width: '160px',
+        accessorKey: 'subTotal',
+        header: 'Sub Total',
+        size: 100,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        Cell: ({ cell }) => <span>{numberWithCommas(cell.getValue<number>(), {})}</span>,
       },
     ],
-    [], //end
+    [],
   )
-  const handleRowSelected = useCallback((state: any) => {
-    setSelectedRows(state.selectedRows)
-    const detalle = state.selectedRows.map((d: DetalleFacturaProps) => ({
-      nroItem: d.nroItem,
-      cantidadOriginal: d.cantidad,
-      cantidad: d.cantidad,
-      descripcion: d.descripcion,
-      montoDescuento: d.montoDescuento,
-      precioUnitario: d.precioUnitario,
-      subTotal: d.subTotal,
-    }))
-    setValue('detalleFactura', detalle)
-  }, [])
 
   useEffect(() => {
     setSelectedRows([])
     setValue('detalleFactura', [])
   }, [])
 
+  useEffect(() => {
+    if (rowSelection) {
+      const p = Object.keys(rowSelection)
+      if (p.length > 0) {
+        const pvs = getValues('detalle').filter((i) => p.includes(i.nroItem.toString()))
+        if (pvs.length > 0) {
+          const detalle = pvs.map((d: DetalleFacturaProps) => ({
+            nroItem: d.nroItem,
+            cantidadOriginal: d.cantidad,
+            cantidad: d.cantidad,
+            descripcion: d.descripcion,
+            montoDescuento: d.montoDescuento,
+            precioUnitario: d.precioUnitario,
+            subTotal: d.subTotal,
+          }))
+          setValue('detalleFactura', detalle)
+        } else {
+          setValue('detalleFactura', [])
+        }
+      } else {
+        setValue('detalleFactura', [])
+      }
+    }
+  }, [rowSelection])
+
   return (
     <>
       <SimpleCard title={'DATOS DE LA FACTURA ORIGINAL'}>
         <Grid container spacing={3}>
-          <Grid item lg={12}>
+          <Grid item xs={12} lg={12}>
             <Button
               size={'small'}
               variant={'contained'}
@@ -138,16 +168,35 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
               value={getValues('facturaCuf')}
             />
           </Grid>
-          <Grid item lg={12} md={12} xs={12} sx={{ pt: 10 }}>
+          <Grid item lg={12} md={12} xs={12}>
             <Typography gutterBottom variant={'subtitle1'}>
-              Detalle
+              Seleccione los items a ser devueltos
             </Typography>
-            <DataTable
+            <MaterialReactTable
               columns={columns}
-              data={getValues('detalle')}
-              selectableRows
-              onSelectedRowsChange={handleRowSelected}
-              dense
+              data={getValues('detalle') || []}
+              localization={MRT_Localization_ES}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enablePagination={false}
+              enableSorting={false}
+              enableBottomToolbar={false}
+              state={{
+                rowSelection,
+                density: 'compact',
+              }}
+              muiTableProps={MuiTableProps}
+              displayColumnDefOptions={DisplayColumnDefOptions}
+              enableTopToolbar={false}
+              enableRowSelection
+              onRowSelectionChange={setRowSelection}
+              getRowId={(row) => row.nroItem.toString()}
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: row.getToggleSelectedHandler(),
+                sx: {
+                  cursor: 'pointer',
+                },
+              })}
             />
           </Grid>
         </Grid>
@@ -155,7 +204,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
       <>
         <NcdFacturaOriginalDialog
           id={'ncdFacturaOriginalDialogSeleccion'}
-          keepMounted={false}
+          keepMounted={true}
           open={openDialog}
           onClose={(value?: FacturaProps) => {
             setOpenDialog(false)

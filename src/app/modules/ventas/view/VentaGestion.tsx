@@ -24,13 +24,21 @@ import { SimpleItem } from '../../../base/components/Container/SimpleItem'
 import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import StackMenuActionTable, {
+  StackMenuItem,
+} from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
 import {
+  DisplayColumnDefOptions,
+  MuiSearchTextFieldProps,
   muiTableApiEstado,
-  muiTableHeadCellFilterTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableProps,
+  MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { fetchFacturaListado } from '../api/factura.listado.api'
 import { FacturaProps } from '../interfaces/factura'
@@ -188,6 +196,9 @@ const VentaGestion: FC<any> = () => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
+    {
+      refetchOnWindowFocus: false,
+    },
   )
   const columns = useMemo(() => tableColumns, [])
   return (
@@ -202,8 +213,8 @@ const VentaGestion: FC<any> = () => {
           />
         </div>
 
-        <SimpleRowMenu>
-          <SimpleItem>
+        <StackMenu>
+          <StackMenuItem>
             <Button
               size={'small'}
               startIcon={<ImportExport />}
@@ -212,9 +223,8 @@ const VentaGestion: FC<any> = () => {
             >
               MIS VENTAS
             </Button>
-          </SimpleItem>
-
-          <SimpleItem>
+          </StackMenuItem>
+          <StackMenuItem>
             <Button
               size={'small'}
               startIcon={<ImportExport />}
@@ -223,9 +233,8 @@ const VentaGestion: FC<any> = () => {
             >
               EXPORTAR
             </Button>
-          </SimpleItem>
-
-          <SimpleItem>
+          </StackMenuItem>
+          <StackMenuItem>
             <Button
               size={'small'}
               startIcon={<ImportExport />}
@@ -234,8 +243,8 @@ const VentaGestion: FC<any> = () => {
             >
               EXPORTAR DETALLES
             </Button>
-          </SimpleItem>
-        </SimpleRowMenu>
+          </StackMenuItem>
+        </StackMenu>
 
         <Grid container spacing={2}>
           <Grid item lg={12} md={12} xs={12}>
@@ -253,14 +262,7 @@ const VentaGestion: FC<any> = () => {
               manualFiltering
               manualPagination
               manualSorting
-              muiToolbarAlertBannerProps={
-                isError
-                  ? {
-                      color: 'error',
-                      children: 'Error Cargando Datos',
-                    }
-                  : undefined
-              }
+              muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
               onColumnFiltersChange={setColumnFilters}
               onPaginationChange={setPagination}
               onSortingChange={setSorting}
@@ -280,13 +282,9 @@ const VentaGestion: FC<any> = () => {
                 rowSelection,
               }}
               enableRowActions
+              muiSearchTextFieldProps={MuiSearchTextFieldProps}
               positionActionsColumn="first"
-              displayColumnDefOptions={{
-                'mrt-row-actions': {
-                  header: 'Acciones', //change header text
-                  size: 100, //make actions column wider
-                },
-              }}
+              displayColumnDefOptions={DisplayColumnDefOptions}
               renderRowActions={({ row }) => (
                 <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
                   <SimpleMenu
@@ -354,8 +352,12 @@ const VentaGestion: FC<any> = () => {
                 </div>
               )}
               muiTableHeadCellFilterTextFieldProps={{
-                ...muiTableHeadCellFilterTextFieldProps,
+                ...MuiTableHeadCellFilterTextFieldProps,
               }}
+              renderTopToolbarCustomActions={({ table }) => {
+                return <StackMenuActionTable refetch={refetch} />
+              }}
+              muiTableProps={MuiTableProps}
             />
           </Grid>
         </Grid>

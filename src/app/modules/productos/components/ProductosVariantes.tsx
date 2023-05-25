@@ -10,7 +10,7 @@ import useAuth from '../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../utils/helper'
 import {
-  muiTableHeadCellFilterTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
   MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { apiProductosVariantes } from '../api/productosVariantes.api'
@@ -149,7 +149,7 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
           density: 'compact',
           rowSelection,
         }}
-        muiTableHeadCellFilterTextFieldProps={muiTableHeadCellFilterTextFieldProps}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         enableSelectAll={false}
         onRowSelectionChange={setRowSelection}

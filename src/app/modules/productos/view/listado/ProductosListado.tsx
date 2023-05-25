@@ -10,7 +10,7 @@ import { SortingState } from '@tanstack/react-table'
 import { sumBy } from 'lodash'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
-import React, { FunctionComponent, useMemo, useState } from 'react'
+import { FunctionComponent, useMemo, useState } from 'react'
 
 import StackMenuActionTable, {
   StackMenuItem,
