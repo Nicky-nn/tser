@@ -60,9 +60,9 @@ export const navigations: NavigationProps[] = [
     icon: 'inventory_sharp',
     children: [
       {
-        name: 'Gestión de Productos',
+        name: productosRouteMap.gestion.name,
         iconText: 'GP',
-        path: productosRouteMap.gestion,
+        path: productosRouteMap.gestion.path,
       },
       {
         name: 'Proveedores',

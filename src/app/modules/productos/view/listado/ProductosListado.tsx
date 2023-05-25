@@ -1,5 +1,5 @@
-import { Delete, Edit } from '@mui/icons-material'
-import { Box, Button, Chip, IconButton } from '@mui/material'
+import { Delete } from '@mui/icons-material'
+import { Button, Chip } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
@@ -9,19 +9,27 @@ import type {
 import { SortingState } from '@tanstack/react-table'
 import { sumBy } from 'lodash'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { FunctionComponent, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
-import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
+import StackMenuActionTable, {
+  StackMenuItem,
+} from '../../../../base/components/MyMenu/StackMenuActionTable'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../../utils/helper'
-import { localization } from '../../../../utils/localization'
+import {
+  DisplayColumnDefOptions,
+  MuiSearchTextFieldProps,
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../../utils/materialReactTableUtils'
 import { notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiProductos } from '../../api/producto.api'
 import { apiProductosEliminar } from '../../api/productoEliminar.api'
 import { ProductoProps } from '../../interfaces/producto.interface'
-import { productosRouteMap } from '../../ProductosRoutesMap'
+import ProductoMenu from './ProductoMenu'
 
 interface OwnProps {}
 
@@ -78,9 +86,12 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
   },
 ]
 
+/**
+ * @description Tabla listado de productos
+ * @param props
+ * @constructor
+ */
 const ProductosListado: FunctionComponent<Props> = (props) => {
-  const navigate = useNavigate()
-
   // ESTADO DATATABLE
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
@@ -97,7 +108,13 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
   const { data, isError, isFetching, isLoading, status, refetch } = useQuery<
     ProductoProps[]
   >(
-    ['table-data', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
+    [
+      'productosListado',
+      columnFilters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sorting,
+    ],
     async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
@@ -112,13 +129,16 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
       return docs
     },
     {
-      refetchOnWindowFocus: true,
-      keepPreviousData: true,
+      refetchOnWindowFocus: false,
     },
   )
 
   const columns = useMemo(() => tableColumns, [])
 
+  /**
+   * @description Eliminamos los productos seleccionados
+   * @param data
+   */
   const handleDeleteData = async (data: any) => {
     const products = data.map((item: any) => item.original._id)
     await swalAsyncConfirmDialog({
@@ -146,16 +166,14 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
         manualFiltering
         manualPagination
         manualSorting
-        muiToolbarAlertBannerProps={
-          isError ? { color: 'error', children: 'Error loading data' } : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
         enableDensityToggle={false}
         enableGlobalFilter={false}
         rowCount={rowCount}
-        localization={localization}
+        localization={MRT_Localization_ES}
         state={{
           isLoading,
           columnFilters,
@@ -166,64 +184,35 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
           sorting,
           rowSelection,
         }}
-        muiSearchTextFieldProps={{
-          variant: 'outlined',
-          placeholder: 'Busqueda',
-          InputLabelProps: { shrink: true },
-          size: 'small',
-        }}
+        muiSearchTextFieldProps={MuiSearchTextFieldProps}
         enableRowActions
         positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
-          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem', width: 100 }}>
-            <IconButton
-              onClick={() =>
-                navigate(`${productosRouteMap.modificar}/${row.original._id}`)
-              }
-              color={'primary'}
-              aria-label="delete"
-            >
-              <Edit />
-            </IconButton>
-            <AuditIconButton row={row.original} />
-          </div>
+          <ProductoMenu row={row.original} refetch={refetch} />
         )}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={({ table }) => {
           return (
-            <Box sx={{ display: 'flex', gap: '1rem', p: '0.5rem', flexWrap: 'wrap' }}>
-              <Button
-                color="error"
-                onClick={() => handleDeleteData(table.getSelectedRowModel().flatRows)}
-                startIcon={<Delete />}
-                variant="contained"
-                size={'small'}
-                disabled={table.getSelectedRowModel().flatRows.length === 0}
-              >
-                Eliminar
-              </Button>
-            </Box>
+            <StackMenuActionTable refetch={refetch}>
+              <StackMenuItem>
+                <Button
+                  color="error"
+                  onClick={() => handleDeleteData(table.getSelectedRowModel().flatRows)}
+                  startIcon={<Delete />}
+                  variant="contained"
+                  size={'small'}
+                  disabled={table.getSelectedRowModel().flatRows.length === 0}
+                >
+                  Eliminar
+                </Button>
+              </StackMenuItem>
+            </StackMenuActionTable>
           )
         }}
-        muiTableProps={{
-          sx: {
-            tableLayout: 'fixed',
-          },
-        }}
-        displayColumnDefOptions={{
-          'mrt-row-actions': {
-            muiTableHeadCellProps: {
-              align: 'center',
-            },
-            size: 120,
-          },
-        }}
+        muiTableProps={MuiTableProps}
+        displayColumnDefOptions={DisplayColumnDefOptions}
       />
     </>
   )

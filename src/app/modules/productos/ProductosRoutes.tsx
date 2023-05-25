@@ -10,17 +10,17 @@ const AppProductoActualizar = Loadable(lazy(() => import('./view/ProductoActuali
 
 const productosRoutes = [
   {
-    path: productosRouteMap.gestion,
+    path: productosRouteMap.gestion.path,
     element: <AppProductosGestion />,
     auth: authRoles.admin,
   },
   {
-    path: productosRouteMap.nuevo,
+    path: productosRouteMap.nuevo.path,
     element: <AppProductoNuevo />,
     auth: authRoles.admin,
   },
   {
-    path: `${productosRouteMap.modificar}/:id`,
+    path: `${productosRouteMap.modificar.path}/:id`,
     element: <AppProductoActualizar />,
     auth: authRoles.admin,
   },

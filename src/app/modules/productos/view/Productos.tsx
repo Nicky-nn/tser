@@ -1,47 +1,40 @@
 import { Newspaper } from '@mui/icons-material'
-import { Button, Grid, Stack } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
-import AuthContext from '../../../base/contexts/JWTAuthContext'
+import { productosRouteMap } from '../ProductosRoutesMap'
 import ProductosListado from './listado/ProductosListado'
 
+/**
+ * @description componente principal para la gestión de productos
+ * @constructor
+ */
 const Productos = () => {
-  const { user } = useContext(AuthContext)
-  // in this case *props are stored in the state of parent component
-
   return (
     <SimpleContainer>
       <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Productos', path: '/productos/gestión' },
-            { name: 'Gestión de productos' },
-          ]}
-        />
+        <Breadcrumb routeSegments={[productosRouteMap.gestion]} />
       </div>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1}
-        justifyContent="right"
-        sx={{ marginBottom: 3 }}
-      >
-        {/*<Button size={'small'} variant="outlined" startIcon={<UploadFile/>}>Importar</Button>*/}
-        {/*<Button size={'small'} variant="outlined" startIcon={<FileDownload/>}>Exportar</Button>*/}
-        <Button
-          size={'small'}
-          variant="contained"
-          component={RouterLink}
-          to="/productos/nuevo"
-          startIcon={<Newspaper />}
-          color={'success'}
-        >
-          Nuevo Producto
-        </Button>
-      </Stack>
+      <StackMenu asideSidebarFixed>
+        <StackMenuItem>
+          <Button
+            size={'small'}
+            variant="contained"
+            component={RouterLink}
+            to={productosRouteMap.nuevo.path}
+            startIcon={<Newspaper />}
+            color={'success'}
+          >
+            {productosRouteMap.nuevo.name}
+          </Button>
+        </StackMenuItem>
+      </StackMenu>
+
       <Grid container spacing={2}>
         <Grid item lg={12} md={12} xs={12}>
           <ProductosListado />

@@ -174,8 +174,9 @@ export const components = {
     styleOverrides: {
       root: {
         '& fieldset': {
-          fontSize: '18px',
+          fontSize: 25,
         },
+        '& .MuiSvgIcon-root': { fontSize: 25 },
       },
     },
   },
@@ -185,6 +186,7 @@ export const components = {
         '& fieldset': {
           fontSize: '18px',
         },
+        '& .MuiSvgIcon-root': { fontSize: 25 },
       },
     },
   },

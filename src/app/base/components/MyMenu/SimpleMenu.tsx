@@ -1,6 +1,6 @@
 import { Menu, MenuItem, ThemeProvider } from '@mui/material'
 import { alpha, Box, styled } from '@mui/system'
-import React, { Children, FC, Fragment, useState } from 'react'
+import React, { Children, FC, Fragment, ReactElement, useState } from 'react'
 
 import useSettings from '../../hooks/useSettings'
 
@@ -30,9 +30,9 @@ export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
     padding: '4px 0',
   },
   '& .MuiSvgIcon-root': {
-    fontSize: 18,
-    color: theme.palette.text.secondary,
-    marginRight: theme.spacing(1.5),
+    fontSize: 20,
+    // color: theme.palette.text.secondary,
+    marginRight: theme.spacing(0.8),
   },
   '&:active': {
     backgroundColor: alpha(
@@ -43,8 +43,8 @@ export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
 }))
 
 interface SimpleMenuProps {
-  children: JSX.Element | JSX.Element[]
-  menuButton: JSX.Element
+  children: ReactElement | ReactElement[]
+  menuButton: ReactElement
   shouldCloseOnItemClick?: boolean
   horizontalPosition?: number | 'right' | 'left' | 'center'
 }

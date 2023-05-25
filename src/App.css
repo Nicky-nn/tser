@@ -302,8 +302,8 @@ button {
 }
 
 .asideSidebarFixed {
-  --offset: var(--space);
-  align-self: start;
+  --offset: var(--space) !important;
+  align-self: start !important;
   position: sticky;
   z-index: 6 !important;
   top: var(--offset);

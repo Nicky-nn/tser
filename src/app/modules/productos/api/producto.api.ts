@@ -3,6 +3,7 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import { PageInfoProps, PageInputProps } from '../../../interfaces'
 import { ProductoProps } from '../interfaces/producto.interface'
 
@@ -99,14 +100,22 @@ const query = gql`
   }
 `
 
+/**
+ * @description consumo api para listado de productos y sus variantes
+ * @param pageInfo
+ */
 export const apiProductos = async (
   pageInfo: PageInputProps,
 ): Promise<ApiProductoResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, { ...pageInfo })
-  return data.fcvProductos
+    const data: any = await client.request(query, { ...pageInfo })
+    return data.fcvProductos
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }
