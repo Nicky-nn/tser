@@ -1,14 +1,14 @@
-import { array, boolean, mixed, number, object, setLocale, string } from 'yup'
+import { array, boolean, number, object, setLocale, string } from 'yup'
 import { es } from 'yup-locales'
 
 import { ProductoInputProps } from '../interfaces/producto.interface'
-
+setLocale(es)
 export const productoRegistroVarianteValidatorioSchema = {
   id: string().required('Identificador unico de la variante del producto es requerido'),
   codigoProducto: string().trim().required('Código del producto es requerido'),
   codigoBarras: string().trim().nullable(),
-  precio: number().min(0).required('Precio es un campo obligatorio'),
-  precioComparacion: number().min(0),
+  precio: number().positive().required('Precio es un campo obligatorio'),
+  precioComparacion: number().min(0).nullable(),
   costo: number().min(0),
   inventario: array().of(
     object({
@@ -32,7 +32,7 @@ export const productoRegistroVarianteValidatorioSchema = {
 
 export const productoRegistroValidationSchema = object({
   actividadEconomica: object({
-    codigoCaeb: string().required('Debe seleccionar la actividad económica'),
+    codigoActividad: string().required('Debe seleccionar la actividad económica'),
   }).required(),
   sinProductoServicio: object()
     .nullable()

@@ -8,6 +8,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * @description Loading para randerización de componentes
+ * @param props
+ * @constructor
+ */
 const AlertLoading: FunctionComponent<Props> = (props) => {
   const { mensaje, tipo } = props
   const [progress, setProgress] = React.useState(0)

@@ -5,15 +5,15 @@ import { Controller, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 
 import AlertError from '../../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../../base/components/Form'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
-import useAuth from '../../../../base/hooks/useAuth'
 import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api'
-import useQueryActividades from '../../../sin/hooks/useQueryActividades'
+import useQueryActividadesPorDocumentoSector from '../../../sin/hooks/useQueryActividadesPorDocumentoSector'
 import {
-  SinActividadesProps,
+  SinActividadesDocumentoSectorProps,
   SinProductoServicioProps,
 } from '../../../sin/interfaces/sin.interface'
 import { ProductoInputProps } from '../../interfaces/producto.interface'
@@ -34,41 +34,59 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
       formState: { errors },
     },
   } = props
+
+  // miramos los cambios realizados en actividad economica
   const actividadEconomicaWatch = watch('actividadEconomica')
 
-  // const {values, setFieldValue} = formik
-  const { user } = useAuth()
-
   // CARGA DATOS DE ACTIVIDADES
-  const { actividades, actIsError, actError, actLoading } = useQueryActividades()
+  const { actividades, actIsError, actError, actLoading } =
+    useQueryActividadesPorDocumentoSector()
 
   // CARGA DE DATOS DE PRODUCTOS SERVICIOS
-  const { data: productosServicios, error: prodServError } = useQuery<
-    SinProductoServicioProps[],
-    Error
-  >(
+  const {
+    data: productosServicios,
+    isLoading: prodServIsLoading,
+    error: prodServError,
+  } = useQuery<SinProductoServicioProps[], Error>(
     ['productosServicios', actividadEconomicaWatch],
     async () => {
-      return await fetchSinProductoServicioPorActividad(
-        getValues('actividadEconomica.codigoCaeb'),
+      console.log('cambiamos')
+      const docs = await fetchSinProductoServicioPorActividad(
+        getValues('actividadEconomica.codigoActividad'),
       )
+      if (docs.length > 0) {
+        setValue('sinProductoServicio', docs[0])
+      }
+      return docs
     },
     {
       keepPreviousData: false,
+      refetchOnWindowFocus: false,
+      refetchInterval: false,
     },
   )
 
+  // En caso no existiera valores en actividad economica
   useEffect(() => {
-    setValue('actividadEconomica', user.actividadEconomica)
-  }, [])
+    if (!actLoading && !actIsError && !getValues('actividadEconomica')) {
+      setValue('actividadEconomica', actividades![0])
+    }
+  }, [actLoading])
+
+  if (actIsError) {
+    return <AlertError mensaje={actError!.message} />
+  }
+  if (prodServError) {
+    return <AlertError mensaje={prodServError.message} />
+  }
 
   return (
     <>
       <SimpleCard title={'HOMOLOGACIÓN'}>
         <Grid container spacing={3}>
           <Grid item lg={12} md={12} xs={12}>
-            {actError ? (
-              <AlertError mensaje={actError.message} />
+            {actLoading ? (
+              <AlertLoading />
             ) : (
               <Controller
                 name="actividadEconomica"
@@ -76,7 +94,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                 render={({ field }) => (
                   <FormControl fullWidth>
                     <MyInputLabel shrink>Actividad Económica</MyInputLabel>
-                    <Select<SinActividadesProps>
+                    <Select<SinActividadesDocumentoSectorProps>
                       {...field}
                       styles={reactSelectStyles}
                       name="actividadEconomica"
@@ -92,11 +110,14 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                       }}
                       isSearchable={false}
                       options={actividades}
-                      getOptionValue={(item) => item.codigoCaeb}
+                      getOptionValue={(item) => item.codigoActividad}
                       getOptionLabel={(item) =>
-                        `${item.tipoActividad} - ${item.codigoCaeb} - ${item.descripcion}`
+                        `${item.tipoActividad} - ${item.codigoActividad} - ${item.actividadEconomica}`
                       }
                     />
+                    <FormHelperText>
+                      {errors.sinProductoServicio?.message || 'asdfasd'}
+                    </FormHelperText>
                   </FormControl>
                 )}
               />
@@ -104,8 +125,8 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
           </Grid>
 
           <Grid item lg={12} md={12} xs={12}>
-            {prodServError ? (
-              <AlertError mensaje={prodServError.message} />
+            {prodServIsLoading ? (
+              <AlertLoading />
             ) : (
               <Controller
                 name={'sinProductoServicio'}

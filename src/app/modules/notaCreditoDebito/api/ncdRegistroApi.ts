@@ -3,6 +3,7 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import { NcdProps } from '../interfaces/ncdInterface'
 
 export interface NcdRegistroInputProps {
@@ -35,11 +36,15 @@ const apiQuery = gql`
 export const apiNcdRegistro = async (
   inputProps: NcdRegistroInputProps,
 ): Promise<NcdProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(apiQuery, { input: inputProps })
-  return data.notaCreditoDebitoFcvRegistro
+    const data: any = await client.request(apiQuery, { input: inputProps })
+    return data.notaCreditoDebitoFcvRegistro
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

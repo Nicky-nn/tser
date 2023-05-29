@@ -49,9 +49,9 @@ export const navigations: NavigationProps[] = [
     icon: 'document_scanner',
     children: [
       {
-        name: 'Gestión de Notas',
+        name: ncdRouteMap.gestion.name,
         iconText: 'NCD',
-        path: ncdRouteMap.gestion,
+        path: ncdRouteMap.gestion.path,
       },
     ],
   },

@@ -1,4 +1,5 @@
 import {
+  Delete,
   DocumentScanner,
   FileOpen,
   LayersClear,
@@ -15,7 +16,7 @@ import {
   SortingState,
 } from '@tanstack/react-table'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
-import React, { FC, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
@@ -23,14 +24,18 @@ import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
 import StackMenu from '../../../base/components/MyMenu/StackMenu'
-import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
+import StackMenuActionTable, {
+  StackMenuItem,
+} from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
 import {
+  DisplayColumnDefOptions,
   muiTableApiEstado,
   MuiTableHeadCellFilterTextFieldProps,
+  MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { apiNotasCreditoDebito } from '../api/ncd.api'
 import { NcdProps } from '../interfaces/ncdInterface'
@@ -159,18 +164,17 @@ const NcdGestion: FC<any> = () => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: false,
+    },
   )
   const columns = useMemo(() => tableColumns, [])
   return (
     <>
       <SimpleContainer>
         <div className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              { name: 'Notas de crédito debito', path: ncdRouteMap.gestion },
-              { name: 'Gestión de Notas' },
-            ]}
-          />
+          <Breadcrumb routeSegments={[ncdRouteMap.gestion]} />
         </div>
 
         <StackMenu asideSidebarFixed>
@@ -180,9 +184,9 @@ const NcdGestion: FC<any> = () => {
               variant={'contained'}
               color={'success'}
               component={RouterLink}
-              to={ncdRouteMap.nuevo}
+              to={ncdRouteMap.nuevo.path}
             >
-              Nueva Nota de Crédito Debito
+              {ncdRouteMap.nuevo.name}
             </Button>
           </StackMenuItem>
         </StackMenu>
@@ -203,14 +207,7 @@ const NcdGestion: FC<any> = () => {
               manualFiltering
               manualPagination
               manualSorting
-              muiToolbarAlertBannerProps={
-                isError
-                  ? {
-                      color: 'error',
-                      children: 'Error Cargando Datos',
-                    }
-                  : undefined
-              }
+              muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
               onColumnFiltersChange={setColumnFilters}
               onPaginationChange={setPagination}
               onSortingChange={setSorting}
@@ -231,18 +228,13 @@ const NcdGestion: FC<any> = () => {
               }}
               enableRowActions
               positionActionsColumn="first"
-              displayColumnDefOptions={{
-                'mrt-row-actions': {
-                  header: 'Acciones', //change header text
-                  size: 110, //make actions column wider
-                },
-              }}
+              displayColumnDefOptions={DisplayColumnDefOptions}
               renderRowActions={({ row }) => (
-                <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
+                <Box>
                   <SimpleMenu
                     menuButton={
                       <>
-                        <IconButton aria-label="delete">
+                        <IconButton aria-label="Menu">
                           <MenuOpen />
                         </IconButton>
                       </>
@@ -281,13 +273,15 @@ const NcdGestion: FC<any> = () => {
                     </StyledMenuItem>
                   </SimpleMenu>
                   <AuditIconButton row={row.original} />
-                </div>
+                </Box>
               )}
               muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
+              renderTopToolbarCustomActions={({ table }) => {
+                return <StackMenuActionTable refetch={refetch} />
+              }}
             />
           </Grid>
         </Grid>
-        <Box py="12px" />
       </SimpleContainer>
     </>
   )

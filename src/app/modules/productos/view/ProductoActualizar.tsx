@@ -16,7 +16,11 @@ import {
   swalLoading,
 } from '../../../utils/swal'
 import { fetchSinActividades } from '../../sin/api/sinActividadEconomica.api'
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
+import { apiSinActividadesPorDocumentoSector } from '../../sin/api/sinActividadesPorDocumentoSector'
+import {
+  SinActividadesDocumentoSectorProps,
+  SinActividadesProps,
+} from '../../sin/interfaces/sin.interface'
 import { apiProductoModificar } from '../api/productoModificar.api'
 import { apiProductoPorId } from '../api/productoPorId.api'
 import {
@@ -93,10 +97,12 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
       const response = await apiProductoPorId(id)
       swalClose()
       if (response) {
-        const actividades: SinActividadesProps[] = await fetchSinActividades()
+        const actividades: SinActividadesDocumentoSectorProps[] =
+          await apiSinActividadesPorDocumentoSector()
         const actividad = actividades.find(
           (item) =>
-            item.codigoCaeb === response.variantes[0].sinProductoServicio.codigoActividad,
+            item.codigoActividad ===
+            response.variantes[0].sinProductoServicio.codigoActividad,
         )
         const prodInput = productoInputComposeService(response, actividad!)
         form.reset(prodInput)
@@ -151,10 +157,10 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             onClick={() => {
               // dispatch(productoReset());
-              navigate(productosRouteMap.nuevo)
+              navigate(productosRouteMap.nuevo.path)
             }}
           >
-            Nuevo Producto
+            {productosRouteMap.nuevo.name}
           </Button>
           &nbsp;
           <Button

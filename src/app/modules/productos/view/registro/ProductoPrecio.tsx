@@ -5,9 +5,12 @@ import React, { FunctionComponent } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select, { SingleValue } from 'react-select'
 
+import AlertError from '../../../../base/components/Alert/AlertError'
+import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
+import { rcInputError } from '../../../../base/components/RcInputNumber/RcInputNumber'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { handleSelect } from '../../../../utils/helper'
 import { apiSinUnidadMedida } from '../../../sin/api/sinUnidadMedida.api'
@@ -20,6 +23,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * @description Componente generacion Unidad medida y precio
+ * @param props
+ * @constructor
+ */
 const ProductoPrecio: FunctionComponent<Props> = (props) => {
   const {
     form: {
@@ -32,54 +40,71 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
 
   const [variantesWatch, varianteWatch] = watch(['variantes', 'variante'])
 
-  const { data: unidadesMedida } = useQuery<SinUnidadMedidaProps[], Error>(
+  const {
+    data: unidadesMedida,
+    error: umError,
+    isLoading: umIsLoading,
+  } = useQuery<SinUnidadMedidaProps[], Error>(
     ['unidadesMedida'],
     () => {
       return apiSinUnidadMedida()
     },
+    {
+      refetchOnWindowFocus: false,
+    },
   )
+  if (umError) {
+    return <AlertError mensaje={umError.message} />
+  }
 
   return (
-    <SimpleCard title={'PRECIO'}>
+    <SimpleCard title={'PRECIO - UNIDAD MEDIDA'}>
       <Grid container columnSpacing={3} rowSpacing={2}>
         <Grid item lg={12} md={12} xs={12}>
-          <Controller
-            control={control}
-            name={'variante.unidadMedida'}
-            render={({ field }) => (
-              <FormControl
-                fullWidth
-                sx={{ mb: 1 }}
-                error={Boolean(errors.variante?.unidadMedida)}
-              >
-                <MyInputLabel shrink>Unidad Medida</MyInputLabel>
-                <Select<SinUnidadMedidaProps>
-                  {...field}
-                  styles={reactSelectStyles}
-                  menuPosition={'fixed'}
-                  placeholder={'Seleccione la unidad de medida'}
-                  value={field.value}
-                  onChange={async (unidadMedida: SingleValue<SinUnidadMedidaProps>) => {
-                    field.onChange(unidadMedida)
-                    setValue(
-                      'variantes',
-                      variantesWatch.map((vs) => ({
-                        ...vs,
-                        unidadMedida,
-                      })),
-                    )
-                  }}
-                  options={unidadesMedida}
-                  getOptionValue={(item) => item.codigoClasificador}
-                  getOptionLabel={(item) =>
-                    `${item.codigoClasificador} - ${item.descripcion}`
-                  }
-                />
-                <FormHelperText>{errors.variante?.unidadMedida?.message}</FormHelperText>
-              </FormControl>
-            )}
-          />
+          {umIsLoading ? (
+            <AlertLoading />
+          ) : (
+            <Controller
+              control={control}
+              name={'variante.unidadMedida'}
+              render={({ field }) => (
+                <FormControl
+                  fullWidth
+                  sx={{ mb: 1 }}
+                  error={Boolean(errors.variante?.unidadMedida)}
+                >
+                  <MyInputLabel shrink>Unidad Medida</MyInputLabel>
+                  <Select<SinUnidadMedidaProps>
+                    {...field}
+                    styles={reactSelectStyle(Boolean(errors.variante?.unidadMedida))}
+                    menuPosition={'fixed'}
+                    placeholder={'Seleccione la unidad de medida'}
+                    value={field.value}
+                    onChange={async (unidadMedida: SingleValue<SinUnidadMedidaProps>) => {
+                      field.onChange(unidadMedida)
+                      setValue(
+                        'variantes',
+                        variantesWatch.map((vs) => ({
+                          ...vs,
+                          unidadMedida,
+                        })),
+                      )
+                    }}
+                    options={unidadesMedida}
+                    getOptionValue={(item) => item.codigoClasificador}
+                    getOptionLabel={(item) =>
+                      `${item.codigoClasificador} - ${item.descripcion}`
+                    }
+                  />
+                  <FormHelperText>
+                    {errors.variante?.unidadMedida?.message}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            />
+          )}
         </Grid>
+
         <Grid item lg={4} md={4} xs={12}>
           <Controller
             control={control}
@@ -92,6 +117,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   min={0}
                   placeholder={'0.00'}
                   name={'variante.precio'}
+                  className={rcInputError(Boolean(errors.variante?.precio))}
                   value={field.value}
                   onFocus={handleSelect}
                   onChange={(precio: number | null) => {
@@ -158,7 +184,7 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                   {...field}
                   min={0}
                   name={'variante.costo'}
-                  max={varianteWatch.precio === 0 ? 0 : varianteWatch.precio - 0.01}
+                  max={varianteWatch.precio === 0 ? 0 : varianteWatch.precio}
                   placeholder={'0.00'}
                   value={field.value}
                   onFocus={handleSelect}

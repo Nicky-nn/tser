@@ -6,6 +6,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { genRandomString } from '../../../utils/helper'
 import { notError, notSuccess } from '../../../utils/notification'
@@ -15,6 +17,7 @@ import {
   PRODUCTO_INITIAL_VALUES,
   ProductoInputProps,
 } from '../interfaces/producto.interface'
+import { productosRouteMap } from '../ProductosRoutesMap'
 import { productoComposeService } from '../services/ProductoComposeService'
 import {
   productoRegistroValidationSchema,
@@ -32,6 +35,11 @@ interface OwnProps {}
 
 type Props = OwnProps
 
+/**
+ * @description Formulario de registro de productos incluido sus homologaciones
+ * @param props
+ * @constructor
+ */
 const ProductoRegistro: FunctionComponent<Props> = (props) => {
   const navigate = useNavigate()
 
@@ -43,8 +51,13 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
     resolver: yupResolver(productoRegistroValidationSchema),
   })
 
+  /**
+   * @description Registro de producto en base de datos, una registro, mandamos a modificación
+   * @param values
+   */
   const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
     const val = await productoRegistroValidator(values)
+    console.log(val)
     if (val.length > 0) {
       notError(val.join('<br>'))
     } else {
@@ -63,7 +76,9 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       }).then((resp) => {
         if (resp.isConfirmed) {
           notSuccess()
-          navigate(`/productos/modificar/${resp.value._id}`, { replace: true })
+          navigate(`${productosRouteMap.modificar.path}/${resp.value._id}`, {
+            replace: true,
+          })
         }
         if (resp.isDenied) {
           swalException(resp.value)
@@ -77,37 +92,22 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
     <SimpleContainer>
       <div className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: 'Productos', path: '/productos/gestion' },
-            { name: 'Nuevo Producto' },
-          ]}
+          routeSegments={[productosRouteMap.gestion, productosRouteMap.nuevo]}
         />
       </div>
-      <CssBaseline />
 
-      <Paper
-        elevation={0}
-        variant="elevation"
-        square
-        sx={{ mb: 2, p: 0.5 }}
-        className={'asideSidebarFixed'}
-      >
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          style={{ marginTop: 2 }}
-          spacing={{ xs: 1, sm: 1, md: 1, xl: 1 }}
-          justifyContent="flex-end"
-        >
+      <StackMenu asideSidebarFixed>
+        <StackMenuItem>
           <Button
             color={'success'}
             startIcon={<Save />}
             variant={'contained'}
             onClick={form.handleSubmit(onSubmit)}
           >
-            Guardar Producto
+            Registrar Producto
           </Button>
-        </Stack>
-      </Paper>
+        </StackMenuItem>
+      </StackMenu>
 
       <Grid container spacing={2}>
         <Grid item lg={8} md={8} xs={12}>

@@ -2,6 +2,7 @@ import { ImagenProps } from '../../../base/interfaces/base'
 import { genRandomString } from '../../../utils/helper'
 import { ProveedorProps } from '../../proveedor/interfaces/proveedor.interface'
 import {
+  SinActividadesDocumentoSectorProps,
   SinActividadesEconomicasProps,
   SinActividadesProps,
   SinProductoServicioProps,
@@ -92,7 +93,7 @@ export interface OpcionesProductoProps {
 
 export interface ProductoInputProps {
   id?: string | null
-  actividadEconomica: SinActividadesProps | null
+  actividadEconomica: SinActividadesDocumentoSectorProps | null
   sinProductoServicio: SinProductoServicioProps | null
   titulo: string
   descripcion: string
@@ -120,7 +121,7 @@ export const PRODUCTO_VARIANTE_INITIAL_VALUES = {
   disponibleParaVenta: true,
   codigoBarras: '',
   precio: 0,
-  incluirCantidad: true,
+  incluirCantidad: false,
   verificarStock: true,
   precioComparacion: 0,
   costo: 0,

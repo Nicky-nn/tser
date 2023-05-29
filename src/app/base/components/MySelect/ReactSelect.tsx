@@ -28,6 +28,10 @@ export const reactSelectStyle = (
   }),
 })
 
+/**
+ * @deprecated
+ * Custom error para react-select
+ */
 export const reactSelectStyles: StylesConfig<any> | undefined = {
   menuPortal: (base) => ({
     ...base,

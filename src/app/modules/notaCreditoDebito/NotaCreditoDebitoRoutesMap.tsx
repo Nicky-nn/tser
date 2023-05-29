@@ -1,5 +1,14 @@
 export const ncdRouteMap = {
-  gestion: '/ncd/gestion',
-  nuevo: '/ncd/nuevo',
-  modificar: `/ncd/modificar`,
+  gestion: {
+    path: '/ncd/gestion',
+    name: 'Gestion de Notas',
+  },
+  nuevo: {
+    path: '/ncd/nuevo',
+    name: 'Nueva Nota',
+  },
+  modificar: {
+    path: `/ncd/modificar`,
+    name: 'Edita Nota',
+  },
 }

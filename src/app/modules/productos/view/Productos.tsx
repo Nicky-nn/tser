@@ -23,7 +23,6 @@ const Productos = () => {
       <StackMenu asideSidebarFixed>
         <StackMenuItem>
           <Button
-            size={'small'}
             variant="contained"
             component={RouterLink}
             to={productosRouteMap.nuevo.path}

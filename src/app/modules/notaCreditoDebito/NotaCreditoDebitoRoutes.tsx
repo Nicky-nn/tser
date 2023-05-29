@@ -9,12 +9,12 @@ const AppNcdRegistro = Loadable(lazy(() => import('./view/NcdRegistro')))
 
 const notaCreditoDebitoRoutes = [
   {
-    path: ncdRouteMap.gestion,
+    path: ncdRouteMap.gestion.path,
     element: <AppNcdGestion />,
     auth: authRoles.admin,
   },
   {
-    path: ncdRouteMap.nuevo,
+    path: ncdRouteMap.nuevo.path,
     element: <AppNcdRegistro />,
     auth: authRoles.admin,
   },

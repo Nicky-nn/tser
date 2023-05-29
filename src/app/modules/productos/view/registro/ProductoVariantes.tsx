@@ -1,11 +1,18 @@
 import { Delete, Edit } from '@mui/icons-material'
 import { Grid, IconButton } from '@mui/material'
+import { Box } from '@mui/system'
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import { FunctionComponent, useState } from 'react'
-import DataTable, { TableColumn } from 'react-data-table-component'
 import { useFieldArray, UseFormReturn } from 'react-hook-form'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { genReplaceEmpty } from '../../../../utils/helper'
+import {
+  DisplayColumnDefOptions,
+  MuiTableProps,
+} from '../../../../utils/materialReactTableUtils'
 import { notError } from '../../../../utils/notification'
 import { swalConfirmDialog } from '../../../../utils/swal'
 import {
@@ -42,64 +49,30 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
   )
   const [openDialog, setOpenDialog] = useState(false)
 
-  const columns: TableColumn<ProductoVarianteInputProps>[] = [
+  const columns: MRT_ColumnDef<ProductoVarianteInputProps>[] = [
     {
-      name: 'Variante',
-      selector: (row) => row.titulo,
+      accessorKey: 'titulo',
+      header: 'Variante',
     },
     {
-      name: 'Código',
-      selector: (row) => row.codigoProducto,
+      accessorKey: 'codigoProducto',
+      header: 'Código',
     },
     {
-      name: 'Unidad Medida',
-      selector: (row) => row.unidadMedida?.descripcion || '',
+      accessorKey: 'unidadMedida.descripcion',
+      header: 'Unidad Medida',
     },
     {
-      name: 'Precio',
-      selector: (row) => row.precio,
-      right: true,
-      cell: (row) => numberWithCommas(row.precio, {}),
-    },
-    {
-      name: 'Opciones',
-      right: true,
-      cell: (row) => (
-        <>
-          <IconButton
-            aria-label="delete"
-            color={'primary'}
-            onClick={() => {
-              setVariante(row)
-              setOpenDialog(true)
-            }}
-          >
-            <Edit />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            color={'error'}
-            onClick={async () => {
-              if (variantesWatch.length > 1) {
-                await swalConfirmDialog({}).then((resp) => {
-                  if (resp.isConfirmed) {
-                    const newVariantes = variantesWatch.filter((v) => v.id !== row.id)
-                    replace(newVariantes)
-                  }
-                })
-              } else {
-                notError('Debe existe al menos 1 variante de producto')
-              }
-            }}
-          >
-            <Delete />
-          </IconButton>
-        </>
-      ),
+      accessorKey: 'precio',
+      header: 'Precio',
+      muiTableBodyCellProps: {
+        align: 'right',
+      },
+      Cell: ({ cell }) => {
+        return numberWithCommas(genReplaceEmpty(cell.getValue(), 0), {})
+      },
     },
   ]
-
-  const ExpandedComponent = ({ data }: any) => <PrecioInventarioDetalle variante={data} />
 
   return (
     <>
@@ -108,18 +81,65 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
           <SimpleCard title={'VARIANTES DE PRODUCTO'}>
             <Grid container columnSpacing={3} rowSpacing={{ xs: 2, sm: 2, md: 0, lg: 0 }}>
               <Grid item lg={12} md={12} xs={12}>
-                <DataTable
+                <MaterialReactTable
                   columns={columns}
                   data={variantesWatch}
-                  expandableRows
-                  expandableRowsComponent={ExpandedComponent}
-                  expandOnRowClicked={false}
-                  expandOnRowDoubleClicked={false}
-                  expandableRowsHideExpander={false}
+                  enableColumnActions={false}
+                  enableColumnFilters={false}
+                  localization={MRT_Localization_ES}
+                  enablePagination={false}
+                  enableSorting={false}
+                  state={{
+                    density: 'compact',
+                  }}
+                  muiTableProps={MuiTableProps}
+                  displayColumnDefOptions={DisplayColumnDefOptions}
+                  enableBottomToolbar={false}
+                  enableTopToolbar={false}
+                  positionActionsColumn="last"
+                  enableRowActions
+                  renderRowActions={({ row, table }) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
+                      <IconButton
+                        aria-label="delete"
+                        color={'primary'}
+                        onClick={() => {
+                          setVariante(row.original)
+                          setOpenDialog(true)
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        color={'error'}
+                        onClick={async () => {
+                          if (variantesWatch.length > 1) {
+                            await swalConfirmDialog({}).then((resp) => {
+                              if (resp.isConfirmed) {
+                                const newVariantes = variantesWatch.filter(
+                                  (v) => v.id !== row.original.id,
+                                )
+                                replace(newVariantes)
+                              }
+                            })
+                          } else {
+                            notError('Debe existe al menos 1 variante de producto')
+                          }
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                  )}
+                  renderDetailPanel={({ row }) => (
+                    <PrecioInventarioDetalle row={row.original} />
+                  )}
                 />
               </Grid>
             </Grid>
           </SimpleCard>
+
           <PrecioInventarioVariantesDialog
             variante={variante}
             id={'editVariante'}

@@ -88,12 +88,7 @@ const NcdRegistro = () => {
   return (
     <SimpleContainer>
       <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Notas Crédito Debito', path: ncdRouteMap.gestion },
-            { name: 'Registrar Nota' },
-          ]}
-        />
+        <Breadcrumb routeSegments={[ncdRouteMap.gestion, ncdRouteMap.nuevo]} />
       </div>
       <StackMenu asideSidebarFixed>
         <StackMenuItem>

@@ -79,34 +79,29 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
             control={control}
             name={'variante.codigoProducto'}
             render={({ field }) => (
-              <FormControl fullWidth error={Boolean(errors.variante?.codigoProducto)}>
-                <TextField
-                  {...field}
-                  label="SKU (Código de producto)"
-                  name={'variante.codigoProducto'}
-                  value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e.target.value)
-                  }}
-                  onBlur={(e) => {
-                    if (variantesWatch.length > 0) {
-                      replace(
-                        variantesWatch.map((vs, index) => ({
-                          ...vs,
-                          codigoProducto: !isEmptyValue(e.target.value)
-                            ? `${e.target.value}-${index + 1}`
-                            : e.target.value,
-                        })),
-                      )
-                    }
-                  }}
-                  variant="outlined"
-                  size="small"
-                />
-                <FormHelperText>
-                  {errors.variante?.codigoProducto?.message}
-                </FormHelperText>
-              </FormControl>
+              <TextField
+                {...field}
+                fullWidth
+                label={'SKU (Código de producto)'}
+                name={'variante.codigoProducto'}
+                error={Boolean(errors.variante?.codigoProducto)}
+                value={field.value}
+                size={'small'}
+                helperText={errors.variante?.codigoProducto?.message}
+                onChange={field.onChange}
+                onBlur={(e) => {
+                  if (variantesWatch.length > 0) {
+                    replace(
+                      variantesWatch.map((vs, index) => ({
+                        ...vs,
+                        codigoProducto: !isEmptyValue(e.target.value)
+                          ? `${e.target.value}-${index + 1}`
+                          : e.target.value,
+                      })),
+                    )
+                  }
+                }}
+              />
             )}
           />
         </Grid>

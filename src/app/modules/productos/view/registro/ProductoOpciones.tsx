@@ -31,6 +31,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * @description si tiene opciones como talla, peso, etc
+ * @param props
+ * @constructor
+ */
 const ProductoOpciones: FunctionComponent<Props> = (props) => {
   const {
     form: {
@@ -81,7 +86,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
     replace(variantes)
   }
 
-  // Eliminamos un determinado valor del item
+  // Eliminamos el item de la variante.i
   const eliminarVariante = async (opcion: OpcionesProductoProps, valor: string) => {
     const newValor = opcion.valores.filter((op) => op !== valor)
     if (newValor.length > 0) {
@@ -145,6 +150,7 @@ const ProductoOpciones: FunctionComponent<Props> = (props) => {
               </FormGroup>
             </FormControl>
           </Grid>
+
           {!varianteUnica && (
             <Grid item lg={12} md={12} xs={12}>
               <Button

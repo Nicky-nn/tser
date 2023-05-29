@@ -78,3 +78,8 @@ export const PAGE_DEFAULT: PageInputProps = {
   reverse: true,
   query: '',
 }
+
+export interface EntidadInputProps {
+  codigoSucursal: number
+  codigoPuntoVenta: number
+}

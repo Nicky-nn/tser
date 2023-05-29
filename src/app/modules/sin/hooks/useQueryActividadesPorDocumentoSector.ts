@@ -23,6 +23,9 @@ const useQueryActividadesPorDocumentoSector = (queryKey: QueryKey = []) => {
       }
       return []
     },
+    {
+      refetchOnWindowFocus: false,
+    },
   )
 
   return { actividades, actLoading, actIsError, actError }

@@ -1,4 +1,4 @@
-import { SinActividadesProps } from '../../sin/interfaces/sin.interface'
+import { SinActividadesDocumentoSectorProps } from '../../sin/interfaces/sin.interface'
 import {
   ProductoInputApiProps,
   ProductoInputProps,
@@ -57,7 +57,7 @@ export const productoComposeService = (
   }
 
   return {
-    codigoActividad: prod.actividadEconomica?.codigoCaeb!,
+    codigoActividad: prod.actividadEconomica?.codigoActividad!,
     titulo: prod.titulo,
     descripcion: prod.descripcion,
     descripcionHtml: `<p>${prod.descripcionHtml}</p>`,
@@ -74,7 +74,7 @@ export const productoComposeService = (
 
 export const productoInputComposeService = (
   prod: ProductoProps,
-  actividadEconomica: SinActividadesProps,
+  actividadEconomica: SinActividadesDocumentoSectorProps,
 ): ProductoInputProps => {
   let variantes: ProductoVarianteInputProps[] = []
   const inputVariante = prod.variantes[0]
