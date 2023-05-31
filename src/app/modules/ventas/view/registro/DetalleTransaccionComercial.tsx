@@ -94,7 +94,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
    */
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
-      if (inputValue.trim().length > 3) {
+      if (inputValue.trim().length >= 3) {
         const productos = await apiProductosVariantesBusqueda(inputValue)
         if (productos) return productos
       }
