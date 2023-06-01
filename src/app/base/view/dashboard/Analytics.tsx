@@ -1,6 +1,15 @@
 import { Box, Card, FormControl, Grid, Icon } from '@mui/material'
 import { styled } from '@mui/system'
-import { format, lastDayOfMonth, startOfMonth, subMonths } from 'date-fns'
+import {
+  endOfDay,
+  format,
+  lastDayOfMonth,
+  lastDayOfWeek,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
+} from 'date-fns'
 import React, { Fragment, useEffect, useState } from 'react'
 import Select from 'react-select'
 import {
@@ -93,6 +102,19 @@ const Analytics = () => {
   // const { palette } = useTheme()
   const periodos = [
     {
+      fechaInicial: format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'dd/MM/yyyy'),
+      fechaFinal: format(lastDayOfWeek(new Date(), { weekStartsOn: 1 }), 'dd/MM/yyyy'),
+      value: `Semana del ${format(
+        startOfWeek(new Date(), { weekStartsOn: 1 }),
+        'dd/MM/yyyy',
+      )} Al ${format(lastDayOfWeek(new Date(), { weekStartsOn: 1 }), 'dd/MM/yyyy')}`,
+    },
+    {
+      fechaInicial: format(startOfDay(new Date()), 'dd/MM/yyyy'),
+      fechaFinal: format(endOfDay(new Date()), 'dd/MM/yyyy'),
+      value: `Hoy ${format(new Date(), 'dd/MM/yyyy')}`,
+    },
+    {
       fechaInicial: format(startOfMonth(new Date()), 'dd/MM/yyyy'),
       fechaFinal: format(lastDayOfMonth(new Date()), 'dd/MM/yyyy'),
       value: format(new Date(), 'MM/yyyy'),
@@ -104,6 +126,7 @@ const Analytics = () => {
     },
   ]
   const { user } = useAuth()
+  const [periodo, setPeriodo] = useState(periodos[0])
 
   const entidad: EntidadInputProps[] = [
     { codigoSucursal: user.sucursal.codigo, codigoPuntoVenta: user.puntoVenta.codigo },
@@ -163,13 +186,14 @@ const Analytics = () => {
                     name="periodo"
                     placeholder={'Seleccione el periodo de busqueda'}
                     menuPosition={'fixed'}
-                    defaultValue={periodos[0]}
+                    defaultValue={periodo}
                     onChange={async (item) => {
                       await fetchReporteVentas(
                         item.fechaInicial,
                         item.fechaFinal,
                         entidad,
                       )
+                      setPeriodo(item)
                     }}
                     isSearchable={false}
                     options={periodos}
@@ -181,7 +205,7 @@ const Analytics = () => {
             </SimpleCard>
           </Grid>
           <Grid item lg={9} md={10} xs={12}>
-            <SimpleCard title={'Reporte de ventas'}>
+            <SimpleCard title={`Reporte de ventas ${periodo.value}`}>
               <Box sx={{ width: '100%' }}>
                 {!loading ? (
                   <ResponsiveContainer width="100%" height={280}>
@@ -226,7 +250,7 @@ const Analytics = () => {
             </SimpleCard>
           </Grid>
           <Grid item lg={3} md={2} xs={12}>
-            <SimpleCard title={'RESUMEN'}>
+            <SimpleCard title={`RESUMEN ${periodo.value}`}>
               <Grid container spacing={3}>
                 <Grid item lg={12} md={12} xs={12}>
                   <StyledCard elevation={6}>
@@ -267,12 +291,12 @@ const Analytics = () => {
           </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            <SimpleCard title={'Nro de factura realizadas en el periodo'}>
+            <SimpleCard title={`Nro de factura periodo ${periodo.value}`}>
               {loading ? <AlertLoading /> : <ReporteNroVentasUsuario data={resp} />}
             </SimpleCard>
           </Grid>
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            <SimpleCard title={'Total de ventas realizadas en el periodo'}>
+            <SimpleCard title={`Total de ventas periodo ${periodo.value}`}>
               {loading ? <AlertLoading /> : <ReporteTotalVentasUsuario data={resp} />}
             </SimpleCard>
           </Grid>

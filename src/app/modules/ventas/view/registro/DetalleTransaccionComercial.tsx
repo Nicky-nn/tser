@@ -3,6 +3,7 @@ import {
   Avatar,
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   IconButton,
   List,
@@ -22,7 +23,7 @@ import Swal from 'sweetalert2'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { swalException } from '../../../../utils/swal'
@@ -94,7 +95,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
    */
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
-      if (inputValue.trim().length >= 3) {
+      if (inputValue.trim().length >= 1) {
         const productos = await apiProductosVariantesBusqueda(inputValue)
         if (productos) return productos
       }
@@ -123,11 +124,11 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
           <Grid container spacing={1}>
             <Grid item xs={12} lg={7} md={7} sm={12}>
               <FormControl fullWidth>
-                <MyInputLabel shrink>Busqueda de Productos</MyInputLabel>
+                <MyInputLabel shrink>Búsqueda de Productos</MyInputLabel>
                 <AsyncSelect<ProductoVarianteProps>
                   cacheOptions={false}
                   defaultOptions={false}
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(false)}
                   menuPosition={'fixed'}
                   name="productosServicios"
                   placeholder={'Seleccione producto'}
@@ -143,6 +144,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                   loadingMessage={() => 'Buscando...'}
                 />
               </FormControl>
+              <FormHelperText>Mínimo 1 caracteres</FormHelperText>
             </Grid>
 
             <Grid item xs={12} md={5} lg={5}>

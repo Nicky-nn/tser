@@ -57,7 +57,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
    */
   const onSubmit: SubmitHandler<ProductoInputProps> = async (values) => {
     const val = await productoRegistroValidator(values)
-    console.log(val)
     if (val.length > 0) {
       notError(val.join('<br>'))
     } else {
