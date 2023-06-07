@@ -8,7 +8,10 @@ import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../../base/components/Form'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import {
+  reactSelectStyle,
+  reactSelectStyles,
+} from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api'
 import useQueryActividadesPorDocumentoSector from '../../../sin/hooks/useQueryActividadesPorDocumentoSector'
@@ -50,12 +53,11 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
   } = useQuery<SinProductoServicioProps[], Error>(
     ['productosServicios', actividadEconomicaWatch],
     async () => {
-      console.log('cambiamos')
       const docs = await fetchSinProductoServicioPorActividad(
         getValues('actividadEconomica.codigoActividad'),
       )
       if (docs.length > 0) {
-        setValue('sinProductoServicio', docs[0])
+        if (!getValues('sinProductoServicio')) setValue('sinProductoServicio', docs[0])
       }
       return docs
     },
@@ -96,7 +98,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                     <MyInputLabel shrink>Actividad Económica</MyInputLabel>
                     <Select<SinActividadesDocumentoSectorProps>
                       {...field}
-                      styles={reactSelectStyles}
+                      styles={reactSelectStyle(Boolean(errors.sinProductoServicio))}
                       name="actividadEconomica"
                       placeholder={'Seleccione la actividad económica'}
                       menuPosition={'fixed'}
@@ -116,7 +118,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                       }
                     />
                     <FormHelperText>
-                      {errors.sinProductoServicio?.message || 'asdfasd'}
+                      {errors.sinProductoServicio?.message || ''}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -140,7 +142,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                     <MyInputLabel shrink>Producto Homologado</MyInputLabel>
                     <Select<SinProductoServicioProps>
                       {...field}
-                      styles={reactSelectStyles}
+                      styles={reactSelectStyle(Boolean(errors.sinProductoServicio))}
                       menuPosition={'fixed'}
                       name="sinProductoServicio"
                       placeholder={'Seleccione producto para homolgación'}
