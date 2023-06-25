@@ -5,7 +5,7 @@ import React, { FC, ReactElement } from 'react'
 interface OwnProps {
   children?: ReactElement | ReactElement[]
   /**
-   * menu fixado, se mueve con el cursor del mause
+   * menu fixado, se mueve con el cursor del mouse
    */
   asideSidebarFixed?: boolean
 }

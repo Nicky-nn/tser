@@ -1,13 +1,17 @@
-import { SelectAll } from '@mui/icons-material'
-import { Button, Chip } from '@mui/material'
+import { HowToReg, SelectAll } from '@mui/icons-material'
+import { Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
+import {
+  MuiTableHeadCellFilterTextFieldProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../utils/materialReactTableUtils'
 import { fetchClienteListado } from '../api/clienteListado.api'
 import { ClienteProps } from '../interfaces/cliente'
 
@@ -92,14 +96,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
         manualPagination
         manualFiltering
         manualSorting
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: 'error',
-                children: 'Error loading data',
-              }
-            : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         enableDensityToggle={false}
         enableGlobalFilter={false}
         onColumnFiltersChange={setColumnFilters}
@@ -115,22 +112,13 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
           sorting,
           density: 'compact',
         }}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
-        muiTableContainerProps={{
-          sx: {
-            maxHeight: '650px',
-          },
-        }}
+        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowActions
         positionActionsColumn="last"
         renderRowActions={({ row }) => (
-          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
+          <div>
             <Button
-              startIcon={<SelectAll />}
+              startIcon={<HowToReg />}
               variant="outlined"
               color="primary"
               size={'small'}
@@ -138,7 +126,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
                 setRowCliente(row.original)
               }}
             >
-              Seleccionar
+              Utilizar
             </Button>
           </div>
         )}

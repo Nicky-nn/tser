@@ -60,10 +60,10 @@ export const reporteVentasUsuarioCompose = (
         nroAnuladas,
         montoValidadas,
         montoAnuladas,
-        nroParcialFacturas: nroValidadas - nroAnuladas,
+        nroParcialFacturas: nroValidadas + nroAnuladas,
         montoParcialFacturas: montoValidadas - montoAnuladas,
       })
-      nroTotalFacturas += nroValidadas - nroAnuladas
+      nroTotalFacturas += nroValidadas + nroAnuladas
       montoTotalFacturas += montoValidadas - montoAnuladas
     }
 

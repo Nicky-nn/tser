@@ -17,7 +17,9 @@ const query = gql`
     }
   }
 `
-
+/**
+ * @description Consulta query para mostrar las actividades por documento sector
+ */
 export const apiSinActividadesPorDocumentoSector = async (): Promise<
   SinActividadesDocumentoSectorProps[]
 > => {
