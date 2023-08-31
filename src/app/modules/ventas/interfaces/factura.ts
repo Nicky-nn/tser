@@ -26,9 +26,9 @@ export interface FacturaDetalleInputProps extends ProductoVarianteProps {
   descripcion: string
   numeroImei: string
   numeroSerie: string
-  cantidad: number
-  montoDescuento: number
-  precioUnitario: number
+  cantidad: number | null
+  montoDescuento: number | null
+  precioUnitario: number | null
   detalleExtra: string
   subtotal: number
   incluirCantidad: boolean

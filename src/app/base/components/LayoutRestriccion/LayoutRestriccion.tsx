@@ -16,14 +16,14 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
 } from '@mui/material'
 import { styled, useTheme } from '@mui/system'
-import React, { FC, useState } from 'react'
+import React, { FC, Fragment, useState } from 'react'
 
 import CuentaRestriccionDialog from '../../../modules/cuenta/view/CuentaRestriccionDialog'
 import { topBarHeightRestriccion } from '../../../utils/constant'
 import useAuth from '../../hooks/useAuth'
+import { MyChip } from '../MyChip/MyChip'
 import { themeShadows } from '../Template/MatxTheme/themeColors'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -77,14 +77,9 @@ const LayoutRestriccion: FC<any> = () => {
               <TableBody>
                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell sx={{ minWidth: 200, maxWidth: 400 }}>
-                    <Typography
-                      variant={'body2'}
-                      color={'error'}
-                      fontSize={15}
-                      style={{ fontWeight: 500 }}
-                    >
+                    <MyChip color={'info'} title={'Razón social'}>
                       {user.razonSocial}
-                    </Typography>
+                    </MyChip>
                   </TableCell>
 
                   <TableCell align="left" sx={{ width: 270 }}>

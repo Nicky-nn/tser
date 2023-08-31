@@ -15,12 +15,8 @@ import {
   swalException,
   swalLoading,
 } from '../../../utils/swal'
-import { fetchSinActividades } from '../../sin/api/sinActividadEconomica.api'
 import { apiSinActividadesPorDocumentoSector } from '../../sin/api/sinActividadesPorDocumentoSector'
-import {
-  SinActividadesDocumentoSectorProps,
-  SinActividadesProps,
-} from '../../sin/interfaces/sin.interface'
+import { SinActividadesDocumentoSectorProps } from '../../sin/interfaces/sin.interface'
 import { apiProductoModificar } from '../api/productoModificar.api'
 import { apiProductoPorId } from '../api/productoPorId.api'
 import {
@@ -57,7 +53,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
       ...PRODUCTO_INITIAL_VALUES,
       variante: { ...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(5) },
     },
-    resolver: yupResolver(productoRegistroValidationSchema),
+    resolver: yupResolver<any>(productoRegistroValidationSchema),
   })
 
   const varianteUnicaTempWatch = form.watch('varianteUnicaTemp')

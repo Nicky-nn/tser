@@ -70,7 +70,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={Boolean(errors.cliente)}>
-                <MyInputLabel shrink>Busqueda de clientes</MyInputLabel>
+                <MyInputLabel shrink>Búsqueda de clientes</MyInputLabel>
                 <AsyncSelect<ClienteProps>
                   {...field}
                   cacheOptions={false}

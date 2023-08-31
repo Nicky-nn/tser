@@ -1,22 +1,15 @@
-import { ArrowForwardIosSharp, CheckCircle, ExpandMore } from '@mui/icons-material'
+import { Storefront } from '@mui/icons-material'
 import {
+  Alert,
   Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
+  ListItemIcon,
   ListItemText,
-  Tooltip,
+  MenuItem,
+  MenuList,
   Typography,
 } from '@mui/material'
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
-import MuiAccordionSummary, {
-  AccordionSummaryProps,
-} from '@mui/material/AccordionSummary'
-import { styled } from '@mui/material/styles'
 import { useQuery } from '@tanstack/react-query'
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 
 import AlertError from '../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../base/components/Alert/AlertLoading'
@@ -27,67 +20,23 @@ import { apiUsuarioRestriccion } from '../api/usuarioRestriccion.api'
 import { apiUsuarioActualizarRestriccion } from '../api/usuarioRestriccionActualizar.api'
 import { UsuarioSucursalRestriccionProps } from '../interfaces/restriccion.interface'
 
-/**
- * @description
- * Componente para generar interfaz de acordion
- */
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0,
-  },
-  '&:before': {
-    display: 'none',
-  },
-  '& .MuiAccordionDetails-root': {
-    paddingTop: 5,
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingBottom: 10,
-  },
-}))
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharp sx={{ fontSize: '0.9rem' }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
-  flexDirection: 'row-reverse',
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)',
-  },
-  '& .MuiAccordionSummary-content': {
-    marginLeft: theme.spacing(1),
-  },
-}))
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
-}))
-
-const Demo = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-}))
-
 interface OwnProps {}
 
 type Props = OwnProps
 
+/**
+ * @description Formulario para cambiar de sucursal y punto de venta activo, una vez realizado el click
+ * el sistema se reinicia, cargando el nuevo perfilProps
+ * @param props
+ * @constructor
+ */
 const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
-  const [expanded, setExpanded] = useState<number | false>(false)
   const { user } = useAuth()
   const {
     data: restriccion,
     isError,
     error,
     isLoading,
-    isFetching,
   } = useQuery<UsuarioSucursalRestriccionProps[], Error>(
     ['restriccionUsuario'],
     async () => {
@@ -97,14 +46,9 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
     { keepPreviousData: true },
   )
 
-  const handleChange =
-    (panel: number) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false)
-    }
-
   const changePuntoVenta = async (codigoSucursal: number, codigoPuntoVenta: number) => {
     await swalAsyncConfirmDialog({
-      text: '¿Confirma que desea cambiar de Sucursal / Punto Venta?',
+      text: `¿Cambiar a la Sucursal <strong>${codigoSucursal}</strong> / Punto Venta <strong>${codigoPuntoVenta}</strong>?`,
       preConfirm: () => {
         return apiUsuarioActualizarRestriccion({
           codigoSucursal,
@@ -133,69 +77,41 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
       ) : (
         restriccion!.map((res) => (
           <React.Fragment key={res.codigo}>
-            <Accordion
-              expanded={expanded === res.codigo}
-              onChange={handleChange(res.codigo)}
-              TransitionProps={{ unmountOnExit: true }}
-            >
-              <AccordionSummary
-                aria-controls="panel1d-content"
-                expandIcon={<ExpandMore />}
-              >
-                <Typography>
-                  <strong>SUCURSAL {res.codigo}</strong> / {res.departamento.departamento}{' '}
-                  - {res.municipio} / {res.direccion} / {res.telefono}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container>
-                  <Grid item xs={12} md={12}>
-                    <Demo>
-                      <List dense>
-                        {res.puntosVenta.map((pv) => (
-                          <React.Fragment key={pv.codigo}>
-                            <Divider component="li" variant={'fullWidth'} />
-                            <ListItem
-                              secondaryAction={
-                                !(
-                                  user.sucursal.codigo === res.codigo &&
-                                  user.puntoVenta.codigo === pv.codigo
-                                ) && (
-                                  <Tooltip
-                                    title={'¿Cambiar Punto Venta?'}
-                                    placement={'top'}
-                                  >
-                                    <IconButton
-                                      onClick={() =>
-                                        changePuntoVenta(res.codigo, pv.codigo)
-                                      }
-                                      color={'success'}
-                                      aria-label="select"
-                                    >
-                                      <CheckCircle fontSize={'large'} />
-                                    </IconButton>
-                                  </Tooltip>
-                                )
-                              }
-                            >
-                              <ListItemText
-                                primary={
-                                  <Typography>
-                                    <strong>PUNTO VENTA {pv.codigo}</strong> / {pv.nombre}{' '}
-                                    / {pv.tipoPuntoVenta.descripcion}
-                                  </Typography>
-                                }
-                              />
-                              <Divider />
-                            </ListItem>
-                          </React.Fragment>
-                        ))}
-                      </List>
-                    </Demo>
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
+            <Alert color={'info'}>
+              <Typography>
+                <strong>SUCURSAL {res.codigo}</strong> / {res.departamento.departamento} -{' '}
+                {res.municipio} / {res.direccion} / {res.telefono}
+              </Typography>
+            </Alert>
+            <Divider />
+
+            <MenuList>
+              {res.puntosVenta.length > 0 ? (
+                res.puntosVenta.map(
+                  (pv) =>
+                    !(
+                      user.sucursal.codigo === res.codigo &&
+                      user.puntoVenta.codigo === pv.codigo
+                    ) && (
+                      <MenuItem
+                        key={pv.codigo}
+                        onClick={() => changePuntoVenta(res.codigo, pv.codigo)}
+                      >
+                        <ListItemIcon>
+                          <Storefront fontSize="small" color={'info'} />
+                        </ListItemIcon>
+                        <ListItemText>
+                          <strong>Suc. {res.codigo}</strong> /{' '}
+                          <strong>PUNTO VENTA {pv.codigo}</strong> / {pv.nombre} /{' '}
+                          {pv.tipoPuntoVenta.descripcion}
+                        </ListItemText>
+                      </MenuItem>
+                    ),
+                )
+              ) : (
+                <Alert title={'Ya se encuentra en el punto de venta activo'} />
+              )}
+            </MenuList>
           </React.Fragment>
         ))
       )}

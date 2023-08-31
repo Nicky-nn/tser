@@ -5,7 +5,7 @@ import React, { FC, ReactElement } from 'react'
 interface OwnProps {
   children?: ReactElement | ReactElement[]
   /**
-   * menu fixado, se mueve con el cursor del mouse
+   * menu fixado, se mueve con el cursor del mause
    */
   asideSidebarFixed?: boolean
 }
@@ -25,7 +25,7 @@ export const StackMenu: FC<Props> = (props) => {
       elevation={0}
       variant="elevation"
       square
-      sx={{ p: '0.3rem', mb: 1, background: '#FAFAFA' }}
+      sx={{ p: '0.3rem', mb: 1, background: 'rgba(250, 250, 250, 0)' }}
       className={asideSidebarFixed ? 'asideSidebarFixed' : ''}
     >
       <Stack

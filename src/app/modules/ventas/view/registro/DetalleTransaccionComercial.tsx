@@ -1,6 +1,7 @@
 import { Delete, TextIncrease } from '@mui/icons-material'
 import {
   Avatar,
+  Box,
   Button,
   FormControl,
   FormHelperText,
@@ -10,22 +11,24 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  OutlinedInput,
   Stack,
   Typography,
 } from '@mui/material'
-import InputNumber from 'rc-input-number'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useFieldArray, UseFormReturn } from 'react-hook-form'
 import AsyncSelect from 'react-select/async'
-import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import { NumeroMask } from '../../../../base/components/Mask/NumeroMask'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
+import { genReplaceEmpty, handleSelect } from '../../../../utils/helper'
+import { pFloat } from '../../../../utils/pFloat'
 import { swalException } from '../../../../utils/swal'
 import { apiProductosVariantesBusqueda } from '../../../productos/api/productosVariantesBusqueda.api'
 import ProductoExplorarDialog from '../../../productos/components/ProductoExplorarDialog'
@@ -66,7 +69,6 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
 
   const [openAgregarArticulo, setOpenAgregarArticulo] = useState(false)
   const [openExplorarProducto, setOpenExplorarProducto] = useState(false)
-  const handleFocus = (event: any) => event.target.select()
 
   const handleChange = async (newInput: ProductoVarianteProps) => {
     if (newInput) {
@@ -105,6 +107,28 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       return []
     }
   }
+  /**
+   * @description Generamos el subTotal por fila
+   * @param cantidad
+   * @param precio
+   * @param descuento
+   */
+  const genSubTotal = (cantidad: number, precio: number, descuento: number) => {
+    const st = cantidad * precio - descuento
+    return (
+      <Box
+        sx={{
+          color: st > 0 ? 'primary.main' : 'error.main',
+          fontSize: 17,
+          pt: '5px',
+          fontWeight: 500,
+        }}
+      >
+        {numberWithCommas(st, {})}
+      </Box>
+    )
+  }
+
   useEffect(() => {
     const totales = genCalculoTotalesService(getValues())
     setValue('montoSubTotal', totales.subTotal)
@@ -238,87 +262,64 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                               </List>
                             </td>
                             <td data-label="CANTIDAD">
-                              <InputNumber
-                                min={0.1}
-                                value={item.cantidad}
-                                onFocus={handleFocus}
-                                onChange={(cantidad: number | null) => {
-                                  if (cantidad) {
-                                    if (cantidad >= 0) {
-                                      update(index, {
-                                        ...item,
-                                        cantidad,
-                                      })
-                                    }
-                                  }
+                              <OutlinedInput
+                                error={(item.cantidad || 0) === 0}
+                                size={'small'}
+                                value={item.cantidad?.toString()}
+                                onFocus={handleSelect}
+                                onChange={({ target }) => {
+                                  const cantidad = pFloat(target.value)
+                                  update(index, {
+                                    ...item,
+                                    cantidad,
+                                  })
                                 }}
-                                formatter={numberWithCommas}
+                                inputComponent={NumeroMask as any}
+                                inputProps={{}}
                               />
                             </td>
                             <td data-label={`PRECIO (${monedaTienda.sigla})`}>
-                              <InputNumber
-                                min={0}
-                                value={item.precioUnitario}
-                                onFocus={handleFocus}
-                                onChange={(precio: number | null) => {
-                                  if (precio) {
-                                    if (precio >= 0 && precio >= item.montoDescuento) {
-                                      update(index, { ...item, precioUnitario: precio })
-                                    } else {
-                                      toast.warn(
-                                        'El precio no puede ser menor al descuento',
-                                      )
-                                    }
-                                  }
+                              <OutlinedInput
+                                error={(item.precioUnitario || 0) === 0}
+                                size={'small'}
+                                value={item.precioUnitario?.toString()}
+                                onFocus={handleSelect}
+                                onChange={({ target }) => {
+                                  const precioUnitario = pFloat(target.value)
+                                  update(index, {
+                                    ...item,
+                                    precioUnitario,
+                                  })
                                 }}
-                                formatter={numberWithCommas}
+                                inputComponent={NumeroMask as any}
+                                inputProps={{}}
                               />
                             </td>
                             <td data-label={`DESCUENTO (${monedaTienda.sigla})`}>
-                              <InputNumber
-                                min={0}
-                                max={item.cantidad * item.precioUnitario - 0.1}
-                                value={item.montoDescuento || 0}
-                                onFocus={handleFocus}
-                                onChange={(montoDescuento: number | null) => {
-                                  if (montoDescuento! >= 0) {
-                                    if (
-                                      montoDescuento! <=
-                                      item.precioUnitario * item.cantidad
-                                    ) {
-                                      update(index, {
-                                        ...item,
-                                        montoDescuento: montoDescuento!,
-                                      })
-                                    } else {
-                                      toast.warn(
-                                        `El descuento no puede ser mayor ${
-                                          item.cantidad * item.precioUnitario
-                                        }`,
-                                      )
-                                    }
-                                  }
+                              <OutlinedInput
+                                size={'small'}
+                                value={item.montoDescuento?.toString()}
+                                onFocus={handleSelect}
+                                onChange={({ target }) => {
+                                  const montoDescuento = pFloat(target.value)
+                                  update(index, {
+                                    ...item,
+                                    montoDescuento,
+                                  })
                                 }}
-                                formatter={numberWithCommas}
+                                inputComponent={NumeroMask as any}
+                                inputProps={{}}
                               />
                             </td>
                             <td
                               data-label={`SUB-TOTAL (${monedaTienda.sigla || ''})`}
                               style={{ textAlign: 'right', backgroundColor: '#fafafa' }}
                             >
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                component="div"
-                              >
-                                <strong>
-                                  {numberWithCommas(
-                                    item.cantidad * item.precioUnitario -
-                                      item.montoDescuento,
-                                    {},
-                                  )}
-                                </strong>
-                              </Typography>
+                              {genSubTotal(
+                                genReplaceEmpty(item.cantidad, 0),
+                                genReplaceEmpty(item.precioUnitario, 0),
+                                genReplaceEmpty(item.montoDescuento, 0),
+                              )}
                             </td>
                             <td data-label="OPCIONES" style={{ textAlign: 'right' }}>
                               <IconButton onClick={() => remove(index)}>

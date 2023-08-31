@@ -13,8 +13,6 @@ export interface FacturaProps {
   sinActividades: SinActividadesProps[]
 }
 
-const genDetalle = () => {}
-
 export const FCV_ONLINE = gql`
   mutation FCV_ONLINE($input: FacturaCompraVentaInput!) {
     facturaCompraVentaCreate(input: $input) {
@@ -30,7 +28,10 @@ export const FCV_ONLINE = gql`
     }
   }
 `
-
+/**
+ * @description Registro de una factura a travéz de los servicios isipass
+ * @param input
+ */
 export const fetchFacturaCreate = async (input: any): Promise<FacturaProps> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)

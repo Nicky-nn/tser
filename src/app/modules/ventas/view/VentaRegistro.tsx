@@ -25,7 +25,7 @@ const VentaRegistro = () => {
     defaultValues: {
       ...FacturaInitialValues,
     },
-    resolver: yupResolver(VentaRegistroValidator),
+    resolver: yupResolver<any>(VentaRegistroValidator),
   })
 
   const { pdeLoading, plantillaDetalleExtra } = usePlantillaDetalleExtra()

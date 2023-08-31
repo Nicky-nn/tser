@@ -9,7 +9,6 @@ import { ProductoVarianteProps } from '../interfaces/producto.interface'
 const reqQuery = gql`
   query FCV_PRODUCTOS_VARIANTES_BUSQUEDA($query: String) {
     fcvProductosVariantesBusqueda(query: $query) {
-      _id
       id
       sinProductoServicio {
         codigoActividad
@@ -18,7 +17,6 @@ const reqQuery = gql`
       }
       codigoProducto
       producto {
-        _id
         titulo
         totalVariantes
         varianteUnica

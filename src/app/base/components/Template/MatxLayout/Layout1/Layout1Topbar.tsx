@@ -1,19 +1,27 @@
-import { MailOutline, Menu, PowerSettingsNew, Settings } from '@mui/icons-material'
-import { Avatar, Hidden, IconButton, MenuItem, useMediaQuery } from '@mui/material'
+import { Menu, PowerSettingsNew, Settings, Store, Storefront } from '@mui/icons-material'
+import {
+  Avatar,
+  Chip,
+  Hidden,
+  IconButton,
+  MenuItem,
+  Popover,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material'
 import { Box, styled, useTheme } from '@mui/system'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { cuentaRouteMap } from '../../../../../modules/cuenta/CuentaRoutesMap'
 import { topBarHeight } from '../../../../../utils/constant'
 import { NotificationProvider } from '../../../../contexts/NotificationContext'
-import { ThemeColorBarProvider } from '../../../../contexts/ThemeColorContext'
 import useAuth from '../../../../hooks/useAuth'
 import useSettings from '../../../../hooks/useSettings'
 import MatxMenu from '../../MatxMenu/MatxMenu'
 import { themeShadows } from '../../MatxTheme/themeColors'
 import NotificationBar from '../../NotificationBar/NotificationBar'
-import ThemeColorBar from '../../NotificationBar/ThemeColorBar'
 import { Span } from '../../Typography'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
@@ -47,16 +55,14 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const UserMenu = styled(Box)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  cursor: 'pointer',
-  borderRadius: 24,
+const UserMenu = styled(Box)({
   padding: 4,
-  '& span': {
-    margin: '0 8px',
-  },
-}))
+  display: 'flex',
+  borderRadius: 24,
+  cursor: 'pointer',
+  alignItems: 'center',
+  '& span': { margin: '0 8px' },
+})
 
 const StyledItem = styled(MenuItem)(({ theme }) => ({
   display: 'flex',
@@ -81,11 +87,16 @@ const IconBox = styled('div')(({ theme }) => ({
   },
 }))
 
+/**
+ * @description Layout top principal
+ * @constructor
+ */
 const Layout1Topbar: FC<any> = () => {
   const theme = useTheme()
   const { settings, updateSettings }: any = useSettings()
   const { logout, user }: any = useAuth()
   const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const updateSidebarMode = (sidebarSettings: any) => {
     updateSettings({
@@ -98,7 +109,7 @@ const Layout1Topbar: FC<any> = () => {
   }
 
   const handleSidebarToggle = () => {
-    let { layout1Settings } = settings
+    const { layout1Settings } = settings
     let mode
     if (isMdScreen) {
       mode = layout1Settings.leftSidebar.mode === 'close' ? 'mobile' : 'close'
@@ -108,6 +119,17 @@ const Layout1Topbar: FC<any> = () => {
     updateSidebarMode({ mode })
   }
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
+
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -115,20 +137,77 @@ const Layout1Topbar: FC<any> = () => {
           <StyledIconButton onClick={handleSidebarToggle}>
             <Menu>Menu</Menu>
           </StyledIconButton>
-
           <IconBox>
             <StyledIconButton>
-              <MailOutline>mail_outline</MailOutline>
+              <Tooltip title="Comercio">
+                <Chip
+                  icon={<Store />}
+                  size={'small'}
+                  variant={'outlined'}
+                  color={'info'}
+                  label={<strong>{user.miEmpresa.tienda}</strong>}
+                  onClick={(event: any) => handleClick(event)}
+                  aria-describedby={id}
+                />
+              </Tooltip>
             </StyledIconButton>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Box sx={{ p: 2, maxWidth: '80%' }}>
+                <Typography gutterBottom>
+                  URL Comercio: <strong>{user.miEmpresa.tienda}</strong>
+                </Typography>
+                <Typography gutterBottom>
+                  Rol: <strong>{user.rol}</strong>
+                </Typography>
+                <Typography gutterBottom>
+                  <strong>ACCESOS PERMITIDOS</strong>
+                </Typography>
+                <Box sx={{ display: 'grid', gridTemplateRows: 'repeat(2, 1fr)', pl: 1 }}>
+                  {user.dominio.map((d: string) => (
+                    <Typography variant={'body2'} key={d}>
+                      {d}
+                    </Typography>
+                  ))}
+                </Box>
+              </Box>
+            </Popover>
           </IconBox>
+          <StyledIconButton>
+            <Tooltip title="Ambiente">
+              {user.miEmpresa.codigoAmbiente === 1 ? (
+                <Chip
+                  size={'small'}
+                  icon={<Storefront />}
+                  color={'success'}
+                  label={'Producción'}
+                />
+              ) : (
+                <Chip
+                  size={'small'}
+                  icon={<Storefront />}
+                  color={'warning'}
+                  label={'Piloto'}
+                />
+              )}
+            </Tooltip>
+          </StyledIconButton>
         </Box>
         <Box display="flex" alignItems="center">
           <NotificationProvider>
             <NotificationBar />
           </NotificationProvider>
-          <ThemeColorBarProvider>
+          {/*<ThemeColorBarProvider>
             <ThemeColorBar />
-          </ThemeColorBarProvider>
+          </ThemeColorBarProvider>*/}
 
           <MatxMenu
             menuButton={

@@ -33,7 +33,7 @@ const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
     defaultValues: {
       ...CLIENTE_99001_DEFAULT_INPUT,
     },
-    resolver: yupResolver(cliente99001InputValidator),
+    resolver: yupResolver<any>(cliente99001InputValidator),
   })
 
   const onSubmit: SubmitHandler<Cliente99001InputProps> = async (values) => {

@@ -11,11 +11,12 @@ import {
   List,
   ListItem,
   ListItemText,
+  TextField,
   Typography,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import InputNumber from 'rc-input-number'
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 import Swal from 'sweetalert2'
@@ -24,7 +25,7 @@ import withReactContent from 'sweetalert2-react-content'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
@@ -160,11 +161,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                 <Select<MonedaProps>
                   {...field}
                   styles={{
-                    ...reactSelectStyles,
+                    ...reactSelectStyle(false),
                     control: (styles) => ({
                       ...styles,
-                      fontWeight: 'bold',
-                      fontSize: '1.2em',
+                      fontWeight: 500,
+                      fontSize: '1.1em',
                     }),
                   }}
                   name="moneda"
@@ -304,6 +305,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                     onChange={(value: number | null) => {
                       field.onChange(value)
                     }}
+                    precision={2}
                     formatter={numberWithCommas}
                   />
                   <FormHelperText>{errors.inputMontoPagar?.message}</FormHelperText>
@@ -312,10 +314,24 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             />
           </Grid>
           <Grid item xs={12} md={5} lg={5}>
-            <small>Vuelto / Saldo</small>
-            <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-              {numberWithCommas(calculoMoneda(getValues('inputVuelto') || 0), {})}
-            </Typography>
+            <TextField
+              color="info"
+              fullWidth
+              inputProps={{
+                style: { textAlign: 'right' },
+                readOnly: true,
+              }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  color: 'error.main',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                },
+              }}
+              size={'small'}
+              label="Vuelto / Saldo"
+              value={numberWithCommas(calculoMoneda(getValues('inputVuelto') || 0), {})}
+            />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <Button

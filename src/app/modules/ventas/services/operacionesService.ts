@@ -5,7 +5,10 @@ export const montoPagarService = (factura: FacturaInputProps): number => {
   if (factura.detalle.length > 0) {
     const subTotal: number =
       factura.detalle.reduce(
-        (acc, cur) => acc + cur.cantidad * cur.precioUnitario - cur.montoDescuento,
+        (acc, cur) =>
+          acc +
+          genReplaceEmpty(cur.cantidad, 0) * genReplaceEmpty(cur.precioUnitario, 0) -
+          genReplaceEmpty(cur.montoDescuento, 0),
         0,
       ) || 0
     return (
@@ -19,7 +22,10 @@ export const montoSubTotal = (factura: FacturaInputProps): number => {
   if (factura.detalle.length > 0) {
     return (
       factura.detalle.reduce(
-        (acc, cur) => acc + cur.cantidad * cur.precioUnitario - cur.montoDescuento,
+        (acc, cur) =>
+          acc +
+          genReplaceEmpty(cur.cantidad, 0) * genReplaceEmpty(cur.precioUnitario, 0) -
+          genReplaceEmpty(cur.montoDescuento, 0),
         0,
       ) || 0
     )

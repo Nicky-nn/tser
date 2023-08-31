@@ -17,8 +17,10 @@ function App() {
     <Provider store={store}>
       <SettingsProvider>
         <AuthProvider>
-          <CssBaseline />
-          <MatxTheme>{content}</MatxTheme>
+          <MatxTheme>
+            <CssBaseline />
+            {content}
+          </MatxTheme>
         </AuthProvider>
       </SettingsProvider>
     </Provider>

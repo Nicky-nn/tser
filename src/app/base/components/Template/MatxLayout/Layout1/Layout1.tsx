@@ -1,5 +1,3 @@
-import 'react-perfect-scrollbar/dist/css/styles.css'
-
 import { Box, styled, ThemeProvider, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/system'
 import React, { useEffect, useRef } from 'react'

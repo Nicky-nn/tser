@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Save } from '@mui/icons-material'
-import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -48,7 +48,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       ...PRODUCTO_INITIAL_VALUES,
       variante: { ...PRODUCTO_INITIAL_VALUES.variante, id: genRandomString(10) },
     },
-    resolver: yupResolver(productoRegistroValidationSchema),
+    resolver: yupResolver<any>(productoRegistroValidationSchema),
   })
 
   /**
@@ -61,6 +61,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       notError(val.join('<br>'))
     } else {
       const apiInput = productoComposeService(values)
+      console.log(apiInput)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
           const resp: any = await apiProductoRegistro(apiInput).catch((err) => ({

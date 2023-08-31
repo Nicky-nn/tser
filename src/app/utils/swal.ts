@@ -2,7 +2,7 @@ import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
 
 import { swalExceptionMsg } from '../base/services/swalExceptionMsg'
 
-interface Props extends SweetAlertOptions<any, any> {
+interface Props extends SweetAlertOptions {
   title?: string
   text?: string
 }
@@ -29,8 +29,6 @@ export const swalErrorMsg = (
     html: msg,
   }).then()
 }
-
-export const swalSuccessMsg = (msg: string) => {}
 
 /**
  * Custom error para excepciones
@@ -100,7 +98,7 @@ export const swalAsyncConfirmDialog = async ({
  */
 export const swalLoading = (): void => {
   Swal.fire({
-    timer: 15000,
+    timer: 30000,
     timerProgressBar: true,
     allowOutsideClick: false,
     didOpen: () => {

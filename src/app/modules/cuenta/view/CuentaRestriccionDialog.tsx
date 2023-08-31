@@ -1,4 +1,17 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Cloud, ContentCopy, ContentCut, ContentPaste } from '@mui/icons-material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Typography,
+} from '@mui/material'
 import React, { FunctionComponent } from 'react'
 
 import { ProveedorInputProp } from '../../proveedor/interfaces/proveedor.interface'
@@ -22,8 +35,8 @@ const CuentaRestriccionDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 500 } }}
-        maxWidth="lg"
+        sx={{ '& .MuiDialog-paper': { width: '90%', maxHeight: '85vh' } }}
+        maxWidth="md"
         open={open}
         {...other}
       >

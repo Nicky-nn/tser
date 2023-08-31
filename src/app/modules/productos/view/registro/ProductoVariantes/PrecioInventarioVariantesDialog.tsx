@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  OutlinedInput,
   TextField,
   Typography,
 } from '@mui/material'
@@ -16,9 +17,10 @@ import InputNumber from 'rc-input-number'
 import React, { ChangeEvent, FunctionComponent, useEffect, useState } from 'react'
 import Select from 'react-select'
 
+import { NumeroFormat } from '../../../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'
-import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
 import { genReplaceEmpty, handleSelect, isEmptyValue } from '../../../../../utils/helper'
 import { notError } from '../../../../../utils/notification'
@@ -82,6 +84,18 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
   // REGISTRO Y VALIDACION DE DATOS
   const handleSubmit = async (): Promise<void> => {
     // Verificamos algunos campos
+    if (isNaN(data.precio)) {
+      notError('Debe ingresar un valor en precio')
+      return
+    }
+    if (isNaN(data.precioComparacion!)) {
+      notError('Debe ingresar un valor en precio de comparación')
+      return
+    }
+    if (data.precio <= 0) {
+      notError('Precio debe ser mayor a 0')
+      return
+    }
     if (data.costo > data.precio) {
       notError('El costo debe ser menor al precio')
       return
@@ -90,6 +104,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
       notError('Debe ingresar un codigo de producto válido')
       return
     }
+    console.log(data)
     onClose(data)
   }
 
@@ -114,7 +129,7 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                   <FormControl fullWidth>
                     <MyInputLabel shrink>Unidad Medida</MyInputLabel>
                     <Select<SinUnidadMedidaProps>
-                      styles={reactSelectStyles}
+                      styles={reactSelectStyle()}
                       menuPosition={'fixed'}
                       name="unidadMedida"
                       placeholder={'Seleccione la unidad de medida'}
@@ -131,33 +146,38 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
                   </FormControl>
                 </Grid>
                 <Grid item lg={4} md={4} xs={12}>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth required>
                     <MyInputLabel shrink>Precio</MyInputLabel>
-                    <InputNumber
-                      min={0}
+                    <OutlinedInput
                       placeholder={'0.00'}
                       value={data.precio}
                       onFocus={handleSelect}
-                      onChange={(precio: number | null) => {
-                        setData({ ...data, precio: precio! })
+                      onChange={(precio) => {
+                        setData({ ...data, precio: parseFloat(precio.target.value)! })
                       }}
-                      formatter={numberWithCommas}
+                      inputComponent={NumeroFormat as any}
+                      inputProps={{}}
+                      size={'small'}
                     />
                   </FormControl>
                 </Grid>
 
                 <Grid item lg={4} md={4} xs={12}>
-                  <FormControl fullWidth component={'div'}>
+                  <FormControl fullWidth component={'div'} required>
                     <MyInputLabel shrink>Precio de comparación</MyInputLabel>
-                    <InputNumber
-                      min={0}
+                    <OutlinedInput
                       placeholder={'0.00'}
                       value={data.precioComparacion}
                       onFocus={handleSelect}
-                      onChange={(precioComparacion: number | null) => {
-                        setData({ ...data, precioComparacion: precioComparacion! })
+                      onChange={(precioComparacion) => {
+                        setData({
+                          ...data,
+                          precioComparacion: parseFloat(precioComparacion.target.value!),
+                        })
                       }}
-                      formatter={numberWithCommas}
+                      inputComponent={NumeroFormat as any}
+                      inputProps={{}}
+                      size={'small'}
                     />
                   </FormControl>
                 </Grid>

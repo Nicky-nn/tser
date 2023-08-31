@@ -36,7 +36,7 @@ const Cliente99001ActualizarDialog: FunctionComponent<Props> = (props) => {
       ...CLIENTE_99001_DEFAULT_INPUT,
       action: actionForm.UPDATE,
     },
-    resolver: yupResolver(cliente99001InputValidator),
+    resolver: yupResolver<any>(cliente99001InputValidator),
   })
 
   const onSubmit: SubmitHandler<Cliente99001InputProps> = async (values) => {

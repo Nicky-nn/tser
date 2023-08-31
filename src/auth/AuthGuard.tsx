@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
 import useAuth from '../app/base/hooks/useAuth'
@@ -23,7 +23,7 @@ const userHasPermission = (pathname: any, user: PerfilProps, routes: any) => {
 }
 
 type Props = {
-  children: JSX.Element | JSX.Element[]
+  children: ReactElement | ReactElement[]
 }
 
 const AuthGuard: FC<Props> = ({ children }: Props) => {
@@ -37,9 +37,9 @@ const AuthGuard: FC<Props> = ({ children }: Props) => {
     // IF YOU NEED ROLE BASED AUTHENTICATION,
     // UNCOMMENT ABOVE TWO LINES, getUserRoleAuthStatus METHOD AND user VARIABLE
     // AND COMMENT OUT BELOW LINE
-    let authenticated = isAuthenticated && hasPermission
+    const authenticated = isAuthenticated && hasPermission
 
-    console.log('app,auth,authguard', pathname, authenticated)
+    console.info('app,auth,authguard', pathname, authenticated)
     return (
       <>
         {isAuthenticated ? (

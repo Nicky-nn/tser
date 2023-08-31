@@ -15,6 +15,7 @@ interface SidebarNavRootProps {
   primarybg?: string
   bgimgurl: string
 }
+
 const SidebarNavRoot = styled(Box)(
   ({ theme, width, primarybg, bgimgurl }: SidebarNavRootProps) => ({
     position: 'fixed',
@@ -62,7 +63,7 @@ const Layout1Sidenav = () => {
   const leftSidebar = settings.layout1Settings.leftSidebar
   const { mode, bgImgURL } = leftSidebar
 
-  console.log(bgImgURL)
+  // console.log(bgImgURL)
 
   const getSidenavWidth = () => {
     switch (mode) {

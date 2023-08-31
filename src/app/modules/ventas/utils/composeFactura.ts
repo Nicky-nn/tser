@@ -30,8 +30,14 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
       descripcion: item.nombre,
       cantidad: item.cantidad,
       unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
-      precioUnitario: calculoMonedaBs(item.precioUnitario, fcv.tipoCambio),
-      montoDescuento: calculoMonedaBs(item.montoDescuento, fcv.tipoCambio),
+      precioUnitario: calculoMonedaBs(
+        genReplaceEmpty(item.precioUnitario, 0),
+        fcv.tipoCambio,
+      ),
+      montoDescuento: calculoMonedaBs(
+        genReplaceEmpty(item.montoDescuento, 0),
+        fcv.tipoCambio,
+      ),
       detalleExtra: genReplaceEmpty(item.detalleExtra, ''),
     })),
   }
@@ -61,9 +67,9 @@ export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
           codigoProductoSin: number().integer().min(1).max(99999999).required(),
           codigoProducto: string().min(1).max(50).required(),
           descripcion: string().min(1).max(500).required(),
-          cantidad: number().min(0).required(),
+          cantidad: number().positive().required(),
           unidadMedida: number().integer().min(1).required(),
-          precioUnitario: number().min(0).required(),
+          precioUnitario: number().positive().required(),
           montoDescuento: number().min(0),
           numeroSerie: string().min(0).max(1500),
           numeroImei: string().min(0).max(1500),

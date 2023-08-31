@@ -155,7 +155,7 @@ export interface ProductoVarianteApiProps {
   codigoProductoSin: string
   titulo: string
   precio: number
-  precioComparacion: number
+  precioComparacion: number | null
   costo: number
   incluirCantidad: boolean
   verificarStock: boolean

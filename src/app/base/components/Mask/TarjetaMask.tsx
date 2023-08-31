@@ -6,6 +6,9 @@ interface CustomProps {
   name: string
 }
 
+/**
+ * @description Realiza un enmascarmiento para registro de una tarjeta
+ */
 export const TarjetaMask = forwardRef<HTMLElement, CustomProps>(function TextMaskCustom(
   props,
   ref: any,

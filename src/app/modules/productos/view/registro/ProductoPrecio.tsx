@@ -1,4 +1,10 @@
-import { FormControl, FormHelperText, Grid } from '@mui/material'
+import {
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import InputNumber from 'rc-input-number'
 import React, { FunctionComponent } from 'react'
@@ -7,10 +13,10 @@ import Select, { SingleValue } from 'react-select'
 
 import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import { NumeroFormat } from '../../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
-import { rcInputError } from '../../../../base/components/RcInputNumber/RcInputNumber'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { handleSelect } from '../../../../utils/helper'
 import { apiSinUnidadMedida } from '../../../sin/api/sinUnidadMedida.api'
@@ -110,19 +116,15 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
             control={control}
             name={'variante.precio'}
             render={({ field }) => (
-              <FormControl fullWidth error={Boolean(errors.variante?.precio)}>
-                <MyInputLabel shrink>Precio</MyInputLabel>
-                <InputNumber
+              <FormControl fullWidth error={Boolean(errors.variante?.precio)} required>
+                <InputLabel>Precio</InputLabel>
+                <OutlinedInput
                   {...field}
-                  min={0}
-                  placeholder={'0.00'}
-                  name={'variante.precio'}
-                  className={rcInputError(Boolean(errors.variante?.precio))}
+                  label={'Precio'}
+                  size={'small'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(precio: number | null) => {
-                    field.onChange(precio)
-                  }}
+                  onChange={field.onChange}
                   onBlur={(e) => {
                     setValue(
                       'variantes',
@@ -132,9 +134,11 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                       })),
                     )
                   }}
-                  formatter={numberWithCommas}
+                  inputComponent={NumeroFormat as any}
+                  inputProps={{}}
+                  error={Boolean(errors.variante?.precio)}
                 />
-                <FormHelperText>{errors.variante?.precio?.message}</FormHelperText>
+                <FormHelperText>{errors.variante?.precio?.message || ''}</FormHelperText>
               </FormControl>
             )}
           />
@@ -145,29 +149,39 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
             control={control}
             name={'variante.precioComparacion'}
             render={({ field }) => (
-              <FormControl fullWidth component={'div'}>
-                <MyInputLabel shrink>Precio de comparación</MyInputLabel>
-                <InputNumber
+              <FormControl
+                fullWidth
+                error={Boolean(errors.variante?.precioComparacion)}
+                required
+              >
+                <InputLabel>Precio de comparación</InputLabel>
+                <OutlinedInput
                   {...field}
-                  min={0}
-                  name={'variante.precioComparacion'}
-                  placeholder={'0.00'}
+                  label={'Precio de comparación'}
+                  size={'small'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(precioComparacion: number | null) => {
-                    field.onChange(precioComparacion)
-                  }}
+                  onChange={field.onChange}
                   onBlur={(e) => {
                     setValue(
                       'variantes',
                       variantesWatch.map((vs) => ({
                         ...vs,
-                        precioComparacion: parseFloat(e.target.value),
+                        precioComparacion: isNaN(parseFloat(e.target.value))
+                          ? 0
+                          : parseFloat(e.target.value),
                       })),
                     )
                   }}
-                  formatter={numberWithCommas}
+                  inputComponent={NumeroFormat as any}
+                  inputProps={{}}
+                  placeholder={'0.00'}
+                  error={Boolean(errors.variante?.precioComparacion)}
                 />
+                <FormHelperText>
+                  {errors.variante?.precioComparacion?.message ||
+                    'Intro 0 si no desea registrar'}
+                </FormHelperText>
               </FormControl>
             )}
           />
@@ -178,19 +192,15 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
             control={control}
             name={'variante.costo'}
             render={({ field }) => (
-              <FormControl fullWidth component={'div'}>
-                <MyInputLabel shrink>Costo</MyInputLabel>
-                <InputNumber
+              <FormControl fullWidth error={Boolean(errors.variante?.costo)}>
+                <InputLabel>Costo</InputLabel>
+                <OutlinedInput
                   {...field}
-                  min={0}
-                  name={'variante.costo'}
-                  max={varianteWatch.precio === 0 ? 0 : varianteWatch.precio}
-                  placeholder={'0.00'}
+                  label={'Costo'}
+                  size={'small'}
                   value={field.value}
                   onFocus={handleSelect}
-                  onChange={(costo: number | null) => {
-                    field.onChange(costo)
-                  }}
+                  onChange={field.onChange}
                   onBlur={(e) => {
                     setValue(
                       'variantes',
@@ -200,9 +210,14 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                       })),
                     )
                   }}
-                  formatter={numberWithCommas}
+                  inputComponent={NumeroFormat as any}
+                  inputProps={{}}
+                  placeholder={'0.00'}
+                  error={Boolean(errors.variante?.costo)}
                 />
-                <FormHelperText>Información protegida</FormHelperText>
+                <FormHelperText>
+                  {errors.variante?.costo?.message || 'Información protegida'}
+                </FormHelperText>
               </FormControl>
             )}
           />

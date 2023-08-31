@@ -7,8 +7,8 @@ export const productoRegistroVarianteValidatorioSchema = {
   id: string().required('Identificador unico de la variante del producto es requerido'),
   codigoProducto: string().trim().required('Código del producto es requerido'),
   codigoBarras: string().trim().nullable(),
-  precio: number().positive().required('Precio es un campo obligatorio'),
-  precioComparacion: number().min(0).nullable(),
+  precio: number().positive().required('Precio es un campo obligatorio mayor a 0'),
+  precioComparacion: number().min(0).required(),
   costo: number().min(0),
   inventario: array().of(
     object({
@@ -42,7 +42,7 @@ export const productoRegistroValidationSchema = object({
         'Codigo Producto Homologado es un campo obligatorio',
       ),
     })
-    .required('Producto Homolago es un campo obligatorio'),
+    .required('Producto Homologado es un campo obligatorio'),
   titulo: string().trim().required('Nombre del producto es un campo obligatorio'),
   descripcion: string(),
   descripcionHtml: string(),
@@ -73,11 +73,11 @@ export const productoRegistroValidator = async (
     if (prod.varianteUnica) {
       const schemaVariante = object({
         id: string().required(
-          'Identificador unico de la variante del producto es requerido',
+          'Identificador único de la variante del producto es requerido',
         ),
         codigoProducto: string().trim().required('Código del producto es requerido'),
         codigoBarras: string().trim().nullable(),
-        precio: number().min(1).required('Precio es un campo obligatorio'),
+        precio: number().positive().required('Precio es un campo obligatorio'),
         precioComparacion: number().min(0),
         costo: number().min(0),
         inventario: array().of(
@@ -108,7 +108,7 @@ export const productoRegistroValidator = async (
       }
     } else {
       if (prod.opcionesProducto.length === 0) {
-        throw new Error('Debe adicionar al menos una opcion de producto')
+        throw new Error('Debe adicionar al menos una opción de producto')
       }
       if (prod.variantes.length === 0) {
         throw new Error('Debe adicionar al menos una Variante de producto')
@@ -119,7 +119,7 @@ export const productoRegistroValidator = async (
           codigoProducto: string().trim().required('Código del producto es requerido'),
           titulo: string().trim().required('Nombre del producto es un campo requerido'),
           codigoBarras: string().trim().nullable(),
-          precio: number().min(1).required('Precio es un campo obligatorio'),
+          precio: number().positive().required('Precio es un campo obligatorio'),
           precioComparacion: number().min(0),
           costo: number().min(0),
           inventario: array().of(

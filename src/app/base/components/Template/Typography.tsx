@@ -273,6 +273,17 @@ export const Small: FC<any> = ({
   )
 }
 
+/**
+ * @description Contenido Heading
+ */
+export const Heading = styled('h6')(({ theme }) => ({
+  margin: 0,
+  marginTop: '4px',
+  fontSize: '14px',
+  fontWeight: '500',
+  color: theme.palette.primary.dark,
+}))
+
 interface SpanProps extends StyledBoxProps {
   children?: ReactNode
   className?: string

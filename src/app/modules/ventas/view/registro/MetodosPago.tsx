@@ -12,10 +12,11 @@ import Select from 'react-select'
 
 import { TarjetaMask } from '../../../../base/components/Mask/TarjetaMask'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import useQueryMetodosPago from '../../../base/metodoPago/hooks/useQueryMetodosPago'
 import { MetodoPagoProp } from '../../../base/metodoPago/interfaces/metodoPago'
 import { FacturaInputProps } from '../../interfaces/factura'
+import { METODOS_PAGO_TARJETA } from '../../utils/metodosPago'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -38,7 +39,8 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     const metodoPago = codigoMetodoPagoValue.codigoClasificador
-    if (metodoPago === 1) {
+    // Si el método de págo no es tarjeta, setear el codigo a ''
+    if (!METODOS_PAGO_TARJETA.includes(metodoPago)) {
       setValue('numeroTarjeta', '')
     }
   }, [codigoMetodoPagoValue])
@@ -55,7 +57,7 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
               <Select<MetodoPagoProp>
                 {...field}
                 styles={{
-                  ...reactSelectStyles,
+                  ...reactSelectStyle(Boolean(errors.codigoMetodoPago)),
                   control: (baseStyles, state) => ({
                     ...baseStyles,
                     fontWeight: 'bold',
@@ -85,7 +87,9 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
           )}
         />
 
-        {getValues('codigoMetodoPago').codigoClasificador === 2 && (
+        {METODOS_PAGO_TARJETA.includes(
+          getValues('codigoMetodoPago').codigoClasificador,
+        ) && (
           <>
             <Controller
               name={'numeroTarjeta'}

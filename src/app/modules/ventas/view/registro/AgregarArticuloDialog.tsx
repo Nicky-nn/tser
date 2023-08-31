@@ -7,24 +7,25 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  OutlinedInput,
   TextField,
 } from '@mui/material'
-import InputNumber from 'rc-input-number'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import Select from 'react-select'
 
 import AlertError from '../../../../base/components/Alert/AlertError'
+import { NumeroMask } from '../../../../base/components/Mask/NumeroMask'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
 import useAuth from '../../../../base/hooks/useAuth'
 import {
   genRandomString,
   genReplaceEmpty,
-  handleFocus,
+  handleSelect,
   isEmptyValue,
 } from '../../../../utils/helper'
 import { notError } from '../../../../utils/notification'
+import { pFloat } from '../../../../utils/pFloat'
 import { apiProductoServicioUnidadMedida } from '../../../productos/api/productoServicioUnidadMedida.api'
 import { ProductoVarianteProps } from '../../../productos/interfaces/producto.interface'
 import {
@@ -151,7 +152,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: '90vh' } }}
         maxWidth="sm"
         keepMounted={false}
         open={open}
@@ -231,15 +232,19 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
 
               <Grid item lg={12} md={12} xs={12}>
                 <InputLabel>Precio</InputLabel>
-                <InputNumber
-                  min={0}
-                  value={inputForm.precio}
-                  onFocus={handleFocus}
-                  onChange={(precio: number | null) =>
+                <OutlinedInput
+                  size={'small'}
+                  fullWidth
+                  value={inputForm.precio?.toString()}
+                  onFocus={handleSelect}
+                  onChange={({ target }) => {
+                    const precio = pFloat(target.value)
                     setInputForm({ ...inputForm, precio: precio! })
-                  }
-                  formatter={numberWithCommas}
-                  style={{ width: '100%' }}
+                  }}
+                  inputComponent={NumeroMask as any}
+                  inputProps={{
+                    style: { textAlign: 'center' },
+                  }}
                 />
               </Grid>
             </Grid>
