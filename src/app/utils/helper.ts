@@ -146,5 +146,5 @@ export const validateEmail = (mail: string): boolean => {
  * @param str
  */
 export const clearAllLineBreak = (str: string) => {
-  return str.replace(/(\r\n|\n|\r)/gm, ' ')
+  return str.replace(/\r?\n|\r/g, ' ')
 }

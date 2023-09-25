@@ -1,3 +1,4 @@
+import sanitize, { simpleTransform } from 'sanitize-html'
 import { array, number, object, setLocale, string } from 'yup'
 import { es } from 'yup-locales'
 
@@ -14,12 +15,28 @@ const calculoMonedaBs = (monto: number, tipoCambioBs: number): number => {
 }
 
 export const composeFactura = (fcv: FacturaInputProps): any => {
+  const detalleExtra = sanitize(genReplaceEmpty(fcv.detalleExtra, ''), {
+    transformTags: {
+      a: simpleTransform('span', {}),
+    },
+    allowedAttributes: {
+      ...sanitize.defaults.allowedAttributes,
+      td: ['style'],
+      p: ['style'],
+    },
+    allowedStyles: {
+      '*': {
+        'text-align': [/^left$/, /^right$/, /^center$/],
+      },
+    },
+  })
+
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
     actividadEconomica: fcv.actividadEconomica?.codigoActividad,
     codigoMetodoPago: fcv.codigoMetodoPago.codigoClasificador,
     descuentoAdicional: calculoMonedaBs(fcv.descuentoAdicional, fcv.tipoCambio),
-    detalleExtra: fcv.detalleExtra,
+    detalleExtra,
     emailCliente: fcv.emailCliente,
     codigoMoneda: fcv.moneda!.codigo,
     tipoCambio: fcv.moneda!.tipoCambio,

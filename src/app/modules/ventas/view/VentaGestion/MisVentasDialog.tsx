@@ -90,11 +90,16 @@ const MisVentasDialog: FunctionComponent<Props> = (props) => {
         usucre: item.usucre,
         usuario: item.usuario,
       }))
+
+      const sdText = dayjs(startDate).format('YYYYMMDD')
+      const edText = dayjs(endDate).format('YYYYMMDD')
+
       exportFromJSON({
         data: dataExport,
-        fileName: 'mis_ventas',
+        fileName: `mis_ventas_${sdText}_${edText}`,
         exportType: exportFromJSON.types.csv,
         withBOM: true,
+        delimiter: ';',
       })
     } else {
       notDanger('No se han encontrado registros para el periodo seleccionado')
@@ -166,7 +171,7 @@ const MisVentasDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             style={{ marginRight: 15 }}
           >
-            Exportar Ventas
+            Exportar Mis Ventas
           </LoadingButton>
         </DialogActions>
       </Dialog>

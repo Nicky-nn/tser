@@ -1,5 +1,5 @@
 import { ImportExport } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
+import { Alert, LoadingButton } from '@mui/lab'
 import {
   Button,
   Dialog,
@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
 } from '@mui/material'
 import es from 'date-fns/locale/es'
 import dayjs from 'dayjs'
@@ -16,7 +15,6 @@ import { convert } from 'html-to-text'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
 
-import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { clearAllLineBreak, genReplaceEmpty } from '../../../../utils/helper'
 import { notDanger } from '../../../../utils/notification'
@@ -36,6 +34,14 @@ type Props = OwnProps
 const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
   const { onClose, open, ...other } = props
   const [loading, setLoading] = useState(false)
+
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    new Date(),
+    new Date(),
+  ])
+  const [startDate, endDate] = dateRange
+
+  /*
   const [startDate, setStartDate] = useState<Date | null>(new Date())
   const [endDate, setEndDate] = useState<Date | null>(null)
   const onChange = (dates: any) => {
@@ -43,6 +49,7 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
     setStartDate(start)
     setEndDate(end)
   }
+   */
 
   const exportarDatos = async () => {
     setLoading(true)
@@ -93,15 +100,20 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             moneda: doc.moneda.descripcion,
             tipoCambio: doc.tipoCambio,
             estado: doc.state,
-            usuario: doc.usuario,
+            usuario: clearAllLineBreak(doc.usuario),
           })
         })
       }
+
+      const sdText = dayjs(startDate).format('YYYYMMDD')
+      const edText = dayjs(endDate).format('YYYYMMDD')
+
       exportFromJSON({
         data: dataExport,
-        fileName: 'reporte_detalle_ventas',
+        fileName: `reporte_detalle_ventas_${sdText}_${edText}`,
         exportType: exportFromJSON.types.csv,
         withBOM: true,
+        delimiter: ';',
       })
     } else {
       notDanger('No se han encontrado registros para el periodo seleccionado')
@@ -109,50 +121,41 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
   }
   useEffect(() => {
     if (open) {
-      setStartDate(new Date())
-      setEndDate(new Date())
+      // setStartDate(new Date())
+      // setEndDate(new Date())
     }
   }, [open])
 
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435, height: 500 } }}
-        maxWidth="sm"
+        sx={{ '& .MuiDialog-paper': { width: '80%', minHeight: 300 } }}
+        maxWidth="xs"
         open={open}
         {...other}
       >
-        <DialogTitle>Exportar Ventas + Detalles</DialogTitle>
+        <DialogTitle>Exportar ventas + detalles</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid item sm={7}>
-              <SimpleItem>
-                <DatePicker
-                  selected={startDate}
-                  onChange={onChange}
-                  locale={'es'}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectsRange
-                  inline
-                  isClearable={true}
-                />
-              </SimpleItem>
+            <Grid item sm={12}>
+              <Alert color={'info'}>
+                Seleccione el periodo (<strong>fecha inicial - fecha final</strong>).{' '}
+                <br />
+                Para Obtener el reporte de una fecha debe realizar doble click en la fecha
+                selecciona
+              </Alert>
             </Grid>
-            <Grid item sm={5}>
-              <TextField
-                sx={{ mt: 1 }}
-                fullWidth
-                label="Fecha Inicial"
-                value={dayjs(startDate).format('DD/MM/YYYY') || ''}
-                size="small"
-              />
-              <TextField
-                sx={{ mt: 3 }}
-                fullWidth
-                label="Fecha Final"
-                value={dayjs(endDate).format('DD/MM/YYYY') || ''}
-                size="small"
+            <Grid item sm={12}>
+              <DatePicker
+                selectsRange={true}
+                startDate={startDate}
+                endDate={endDate}
+                locale={'es'}
+                dateFormat="dd/MM/yyyy"
+                onChange={(update) => {
+                  setDateRange(update)
+                }}
+                isClearable={true}
               />
             </Grid>
           </Grid>
@@ -180,7 +183,7 @@ const VentaGestionExportarDetalleDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             style={{ marginRight: 15 }}
           >
-            Exportar Ventas
+            Exportar Ventas + Detalle
           </LoadingButton>
         </DialogActions>
       </Dialog>
