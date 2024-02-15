@@ -146,7 +146,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       <>
         <SimpleCard title="Productos">
           <Grid container spacing={1}>
-            <Grid item xs={12} lg={7} md={7} sm={12}>
+            <Grid item xs={12} md={6} lg={7}>
               <FormControl fullWidth>
                 <MyInputLabel shrink>Búsqueda de Productos</MyInputLabel>
                 <AsyncSelect<ProductoVarianteProps>
@@ -170,16 +170,23 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
               </FormControl>
               <FormHelperText>Mínimo 1 caracteres</FormHelperText>
             </Grid>
-
-            <Grid item xs={12} md={5} lg={5}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                <Button variant="outlined" onClick={() => setOpenExplorarProducto(true)}>
-                  Explorar Productos
-                </Button>
-                <Button onClick={() => setOpenAgregarArticulo(true)} variant="outlined">
-                  Producto Personalizado
-                </Button>
-              </Stack>
+            <Grid item xs={12} md={3} lg={2}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => setOpenExplorarProducto(true)}
+              >
+                Explorar Productos
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Button
+                onClick={() => setOpenAgregarArticulo(true)}
+                variant="outlined"
+                fullWidth
+              >
+                Producto Personalizado
+              </Button>
             </Grid>
 
             <Grid item xs={12}>

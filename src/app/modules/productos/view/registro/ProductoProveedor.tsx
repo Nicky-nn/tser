@@ -5,7 +5,7 @@ import { Controller, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { PageInputProps } from '../../../../interfaces'
 import { apiProveedores } from '../../../proveedor/api/proveedores.api'
@@ -36,9 +36,9 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
 
   const [openDialog, setOpenDialog] = useState(false)
 
-  const { data: proveedores, refetch } = useQuery<ProveedorProps[], Error>(
-    ['productoProveedores', openDialog],
-    async () => {
+  const { data: proveedores, refetch } = useQuery<ProveedorProps[], Error>({
+    queryKey: ['productoProveedores', openDialog],
+    queryFn: async () => {
       const pageInput: PageInputProps = {
         page: 1,
         limit: 1000,
@@ -47,7 +47,8 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
       const { docs } = await apiProveedores(pageInput)
       return docs
     },
-  )
+    refetchInterval: false,
+  })
 
   return (
     <SimpleCard title={'Proveedor'}>
@@ -61,7 +62,7 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
                 <MyInputLabel shrink>Seleccione su proveedor</MyInputLabel>
                 <Select<ProveedorProps>
                   {...field}
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(false)}
                   menuPosition={'fixed'}
                   name="proveedor"
                   placeholder={'Seleccione proveedor...'}
@@ -80,7 +81,12 @@ const ProductoProveedor: FunctionComponent<Props> = (props) => {
         </Grid>
 
         <Grid item lg={12} md={12} xs={12} textAlign={'right'}>
-          <Button variant={'outlined'} onClick={() => setOpenDialog(true)} size={'small'}>
+          <Button
+            variant={'text'}
+            color={'info'}
+            onClick={() => setOpenDialog(true)}
+            size={'small'}
+          >
             Nuevo Proveedor
           </Button>
           <ProveedorRegistroDialog

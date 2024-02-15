@@ -2,6 +2,7 @@
 
 import { gql, GraphQLClient } from 'graphql-request'
 
+import { TipoRepresentacionGrafica } from '../interfaces/base'
 import { MyGraphQlError } from '../services/GraphqlError'
 import { PerfilProps } from './loginModel'
 import { AccessToken } from './paramsModel'
@@ -29,6 +30,7 @@ const query = gql`
       dominio
       tipo
       vigente
+      tipoRepresentacionGrafica
       sucursal {
         codigo
         direccion

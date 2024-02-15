@@ -1,5 +1,7 @@
-import { Alert, LinearProgress } from '@mui/material'
+import { Alert, Box, LinearProgress, Skeleton } from '@mui/material'
 import React, { FunctionComponent, useEffect } from 'react'
+
+import { Small } from '../Template/Typography'
 
 interface OwnProps {
   mensaje?: string
@@ -34,12 +36,11 @@ const AlertLoading: FunctionComponent<Props> = (props) => {
   }, [])
 
   return (
-    <>
-      <Alert icon={false} severity={tipo || 'info'} sx={{ width: '100%' }}>
-        <strong>{mensaje || 'Cargando...'}</strong>
-      </Alert>
+    <Box sx={{ width: '100%' }}>
+      <Small>{mensaje}</Small>
+      <Skeleton animation="pulse" variant={'rectangular'} height={mensaje ? 15 : 35} />
       <LinearProgress variant="determinate" value={progress} />
-    </>
+    </Box>
   )
 }
 

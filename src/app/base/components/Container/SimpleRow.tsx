@@ -1,4 +1,4 @@
-import { Stack, StackProps } from '@mui/material'
+import { Stack } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 
 interface OwnProps {

@@ -3,6 +3,7 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import { PageInfoProps, PageInputProps } from '../../../interfaces'
 import { ProveedorProps } from '../interfaces/proveedor.interface'
 
@@ -40,13 +41,21 @@ interface ProveedorResponse {
   docs: ProveedorProps[]
 }
 
+/**
+ * @description Listado de proveedores
+ * @param pageInfo
+ */
 export const apiProveedores = async (
   pageInfo: PageInputProps,
 ): Promise<ProveedorResponse> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
-  const data: any = await client.request(gqlQuery, { ...pageInfo })
-  return data.proveedores
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
+    const data: any = await client.request(gqlQuery, { ...pageInfo })
+    return data.proveedores
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

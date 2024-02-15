@@ -1,13 +1,18 @@
-import { Box } from '@mui/system'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import { Box, useTheme } from '@mui/material'
+import {
+  type MRT_ColumnDef,
+  MRT_Table,
+  MRT_TableOptions,
+  useMaterialReactTable,
+} from 'material-react-table'
 import React, { FC, useMemo } from 'react'
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { genReplaceEmpty } from '../../../utils/helper'
 import {
-  DisplayColumnDefOptions,
-  MuiTableProps,
+  DCDO,
+  DcdoProps,
+  MuiTableBasicOptionsProps,
 } from '../../../utils/materialReactTableUtils'
 import {
   ReporteVentasUsuarioComposeProps,
@@ -21,8 +26,9 @@ interface OwnProps {
 type Props = OwnProps
 
 const ReporteNroVentasUsuario: FC<Props> = (props) => {
+  const theme = useTheme()
   const { data } = props
-  const columns = useMemo<MRT_ColumnDef<ReporteVentasUsuarioDetalleComposeProps>[]>(
+  const columns = useMemo<MRT_ColumnDef<ReporteVentasUsuarioDetalleComposeProps, any>[]>(
     () => [
       {
         accessorKey: 'usuario',
@@ -57,26 +63,24 @@ const ReporteNroVentasUsuario: FC<Props> = (props) => {
     ],
     [],
   )
+  const table = useMaterialReactTable({
+    ...(MuiTableBasicOptionsProps(
+      theme,
+    ) as MRT_TableOptions<ReporteVentasUsuarioDetalleComposeProps>),
+    columns,
+    data: data.detalle || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    initialState: {
+      density: 'compact',
+    },
+    displayColumnDefOptions: DCDO as DcdoProps<ReporteVentasUsuarioDetalleComposeProps>,
+    muiTableBodyRowProps: { hover: false },
+    enableTableHead: true,
+  })
+
   return (
     <>
-      <Box>
-        <MaterialReactTable
-          columns={columns}
-          data={data.detalle || []}
-          initialState={{
-            density: 'compact',
-          }}
-          localization={MRT_Localization_ES}
-          displayColumnDefOptions={DisplayColumnDefOptions}
-          muiTableProps={MuiTableProps}
-          enableColumnActions={false}
-          enableColumnFilters={false}
-          enablePagination={false}
-          enableSorting={false}
-          enableBottomToolbar={false}
-          enableTopToolbar={false}
-          muiTableBodyRowProps={{ hover: false }}
-        />
+      <Box overflow={'auto'}>
+        <MRT_Table table={table} />
       </Box>
     </>
   )

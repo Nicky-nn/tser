@@ -15,12 +15,17 @@ const useQueryTiposProducto = (queryKey: QueryKey = []) => {
     isError: tpIsError,
     error: tpError,
     refetch: tpRefetch,
-  } = useQuery<TipoProductoProps[], Error>(['tiposProducto', ...queryKey], async () => {
-    const resp = await apiTipoProductoListado()
-    if (resp.length > 0) {
-      return resp
-    }
-    return []
+  } = useQuery<TipoProductoProps[], Error>({
+    queryKey: ['tiposProducto', ...queryKey],
+    queryFn: async () => {
+      const resp = await apiTipoProductoListado()
+      if (resp.length > 0) {
+        return resp
+      }
+      return []
+    },
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
   })
 
   return { tiposProducto, tpLoading, tpIsError, tpError, tpRefetch }

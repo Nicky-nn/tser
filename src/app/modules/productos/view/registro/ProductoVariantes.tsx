@@ -1,7 +1,6 @@
 import { Delete, Edit } from '@mui/icons-material'
-import { Grid, IconButton } from '@mui/material'
-import { Box } from '@mui/system'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { Box, Grid, IconButton } from '@mui/material'
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import { FunctionComponent, useState } from 'react'
 import { useFieldArray, UseFormReturn } from 'react-hook-form'
@@ -9,10 +8,7 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { genReplaceEmpty } from '../../../../utils/helper'
-import {
-  DisplayColumnDefOptions,
-  MuiTableProps,
-} from '../../../../utils/materialReactTableUtils'
+import { DCDO, DcdoProps, MuiTableProps } from '../../../../utils/materialReactTableUtils'
 import { notError } from '../../../../utils/notification'
 import { swalConfirmDialog } from '../../../../utils/swal'
 import {
@@ -83,7 +79,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
               <Grid item lg={12} md={12} xs={12}>
                 <MaterialReactTable
                   columns={columns}
-                  data={variantesWatch}
+                  data={variantesWatch || []}
                   enableColumnActions={false}
                   enableColumnFilters={false}
                   localization={MRT_Localization_ES}
@@ -93,7 +89,7 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                     density: 'compact',
                   }}
                   muiTableProps={MuiTableProps}
-                  displayColumnDefOptions={DisplayColumnDefOptions}
+                  displayColumnDefOptions={DCDO as DcdoProps<ProductoVarianteInputProps>}
                   enableBottomToolbar={false}
                   enableTopToolbar={false}
                   positionActionsColumn="last"

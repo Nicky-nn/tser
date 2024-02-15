@@ -1,9 +1,10 @@
 import {
   FormControl,
   FormHelperText,
+  Grid,
   InputLabel,
   OutlinedInput,
-  Stack,
+  TextField,
 } from '@mui/material'
 import { replace } from 'lodash'
 import React, { FunctionComponent, useEffect } from 'react'
@@ -47,82 +48,88 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <Stack spacing={3} pt={2} mt={2}>
-        <Controller
-          name={'codigoMetodoPago'}
-          control={control}
-          render={({ field }) => (
-            <FormControl fullWidth error={Boolean(errors.codigoMetodoPago)}>
-              <MyInputLabel shrink>Método de Págo</MyInputLabel>
-              <Select<MetodoPagoProp>
-                {...field}
-                styles={{
-                  ...reactSelectStyle(Boolean(errors.codigoMetodoPago)),
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontWeight: 'bold',
-                    fontSize: '15px',
-                  }),
-                }}
-                name="codigoMetodoPago"
-                placeholder={'Seleccione el método de págo'}
-                value={field.value}
-                onChange={async (val: any) => {
-                  field.onChange(val)
-                }}
-                onBlur={async (val) => {
-                  field.onBlur()
-                }}
-                isSearchable={false}
-                options={metodosPago}
-                getOptionValue={(item) => item.codigoClasificador.toString()}
-                getOptionLabel={(item) =>
-                  `${item.codigoClasificador} - ${item.descripcion}`
-                }
-              />
-              {errors.codigoMetodoPago && (
-                <FormHelperText>{errors.codigoMetodoPago?.message}</FormHelperText>
-              )}
-            </FormControl>
-          )}
-        />
-
-        {METODOS_PAGO_TARJETA.includes(
-          getValues('codigoMetodoPago').codigoClasificador,
-        ) && (
-          <>
-            <Controller
-              name={'numeroTarjeta'}
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth size={'small'} focused style={{ zIndex: 0 }}>
-                  <InputLabel htmlFor="formatted-text-mask-input">
-                    Ingrese el Número de tarjeta
-                  </InputLabel>
-                  <OutlinedInput
-                    label="Ingrese el Número de tarjeta"
-                    {...field}
-                    value={field.value || ''}
-                    onChange={(event) => {
-                      const numeroTarjeta = replace(
-                        event.target.value,
-                        new RegExp('-', 'g'),
-                        '',
-                      )
-                        .replace(/_/g, '')
-                        .trim()
-                      field.onChange(numeroTarjeta)
-                    }}
-                    name="numeroTarjeta"
-                    inputComponent={TarjetaMask as any}
-                  />
-                  <small>Ingrese los primero 4 y últimos 4 dígitos</small>
-                </FormControl>
-              )}
-            />
-          </>
-        )}
-      </Stack>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Controller
+            name={'codigoMetodoPago'}
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={Boolean(errors.codigoMetodoPago)}>
+                <MyInputLabel shrink>Método de Págo</MyInputLabel>
+                <Select<MetodoPagoProp>
+                  {...field}
+                  styles={{
+                    ...reactSelectStyle(Boolean(errors.codigoMetodoPago)),
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      fontWeight: 'bold',
+                      fontSize: '15px',
+                    }),
+                  }}
+                  name="codigoMetodoPago"
+                  placeholder={'Seleccione el método de págo'}
+                  value={field.value}
+                  onChange={async (val: any) => {
+                    field.onChange(val)
+                  }}
+                  onBlur={async (val) => {
+                    field.onBlur()
+                  }}
+                  isSearchable={false}
+                  options={metodosPago}
+                  getOptionValue={(item) => item.codigoClasificador.toString()}
+                  getOptionLabel={(item) =>
+                    `${item.codigoClasificador} - ${item.descripcion}`
+                  }
+                />
+                {errors.codigoMetodoPago && (
+                  <FormHelperText>{errors.codigoMetodoPago?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Controller
+            name={'numeroTarjeta'}
+            control={control}
+            disabled={
+              !METODOS_PAGO_TARJETA.includes(
+                getValues('codigoMetodoPago').codigoClasificador,
+              )
+            }
+            render={({ field }) => (
+              <FormControl fullWidth style={{ zIndex: 0 }}>
+                <TextField
+                  {...field}
+                  label="Número de tarjeta"
+                  variant={'outlined'}
+                  value={field.value || ''}
+                  onChange={(event) => {
+                    const numeroTarjeta = replace(
+                      event.target.value,
+                      new RegExp('-', 'g'),
+                      '',
+                    )
+                      .replace(/_/g, '')
+                      .trim()
+                    field.onChange(numeroTarjeta)
+                  }}
+                  name="numeroTarjeta"
+                  size={'small'}
+                  InputProps={{
+                    inputComponent: TarjetaMask as any,
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                />
+                <FormHelperText>
+                  Ingrese los primeros 4 y últimos 4 dígitos
+                </FormHelperText>
+              </FormControl>
+            )}
+          />
+        </Grid>
+      </Grid>
     </>
   )
 }

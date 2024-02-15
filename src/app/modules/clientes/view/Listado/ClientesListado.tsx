@@ -1,5 +1,5 @@
 import { Delete, PersonAddAltSharp } from '@mui/icons-material'
-import { Box, Button, Chip, Stack } from '@mui/material'
+import { Box, Button, Chip, Stack, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
@@ -7,16 +7,15 @@ import {
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery } from '../../../../utils/helper'
-import { localization } from '../../../../utils/localization'
 import {
-  DisplayColumnDefOptions,
+  DCDO,
   MuiSearchTextFieldProps,
-  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableAdvancedOptionsProps,
   MuiTableProps,
   MuiToolbarAlertBannerProps,
 } from '../../../../utils/materialReactTableUtils'
@@ -66,6 +65,7 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
 ]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
+  const theme = useTheme()
   const [openClienteRegistro, setOpenClienteRegistro] = useState(false)
   const [openCliente99001Registro, setOpenCliente99001Registro] = useState(false)
   // DATA TABLE
@@ -84,9 +84,15 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
     isLoading,
     isFetching,
     refetch,
-  } = useQuery(
-    ['client', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
-    async () => {
+  } = useQuery({
+    queryKey: [
+      'client',
+      columnFilters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sorting,
+    ],
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -99,8 +105,8 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    { keepPreviousData: true },
-  )
+    refetchInterval: false,
+  })
   const columns = useMemo(() => tableColumns, [])
 
   const handleDeleteData = async (original: any) => {
@@ -148,28 +154,22 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           size={'small'}
           variant="contained"
           onClick={() => setOpenCliente99001Registro(true)}
-          color={'primary'}
+          color={'secondary'}
         >
           Nuevo Cliente (99001)
         </Button>
       </Stack>
 
       <MaterialReactTable
+        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ClienteProps>)}
         columns={columns}
         data={clientes ?? []}
         initialState={{ showColumnFilters: false }}
-        manualFiltering
-        manualPagination
-        manualSorting
         muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
         rowCount={rowCount}
-        localization={localization}
-        enableRowNumbers={true}
         state={{
           isLoading,
           columnFilters,
@@ -180,15 +180,12 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
           density: 'compact',
           rowSelection,
         }}
-        enableRowActions
-        positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
           <ClientesMenu row={row.original} refetch={refetch} />
         )}
         muiSearchTextFieldProps={MuiSearchTextFieldProps}
-        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         muiTableProps={MuiTableProps}
-        displayColumnDefOptions={DisplayColumnDefOptions}
+        displayColumnDefOptions={DCDO}
         onRowSelectionChange={setRowSelection}
         enableRowSelection
         muiSelectCheckboxProps={({ row }) => ({

@@ -7,22 +7,17 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  TextField,
 } from '@mui/material'
-import es from 'date-fns/locale/es'
 import dayjs from 'dayjs'
 import exportFromJSON from 'export-from-json'
 import { convert } from 'html-to-text'
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import DatePicker from 'react-datepicker'
 
-import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { clearAllLineBreak } from '../../../../utils/helper'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
-
-registerLocale('es', es)
 
 interface OwnProps {
   id: string

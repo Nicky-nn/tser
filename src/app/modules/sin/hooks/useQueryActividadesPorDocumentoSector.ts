@@ -14,19 +14,17 @@ const useQueryActividadesPorDocumentoSector = (queryKey: QueryKey = []) => {
     isLoading: actLoading,
     isError: actIsError,
     error: actError,
-  } = useQuery<SinActividadesDocumentoSectorProps[], Error>(
-    ['actividadesPorDocumentoSector', ...queryKey],
-    async () => {
+  } = useQuery<SinActividadesDocumentoSectorProps[], Error>({
+    queryKey: ['actividadesPorDocumentoSector', ...queryKey],
+    queryFn: async () => {
       const resp = await apiSinActividadesPorDocumentoSector()
       if (resp.length > 0) {
         return resp
       }
       return []
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+  })
 
   return { actividades, actLoading, actIsError, actError }
 }

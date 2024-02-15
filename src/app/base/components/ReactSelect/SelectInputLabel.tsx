@@ -1,5 +1,4 @@
-import { InputLabel, Theme } from '@mui/material'
-import { styled } from '@mui/styles'
+import { InputLabel, styled, Theme } from '@mui/material'
 
 export const SelectInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
   backgroundColor: theme.palette.primary.contrastText,

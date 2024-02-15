@@ -1,5 +1,4 @@
-import { Menu, ThemeProvider } from '@mui/material'
-import { Box, styled } from '@mui/system'
+import { Box, Menu, styled, ThemeProvider } from '@mui/material'
 import React, { FC, Fragment } from 'react'
 
 import useSettings from '../../../hooks/useSettings'

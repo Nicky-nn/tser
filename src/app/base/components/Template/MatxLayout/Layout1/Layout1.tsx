@@ -1,5 +1,4 @@
-import { Box, styled, ThemeProvider, useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/system'
+import { Box, styled, ThemeProvider, useMediaQuery, useTheme } from '@mui/material'
 import React, { useEffect, useRef } from 'react'
 import Scrollbar from 'react-perfect-scrollbar'
 import { Outlet } from 'react-router-dom'
@@ -81,7 +80,7 @@ const Layout1 = () => {
   const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const ref = useRef({ isMdScreen, settings })
-  const layoutClasses = `theme-${theme.palette.type}`
+  const layoutClasses = `theme-${theme.palette.primary}`
 
   useEffect(() => {
     let { settings } = ref.current

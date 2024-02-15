@@ -1,6 +1,5 @@
 import { Newspaper } from '@mui/icons-material'
-import { Button, Grid } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, Button, Grid } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
@@ -27,7 +26,6 @@ const Productos = () => {
             component={RouterLink}
             to={productosRouteMap.nuevo.path}
             startIcon={<Newspaper />}
-            color={'success'}
           >
             {productosRouteMap.nuevo.name}
           </Button>

@@ -8,10 +8,7 @@ import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../../base/components/Form'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import {
-  reactSelectStyle,
-  reactSelectStyles,
-} from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { fetchSinProductoServicioPorActividad } from '../../../sin/api/sinProductoServicio.api'
 import useQueryActividadesPorDocumentoSector from '../../../sin/hooks/useQueryActividadesPorDocumentoSector'
@@ -27,6 +24,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * Homologación de productos
+ * @param props
+ * @constructor
+ */
 const ProductoHomologacion: FunctionComponent<Props> = (props) => {
   const {
     form: {
@@ -50,9 +52,9 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
     data: productosServicios,
     isLoading: prodServIsLoading,
     error: prodServError,
-  } = useQuery<SinProductoServicioProps[], Error>(
-    ['productosServicios', actividadEconomicaWatch],
-    async () => {
+  } = useQuery<SinProductoServicioProps[], Error>({
+    queryKey: ['productosServicios', actividadEconomicaWatch],
+    queryFn: async () => {
       const docs = await fetchSinProductoServicioPorActividad(
         getValues('actividadEconomica.codigoActividad'),
       )
@@ -61,12 +63,9 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
       }
       return docs
     },
-    {
-      keepPreviousData: false,
-      refetchOnWindowFocus: false,
-      refetchInterval: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
   // En caso no existiera valores en actividad economica
   useEffect(() => {

@@ -1,11 +1,19 @@
 import { ArrowRight } from '@mui/icons-material'
-import { Avatar, Card, CardContent, CardHeader, CSSObject, SxProps } from '@mui/material'
-import { styled, Theme } from '@mui/system'
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  CSSObject,
+  styled,
+  SxProps,
+  Theme,
+} from '@mui/material'
 import { CSSProperties, FC, PropsWithChildren, ReactNode } from 'react'
 
 import { H4 } from '../Typography'
 
-const CardRoot = styled(Card)(() => ({
+const CardRoot = styled(Card)(({ theme }) => ({
   height: '100%',
   padding: '15px 15px',
   overflow: 'inherit', // Cambio realizado para mostrar los hidden selects
@@ -23,6 +31,11 @@ const CardRoot = styled(Card)(() => ({
   },
   '& .MuiCardHeader-avatar': {
     marginRight: '8px',
+    color: theme.palette.primary.light,
+    marginTop: '-2px',
+  },
+  '& .MuiAvatar-root': {
+    backgroundColor: theme.palette.primary.light,
   },
 })) as typeof Card
 
@@ -61,14 +74,7 @@ const SimpleCard: FC<SimpleCardProps> = ({
     <CardRoot elevation={6}>
       {title && (
         <CardHeader
-          avatar={
-            title &&
-            childIcon && (
-              <Avatar sx={{ height: 25, width: 25, marginLeft: 0 }} aria-label="">
-                {childIcon ? childIcon : <ArrowRight />}
-              </Avatar>
-            )
-          }
+          avatar={title && (childIcon ? childIcon : <ArrowRight />)}
           title={title && <H4>{title.toUpperCase()}</H4>}
           subheader={subtitle && subtitle}
         />

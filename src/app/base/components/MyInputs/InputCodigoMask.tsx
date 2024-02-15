@@ -6,6 +6,9 @@ interface CustomProps {
   name: string
 }
 
+/**
+ * @description Realiza un enmascarmiento para registro de un codigo
+ */
 export const InputCodigoMask = forwardRef<HTMLElement, CustomProps>(
   function InputCodigoMask(props, ref: any) {
     const { onChange, ...other } = props

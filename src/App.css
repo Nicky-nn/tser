@@ -311,9 +311,10 @@ button {
   z-index: 6 !important;
   top: var(--offset);
 }
+
 /**** MATERIAL-DATA-TABLE *****/
 .MuiTableCell-root.MuiTableCell-head {
-  border-right: 1px solid rgba(224, 224, 200, 2);
+  border-right: 1px solid rgba(224, 224, 200, 0.3);
 }
 .MuiTableCell-root.MuiTableCell-body {
   border-right: 1px solid rgba(224, 224, 224, 0.4);

@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  useTheme,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -14,7 +15,7 @@ import {
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
@@ -22,7 +23,11 @@ import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/S
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../../utils/helper'
 import { localization } from '../../../../utils/localization'
-import { MuiTableHeadCellFilterTextFieldProps } from '../../../../utils/materialReactTableUtils'
+import {
+  MuiFilterTextFieldProps,
+  MuiTableAdvancedOptionsProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../../utils/materialReactTableUtils'
 import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api'
 import { FacturaProps } from '../../../ventas/interfaces/factura'
 
@@ -88,7 +93,13 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * @description Dialogo para seleccionar la factura original
+ * @param props
+ * @constructor
+ */
 const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
+  const theme = useTheme()
   const { onClose, open, ...other } = props
 
   const handleCancel = () => {
@@ -108,15 +119,15 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isLoading, refetch } = useQuery<FacturaProps[]>(
-    [
+  const { data, isError, isLoading, refetch } = useQuery<FacturaProps[]>({
+    queryKey: [
       'NcdGestionFacturas',
       columnFilters,
       pagination.pageIndex,
       pagination.pageSize,
       sorting,
     ],
-    async () => {
+    queryFn: async () => {
       const query = genApiQuery(columnFilters, ['state=VALIDADA'])
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -129,7 +140,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-  )
+  })
   const columns = useMemo(() => tableColumns, [])
 
   const setNotaCreditoDebito = (factura: FacturaProps) => {
@@ -139,7 +150,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 550 } }}
+        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: 650 } }}
         maxWidth="lg"
         open={open}
         {...other}
@@ -147,30 +158,18 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
         <DialogTitle>Seleccione su factura</DialogTitle>
         <DialogContent dividers>
           <MaterialReactTable
+            {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<FacturaProps>)}
             columns={columns}
             data={data ?? []}
             initialState={{
               showColumnFilters: true,
               columnVisibility: { cuf: false, state: false },
             }}
-            manualFiltering
-            manualPagination
-            manualSorting
-            muiToolbarAlertBannerProps={
-              isError
-                ? {
-                    color: 'error',
-                    children: 'Error loading data',
-                  }
-                : undefined
-            }
+            muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
             onColumnFiltersChange={setColumnFilters}
             onPaginationChange={setPagination}
             onSortingChange={setSorting}
-            enableDensityToggle={false}
-            enableGlobalFilter={false}
             rowCount={rowCount}
-            localization={localization}
             state={{
               isLoading,
               columnFilters,
@@ -181,14 +180,6 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
               sorting,
               rowSelection,
             }}
-            muiSearchTextFieldProps={{
-              variant: 'outlined',
-              placeholder: 'Busqueda',
-              InputLabelProps: { shrink: true },
-              size: 'small',
-            }}
-            enableRowActions
-            positionActionsColumn={'first'}
             renderRowActions={({ row }) => (
               <>
                 <SimpleMenu
@@ -234,12 +225,6 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                 </Button>
               </>
             )}
-            muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
-            muiTableProps={{
-              sx: {
-                tableLayout: 'fixed',
-              },
-            }}
             displayColumnDefOptions={{
               'mrt-row-actions': {
                 muiTableHeadCellProps: {
@@ -257,6 +242,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
             size={'small'}
             variant={'contained'}
             onClick={handleCancel}
+            sx={{ mr: 2 }}
           >
             Cerrar
           </Button>

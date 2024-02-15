@@ -1,13 +1,5 @@
-import {
-  FileOpen,
-  ImportExport,
-  LayersClear,
-  Mail,
-  MenuOpen,
-  PictureAsPdf,
-} from '@mui/icons-material'
-import { Button, Chip, Grid, IconButton } from '@mui/material'
-import { Box } from '@mui/system'
+import { ImportExport } from '@mui/icons-material'
+import { Box, Button, Chip, Grid, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
@@ -15,28 +7,26 @@ import {
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import React, { FC, useMemo, useState } from 'react'
 
-import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
-import { SimpleItem } from '../../../base/components/Container/SimpleItem'
-import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
-import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
 import StackMenu from '../../../base/components/MyMenu/StackMenu'
 import StackMenuActionTable, {
   StackMenuItem,
 } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
-import { genApiQuery, openInNewTab } from '../../../utils/helper'
-import { localization } from '../../../utils/localization'
+import { genApiQuery } from '../../../utils/helper'
 import {
-  DisplayColumnDefOptions,
+  DCDO,
+  DcdoProps,
+  MuiFilterTextFieldProps,
   MuiSearchTextFieldProps,
+  MuiTableAdvancedOptionsProps,
   muiTableApiEstado,
-  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableBasicOptionsProps,
   MuiTableProps,
   MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
@@ -47,6 +37,7 @@ import MisVentasDialog from './VentaGestion/MisVentasDialog'
 import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
 import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
+import VentaGestionMenu from './VentaGestion/VentaGestionMenu'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -137,8 +128,8 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
           row.state === apiEstado.validada
             ? 'success'
             : row.state === apiEstado.pendiente
-            ? 'warning'
-            : 'error'
+              ? 'warning'
+              : 'error'
         }
         label={row.state}
         size={'small'}
@@ -152,6 +143,7 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
 ]
 
 const VentaGestion: FC<any> = () => {
+  const theme = useTheme()
   const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
   const [factura, setFactura] = useState<FacturaProps | null>(null)
   const [openExport, setOpenExport] = useState(false)
@@ -175,15 +167,15 @@ const VentaGestion: FC<any> = () => {
     isLoading,
     refetch,
     isRefetching,
-  } = useQuery<FacturaProps[]>(
-    [
+  } = useQuery<FacturaProps[]>({
+    queryKey: [
       'gestionFacturas',
       columnFilters,
       pagination.pageIndex,
       pagination.pageSize,
       sorting,
     ],
-    async () => {
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -196,11 +188,11 @@ const VentaGestion: FC<any> = () => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+  })
+
   const columns = useMemo(() => tableColumns, [])
+
   return (
     <>
       <SimpleContainer>
@@ -247,10 +239,11 @@ const VentaGestion: FC<any> = () => {
         </StackMenu>
 
         <Grid container spacing={2}>
-          <Grid item lg={12} md={12} xs={12}>
+          <Grid item xs={12}>
             <MaterialReactTable
+              {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<FacturaProps>)}
               columns={columns} //must be memoized
-              data={gestionProductos ?? []} //must be memoized
+              data={gestionProductos || []} //must be memoized
               initialState={{
                 showColumnFilters: true,
                 columnVisibility: {
@@ -259,17 +252,11 @@ const VentaGestion: FC<any> = () => {
                   tipoCambio: false,
                 },
               }}
-              manualFiltering
-              manualPagination
-              manualSorting
               muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
               onColumnFiltersChange={setColumnFilters}
               onPaginationChange={setPagination}
               onSortingChange={setSorting}
-              enableDensityToggle={false}
-              enableGlobalFilter={false}
               rowCount={rowCount}
-              localization={localization}
               state={{
                 isLoading,
                 columnFilters,
@@ -281,79 +268,16 @@ const VentaGestion: FC<any> = () => {
                 columnPinning: { right: ['actions'] },
                 rowSelection,
               }}
-              enableRowActions
-              muiSearchTextFieldProps={MuiSearchTextFieldProps}
-              positionActionsColumn="first"
-              displayColumnDefOptions={DisplayColumnDefOptions}
+              displayColumnDefOptions={DCDO as DcdoProps<FacturaProps>}
               renderRowActions={({ row }) => (
-                <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
-                  <SimpleMenu
-                    menuButton={
-                      <>
-                        <IconButton aria-label="delete">
-                          <MenuOpen />
-                        </IconButton>
-                      </>
-                    }
-                  >
-                    <StyledMenuItem
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setOpenAnularDocumento(true)
-                        setFactura(row.original)
-                      }}
-                    >
-                      <LayersClear /> Anular Documento
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.pdf)
-                      }}
-                    >
-                      <PictureAsPdf /> Pdf Medio Oficio
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.rollo)
-                      }}
-                    >
-                      <PictureAsPdf /> Pdf Rollo
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.xml)
-                      }}
-                    >
-                      <FileOpen /> Xml
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.sin)
-                      }}
-                    >
-                      <FileOpen /> Url S.I.N.
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setOpenReenviarEmails(true)
-                        setFactura(row.original)
-                      }}
-                    >
-                      <Mail /> Reenviar Correo
-                    </StyledMenuItem>
-                  </SimpleMenu>
-                  <AuditIconButton row={row.original} />
-                </div>
+                <VentaGestionMenu
+                  row={row.original}
+                  refetch={refetch}
+                  setOpenReenviarEmails={setOpenReenviarEmails}
+                  setOpenAnularDocumento={setOpenAnularDocumento}
+                  setFactura={setFactura}
+                />
               )}
-              muiTableHeadCellFilterTextFieldProps={{
-                ...MuiTableHeadCellFilterTextFieldProps,
-              }}
               renderTopToolbarCustomActions={({ table }) => {
                 return <StackMenuActionTable refetch={refetch} />
               }}
@@ -362,20 +286,21 @@ const VentaGestion: FC<any> = () => {
           </Grid>
         </Grid>
         <Box py="12px" />
-        <AnularDocumentoDialog
-          id={'anularDocumentoDialog'}
-          open={openAnularDocumento}
-          keepMounted
-          factura={factura}
-          onClose={async (val) => {
-            if (val) {
-              await refetch()
-            }
-            setFactura(null)
-            setOpenAnularDocumento(false)
-          }}
-        />
       </SimpleContainer>
+
+      <AnularDocumentoDialog
+        id={'anularDocumentoDialog'}
+        open={openAnularDocumento}
+        keepMounted
+        factura={factura}
+        onClose={async (val) => {
+          if (val) {
+            await refetch()
+          }
+          setFactura(null)
+          setOpenAnularDocumento(false)
+        }}
+      />
 
       <VentaGestionExportarDialog
         id={'ventaGestionExportar'}

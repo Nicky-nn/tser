@@ -9,6 +9,7 @@ import {
   Chip,
   IconButton,
   Paper,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -16,9 +17,9 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  useTheme,
 } from '@mui/material'
-import { styled, useTheme } from '@mui/system'
-import React, { FC, Fragment, useState } from 'react'
+import React, { FC, useState } from 'react'
 
 import CuentaRestriccionDialog from '../../../modules/cuenta/view/CuentaRestriccionDialog'
 import { topBarHeightRestriccion } from '../../../utils/constant'
@@ -30,22 +31,22 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
 }))
 
-const RestriccionTopBarRoot = styled('div')(() => ({
+const RestriccionTopBarRoot = styled('div')(({ theme }) => ({
   top: 0,
   zIndex: 96,
   transition: 'all 0.3s ease',
   boxShadow: themeShadows[5],
   height: topBarHeightRestriccion,
+  background: theme.palette.background.default,
 }))
 
 const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
-  padding: 0,
   paddingLeft: 0,
   paddingRight: 0,
-  height: '100%',
   display: 'flex',
+  height: '100%',
   alignItems: 'center',
-  background: theme.palette.primary.primary,
+  background: theme.palette.background.default,
   borderRadius: 0,
   justifyContent: 'space-between',
 }))
@@ -66,17 +67,24 @@ const LayoutRestriccion: FC<any> = () => {
           <TableContainer
             component={'div'}
             style={{
-              paddingLeft: 15,
-              paddingRight: 15,
+              padding: '0 20px',
               borderRadius: 0,
-              background: 'transparent',
+              height: '100%',
+              background: 'none',
             }}
           >
-            <Table sx={{ minWidth: 800 }} size="small">
+            <Table sx={{ minWidth: 800, height: '100%' }} size="small">
               <TableHead></TableHead>
               <TableBody>
-                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell sx={{ minWidth: 200, maxWidth: 400 }}>
+                <TableRow
+                  sx={{
+                    '&:last-child td, &:last-child th': {
+                      border: 0,
+                      padding: 0,
+                    },
+                  }}
+                >
+                  <TableCell sx={{ minWidth: 200, maxWidth: 400, padding: 0 }}>
                     <MyChip color={'info'} title={'Razón social'}>
                       {user.razonSocial}
                     </MyChip>
@@ -93,6 +101,7 @@ const LayoutRestriccion: FC<any> = () => {
                           </>
                         }
                         variant="outlined"
+                        size={'small'}
                       />
                     </Tooltip>
                     &nbsp;
@@ -100,6 +109,7 @@ const LayoutRestriccion: FC<any> = () => {
                       <Chip
                         icon={<Computer />}
                         color={'success'}
+                        size={'small'}
                         label={
                           <>
                             <strong>Punto Venta {user.puntoVenta.codigo}</strong>
@@ -119,6 +129,7 @@ const LayoutRestriccion: FC<any> = () => {
                           </>
                         }
                         variant="outlined"
+                        size={'small'}
                       />
                     </Tooltip>
                   </TableCell>
@@ -131,6 +142,7 @@ const LayoutRestriccion: FC<any> = () => {
                         theme={theme}
                         aria-label="Cambiar Sucursal / Punto Venta"
                         style={{ padding: 0, margin: 0 }}
+                        size={'small'}
                       >
                         <RepeatOne fontSize={'large'} />
                       </StyledIconButton>
@@ -149,6 +161,7 @@ const LayoutRestriccion: FC<any> = () => {
                           user.miEmpresa.codigoAmbiente === 1 ? 'success' : 'warning'
                         }
                         style={{ padding: 0, margin: 0 }}
+                        size={'small'}
                       >
                         <RadioButtonChecked fontSize={'large'} />
                       </IconButton>

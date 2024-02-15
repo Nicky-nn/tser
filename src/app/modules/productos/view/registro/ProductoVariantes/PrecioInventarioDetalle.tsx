@@ -1,5 +1,4 @@
-import { Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, Typography } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 
 import { numberWithCommas } from '../../../../../base/components/MyInputs/NumberInput'

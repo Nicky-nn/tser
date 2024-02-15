@@ -1,7 +1,9 @@
-import { Button, Grid, Typography } from '@mui/material'
-import MaterialReactTable, {
+import { Button, Grid, Typography, useTheme } from '@mui/material'
+import {
+  MaterialReactTable,
   MRT_ColumnDef,
   MRT_RowSelectionState,
+  MRT_TableOptions,
 } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
@@ -11,8 +13,8 @@ import { FormTextField } from '../../../../base/components/Form'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import {
-  DisplayColumnDefOptions,
-  MuiTableProps,
+  DCDO,
+  MuiTableBasicOptionsProps,
 } from '../../../../utils/materialReactTableUtils'
 import { DetalleFacturaProps, FacturaProps } from '../../../ventas/interfaces/factura'
 import { NcdInputProps } from '../../interfaces/ncdInterface'
@@ -25,6 +27,7 @@ interface OwnProps {
 type Props = OwnProps
 
 const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
+  const theme = useTheme()
   const {
     form: {
       control,
@@ -131,7 +134,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
           <Grid item xs={12} lg={12}>
             <Button
               size={'small'}
-              variant={'contained'}
+              variant={'outlined'}
               color={'info'}
               onClick={() => setOpenDialog(true)}
             >
@@ -173,20 +176,18 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
               Seleccione los items a ser devueltos
             </Typography>
             <MaterialReactTable
+              {...(MuiTableBasicOptionsProps(
+                theme,
+              ) as MRT_TableOptions<DetalleFacturaProps>)}
               columns={columns}
               data={getValues('detalle') || []}
               localization={MRT_Localization_ES}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enablePagination={false}
-              enableSorting={false}
               enableBottomToolbar={false}
               state={{
                 rowSelection,
-                density: 'compact',
+                density: 'comfortable',
               }}
-              muiTableProps={MuiTableProps}
-              displayColumnDefOptions={DisplayColumnDefOptions}
+              displayColumnDefOptions={DCDO}
               enableTopToolbar={false}
               enableRowSelection
               onRowSelectionChange={setRowSelection}

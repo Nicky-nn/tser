@@ -1,4 +1,4 @@
-import { styled } from '@mui/system'
+import { styled } from '@mui/material'
 
 const SimpleContainer = styled('div')(({ theme }) => ({
   margin: '30px',

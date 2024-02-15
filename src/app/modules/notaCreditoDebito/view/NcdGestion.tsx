@@ -1,13 +1,11 @@
 import {
-  Delete,
   DocumentScanner,
   FileOpen,
   LayersClear,
   MenuOpen,
   PictureAsPdf,
 } from '@mui/icons-material'
-import { Button, Chip, Grid, IconButton } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, Button, Chip, Grid, IconButton, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
@@ -15,7 +13,12 @@ import {
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import {
+  MaterialReactTable,
+  MRT_ColumnDef,
+  MRT_TableOptions,
+  useMaterialReactTable,
+} from 'material-react-table'
 import { FC, useMemo, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
@@ -30,11 +33,11 @@ import StackMenuActionTable, {
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
-import { localization } from '../../../utils/localization'
 import {
-  DisplayColumnDefOptions,
+  DCDO,
+  DcdoProps,
+  MuiTableAdvancedOptionsProps,
   muiTableApiEstado,
-  MuiTableHeadCellFilterTextFieldProps,
   MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { apiNotasCreditoDebito } from '../api/ncd.api'
@@ -114,8 +117,8 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
           row.state === apiEstado.validada
             ? 'success'
             : row.state === apiEstado.pendiente
-            ? 'warning'
-            : 'error'
+              ? 'warning'
+              : 'error'
         }
         label={row.state}
         size={'small'}
@@ -129,6 +132,7 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
 ]
 
 const NcdGestion: FC<any> = () => {
+  const theme = useTheme()
   const [openAnularNcd, setOpenAnularNcd] = useState(false)
 
   const [openExport, setOpenExport] = useState(false)
@@ -149,9 +153,15 @@ const NcdGestion: FC<any> = () => {
     isLoading,
     refetch,
     isRefetching,
-  } = useQuery<NcdProps[]>(
-    ['gestionNotas', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
-    async () => {
+  } = useQuery<NcdProps[]>({
+    queryKey: [
+      'gestionNotas',
+      columnFilters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sorting,
+    ],
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -164,12 +174,91 @@ const NcdGestion: FC<any> = () => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchInterval: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
   const columns = useMemo(() => tableColumns, [])
+
+  const table = useMaterialReactTable({
+    ...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<NcdProps>),
+    columns,
+    data: gestionProductos ?? [],
+    initialState: {
+      showColumnFilters: true,
+      columnVisibility: {
+        cuf: false,
+        fechaEmisionFactura: false,
+        fechaEmision: false,
+      },
+    },
+    muiToolbarAlertBannerProps: MuiToolbarAlertBannerProps(isError),
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    rowCount: rowCount,
+    state: {
+      isLoading,
+      columnFilters,
+      pagination,
+      showAlertBanner: isError,
+      showProgressBars: isRefetching,
+      sorting,
+      density: 'compact',
+      columnPinning: { right: ['actions'] },
+      rowSelection,
+    },
+    displayColumnDefOptions: DCDO as DcdoProps<NcdProps>,
+    renderRowActions: ({ row }) => (
+      <Box>
+        <SimpleMenu
+          menuButton={
+            <>
+              <IconButton aria-label="Menu">
+                <MenuOpen />
+              </IconButton>
+            </>
+          }
+        >
+          <StyledMenuItem
+            onClick={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <LayersClear /> Anular Documento
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            onClick={() => {
+              openInNewTab(row.original.representacionGrafica.pdf)
+            }}
+          >
+            <PictureAsPdf /> Pdf Medio Oficio
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            onClick={() => {
+              openInNewTab(row.original.representacionGrafica.xml)
+            }}
+          >
+            <FileOpen /> Xml
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            onClick={() => {
+              openInNewTab(row.original.representacionGrafica.sin)
+            }}
+          >
+            <FileOpen /> Url S.I.N.
+          </StyledMenuItem>
+        </SimpleMenu>
+        <AuditIconButton row={row.original} />
+      </Box>
+    ),
+    renderTopToolbarCustomActions: () => {
+      return <StackMenuActionTable refetch={refetch} />
+    },
+  })
+
   return (
     <>
       <SimpleContainer>
@@ -182,7 +271,6 @@ const NcdGestion: FC<any> = () => {
             <Button
               startIcon={<DocumentScanner />}
               variant={'contained'}
-              color={'success'}
               component={RouterLink}
               to={ncdRouteMap.nuevo.path}
             >
@@ -192,94 +280,8 @@ const NcdGestion: FC<any> = () => {
         </StackMenu>
 
         <Grid container spacing={2}>
-          <Grid item lg={12} md={12} xs={12}>
-            <MaterialReactTable
-              columns={columns} //must be memoized
-              data={gestionProductos ?? []} //must be memoized
-              initialState={{
-                showColumnFilters: true,
-                columnVisibility: {
-                  cuf: false,
-                  fechaEmisionFactura: false,
-                  fechaEmision: false,
-                },
-              }}
-              manualFiltering
-              manualPagination
-              manualSorting
-              muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
-              onColumnFiltersChange={setColumnFilters}
-              onPaginationChange={setPagination}
-              onSortingChange={setSorting}
-              enableDensityToggle={false}
-              enableGlobalFilter={false}
-              rowCount={rowCount}
-              localization={localization}
-              state={{
-                isLoading,
-                columnFilters,
-                pagination,
-                showAlertBanner: isError,
-                showProgressBars: isRefetching,
-                sorting,
-                density: 'compact',
-                columnPinning: { right: ['actions'] },
-                rowSelection,
-              }}
-              enableRowActions
-              positionActionsColumn="first"
-              displayColumnDefOptions={DisplayColumnDefOptions}
-              renderRowActions={({ row }) => (
-                <Box>
-                  <SimpleMenu
-                    menuButton={
-                      <>
-                        <IconButton aria-label="Menu">
-                          <MenuOpen />
-                        </IconButton>
-                      </>
-                    }
-                  >
-                    <StyledMenuItem
-                      onClick={(e) => {
-                        e.preventDefault()
-                      }}
-                    >
-                      <LayersClear /> Anular Documento
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.pdf)
-                      }}
-                    >
-                      <PictureAsPdf /> Pdf Medio Oficio
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.xml)
-                      }}
-                    >
-                      <FileOpen /> Xml
-                    </StyledMenuItem>
-
-                    <StyledMenuItem
-                      onClick={() => {
-                        openInNewTab(row.original.representacionGrafica.sin)
-                      }}
-                    >
-                      <FileOpen /> Url S.I.N.
-                    </StyledMenuItem>
-                  </SimpleMenu>
-                  <AuditIconButton row={row.original} />
-                </Box>
-              )}
-              muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
-              renderTopToolbarCustomActions={({ table }) => {
-                return <StackMenuActionTable refetch={refetch} />
-              }}
-            />
+          <Grid item xs={12}>
+            <MaterialReactTable table={table} />
           </Grid>
         </Grid>
       </SimpleContainer>

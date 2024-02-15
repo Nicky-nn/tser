@@ -1,5 +1,5 @@
 import { Delete } from '@mui/icons-material'
-import { Button, Chip } from '@mui/material'
+import { Button, Chip, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
@@ -8,7 +8,7 @@ import type {
 } from '@tanstack/react-table'
 import { SortingState } from '@tanstack/react-table'
 import { sumBy } from 'lodash'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import { FunctionComponent, useMemo, useState } from 'react'
 
@@ -18,9 +18,10 @@ import StackMenuActionTable, {
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../../utils/helper'
 import {
-  DisplayColumnDefOptions,
+  DCDO,
+  MuiFilterTextFieldProps,
   MuiSearchTextFieldProps,
-  MuiTableHeadCellFilterTextFieldProps,
+  MuiTableAdvancedOptionsProps,
   MuiTableProps,
   MuiToolbarAlertBannerProps,
 } from '../../../../utils/materialReactTableUtils'
@@ -92,6 +93,7 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
  * @constructor
  */
 const ProductosListado: FunctionComponent<Props> = (props) => {
+  const theme = useTheme()
   // ESTADO DATATABLE
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
@@ -107,15 +109,15 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
 
   const { data, isError, isFetching, isLoading, status, refetch } = useQuery<
     ProductoProps[]
-  >(
-    [
+  >({
+    queryKey: [
       'productosListado',
       columnFilters,
       pagination.pageIndex,
       pagination.pageSize,
       sorting,
     ],
-    async () => {
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -128,10 +130,8 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+  })
 
   const columns = useMemo(() => tableColumns, [])
 
@@ -160,20 +160,15 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
   return (
     <>
       <MaterialReactTable
+        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ProductoProps>)}
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: true }}
-        manualFiltering
-        manualPagination
-        manualSorting
         muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
         rowCount={rowCount}
-        localization={MRT_Localization_ES}
         state={{
           isLoading,
           columnFilters,
@@ -185,12 +180,9 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
           rowSelection,
         }}
         muiSearchTextFieldProps={MuiSearchTextFieldProps}
-        enableRowActions
-        positionActionsColumn={'first'}
         renderRowActions={({ row }) => (
           <ProductoMenu row={row.original} refetch={refetch} />
         )}
-        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
         enableRowSelection
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={({ table }) => {
@@ -212,7 +204,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
           )
         }}
         muiTableProps={MuiTableProps}
-        displayColumnDefOptions={DisplayColumnDefOptions}
+        displayColumnDefOptions={DCDO}
       />
     </>
   )

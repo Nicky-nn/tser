@@ -18,17 +18,18 @@ const useQueryTipoDocumentoIdentidad = (
     isError: tdiIsError,
     error: tdiError,
     isSuccess: tdIsSuccess,
-  } = useQuery<SinTipoDocumentoIdentidadProps[], Error>(
-    ['tipoDocumentoIdentidad', ...queryKey],
-    async () => {
+  } = useQuery<SinTipoDocumentoIdentidadProps[], Error>({
+    queryKey: ['tipoDocumentoIdentidad', ...queryKey],
+    queryFn: async () => {
       const resp = await fetchSinTipoDocumentoIdentidad()
       if (resp.length > 0) {
         return resp
       }
       return []
     },
-    <Omit<any, any>>{ ...options },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
   return { tiposDocumentoIdentidad, tdiLoading, tdiIsError, tdiError, tdIsSuccess }
 }

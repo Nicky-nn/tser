@@ -1,4 +1,4 @@
-import { styled } from '@mui/system'
+import { styled } from '@mui/material'
 import { FC, Fragment } from 'react'
 import Scrollbar from 'react-perfect-scrollbar'
 

@@ -1,6 +1,6 @@
 import { Refresh } from '@mui/icons-material'
 import { Box, IconButton, Stack, styled, Tooltip } from '@mui/material'
-import { StackProps } from '@mui/material/Stack/Stack'
+import { StackProps } from '@mui/material'
 import { FC, ReactElement } from 'react'
 
 /**

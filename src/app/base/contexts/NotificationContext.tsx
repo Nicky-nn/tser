@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { createContext, FC, useEffect, useReducer } from 'react'
 
 const reducer = (state: any, action: any) => {
@@ -49,14 +48,14 @@ export const NotificationProvider: FC<any> = ({
   const deleteNotification: any = async (notificationID: any) => {
     try {
       /*
-            const res = await axios.post('/api/notification/delete', {
-                id: notificationID,
-            })
-            dispatch({
-                type: 'DELETE_NOTIFICATION',
-                payload: res.data,
-            })
-            */
+                  const res = await axios.post('/api/notification/delete', {
+                      id: notificationID,
+                  })
+                  dispatch({
+                      type: 'DELETE_NOTIFICATION',
+                      payload: res.data,
+                  })
+                  */
     } catch (e) {
       console.error(e)
     }
@@ -65,12 +64,12 @@ export const NotificationProvider: FC<any> = ({
   const clearNotifications = async () => {
     try {
       /*
-            const res = await axios.post('/api/notification/delete-all')
-            dispatch({
-                type: 'CLEAR_NOTIFICATIONS',
-                payload: res.data,
-            })
-            */
+                  const res = await axios.post('/api/notification/delete-all')
+                  dispatch({
+                      type: 'CLEAR_NOTIFICATIONS',
+                      payload: res.data,
+                  })
+                  */
     } catch (e) {
       console.error(e)
     }
@@ -79,12 +78,12 @@ export const NotificationProvider: FC<any> = ({
   const getNotifications = async () => {
     try {
       /*
-            const res = await axios.get('/api/notification')
-            dispatch({
-                type: 'LOAD_NOTIFICATIONS',
-                payload: res.data,
-            })
-             */
+                  const res = await axios.get('/api/notification')
+                  dispatch({
+                      type: 'LOAD_NOTIFICATIONS',
+                      payload: res.data,
+                  })
+                   */
     } catch (e) {
       console.error(e)
     }
@@ -92,14 +91,14 @@ export const NotificationProvider: FC<any> = ({
   const createNotification: any = async (notification: any) => {
     try {
       /*
-            const res = await axios.post('/api/notification/add', {
-                notification,
-            })
-            dispatch({
-                type: 'CREATE_NOTIFICATION',
-                payload: res.data,
-            })
-             */
+                  const res = await axios.post('/api/notification/add', {
+                      notification,
+                  })
+                  dispatch({
+                      type: 'CREATE_NOTIFICATION',
+                      payload: res.data,
+                  })
+                   */
     } catch (e) {
       console.error(e)
     }

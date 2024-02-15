@@ -39,7 +39,7 @@ export interface FacturaInputProps {
   tipoCliente: 'N' | '99002' | '99003'
   cliente: ClienteProps | null
   codigoCliente: string
-  codigoExcepcion: number | null
+  codigoExcepcion: boolean | null
   codigoMetodoPago: MetodoPagoProp
   codigoMoneda: number
   descuentoAdicional: number
@@ -66,7 +66,7 @@ export const FacturaInitialValues: FacturaInputProps = {
   tipoCliente: 'N',
   cliente: null,
   codigoCliente: '',
-  codigoExcepcion: null,
+  codigoExcepcion: false,
   codigoMetodoPago: {
     codigoClasificador: 1,
     descripcion: 'EFECTIVO',

@@ -1,7 +1,10 @@
 import { PersonAddAlt1Outlined, TableChart } from '@mui/icons-material'
 import {
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   FormHelperText,
   Grid,
   List,
@@ -25,6 +28,7 @@ import { ClienteProps } from '../../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../../clientes/view/registro/ClienteRegistroDialog'
 import { FacturaInputProps } from '../../interfaces/factura'
+import DatosCliente from './DatosCliente'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -46,7 +50,6 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
   const [openNuevoCliente, setNuevoCliente] = useState(false)
   const [openExplorarCliente, setExplorarCliente] = useState(false)
   const [openCliente99001, setCliente99001] = useState(false)
-  const watchAllFields = watch()
 
   const fetchClientes = async (inputValue: string): Promise<any[]> => {
     try {
@@ -63,8 +66,8 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
 
   return (
     <>
-      <Grid container spacing={1} rowSpacing={3}>
-        <Grid item xs={12} lg={8} sm={12} md={12}>
+      <Grid container spacing={2} rowSpacing={3}>
+        <Grid item xs={12} sm={7} lg={7} xl={8}>
           <Controller
             name="cliente"
             control={control}
@@ -104,7 +107,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           />
         </Grid>
 
-        <Grid item lg={4} xs={12} md={3}>
+        <Grid item xs={12} sm={5} lg={5} xl={4}>
           <Button
             variant="outlined"
             fullWidth
@@ -115,7 +118,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           </Button>
         </Grid>
 
-        <Grid item lg={5} xs={12} md={8}>
+        <Grid item xs={12} sm={7} lg={7} xl={5}>
           <Controller
             control={control}
             name={'emailCliente'}
@@ -137,47 +140,46 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
           />
         </Grid>
 
-        <Grid item lg={3} xs={12} md={3}>
+        <Grid item xs={12} sm={2} lg={5} xl={3}>
           <Button
             variant="outlined"
             fullWidth
+            title={'Nuevo Cliente'}
             onClick={() => setNuevoCliente(true)}
             startIcon={<PersonAddAlt1Outlined />}
           >
-            Nuevo Cliente
+            N. Cliente
           </Button>
         </Grid>
-        <Grid item lg={4} xs={12} md={3}>
+        <Grid item xs={12} md={12} sm={3} xl={4}>
           <Button
             variant="outlined"
             fullWidth
             onClick={() => setCliente99001(true)}
             startIcon={<PersonAddAlt1Outlined />}
           >
-            Nuevo Cliente 99001
+            N. Cliente 99001
           </Button>
         </Grid>
-        <Grid item lg={12}>
-          <List style={{ marginTop: -10, marginLeft: 10, padding: 0 }}>
-            <ListItem style={{ padding: 0 }}>
-              <ListItemText>
-                <strong>Nombre/Razón Social:</strong>&nbsp;&nbsp;{' '}
-                {watchAllFields.cliente?.razonSocial || ''}
-              </ListItemText>
-            </ListItem>
-            <ListItem style={{ padding: 0 }}>
-              <ListItemText>
-                <strong>NIT/CI/CEX:</strong>&nbsp;&nbsp;{' '}
-                {watchAllFields.cliente?.numeroDocumento || ''}{' '}
-                {watchAllFields.cliente?.complemento || ''}
-              </ListItemText>
-            </ListItem>
-            <ListItem style={{ padding: 0 }}>
-              <ListItemText>
-                <strong>Correo:</strong>&nbsp;&nbsp; {watchAllFields.emailCliente || ''}
-              </ListItemText>
-            </ListItem>
-          </List>
+        <Grid item xs={12}>
+          <FormGroup>
+            <Controller
+              name={'codigoExcepcion'}
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox {...field} checked={!!getValues('codigoExcepcion')} />
+                  }
+                  label="Permitir facturar incluso si el NIT es inválido"
+                  name={'codigoExcepcion'}
+                />
+              )}
+            />
+          </FormGroup>
+        </Grid>
+        <Grid item xs={12}>
+          <DatosCliente form={props.form} />
         </Grid>
       </Grid>
       <>

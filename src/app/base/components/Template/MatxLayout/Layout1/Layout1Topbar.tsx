@@ -1,16 +1,26 @@
-import { Menu, PowerSettingsNew, Settings, Store, Storefront } from '@mui/icons-material'
+import {
+  Menu,
+  PowerSettingsNew,
+  Settings,
+  ShoppingBag,
+  ShoppingBagOutlined,
+  Store,
+  Storefront,
+} from '@mui/icons-material'
 import {
   Avatar,
+  Box,
   Chip,
   Hidden,
   IconButton,
   MenuItem,
   Popover,
+  styled,
   Tooltip,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@mui/material'
-import { Box, styled, useTheme } from '@mui/system'
 import React, { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -28,7 +38,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
 }))
 
-const TopbarRoot = styled('div')(({ theme }) => ({
+const TopbarRoot = styled('div')(() => ({
   top: 0,
   zIndex: 96,
   transition: 'all 0.3s ease',
@@ -44,7 +54,7 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  background: theme.palette.primary.main,
+  background: theme.palette.background.default,
   [theme.breakpoints.down('sm')]: {
     paddingLeft: 16,
     paddingRight: 16,
@@ -139,13 +149,26 @@ const Layout1Topbar: FC<any> = () => {
           </StyledIconButton>
           <IconBox>
             <StyledIconButton>
+              <Tooltip title="Facturación Compra Venta">
+                <Chip
+                  size={'small'}
+                  icon={<ShoppingBag />}
+                  color={'primary'}
+                  variant={'outlined'}
+                  label={'FCV'}
+                />
+              </Tooltip>
+            </StyledIconButton>
+          </IconBox>
+          <IconBox>
+            <StyledIconButton>
               <Tooltip title="Comercio">
                 <Chip
                   icon={<Store />}
                   size={'small'}
                   variant={'outlined'}
                   color={'info'}
-                  label={<strong>{user.miEmpresa.tienda}</strong>}
+                  label={user.miEmpresa.tienda}
                   onClick={(event: any) => handleClick(event)}
                   aria-describedby={id}
                 />

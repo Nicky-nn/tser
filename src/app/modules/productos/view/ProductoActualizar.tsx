@@ -148,7 +148,7 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
           justifyContent="flex-end"
         >
           <Button
-            color={'primary'}
+            color={'secondary'}
             startIcon={<Description />}
             variant={'contained'}
             onClick={() => {
@@ -160,7 +160,6 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
           </Button>
           &nbsp;
           <Button
-            color={'success'}
             startIcon={<Save />}
             variant={'contained'}
             onClick={form.handleSubmit(onSubmit)}

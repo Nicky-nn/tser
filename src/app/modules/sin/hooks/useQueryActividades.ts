@@ -14,12 +14,15 @@ const useQueryActividades = (queryKey: QueryKey = []) => {
     isLoading: actLoading,
     isError: actIsError,
     error: actError,
-  } = useQuery<SinActividadesProps[], Error>(['actividades', ...queryKey], async () => {
-    const resp = await fetchSinActividades()
-    if (resp.length > 0) {
-      return resp
-    }
-    return []
+  } = useQuery<SinActividadesProps[], Error>({
+    queryKey: ['actividades', ...queryKey],
+    queryFn: async () => {
+      const resp = await fetchSinActividades()
+      if (resp.length > 0) {
+        return resp
+      }
+      return []
+    },
   })
 
   return { actividades, actLoading, actIsError, actError }

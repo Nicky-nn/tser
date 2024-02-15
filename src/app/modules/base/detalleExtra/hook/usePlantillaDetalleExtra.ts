@@ -14,16 +14,18 @@ const usePlantillaDetalleExtra = (queryKey: QueryKey = []) => {
     isLoading: pdeLoading,
     isError: pdeIsError,
     error: pdeError,
-  } = useQuery<PlantillaDetalleExtra[], Error>(
-    ['plantillaDetalleExtra', ...queryKey],
-    async () => {
+  } = useQuery<PlantillaDetalleExtra[], Error>({
+    queryKey: ['plantillaDetalleExtra', ...queryKey],
+    queryFn: async () => {
       const resp = await apiPlantillaDetalleExtra()
       if (resp.length > 0) {
         return resp
       }
       return []
     },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
   return { plantillaDetalleExtra, pdeLoading, pdeIsError, pdeError }
 }

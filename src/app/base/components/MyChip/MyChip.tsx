@@ -1,5 +1,5 @@
-import { Box, BoxProps, ClickAwayListener } from '@mui/material'
-import { Fragment, ReactElement, ReactNode } from 'react'
+import { Box, BoxProps } from '@mui/material'
+import { ReactElement, ReactNode } from 'react'
 
 interface OwnProps extends BoxProps {
   color: 'error' | 'warning' | 'success' | 'info'
@@ -25,10 +25,10 @@ export const MyChip = (props: Props): ReactElement => {
             color === 'info'
               ? theme.palette.info.dark
               : color === 'warning'
-              ? theme.palette.warning.dark
-              : color === 'success'
-              ? theme.palette.success.dark
-              : theme.palette.error.dark,
+                ? theme.palette.warning.dark
+                : color === 'success'
+                  ? theme.palette.success.dark
+                  : theme.palette.error.dark,
           borderRadius: '0.25rem',
           color: '#fff',
           maxWidth: '9ch',

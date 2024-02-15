@@ -1,5 +1,4 @@
-import { Box, CircularProgress } from '@mui/material'
-import { styled } from '@mui/system'
+import { Box, CircularProgress, styled } from '@mui/material'
 
 const StyledLoading = styled('div')(() => ({
   width: '100%',

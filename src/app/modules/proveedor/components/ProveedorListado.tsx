@@ -1,5 +1,5 @@
 import { Delete, Edit, Newspaper } from '@mui/icons-material'
-import { Box, Button, Chip, IconButton, Stack } from '@mui/material'
+import { Box, Button, Chip, IconButton, Stack, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import type {
   ColumnFiltersState,
@@ -7,7 +7,12 @@ import type {
   RowSelectionState,
 } from '@tanstack/react-table'
 import { SortingState } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import {
+  MaterialReactTable,
+  MRT_ColumnDef,
+  MRT_TableOptions,
+  MRT_TableProps,
+} from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -15,6 +20,10 @@ import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
 import { PAGE_DEFAULT, PageInputProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
+import {
+  MuiTableAdvancedOptionsProps,
+  MuiToolbarAlertBannerProps,
+} from '../../../utils/materialReactTableUtils'
 import { notSuccess } from '../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
 import { apiProveedorEliminar } from '../api/proveedorEliminar.api'
@@ -56,15 +65,18 @@ const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
     accessorKey: 'telefono',
     header: 'Teléfono',
   },
+  /*
   {
     accessorFn: (row) => <Chip size={'small'} label={row.state} color={'success'} />,
     id: 'state',
     header: 'Estado',
   },
+     */
 ]
 
 const ProveedorListado: FunctionComponent<Props> = (props) => {
   const navigate = useNavigate()
+  const theme = useTheme()
   const [openNuevoProveedor, setOpenNuevoProveedor] = useState<boolean>(false)
   // ESTADO DATATABLE
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -79,15 +91,15 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isLoading, status, refetch } = useQuery<ProveedorProps[]>(
-    [
+  const { data, isError, isLoading, status, refetch } = useQuery<ProveedorProps[]>({
+    queryKey: [
       'proveedoresListado',
       columnFilters,
       pagination.pageIndex,
       pagination.pageSize,
       sorting,
     ],
-    async () => {
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageInputProps = {
         ...PAGE_DEFAULT,
@@ -100,11 +112,8 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    {
-      refetchOnWindowFocus: true,
-      keepPreviousData: true,
-    },
-  )
+    refetchOnWindowFocus: true,
+  })
 
   const columns = useMemo(() => tableColumns, [])
 
@@ -139,29 +148,21 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
           variant="contained"
           onClick={() => setOpenNuevoProveedor(true)}
           startIcon={<Newspaper />}
-          color={'success'}
         >
           {' '}
           Nuevo Proveedor
         </Button>
       </Stack>
       <MaterialReactTable
+        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ProveedorProps>)}
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: false }}
-        manualFiltering
-        manualPagination
-        manualSorting
-        muiToolbarAlertBannerProps={
-          isError ? { color: 'error', children: 'Error loading data' } : undefined
-        }
+        muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
         rowCount={rowCount}
-        localization={localization}
         state={{
           columnFilters,
           isLoading,
@@ -172,16 +173,14 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
           sorting,
           rowSelection,
         }}
-        muiSearchTextFieldProps={{
-          variant: 'outlined',
-          placeholder: 'Busqueda',
-          InputLabelProps: { shrink: true },
-          size: 'small',
+        displayColumnDefOptions={{
+          'mrt-row-actions': {
+            size: 100, //if using layoutMode that is not 'semantic', the columns will not auto-size, so you need to set the size manually
+            grow: false,
+          },
         }}
-        enableRowActions
-        positionActionsColumn={'last'}
         renderRowActions={({ row }) => (
-          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
+          <Box>
             <IconButton
               onClick={() =>
                 navigate(`${proveedorRouteMap.modificar}/${row.original.codigo}`)
@@ -192,14 +191,8 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
               <Edit />
             </IconButton>
             <AuditIconButton row={row.original} />
-          </div>
+          </Box>
         )}
-        muiTableHeadCellFilterTextFieldProps={{
-          sx: { m: '0.5rem 0', width: '95%' },
-          variant: 'outlined',
-          size: 'small',
-        }}
-        enableRowSelection
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={({ table }) => {
           return (

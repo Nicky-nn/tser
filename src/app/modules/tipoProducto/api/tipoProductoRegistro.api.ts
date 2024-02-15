@@ -3,6 +3,7 @@
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
+import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import {
   TipoProductoInputProp,
   TipoProductoProps,
@@ -24,13 +25,21 @@ const gqlQuery = gql`
   }
 `
 
+/**
+ * @description Funcion para registrar un tipo de producto
+ * @param input
+ */
 export const apiTipoProductoRegistro = async (
   input: TipoProductoInputProp,
 ): Promise<TipoProductoProps> => {
-  const client = new GraphQLClient(import.meta.env.ISI_API_URL)
-  const token = localStorage.getItem(AccessToken)
-  // Set a single header
-  client.setHeader('authorization', `Bearer ${token}`)
-  const data: any = await client.request(gqlQuery, { input })
-  return data.tipoProductoRegistro
+  try {
+    const client = new GraphQLClient(import.meta.env.ISI_API_URL)
+    const token = localStorage.getItem(AccessToken)
+    // Set a single header
+    client.setHeader('authorization', `Bearer ${token}`)
+    const data: any = await client.request(gqlQuery, { input })
+    return data.tipoProductoRegistro
+  } catch (e: any) {
+    throw new MyGraphQlError(e)
+  }
 }

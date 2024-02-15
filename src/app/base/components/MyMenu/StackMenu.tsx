@@ -1,5 +1,5 @@
 import { Paper, Stack } from '@mui/material'
-import { StackProps } from '@mui/material/Stack/Stack'
+import { StackProps } from '@mui/material'
 import React, { FC, ReactElement } from 'react'
 
 interface OwnProps {

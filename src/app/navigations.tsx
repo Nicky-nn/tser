@@ -83,6 +83,7 @@ export const navigations: NavigationProps[] = [
       },
     ],
   },
+  /*
   {
     name: 'Reportes',
     icon: 'trending_up',
@@ -99,6 +100,7 @@ export const navigations: NavigationProps[] = [
     name: 'Documentación',
     icon: 'launch',
     type: 'extLink',
-    path: 'http://demos.ui-lib.com/matx-react-doc/',
+    path: 'https://www.youtube.com/watch?v=XPDOkFO_J1o',
   },
+     */
 ]

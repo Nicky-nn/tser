@@ -30,7 +30,6 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
       },
     },
   })
-
   const input = {
     codigoCliente: fcv.cliente!.codigoCliente,
     actividadEconomica: fcv.actividadEconomica?.codigoActividad,
@@ -40,6 +39,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     emailCliente: fcv.emailCliente,
     codigoMoneda: fcv.moneda!.codigo,
     tipoCambio: fcv.moneda!.tipoCambio,
+    codigoExcepcion: fcv.codigoExcepcion ? 1 : 0,
     detalle: fcv.detalle.map((item) => ({
       codigoActividad: item.sinProductoServicio.codigoActividad,
       codigoProductoSin: item.codigoProductoSin,

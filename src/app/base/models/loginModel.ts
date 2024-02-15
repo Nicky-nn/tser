@@ -5,7 +5,7 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { PuntoVentaProps } from '../../modules/puntoVenta/interfaces/puntoVenta'
 import { SinActividadesProps } from '../../modules/sin/interfaces/sin.interface'
 import { SucursalProps } from '../../modules/sucursal/interfaces/sucursal'
-import { MonedaParamsProps } from '../interfaces/base'
+import { MonedaParamsProps, TipoRepresentacionGrafica } from '../interfaces/base'
 import { MyGraphQlError } from '../services/GraphqlError'
 
 export interface PerfilProps {
@@ -21,6 +21,7 @@ export interface PerfilProps {
   usuario: string
   tipo: 'SA' | 'ADMIN' | 'GUEST' | 'USER'
   vigente: string
+  tipoRepresentacionGrafica: TipoRepresentacionGrafica
   sucursal: SucursalProps
   puntoVenta: PuntoVentaProps
   actividadEconomica: SinActividadesProps
@@ -68,6 +69,7 @@ const mutation = gql`
         dominio
         tipo
         vigente
+        tipoRepresentacionGrafica
         sucursal {
           codigo
           direccion

@@ -1,8 +1,5 @@
-import { Card, Fab, Grid, Icon } from '@mui/material'
-import { lighten, styled, useTheme } from '@mui/system'
+import { Card, Fab, Grid, Icon, lighten, styled, useTheme } from '@mui/material'
 import { FC } from 'react'
-
-import { H2 } from '../../../components/Template/Typography'
 
 const ContentBox: any = styled('div')(({ theme }: any): any => ({
   display: 'flex',

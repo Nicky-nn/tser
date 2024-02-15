@@ -14,12 +14,15 @@ const useQueryMetodosPago = (queryKey: QueryKey = []) => {
     isLoading: mpLoading,
     isError: mpIsError,
     error: mpError,
-  } = useQuery<MetodoPagoProp[], Error>(['metodosPago', ...queryKey], async () => {
-    const resp = await apiMetodosPago()
-    if (resp.length > 0) {
-      return resp
-    }
-    return []
+  } = useQuery<MetodoPagoProp[], Error>({
+    queryKey: ['metodosPago', ...queryKey],
+    queryFn: async () => {
+      const resp = await apiMetodosPago()
+      if (resp.length > 0) {
+        return resp
+      }
+      return []
+    },
   })
 
   return { metodosPago, mpLoading, mpIsError, mpError }

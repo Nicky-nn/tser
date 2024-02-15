@@ -1,6 +1,21 @@
-import { Cached, HomeWork, Key, Person, Token } from '@mui/icons-material'
-import { Grid, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
-import { Box } from '@mui/system'
+import {
+  Cached,
+  HomeWork,
+  Key,
+  Person,
+  PictureAsPdf,
+  PictureAsPdfOutlined,
+  PictureAsPdfTwoTone,
+  Token,
+} from '@mui/icons-material'
+import {
+  Box,
+  Grid,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material'
 import React, { FunctionComponent, useState } from 'react'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
@@ -11,7 +26,7 @@ import CuentaPerfil from './Perfil/CuentaPerfil'
 import CuentaRecargarCache from './Perfil/CuentaRecargarCache'
 import CuentaSincronizacion from './Perfil/CuentaSincronizacion'
 import CuentaSucursal from './Perfil/CuentaSucursal'
-import CuentaTokenDelegado from './Perfil/CuentaTokenDelegado'
+import CuentaTipoRepresentacionGrafica from './Perfil/CuentaTipoRepresentacionGrafica'
 
 interface OwnProps {}
 
@@ -87,6 +102,16 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                     </ListItemIcon>
                     <ListItemText primary="Recargar Cache" />
                   </ListItemButton>
+
+                  <ListItemButton
+                    selected={selectedIndex === 5}
+                    onClick={(event) => handleListItemClick(event, 5)}
+                  >
+                    <ListItemIcon>
+                      <PictureAsPdf />
+                    </ListItemIcon>
+                    <ListItemText primary="Tipo Representación Gráfica" />
+                  </ListItemButton>
                 </List>
               </Box>
             </SimpleCard>
@@ -97,6 +122,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
             {selectedIndex === 2 && <CuentaSucursal />}
             {selectedIndex === 3 && <CuentaSincronizacion />}
             {selectedIndex === 4 && <CuentaRecargarCache />}
+            {selectedIndex === 5 && <CuentaTipoRepresentacionGrafica />}
           </Grid>
         </Grid>
         <Box py="12px" />

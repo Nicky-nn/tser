@@ -1,5 +1,4 @@
-import { Fab, Icon, IconButton } from '@mui/material'
-import { styled, useTheme } from '@mui/system'
+import { Fab, Icon, IconButton, styled, useTheme } from '@mui/material'
 import clsx from 'clsx'
 
 import useSettings from '../../../hooks/useSettings'

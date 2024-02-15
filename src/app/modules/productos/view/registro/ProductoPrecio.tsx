@@ -6,7 +6,6 @@ import {
   OutlinedInput,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import InputNumber from 'rc-input-number'
 import React, { FunctionComponent } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select, { SingleValue } from 'react-select'
@@ -15,7 +14,6 @@ import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { NumeroFormat } from '../../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { handleSelect } from '../../../../utils/helper'
@@ -50,15 +48,14 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
     data: unidadesMedida,
     error: umError,
     isLoading: umIsLoading,
-  } = useQuery<SinUnidadMedidaProps[], Error>(
-    ['unidadesMedida'],
-    () => {
+  } = useQuery<SinUnidadMedidaProps[], Error>({
+    queryKey: ['unidadesMedida'],
+    queryFn: async () => {
       return apiSinUnidadMedida()
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  )
+    refetchOnWindowFocus: false,
+  })
+
   if (umError) {
     return <AlertError mensaje={umError.message} />
   }

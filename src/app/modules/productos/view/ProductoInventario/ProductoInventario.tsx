@@ -56,9 +56,9 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
     }))
   }
 
-  const { data: sucursales } = useQuery<SucursalProps[], Error>(
-    ['sucursales'],
-    async () => {
+  const { data: sucursales } = useQuery<SucursalProps[], Error>({
+    queryKey: ['sucursales'],
+    queryFn: async () => {
       const data = await apiSucursales()
       if (data.length > 0) {
         if (getValues('variante.inventario').length === 0) {
@@ -68,8 +68,9 @@ const ProductoInventario: FunctionComponent<Props> = (props) => {
       }
       return data || []
     },
-    { keepPreviousData: true },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
   return (
     <SimpleCard title={'INVENTARIO'}>

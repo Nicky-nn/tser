@@ -1,5 +1,4 @@
-import { Box, Card, FormControl, Grid, Icon } from '@mui/material'
-import { styled } from '@mui/system'
+import { Box, Card, FormControl, Grid, Icon, styled } from '@mui/material'
 import {
   endOfDay,
   format,
@@ -177,7 +176,7 @@ const Analytics = () => {
     <Fragment>
       <SimpleContainer className="analytics">
         <Grid container spacing={3}>
-          <Grid item lg={12}>
+          <Grid item xs={12}>
             <SimpleCard title={'Seleccione el periodo'}>
               <Box className={'asideSidebarFixed'}>
                 <FormControl fullWidth>
@@ -204,7 +203,8 @@ const Analytics = () => {
               </Box>
             </SimpleCard>
           </Grid>
-          <Grid item lg={9} md={10} xs={12}>
+
+          <Grid item lg={9} md={9} xs={12}>
             <SimpleCard title={`Reporte de ventas ${periodo.value}`}>
               <Box sx={{ width: '100%' }}>
                 {!loading ? (
@@ -249,7 +249,8 @@ const Analytics = () => {
               </Box>
             </SimpleCard>
           </Grid>
-          <Grid item lg={3} md={2} xs={12}>
+
+          <Grid item lg={3} md={3} xs={12}>
             <SimpleCard title={`RESUMEN ${periodo.value}`}>
               <Grid container spacing={3}>
                 <Grid item lg={12} md={12} xs={12}>

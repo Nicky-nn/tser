@@ -1,11 +1,6 @@
-import Swal, { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
+import Swal, { SweetAlertResult } from 'sweetalert2'
 
 import { swalExceptionMsg } from '../base/services/swalExceptionMsg'
-
-interface Props extends SweetAlertOptions {
-  title?: string
-  text?: string
-}
 
 export const swalConfirm = {
   title: 'Confirmación',

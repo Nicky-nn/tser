@@ -1,7 +1,7 @@
 import { AllInclusive } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
@@ -10,7 +10,7 @@ import useAuth from '../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../utils/helper'
 import {
-  MuiTableHeadCellFilterTextFieldProps,
+  MuiFilterTextFieldProps,
   MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { apiProductosVariantes } from '../api/productosVariantes.api'
@@ -89,15 +89,15 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
   const [rowSelection, setRowSelection] = useState({})
 
   // FIN DATA TABLE
-  const { data, isError, isFetching, isLoading } = useQuery<ProductoVarianteProps[]>(
-    [
+  const { data, isError, isFetching, isLoading } = useQuery<ProductoVarianteProps[]>({
+    queryKey: [
       'tableProductoVarianteDialog',
       columnFilters,
       pagination.pageIndex,
       pagination.pageSize,
       sorting,
     ],
-    async () => {
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -110,8 +110,9 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    { keepPreviousData: true },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
   useEffect(() => {
     if (rowSelection) {
       const p = Object.keys(rowSelection)
@@ -149,7 +150,7 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
           density: 'compact',
           rowSelection,
         }}
-        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
+        muiFilterTextFieldProps={MuiFilterTextFieldProps}
         enableRowSelection
         enableSelectAll={false}
         onRowSelectionChange={setRowSelection}

@@ -45,6 +45,12 @@ module.exports = {
     'react/display-name': 'off',
     'jsx-a11y/no-autofocus': 'off',
     'react/no-unescaped-entities': 'off',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: ['@mui/*/*/*'],
+      },
+    ],
   },
   globals: {
     React: true,

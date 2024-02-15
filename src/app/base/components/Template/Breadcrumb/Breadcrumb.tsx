@@ -1,5 +1,4 @@
-import { Breadcrumbs, Hidden, Icon } from '@mui/material'
-import { styled, useTheme } from '@mui/system'
+import { Breadcrumbs, Hidden, Icon, styled, useTheme } from '@mui/material'
 import { FC } from 'react'
 import { NavLink } from 'react-router-dom'
 
@@ -27,7 +26,7 @@ const Separator = styled('h4')(({ theme }) => ({
   margin: 0,
   marginLeft: 8,
   paddingBottom: '3px',
-  color: theme.palette.text.hint,
+  color: theme.palette.text.primary,
 }))
 
 const StyledIcon = styled(Icon)(() => ({
@@ -38,7 +37,7 @@ const StyledIcon = styled(Icon)(() => ({
 
 const Breadcrumb: FC<any> = ({ routeSegments }: any) => {
   const theme = useTheme()
-  const hint = theme.palette.text.hint
+  const hint = theme.palette.text.secondary
 
   return (
     <BreadcrumbRoot>

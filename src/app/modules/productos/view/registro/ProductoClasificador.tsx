@@ -5,7 +5,10 @@ import Select, { SingleValue } from 'react-select'
 
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import {
+  reactSelectStyle,
+  reactSelectStyles,
+} from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useQueryTiposProducto from '../../../tipoProducto/hooks/useQueryTiposProducto'
 import { TipoProductoProps } from '../../../tipoProducto/interfaces/tipoProducto.interface'
@@ -45,7 +48,7 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
                   <MyInputLabel shrink>Tipo Producto</MyInputLabel>
                   <Select<TipoProductoProps>
                     {...field}
-                    styles={reactSelectStyles}
+                    styles={reactSelectStyle(false)}
                     menuPosition={'fixed'}
                     name="tipoProducto"
                     placeholder={'Seleccione...'}
@@ -65,7 +68,12 @@ const ProductoClasificador: FunctionComponent<Props> = (props) => {
         </Grid>
 
         <Grid item lg={12} md={12} xs={12} textAlign={'right'}>
-          <Button variant={'outlined'} onClick={() => setOpenDialog(true)} size={'small'}>
+          <Button
+            variant={'text'}
+            color={'info'}
+            onClick={() => setOpenDialog(true)}
+            size={'small'}
+          >
             Nuevo Clasificador
           </Button>
           <TipoProductoDialogRegistro

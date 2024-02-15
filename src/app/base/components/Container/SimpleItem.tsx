@@ -1,5 +1,4 @@
-import { Theme } from '@mui/material'
-import { styled } from '@mui/styles'
+import { styled, Theme } from '@mui/material'
 
 interface OwnProps {
   theme: Theme

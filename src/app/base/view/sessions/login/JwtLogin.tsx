@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
+  Box,
   Card,
   Checkbox,
   FormControl,
@@ -11,9 +12,9 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  styled,
   TextField,
 } from '@mui/material'
-import { Box, styled } from '@mui/system'
 import { useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +23,7 @@ import Turnstile from 'react-turnstile'
 import { object, string } from 'yup'
 
 import secFondo from '/assets/images/fcvFondo.jpg'
+import secLogo from '/assets/images/logo-isiinvoice.png'
 
 import { isEmptyValue } from '../../../../utils/helper'
 import {
@@ -37,6 +39,7 @@ import { Paragraph } from '../../../components/Template/Typography'
 import useAuth from '../../../hooks/useAuth'
 
 const fondo = import.meta.env.ISI_FONDO || secFondo
+const logo = import.meta.env.ISI_LOGO_FULL || secLogo
 
 const FlexBox = styled(Box)(() => ({
   display: 'flex',
@@ -45,7 +48,7 @@ const FlexBox = styled(Box)(() => ({
 
 const JustifyBox = styled(FlexBox)(() => ({
   justifyContent: 'center',
-  padding: '15px 15px 5px 15px',
+  padding: '0 15px',
 }))
 
 const ContentBox = styled(Box)(() => ({
@@ -57,7 +60,7 @@ const ContentBox = styled(Box)(() => ({
 
 const IMG = styled('img')(() => ({
   width: '100%',
-  maxHeight: '90px',
+  // maxHeight: '90px',
 }))
 
 const JWTRoot = styled(JustifyBox)(() => ({
@@ -156,7 +159,7 @@ const JwtLogin = () => {
           <Grid item sm={12} xs={12}>
             <JustifyBox p={4} height="100%">
               <IMG
-                src="/assets/images/logo-isiinvoice.png"
+                src={logo}
                 alt="Gestión de ventas y servicios"
                 style={{ paddingTop: '20px' }}
               />
@@ -288,7 +291,6 @@ const JwtLogin = () => {
                           name={'remember'}
                         />
                       </FlexBox>
-
                       {/*
                         <NavLink
                         to="/session/forgot-password"
@@ -304,7 +306,9 @@ const JwtLogin = () => {
                       color="primary"
                       loading={loading}
                       variant="contained"
+                      size={'large'}
                       disabled={!captchaValidator}
+                      fullWidth
                       sx={{ my: 2 }}
                     >
                       Iniciar Sesión

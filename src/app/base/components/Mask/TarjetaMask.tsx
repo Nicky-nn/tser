@@ -21,7 +21,7 @@ export const TarjetaMask = forwardRef<HTMLElement, CustomProps>(function TextMas
       lazy={false}
       inputRef={ref}
       definitions={{
-        '0': /[1-9]/,
+        '0': /[1-9-0]/,
       }}
       unmask={'typed'}
       onAccept={(value: any, mask: any) =>

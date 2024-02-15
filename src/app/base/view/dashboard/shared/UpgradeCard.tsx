@@ -1,6 +1,4 @@
-import { Button, Card } from '@mui/material'
-import { styled } from '@mui/system'
-import React from 'react'
+import { Button, Card, styled } from '@mui/material'
 
 import { convertHexToRGB } from '../../../../utils/utils'
 

@@ -1,3 +1,4 @@
+import { ImportExport } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
   Button,
@@ -15,7 +16,6 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { useMounted } from '../../../../hooks/useMounted'
 import { swalConfirm, swalException } from '../../../../utils/swal'
 import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api'
 import { SinMotivoAnulacionProps } from '../../../sin/interfaces/sin.interface'
@@ -34,7 +34,6 @@ type Props = OwnProps
 
 const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
   const { onClose, open, factura, ...other } = props
-  const isMounted = useMounted()
   const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([])
   const [loading, setLoading] = useState(false)
   const initalValues: any = {
@@ -84,7 +83,6 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
         allowOutsideClick: () => !Swal.isLoading(),
       })
         .then((result) => {
-          console.log(result)
           if (result.isConfirmed) {
             toast.success('Documento Anulado correctamente')
             onClose(true)
@@ -136,10 +134,26 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleCancel} disabled={loading}>
+          <Button
+            autoFocus
+            disabled={loading}
+            color={'error'}
+            variant={'contained'}
+            size={'small'}
+            onClick={handleCancel}
+          >
             Cancelar
           </Button>
-          <LoadingButton onClick={handleOk} loading={loading} style={{ marginRight: 15 }}>
+
+          <LoadingButton
+            loading={loading}
+            onClick={handleOk}
+            startIcon={<ImportExport />}
+            loadingPosition="start"
+            size={'small'}
+            variant={'contained'}
+            style={{ marginRight: 15 }}
+          >
             Anular Documento
           </LoadingButton>
         </DialogActions>

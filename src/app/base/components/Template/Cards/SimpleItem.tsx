@@ -1,5 +1,4 @@
-import { Paper } from '@mui/material'
-import { styled } from '@mui/system'
+import { Paper, styled } from '@mui/material'
 
 export const SimpleItem = styled(Paper)(({ theme }: any) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

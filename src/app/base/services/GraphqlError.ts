@@ -24,6 +24,9 @@ const validateGraphQlError = (e: Error): any => {
   }
 }
 
+/**
+ * @description Custom del error de servidor, para mostrar errores de graphql
+ */
 export class MyGraphQlError extends Error {
   constructor(e: Error) {
     const errors = validateGraphQlError(e)

@@ -8,3 +8,5 @@ export interface MonedaParamsProps {
   descripcion: string
   sigla: string
 }
+
+export type TipoRepresentacionGrafica = 'pdf' | 'rollo'

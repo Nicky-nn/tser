@@ -12,19 +12,11 @@ export const mainThemes = [
 export const mainSidebarThemes: ThemeTypeColorsProps[] = [
   'whitePurple',
   'whiteBlue',
-  'slateDark1',
-  'slateDark2',
-  'purpleDark1',
-  'purpleDark2',
   'blueDark',
 ]
 
 export const topbarThemes: ThemeTypeColorsProps[] = [
   'whitePurple',
   'whiteBlue',
-  'slateDark1',
-  'slateDark2',
-  'purpleDark1',
-  'purpleDark2',
   'blueDark',
 ]

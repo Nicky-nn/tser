@@ -1,7 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Save } from '@mui/icons-material'
-import { Button, Grid } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, Button, Grid } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -93,7 +92,6 @@ const NcdRegistro = () => {
       <StackMenu asideSidebarFixed>
         <StackMenuItem>
           <Button
-            color={'success'}
             startIcon={<Save />}
             variant={'contained'}
             onClick={form.handleSubmit(onSubmit)}

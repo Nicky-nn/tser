@@ -37,14 +37,14 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
     isError,
     error,
     isLoading,
-  } = useQuery<UsuarioSucursalRestriccionProps[], Error>(
-    ['restriccionUsuario'],
-    async () => {
+  } = useQuery<UsuarioSucursalRestriccionProps[]>({
+    queryKey: ['restriccionUsuario'],
+    queryFn: async () => {
       const resp = await apiUsuarioRestriccion()
       return resp.sucursales
     },
-    { keepPreviousData: true },
-  )
+    refetchInterval: false,
+  })
 
   const changePuntoVenta = async (codigoSucursal: number, codigoPuntoVenta: number) => {
     await swalAsyncConfirmDialog({
@@ -68,13 +68,13 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
     })
   }
 
+  if (isLoading) return <AlertLoading />
+
   if (isError) return <AlertError mensaje={error && error.message} />
 
   return (
     <>
-      {isLoading ? (
-        <AlertLoading />
-      ) : (
+      {restriccion &&
         restriccion!.map((res) => (
           <React.Fragment key={res.codigo}>
             <Alert color={'info'}>
@@ -113,8 +113,7 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
               )}
             </MenuList>
           </React.Fragment>
-        ))
-      )}
+        ))}
     </>
   )
 }

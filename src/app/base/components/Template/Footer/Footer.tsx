@@ -1,5 +1,4 @@
-import { AppBar, ThemeProvider, Toolbar } from '@mui/material'
-import { Box, styled, useTheme } from '@mui/system'
+import { AppBar, styled, ThemeProvider, Toolbar, useTheme } from '@mui/material'
 import React, { FC } from 'react'
 
 import { topBarHeight } from '../../../../utils/constant'
@@ -33,6 +32,9 @@ const FooterContent = styled('div')(() => ({
   margin: '0 auto',
 }))
 
+const nombreComercial = import.meta.env.ISI_NOMBRE_COMERCIAL || 'ISI.INVOICE'
+const urlEmpresa = import.meta.env.ISI_URL || 'https://integrate.com.bo'
+
 const Footer: FC<any> = () => {
   const theme = useTheme()
   const { settings } = useSettings()
@@ -46,15 +48,10 @@ const Footer: FC<any> = () => {
           <FooterContent>
             <Span sx={{ m: 'auto' }}></Span>
             <Paragraph sx={{ m: 0 }}>
-              ISI.INVOICE es un producto de &nbsp;
-              <a href="https://integrate.com.bo" target="_blank" rel="noreferrer">
-                INTEGRATE Soluciones Informáticas
-              </a>{' '}
-              <br />
-              Plantilla{' '}
-              <a target="_blank" href="https://matx-react.ui-lib.com/" rel="noreferrer">
-                MatX
+              <a href={urlEmpresa} target="_blank" rel="noreferrer">
+                © {nombreComercial}
               </a>
+              {' 2003-2024 '}
             </Paragraph>
           </FooterContent>
         </AppFooter>

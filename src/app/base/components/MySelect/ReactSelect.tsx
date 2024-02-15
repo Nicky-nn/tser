@@ -20,10 +20,10 @@ export const reactSelectStyle = (
   }),
   control: (baseStyles, state) => ({
     ...baseStyles,
-    borderColor: !error ? 'grey' : '#FF3D57',
+    borderColor: !error ? 'rgb(52, 49, 76, 0.3)' : '#FF3D57',
     ':hover': {
       ...baseStyles[':hover'],
-      borderColor: !error ? 'grey' : '#FF3D57',
+      borderColor: !error ? 'rgba(52, 49, 76, 1)' : '#FF3D57',
     },
   }),
 })

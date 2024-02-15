@@ -1,6 +1,4 @@
-import { Button } from '@mui/material'
-import { Box, styled } from '@mui/system'
-import React from 'react'
+import { Box, Button, styled } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
 const FlexBox = styled(Box)(() => ({

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Divider, Grid } from '@mui/material'
-import { Box } from '@mui/system'
+import { Person } from '@mui/icons-material'
+import { Box, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 import AlertLoading from '../../../base/components/Alert/AlertLoading'
@@ -15,7 +15,6 @@ import DatosActividadEconomica from './registro/DatosActividadEconomica'
 import { DatosTransaccionComercial } from './registro/DatosTransaccionComercial'
 import { DetalleTransaccionComercial } from './registro/DetalleTransaccionComercial'
 import FacturaDetalleExtra from './registro/FacturaDetalleExtra'
-import MetodosPago from './registro/MetodosPago'
 import VentaTotales from './registro/VentaTotales'
 
 const VentaRegistro = () => {
@@ -55,14 +54,12 @@ const VentaRegistro = () => {
           <Grid item lg={12} md={12} xs={12}>
             <DetalleTransaccionComercial form={form} />
           </Grid>
-          <Grid item lg={7} md={12} xs={12}>
-            <SimpleCard title={'Cliente / Método de pago'}>
+          <Grid item lg={6} md={12} xs={12}>
+            <SimpleCard title={'Cliente'} childIcon={<Person />}>
               <DatosTransaccionComercial form={form} user={user!} />
-              <Divider />
-              <MetodosPago form={form} />
             </SimpleCard>
           </Grid>
-          <Grid item lg={5} md={6} xs={12}>
+          <Grid item lg={6} md={12} xs={12}>
             <VentaTotales form={form} />
           </Grid>
         </Grid>

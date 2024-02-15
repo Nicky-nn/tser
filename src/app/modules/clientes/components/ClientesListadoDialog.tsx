@@ -1,15 +1,15 @@
-import { HowToReg, SelectAll } from '@mui/icons-material'
+import { HowToReg } from '@mui/icons-material'
 import { Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
-import { localization } from '../../../utils/localization'
 import {
-  MuiTableHeadCellFilterTextFieldProps,
+  MuiFilterTextFieldProps,
   MuiToolbarAlertBannerProps,
 } from '../../../utils/materialReactTableUtils'
 import { fetchClienteListado } from '../api/clienteListado.api'
@@ -67,9 +67,15 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
     isError,
     isLoading,
     isFetching,
-  } = useQuery(
-    ['client', columnFilters, pagination.pageIndex, pagination.pageSize, sorting],
-    async () => {
+  } = useQuery({
+    queryKey: [
+      'client',
+      columnFilters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sorting,
+    ],
+    queryFn: async () => {
       const query = genApiQuery(columnFilters)
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
@@ -82,8 +88,9 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
       setRowCount(pageInfo.totalDocs)
       return docs
     },
-    { keepPreviousData: true },
-  )
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
   const columns = useMemo<MRT_ColumnDef<ClienteProps>[]>(() => tableColumns, [])
 
   return (
@@ -92,7 +99,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
         columns={columns}
         data={clientes ?? []}
         initialState={{ showColumnFilters: true }}
-        localization={localization}
+        localization={MRT_Localization_ES}
         manualPagination
         manualFiltering
         manualSorting
@@ -112,7 +119,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
           sorting,
           density: 'compact',
         }}
-        muiTableHeadCellFilterTextFieldProps={MuiTableHeadCellFilterTextFieldProps}
+        muiFilterTextFieldProps={MuiFilterTextFieldProps}
         enableRowActions
         positionActionsColumn="last"
         renderRowActions={({ row }) => (

@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import React, { createContext, ReactNode, useEffect, useReducer } from 'react'
 
 import { swalException } from '../../utils/swal'
@@ -88,6 +88,7 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   logout: () => {},
   register: () => Promise.resolve(),
+  refreshUser: () => Promise.resolve(),
 })
 
 export interface AuthProviderProps {
@@ -124,28 +125,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
   const register = async (email: string, username: string, password: string) => {
     /*
-        const response = await axios.post('/api/auth/register', {
-            email,
-            username,
-            password,
-        })
-
-        const {accessToken, user} = response.data
-
-        setSession(accessToken)
-
-        dispatch({
-            type: 'REGISTER',
-            payload: {
-                user,
-            },
-        })
-        */
+            const response = await axios.post('/api/auth/register', {
+                email,
+                username,
+                password,
+            })
+    
+            const {accessToken, user} = response.data
+    
+            setSession(accessToken)
+    
+            dispatch({
+                type: 'REGISTER',
+                payload: {
+                    user,
+                },
+            })
+            */
   }
 
   const logout = () => {
     setSession(null)
     dispatch({ type: 'LOGOUT' })
+  }
+
+  /**
+   * @description refresca el usuario
+   */
+  const refreshUser = async () => {
+    const perfil: PerfilProps = await perfilModel()
+    dispatch({
+      type: 'LOGIN',
+      payload: {
+        user: perfil,
+      },
+    })
   }
 
   useEffect(() => {
@@ -211,6 +225,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         register,
+        refreshUser,
       }}
     >
       {children}

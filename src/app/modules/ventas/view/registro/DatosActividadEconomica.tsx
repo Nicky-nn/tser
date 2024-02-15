@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText } from '@mui/material'
+import { FormControl, FormHelperText, useTheme } from '@mui/material'
 import React, { FunctionComponent, useEffect } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
@@ -6,7 +6,7 @@ import Select from 'react-select'
 import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty, isEmptyValue } from '../../../../utils/helper'
@@ -54,6 +54,8 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
     return <AlertError mensaje={actError?.message!} />
   }
 
+  const t = useTheme()
+
   return (
     <>
       <SimpleCard>
@@ -68,7 +70,7 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
                 <MyInputLabel shrink>Actividad Económica</MyInputLabel>
                 <Select<SinActividadesPorDocumentoSector>
                   {...field}
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(Boolean(errors.actividadEconomica))}
                   name="actividadEconomica"
                   placeholder={'Seleccione la actividad económica'}
                   value={field.value}

@@ -1,4 +1,5 @@
 import {
+  Box,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -8,10 +9,10 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  styled,
   Switch,
   Tooltip,
 } from '@mui/material'
-import { Box, styled } from '@mui/system'
 import { get } from 'lodash'
 import React, { Fragment } from 'react'
 

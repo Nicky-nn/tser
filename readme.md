@@ -1,4 +1,4 @@
-# ⚡SISTEMA DE FACTURACION ISI-INVOICE DOCUMENTO SECTOR COMPRA / VENTA
+# ⚡SISTEMA DE FACTURACION ISI-INVOICE ERP - COMPRA VENTA 
 
 Sistema desarrollado bajo la estructura de datos [vite](https://www.npmjs.com/package/vite)
 

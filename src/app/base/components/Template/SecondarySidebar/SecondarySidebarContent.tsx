@@ -1,5 +1,4 @@
-import { Theme, useTheme } from '@mui/material'
-import { styled } from '@mui/system'
+import { styled, Theme, useTheme } from '@mui/material'
 
 import MatxCustomizer from '../MatxCustomizer/MatxCustomizer'
 import { Span } from '../Typography'

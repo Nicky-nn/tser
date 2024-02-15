@@ -99,7 +99,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       <StackMenu asideSidebarFixed>
         <StackMenuItem>
           <Button
-            color={'success'}
             startIcon={<Save />}
             variant={'contained'}
             onClick={form.handleSubmit(onSubmit)}

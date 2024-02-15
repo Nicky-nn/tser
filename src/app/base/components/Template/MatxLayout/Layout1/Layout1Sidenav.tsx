@@ -1,5 +1,4 @@
-import { Hidden, Switch } from '@mui/material'
-import { Box, styled, Theme, useTheme } from '@mui/system'
+import { Box, Hidden, styled, Switch, Theme, useTheme } from '@mui/material'
 import React from 'react'
 
 import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
