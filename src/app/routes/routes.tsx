@@ -2,9 +2,9 @@ import { Navigate } from 'react-router-dom'
 
 import AuthGuard from '../../auth/AuthGuard'
 import MatxLayout from '../base/components/Template/MatxLayout/MatxLayout'
-import dashboardRoutes from '../base/view/dashboard/DashboardRoutes'
-import NotFound from '../base/view/sessions/NotFound'
-import sessionRoutes from '../base/view/sessions/SessionRoutes'
+import homeRoutes, { homeRoutesMap } from '../modules/base/home/HomeRoutes'
+import NotFound from '../modules/base/sessions/NotFound'
+import sessionRoutes from '../modules/base/sessions/SessionRoutes'
 import clientesRoutes from '../modules/clientes/ClientesRoutes'
 import cuentaRoutes from '../modules/cuenta/CuentaRoutes'
 import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes'
@@ -20,7 +20,7 @@ export const appRoutes = [
       </AuthGuard>
     ),
     children: [
-      ...dashboardRoutes,
+      ...homeRoutes,
       ...ventasRoutes,
       ...productosRoutes,
       ...clientesRoutes,
@@ -30,6 +30,6 @@ export const appRoutes = [
     ],
   },
   ...sessionRoutes,
-  { path: '/', element: <Navigate to="dashboard/default" /> },
+  { path: '/', element: <Navigate to={homeRoutesMap.home.path} /> },
   { path: '*', element: <NotFound /> },
 ]

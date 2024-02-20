@@ -12,10 +12,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { FormTextField } from '../../../../base/components/Form'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
-import {
-  DCDO,
-  MuiTableBasicOptionsProps,
-} from '../../../../utils/materialReactTableUtils'
+import { MuiTableBasicOptionsProps } from '../../../../utils/muiTable/materialReactTableUtils'
 import { DetalleFacturaProps, FacturaProps } from '../../../ventas/interfaces/factura'
 import { NcdInputProps } from '../../interfaces/ncdInterface'
 import NcdFacturaOriginalDialog from './NcdFacturaOriginalDialog'
@@ -27,7 +24,6 @@ interface OwnProps {
 type Props = OwnProps
 
 const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
-  const theme = useTheme()
   const {
     form: {
       control,
@@ -176,9 +172,7 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
               Seleccione los items a ser devueltos
             </Typography>
             <MaterialReactTable
-              {...(MuiTableBasicOptionsProps(
-                theme,
-              ) as MRT_TableOptions<DetalleFacturaProps>)}
+              {...(MuiTableBasicOptionsProps as MRT_TableOptions<DetalleFacturaProps>)}
               columns={columns}
               data={getValues('detalle') || []}
               localization={MRT_Localization_ES}
@@ -187,7 +181,6 @@ const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
                 rowSelection,
                 density: 'comfortable',
               }}
-              displayColumnDefOptions={DCDO}
               enableTopToolbar={false}
               enableRowSelection
               onRowSelectionChange={setRowSelection}

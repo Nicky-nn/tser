@@ -4,11 +4,11 @@ import { CssBaseline } from '@mui/material'
 import { useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
 
+import ReloadPrompt from './app/base/components/ReloadPrompt/ReloadPrompt'
 import MatxTheme from './app/base/components/Template/MatxTheme/MatxTheme'
 import { AuthProvider } from './app/base/contexts/JWTAuthContext'
 import { SettingsProvider } from './app/base/contexts/SettingsContext'
 import { appRoutes } from './app/routes/routes'
-import { genReplaceEmpty } from './app/utils/helper'
 
 function App() {
   const content = useRoutes(appRoutes)
@@ -28,6 +28,7 @@ function App() {
         <MatxTheme>
           <CssBaseline />
           {content}
+          <ReloadPrompt />
         </MatxTheme>
       </AuthProvider>
     </SettingsProvider>

@@ -84,6 +84,6 @@ export const MatxLayoutSettings: MatxLayoutSettingsProps = {
   footer: {
     show: true,
     fixed: false,
-    theme: color2, // View all valid theme colors inside MatxTheme/themeColors.js
+    theme: activeTheme, // View all valid theme colors inside MatxTheme/themeColors.js
   },
 }

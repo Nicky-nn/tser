@@ -43,7 +43,7 @@ const Footer: FC<any> = () => {
 
   return (
     <ThemeProvider theme={footerTheme}>
-      <AppBar color="primary" position="static" sx={{ zIndex: 96 }}>
+      <AppBar color={'primary'} position="static" sx={{ zIndex: 96 }}>
         <AppFooter>
           <FooterContent>
             <Span sx={{ m: 'auto' }}></Span>

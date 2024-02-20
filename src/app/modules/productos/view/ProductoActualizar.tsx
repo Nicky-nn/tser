@@ -1,11 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
 import { Description, Save } from '@mui/icons-material'
-import { Button, CssBaseline, Grid, Paper, Stack } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import React, { FunctionComponent, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
+import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuItem'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { genRandomString, isEmptyValue } from '../../../utils/helper'
 import { notDanger, notError, notSuccess } from '../../../utils/notification'
@@ -124,50 +126,33 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
 
   return (
     <SimpleContainer>
-      <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Productos', path: '/productos/gestion' },
-            { name: 'Modificar Producto' },
-          ]}
-        />
-      </div>
-      <CssBaseline />
+      <Breadcrumb
+        routeSegments={[
+          { name: 'Productos', path: '/productos/gestion' },
+          { name: 'Modificar Producto' },
+        ]}
+      />
 
-      <Paper
-        elevation={0}
-        variant="elevation"
-        square
-        sx={{ mb: 2, p: 0.5 }}
-        className={'asideSidebarFixed'}
-      >
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          style={{ marginTop: 2 }}
-          spacing={{ xs: -2, sm: 0, md: 1, xl: 0 }}
-          justifyContent="flex-end"
+      <StackMenu asideSidebarFixed>
+        <Button
+          color={'secondary'}
+          startIcon={<Description />}
+          variant={'contained'}
+          onClick={() => {
+            // dispatch(productoReset());
+            navigate(productosRouteMap.nuevo.path)
+          }}
         >
-          <Button
-            color={'secondary'}
-            startIcon={<Description />}
-            variant={'contained'}
-            onClick={() => {
-              // dispatch(productoReset());
-              navigate(productosRouteMap.nuevo.path)
-            }}
-          >
-            {productosRouteMap.nuevo.name}
-          </Button>
-          &nbsp;
-          <Button
-            startIcon={<Save />}
-            variant={'contained'}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Guardar Cambios
-          </Button>
-        </Stack>
-      </Paper>
+          {productosRouteMap.nuevo.name}
+        </Button>
+        <Button
+          startIcon={<Save />}
+          variant={'contained'}
+          onClick={form.handleSubmit(onSubmit)}
+        >
+          Guardar Cambios
+        </Button>
+      </StackMenu>
 
       <Grid container spacing={2}>
         <Grid item lg={8} md={8} xs={12}>

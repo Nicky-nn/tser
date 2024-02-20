@@ -8,7 +8,7 @@ import {
 import React, { FunctionComponent, useMemo } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
-import { MuiTableBasicOptionsProps } from '../../../../utils/materialReactTableUtils'
+import { MuiTableBasicOptionsProps } from '../../../../utils/muiTable/materialReactTableUtils'
 import { FacturaInputProps } from '../../interfaces/factura'
 
 interface OwnProps {
@@ -47,12 +47,11 @@ const DatosCliente: FunctionComponent<Props> = (props) => {
    * @description Material React Table
    */
   const table = useMaterialReactTable({
-    ...(MuiTableBasicOptionsProps(theme) as MRT_TableOptions<{
+    ...(MuiTableBasicOptionsProps as MRT_TableOptions<{
       campo: string
       valor: string
     }>),
     columns,
-    enableTableHead: false,
     data: [
       {
         campo: 'Nombre/Razón Social',

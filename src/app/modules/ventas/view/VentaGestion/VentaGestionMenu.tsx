@@ -3,7 +3,7 @@ import { Box, IconButton } from '@mui/material'
 import React, { Dispatch, FunctionComponent, SetStateAction } from 'react'
 
 import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
-import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
 import { openInNewTab } from '../../../../utils/helper'
 import { FacturaProps } from '../../interfaces/factura'
 
@@ -36,7 +36,7 @@ const VentaGestionMenu: FunctionComponent<Props> = (props) => {
             </>
           }
         >
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={(e) => {
               e.preventDefault()
               setOpenAnularDocumento(true)
@@ -44,41 +44,41 @@ const VentaGestionMenu: FunctionComponent<Props> = (props) => {
             }}
           >
             <LayersClear /> Anular Documento
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.representacionGrafica.pdf)
             }}
           >
             <PictureAsPdf /> Pdf Medio Oficio
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.representacionGrafica.rollo)
             }}
           >
             <PictureAsPdf /> Pdf Rollo
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.representacionGrafica.xml)
             }}
           >
             <FileOpen /> Xml
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.representacionGrafica.sin)
             }}
           >
             <FileOpen /> Url S.I.N.
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={(e) => {
               e.preventDefault()
               setOpenReenviarEmails(true)
@@ -86,7 +86,7 @@ const VentaGestionMenu: FunctionComponent<Props> = (props) => {
             }}
           >
             <Mail /> Reenviar Correo
-          </StyledMenuItem>
+          </SimpleMenuItem>
         </SimpleMenu>
         <AuditIconButton row={row} />
       </Box>

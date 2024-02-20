@@ -1,9 +1,19 @@
-import { styled } from '@mui/material'
+import { Container, ContainerProps, styled } from '@mui/material'
 
-const SimpleContainer = styled('div')(({ theme }) => ({
-  margin: '30px',
+interface Props extends ContainerProps {}
+
+/**
+ * @description SimpleContainer modificado a container
+ */
+const SimpleContainer = styled((props: Props) => {
+  const { ...other } = props
+  return <Container maxWidth={'xl'} fixed {...other} />
+})(({ theme }) => ({
+  marginTop: '30px',
+  marginBottom: '30px',
   [theme.breakpoints.down('sm')]: {
-    margin: '16px',
+    marginTop: '16px',
+    marginBottom: '16px',
   },
   '& .breadcrumb': {
     marginBottom: '30px',

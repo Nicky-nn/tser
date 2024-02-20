@@ -1,3 +1,4 @@
+import { homeRoutesMap } from './modules/base/home/HomeRoutes'
 import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap'
 import { productosRouteMap } from './modules/productos/ProductosRoutesMap'
 import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap'
@@ -19,9 +20,9 @@ export interface NavigationProps {
 
 export const navigations: NavigationProps[] = [
   {
-    name: 'Página Principal',
-    path: '/dashboard/default',
+    name: homeRoutesMap.home.name,
     icon: 'dashboard',
+    path: homeRoutesMap.home.path,
   },
   {
     name: 'SEGURIDAD',

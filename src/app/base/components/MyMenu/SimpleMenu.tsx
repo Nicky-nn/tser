@@ -11,7 +11,7 @@ const MenuButton = styled(Box)(({ theme }) => ({
   },
 }))
 
-export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+export const SimpleMenuItem = styled(MenuItem)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   minWidth: 185,

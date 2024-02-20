@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
-import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
 import { ProductoProps } from '../../interfaces/producto.interface'
 import { productosRouteMap } from '../../ProductosRoutesMap'
 
@@ -31,11 +31,11 @@ const ProductoMenu: FunctionComponent<Props> = (props) => {
             </>
           }
         >
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => navigate(`${productosRouteMap.modificar.path}/${row._id}`)}
           >
             <Edit /> {productosRouteMap.modificar.name}
-          </StyledMenuItem>
+          </SimpleMenuItem>
         </SimpleMenu>
         <AuditIconButton row={row} />
       </Box>

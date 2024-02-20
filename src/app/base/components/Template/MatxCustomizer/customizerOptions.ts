@@ -9,14 +9,6 @@ export const mainThemes = [
   'blueDark',
 ]
 
-export const mainSidebarThemes: ThemeTypeColorsProps[] = [
-  'whitePurple',
-  'whiteBlue',
-  'blueDark',
-]
+export const mainSidebarThemes: ThemeTypeColorsProps[] = ['blueDark']
 
-export const topbarThemes: ThemeTypeColorsProps[] = [
-  'whitePurple',
-  'whiteBlue',
-  'blueDark',
-]
+export const topbarThemes: ThemeTypeColorsProps[] = ['blueDark']

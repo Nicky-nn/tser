@@ -5,7 +5,7 @@ import {
   MenuOpen,
   PictureAsPdf,
 } from '@mui/icons-material'
-import { Box, Button, Chip, Grid, IconButton, useTheme } from '@mui/material'
+import { Box, Button, Chip, Grid, IconButton } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnFiltersState,
@@ -25,7 +25,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
-import SimpleMenu, { StyledMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
+import SimpleMenu, { SimpleMenuItem } from '../../../base/components/MyMenu/SimpleMenu'
 import StackMenu from '../../../base/components/MyMenu/StackMenu'
 import StackMenuActionTable, {
   StackMenuItem,
@@ -34,12 +34,10 @@ import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import {
-  DCDO,
-  DcdoProps,
-  MuiTableAdvancedOptionsProps,
   muiTableApiEstado,
   MuiToolbarAlertBannerProps,
-} from '../../../utils/materialReactTableUtils'
+} from '../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { apiNotasCreditoDebito } from '../api/ncd.api'
 import { NcdProps } from '../interfaces/ncdInterface'
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
@@ -132,7 +130,6 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
 ]
 
 const NcdGestion: FC<any> = () => {
-  const theme = useTheme()
   const [openAnularNcd, setOpenAnularNcd] = useState(false)
 
   const [openExport, setOpenExport] = useState(false)
@@ -180,7 +177,7 @@ const NcdGestion: FC<any> = () => {
   const columns = useMemo(() => tableColumns, [])
 
   const table = useMaterialReactTable({
-    ...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<NcdProps>),
+    ...(MuiTableAdvancedOptionsProps as MRT_TableOptions<NcdProps>),
     columns,
     data: gestionProductos ?? [],
     initialState: {
@@ -207,7 +204,6 @@ const NcdGestion: FC<any> = () => {
       columnPinning: { right: ['actions'] },
       rowSelection,
     },
-    displayColumnDefOptions: DCDO as DcdoProps<NcdProps>,
     renderRowActions: ({ row }) => (
       <Box>
         <SimpleMenu
@@ -219,37 +215,37 @@ const NcdGestion: FC<any> = () => {
             </>
           }
         >
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={(e) => {
               e.preventDefault()
             }}
           >
             <LayersClear /> Anular Documento
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.original.representacionGrafica.pdf)
             }}
           >
             <PictureAsPdf /> Pdf Medio Oficio
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.original.representacionGrafica.xml)
             }}
           >
             <FileOpen /> Xml
-          </StyledMenuItem>
+          </SimpleMenuItem>
 
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               openInNewTab(row.original.representacionGrafica.sin)
             }}
           >
             <FileOpen /> Url S.I.N.
-          </StyledMenuItem>
+          </SimpleMenuItem>
         </SimpleMenu>
         <AuditIconButton row={row.original} />
       </Box>

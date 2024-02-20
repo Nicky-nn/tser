@@ -1,29 +1,24 @@
 import { Delete, Edit, Newspaper } from '@mui/icons-material'
-import { Box, Button, Chip, IconButton, Stack, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Stack } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import type {
-  ColumnFiltersState,
-  PaginationState,
-  RowSelectionState,
-} from '@tanstack/react-table'
-import { SortingState } from '@tanstack/react-table'
 import {
   MaterialReactTable,
   MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_RowSelectionState,
+  MRT_SortingState,
   MRT_TableOptions,
-  MRT_TableProps,
 } from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import AuditIconButton from '../../../base/components/Auditoria/AuditIconButton'
+import StackMenu from '../../../base/components/MyMenu/StackMenu'
 import { PAGE_DEFAULT, PageInputProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
-import { localization } from '../../../utils/localization'
-import {
-  MuiTableAdvancedOptionsProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { notSuccess } from '../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
 import { apiProveedorEliminar } from '../api/proveedorEliminar.api'
@@ -64,34 +59,30 @@ const tableColumns: MRT_ColumnDef<ProveedorProps>[] = [
   {
     accessorKey: 'telefono',
     header: 'Teléfono',
-  },
-  /*
+  } /*
   {
     accessorFn: (row) => <Chip size={'small'} label={row.state} color={'success'} />,
     id: 'state',
     header: 'Estado',
   },
-     */
+     */,
 ]
 
 const ProveedorListado: FunctionComponent<Props> = (props) => {
   const navigate = useNavigate()
-  const theme = useTheme()
   const [openNuevoProveedor, setOpenNuevoProveedor] = useState<boolean>(false)
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([])
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
   })
   const [rowCount, setRowCount] = useState(0)
-  const [isRefetching, setIsRefetching] = useState(false)
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = useState('')
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [sorting, setSorting] = useState<MRT_SortingState>([])
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isLoading, status, refetch } = useQuery<ProveedorProps[]>({
+  const { data, isError, isLoading, refetch, isRefetching } = useQuery<ProveedorProps[]>({
     queryKey: [
       'proveedoresListado',
       columnFilters,
@@ -121,7 +112,7 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
     const resp = data.map((item: any) => item.original.codigo)
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados, esta operación no se podra revertir',
-      preConfirm: () => {
+      preConfirm: async () => {
         return apiProveedorEliminar(resp).catch((err) => {
           swalException(err)
           return false
@@ -137,12 +128,7 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
   }
   return (
     <>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1}
-        justifyContent="right"
-        sx={{ marginBottom: 3 }}
-      >
+      <StackMenu asideSidebarFixed>
         <Button
           size={'small'}
           variant="contained"
@@ -152,9 +138,9 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
           {' '}
           Nuevo Proveedor
         </Button>
-      </Stack>
+      </StackMenu>
       <MaterialReactTable
-        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ProveedorProps>)}
+        {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<ProveedorProps>)}
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: false }}
@@ -172,12 +158,6 @@ const ProveedorListado: FunctionComponent<Props> = (props) => {
           density: 'compact',
           sorting,
           rowSelection,
-        }}
-        displayColumnDefOptions={{
-          'mrt-row-actions': {
-            size: 100, //if using layoutMode that is not 'semantic', the columns will not auto-size, so you need to set the size manually
-            grow: false,
-          },
         }}
         renderRowActions={({ row }) => (
           <Box>

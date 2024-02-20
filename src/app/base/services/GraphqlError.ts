@@ -32,7 +32,7 @@ export class MyGraphQlError extends Error {
     const errors = validateGraphQlError(e)
     super(errors.message) // (1)
     this.name = `${errors.status} ${errors.type} (${errors.path})` // (2)
-    this.stack = errors.stacktrace
-    this.cause = errors.originalMessage
+    this.stack = import.meta.env.DEV ? errors.stacktrace : ''
+    this.cause = import.meta.env.DEV ? errors.originalMessage : ''
   }
 }

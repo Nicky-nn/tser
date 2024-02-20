@@ -1,5 +1,3 @@
-import { ThemeOptionsProps } from './themeOptions'
-
 export type ThemeTypeColorsProps =
   | 'default'
   | 'defaultDark'
@@ -44,7 +42,7 @@ const errorColor = {
 }
 
 export interface PaletteProps {
-  type: 'light' | 'dark'
+  mode: 'light' | 'dark'
   primary: {
     main: string
     light?: string
@@ -68,7 +66,7 @@ export interface PaletteProps {
 /*** COMPUESTO
  * INTERFACE
  */
-export interface ThemeColorsCompleteProps extends ThemeOptionsProps {
+export interface ThemeColorsCompleteProps {
   palette: PaletteProps
 }
 
@@ -112,7 +110,7 @@ interface ThemeColorsProps {
 export const themeColors: ThemeColorsProps = {
   indigo: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#7052ff',
         contrastText: textDark.primary,
@@ -132,7 +130,7 @@ export const themeColors: ThemeColorsProps = {
   },
   indigoDark: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#1c4c96',
         contrastText: textDark.primary,
@@ -151,7 +149,7 @@ export const themeColors: ThemeColorsProps = {
   },
   purple: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#7052ff',
         contrastText: '#ffffff',
@@ -170,7 +168,7 @@ export const themeColors: ThemeColorsProps = {
   },
   purpleDark: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#7052ff',
         contrastText: '#ffffff',
@@ -189,7 +187,7 @@ export const themeColors: ThemeColorsProps = {
   },
   blue: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#1976d2',
         dark: '#1564c0',
@@ -210,7 +208,7 @@ export const themeColors: ThemeColorsProps = {
   },
   blueDark: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#1976d2',
         dark: '#1564c0',
@@ -231,7 +229,7 @@ export const themeColors: ThemeColorsProps = {
   },
   blue1: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#00539A',
         dark: '#003A6B',
@@ -252,7 +250,7 @@ export const themeColors: ThemeColorsProps = {
   },
   blueDark1: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#00539A',
         dark: '#003A6B',
@@ -273,7 +271,7 @@ export const themeColors: ThemeColorsProps = {
   },
   green: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#00625D',
         light: 'rgb(51, 129, 125)',
@@ -296,7 +294,7 @@ export const themeColors: ThemeColorsProps = {
   },
   greenDark: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#00625D',
         light: 'rgb(51, 129, 125)',
@@ -319,7 +317,7 @@ export const themeColors: ThemeColorsProps = {
   },
   default: {
     palette: {
-      type: 'light',
+      mode: 'light',
       primary: {
         main: '#1976d2',
         dark: '#1565c0',
@@ -339,7 +337,7 @@ export const themeColors: ThemeColorsProps = {
   },
   defaultDark: {
     palette: {
-      type: 'dark',
+      mode: 'dark',
       primary: {
         main: '#1E1E1E',
         contrastText: textDark.primary,

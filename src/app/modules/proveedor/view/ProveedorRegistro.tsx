@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material'
+import { Container } from '@mui/material'
 import { FormikProps, useFormik } from 'formik'
 import React, { FunctionComponent } from 'react'
 import { object, string } from 'yup'
@@ -41,17 +41,14 @@ const ProveedorRegistro: FunctionComponent<Props> = (props) => {
 
   return (
     <Container>
-      <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Ventas', path: '/ventas/registro' },
-            { name: 'Registrar Venta' },
-          ]}
-        />
-      </div>
+      <Breadcrumb
+        routeSegments={[
+          { name: 'Ventas', path: '/ventas/registro' },
+          { name: 'Registrar Venta' },
+        ]}
+      />
 
       <ProveedorForm formik={formik} />
-      <Box py="12px" />
     </Container>
   )
 }

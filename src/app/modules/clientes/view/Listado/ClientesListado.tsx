@@ -1,24 +1,22 @@
 import { Delete, PersonAddAltSharp } from '@mui/icons-material'
-import { Box, Button, Chip, Stack, useTheme } from '@mui/material'
+import { Box, Button, Chip, Stack } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
-  ColumnFiltersState,
-  PaginationState,
-  RowSelectionState,
-  SortingState,
-} from '@tanstack/react-table'
-import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
+  MaterialReactTable,
+  MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_RowSelectionState,
+  MRT_SortingState,
+  MRT_TableOptions,
+} from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
+import StackMenu from '../../../../base/components/MyMenu/StackMenu'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery } from '../../../../utils/helper'
-import {
-  DCDO,
-  MuiSearchTextFieldProps,
-  MuiTableAdvancedOptionsProps,
-  MuiTableProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { notDanger, notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { fetchClienteListado } from '../../api/clienteListado.api'
@@ -65,18 +63,17 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
 ]
 
 const ClientesListado: FunctionComponent<Props> = (props) => {
-  const theme = useTheme()
   const [openClienteRegistro, setOpenClienteRegistro] = useState(false)
   const [openCliente99001Registro, setOpenCliente99001Registro] = useState(false)
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0)
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<MRT_SortingState>([])
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
   })
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
 
   const {
     data: clientes,
@@ -134,12 +131,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1}
-        justifyContent="right"
-        sx={{ marginBottom: 3 }}
-      >
+      <StackMenu asideSidebarFixed>
         <Button
           size={'small'}
           variant="contained"
@@ -158,10 +150,10 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         >
           Nuevo Cliente (99001)
         </Button>
-      </Stack>
+      </StackMenu>
 
       <MaterialReactTable
-        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ClienteProps>)}
+        {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<ClienteProps>)}
         columns={columns}
         data={clientes ?? []}
         initialState={{ showColumnFilters: false }}
@@ -183,11 +175,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         renderRowActions={({ row }) => (
           <ClientesMenu row={row.original} refetch={refetch} />
         )}
-        muiSearchTextFieldProps={MuiSearchTextFieldProps}
-        muiTableProps={MuiTableProps}
-        displayColumnDefOptions={DCDO}
         onRowSelectionChange={setRowSelection}
-        enableRowSelection
         muiSelectCheckboxProps={({ row }) => ({
           disabled: ['99003', '99002'].includes(row.getValue('numeroDocumento')),
         })}

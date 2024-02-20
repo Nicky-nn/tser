@@ -20,16 +20,10 @@ import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
 import {
-  DCDO,
-  DcdoProps,
-  MuiFilterTextFieldProps,
-  MuiSearchTextFieldProps,
-  MuiTableAdvancedOptionsProps,
   muiTableApiEstado,
-  MuiTableBasicOptionsProps,
-  MuiTableProps,
   MuiToolbarAlertBannerProps,
-} from '../../../utils/materialReactTableUtils'
+} from '../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { fetchFacturaListado } from '../api/factura.listado.api'
 import { FacturaProps } from '../interfaces/factura'
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog'
@@ -241,7 +235,7 @@ const VentaGestion: FC<any> = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <MaterialReactTable
-              {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<FacturaProps>)}
+              {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<FacturaProps>)}
               columns={columns} //must be memoized
               data={gestionProductos || []} //must be memoized
               initialState={{
@@ -268,7 +262,6 @@ const VentaGestion: FC<any> = () => {
                 columnPinning: { right: ['actions'] },
                 rowSelection,
               }}
-              displayColumnDefOptions={DCDO as DcdoProps<FacturaProps>}
               renderRowActions={({ row }) => (
                 <VentaGestionMenu
                   row={row.original}
@@ -281,7 +274,6 @@ const VentaGestion: FC<any> = () => {
               renderTopToolbarCustomActions={({ table }) => {
                 return <StackMenuActionTable refetch={refetch} />
               }}
-              muiTableProps={MuiTableProps}
             />
           </Grid>
         </Grid>

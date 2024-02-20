@@ -1,5 +1,4 @@
-import { Paper, Stack } from '@mui/material'
-import { StackProps } from '@mui/material'
+import { alpha, Paper, Stack, StackProps } from '@mui/material'
 import React, { FC, ReactElement } from 'react'
 
 interface OwnProps {
@@ -25,8 +24,13 @@ export const StackMenu: FC<Props> = (props) => {
       elevation={0}
       variant="elevation"
       square
-      sx={{ p: '0.3rem', mb: 1, background: 'rgba(250, 250, 250, 0)' }}
       className={asideSidebarFixed ? 'asideSidebarFixed' : ''}
+      sx={{
+        p: '0.1rem',
+        mb: 1,
+        background: (theme) => alpha(theme.palette.background.default, 0.5),
+        backdropFilter: 'blur(1px)',
+      }}
     >
       <Stack
         spacing={{ xs: 1, sm: 2 }}

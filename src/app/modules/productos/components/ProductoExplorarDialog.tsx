@@ -42,7 +42,6 @@ const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
           <Button
             autoFocus
             color={'error'}
-            size={'small'}
             variant={'contained'}
             onClick={() => onClose()}
           >
@@ -53,7 +52,6 @@ const ProductoExplorarDialog: FunctionComponent<Props> = (props) => {
             disabled={rowSelection.length === 0}
             autoFocus
             color={'primary'}
-            size={'small'}
             variant={'contained'}
             onClick={() => handleAddProds()}
           >

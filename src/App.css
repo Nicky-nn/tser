@@ -254,21 +254,10 @@ button {
   text-align: left;
 }
 
-.swalError .swal2-actions button.swal2-confirm {
-  color: #ff5252 !important;
-}
-
 .swal2-container {
   z-index: 9999 !important;
 }
 
-.swal2-styled.swal2-cancel {
-  background-color: transparent;
-}
-
-.swal2-actions button.swal2-cancel {
-  background-color: #ff5252;
-}
 
 .swal2-actions:not(.swal2-loading) .swal2-cancel.swal2-styled:hover {
   background-image: linear-gradient(rgba(230, 86, 85, 0.1), rgba(230, 86, 85, 0.1));

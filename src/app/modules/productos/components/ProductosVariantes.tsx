@@ -1,18 +1,15 @@
 import { AllInclusive } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import useAuth from '../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../utils/helper'
-import {
-  MuiFilterTextFieldProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { apiProductosVariantes } from '../api/productosVariantes.api'
 import { ProductoVarianteProps } from '../interfaces/producto.interface'
 
@@ -126,13 +123,10 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
   return (
     <>
       <MaterialReactTable
+        {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<ProductoVarianteProps>)}
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: true }}
-        localization={MRT_Localization_ES}
-        manualFiltering
-        manualPagination
-        manualSorting
         muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
@@ -150,8 +144,9 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
           density: 'compact',
           rowSelection,
         }}
-        muiFilterTextFieldProps={MuiFilterTextFieldProps}
         enableRowSelection
+        enableColumnActions={false}
+        enableRowActions={false}
         enableSelectAll={false}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row._id}

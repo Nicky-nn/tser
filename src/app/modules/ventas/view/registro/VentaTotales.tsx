@@ -9,7 +9,6 @@ import {
   Grid,
   IconButton,
   TextField,
-  useTheme,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -33,7 +32,7 @@ import RepresentacionGraficaUrls from '../../../../base/components/Representacio
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty, openInNewTab } from '../../../../utils/helper'
-import { MuiTableBasicOptionsProps } from '../../../../utils/materialReactTableUtils'
+import { MuiTableBasicOptionsProps } from '../../../../utils/muiTable/materialReactTableUtils'
 import { notError } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { genRound } from '../../../../utils/utils'
@@ -41,10 +40,7 @@ import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
 import { MonedaProps } from '../../../base/moneda/interfaces/moneda'
 import { fetchFacturaCreate } from '../../api/facturaCreate.api'
 import { FacturaInitialValues, FacturaInputProps } from '../../interfaces/factura'
-import {
-  genCalculoTotalesService,
-  montoSubTotal,
-} from '../../services/operacionesService'
+import { genCalculoTotalesService } from '../../services/operacionesService'
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
 import MetodosPago from './MetodosPago'
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
@@ -107,7 +103,6 @@ const tblColumns: MRT_ColumnDef<TblVentaTotalesProps>[] = [
  * @constructor
  */
 const VentaTotales: FunctionComponent<Props> = (props) => {
-  const theme = useTheme()
   const {
     user: { moneda, monedaTienda, tipoRepresentacionGrafica },
   } = useAuth()
@@ -205,7 +200,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   // Creación de la tabla para mostrar los totales
   const columns = useMemo<MRT_ColumnDef<TblVentaTotalesProps>[]>(() => tblColumns, [])
   const table = useMaterialReactTable({
-    ...(MuiTableBasicOptionsProps(theme) as MRT_TableOptions<TblVentaTotalesProps>),
+    ...(MuiTableBasicOptionsProps as MRT_TableOptions<TblVentaTotalesProps>),
     columns,
     data: [
       {

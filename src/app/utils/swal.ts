@@ -36,7 +36,9 @@ export const swalException = (e: Error | any) => {
     customClass: 'swalError',
     allowEscapeKey: false,
     allowOutsideClick: true,
+    confirmButtonColor: '#d33',
     html: swalExceptionMsg(e),
+    confirmButtonText: 'Cerrar',
   }).then()
 }
 
@@ -61,6 +63,22 @@ export const swalConfirmDialog = async ({
   })
 }
 
+/*
+await swalAsyncConfirmDialog({
+  title: `Inactivar al usuario ${row.usuario}`,
+  text: `Confirma que desea INACTIVAR al usuario ${row.nombres}, el usuario ya no podrá iniciar sesión`,
+  preConfirm: async () => {
+    return fetch(...args).catch((e) => {
+      swalException(e)
+      return false
+    })
+  },
+}).then((resp) => {
+  if (resp.isConfirmed) {
+    notSuccess(); setRowSelection({}); refetch();
+  }
+})
+*/
 /**
  * @description Confirmación para datos asincronos, usado para api rest, debe usar preConfirm(), y then
  * @param title
@@ -81,11 +99,18 @@ export const swalAsyncConfirmDialog = async ({
     showCancelButton: true,
     confirmButtonText: 'Confirmar',
     cancelButtonText: 'Cancelar',
+    cancelButtonColor: '#d33',
     backdrop: true,
     html: text,
+    didOpen: () => {
+      // @ts-ignore
+      if (Swal.getPopup().querySelector('button.swal2-confirm') !== null) {
+        // @ts-ignore
+        Swal.getPopup().querySelector('button.swal2-confirm').focus()
+      }
+    },
     showLoaderOnConfirm: true,
-    preConfirm,
-    // allowOutsideClick: () => !Swal.isLoading()
+    preConfirm, // allowOutsideClick: () => !Swal.isLoading()
   })
 }
 /**

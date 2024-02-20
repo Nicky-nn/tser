@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from 'react'
 import Scrollbar from 'react-perfect-scrollbar'
 import { Outlet } from 'react-router-dom'
 
+import LayoutRestriccion from '../../../../../modules/base/components/LayoutRestriccion/LayoutRestriccion'
 import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
 import useSettings from '../../../../hooks/useSettings'
-import LayoutRestriccion from '../../../LayoutRestriccion/LayoutRestriccion'
 import Footer from '../../Footer/Footer'
 import MatxSuspense from '../../MatxSuspense/MatxSuspense'
 import SidenavTheme from '../../MatxTheme/SidenavTheme/SidenavTheme'
@@ -104,7 +104,7 @@ const Layout1 = () => {
           <>
             <ThemeProvider theme={topbarTheme}>
               <Layout1Topbar fixed={true} className="elevation-z8" />
-              <LayoutRestriccion fixed={true} className="elevation-z8" />
+              <LayoutRestriccion />
             </ThemeProvider>
           </>
         )}

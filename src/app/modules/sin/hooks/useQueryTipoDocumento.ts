@@ -1,5 +1,5 @@
 import { QueryKey } from '@tanstack/query-core'
-import { QueryObserverOptions, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import { fetchSinTipoDocumentoIdentidad } from '../api/sinTipoDocumentoIdentidad.api'
 import { SinTipoDocumentoIdentidadProps } from '../interfaces/sin.interface'
@@ -8,10 +8,7 @@ import { SinTipoDocumentoIdentidadProps } from '../interfaces/sin.interface'
  * Hook para listado básico de tipos de producto
  * limit 1000
  */
-const useQueryTipoDocumentoIdentidad = (
-  queryKey: QueryKey = [],
-  options: QueryObserverOptions = {},
-) => {
+const useQueryTipoDocumentoIdentidad = (queryKey: QueryKey = []) => {
   const {
     data: tiposDocumentoIdentidad,
     isLoading: tdiLoading,

@@ -6,6 +6,6 @@
     "jsxImportSource": "@emotion/react"
   },
   "include": [
-    "vite.config.mts"
+    "vite.config.mts", "./pwaOptions.ts"
   ]
 }

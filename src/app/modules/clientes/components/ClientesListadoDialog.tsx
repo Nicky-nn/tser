@@ -2,16 +2,13 @@ import { HowToReg } from '@mui/icons-material'
 import { Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
-import {
-  MuiFilterTextFieldProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { fetchClienteListado } from '../api/clienteListado.api'
 import { ClienteProps } from '../interfaces/cliente'
 
@@ -60,7 +57,6 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
   })
-
   // FIN DATA TABLE
   const {
     data: clientes,
@@ -96,16 +92,11 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <MaterialReactTable
+        {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<ClienteProps>)}
         columns={columns}
         data={clientes ?? []}
         initialState={{ showColumnFilters: true }}
-        localization={MRT_Localization_ES}
-        manualPagination
-        manualFiltering
-        manualSorting
         muiToolbarAlertBannerProps={MuiToolbarAlertBannerProps(isError)}
-        enableDensityToggle={false}
-        enableGlobalFilter={false}
         onColumnFiltersChange={setColumnFilters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
@@ -119,9 +110,6 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
           sorting,
           density: 'compact',
         }}
-        muiFilterTextFieldProps={MuiFilterTextFieldProps}
-        enableRowActions
-        positionActionsColumn="last"
         renderRowActions={({ row }) => (
           <div>
             <Button

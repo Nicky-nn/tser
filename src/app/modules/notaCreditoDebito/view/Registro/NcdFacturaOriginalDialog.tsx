@@ -19,15 +19,11 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-re
 import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
-import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../../utils/helper'
-import { localization } from '../../../../utils/localization'
-import {
-  MuiFilterTextFieldProps,
-  MuiTableAdvancedOptionsProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api'
 import { FacturaProps } from '../../../ventas/interfaces/factura'
 
@@ -113,13 +109,12 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
     pageSize: 5,
   })
   const [rowCount, setRowCount] = useState(0)
-  const [isRefetching, setIsRefetching] = useState(false)
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isLoading, refetch } = useQuery<FacturaProps[]>({
+  const { data, isError, isLoading, refetch, isRefetching } = useQuery<FacturaProps[]>({
     queryKey: [
       'NcdGestionFacturas',
       columnFilters,
@@ -158,7 +153,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
         <DialogTitle>Seleccione su factura</DialogTitle>
         <DialogContent dividers>
           <MaterialReactTable
-            {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<FacturaProps>)}
+            {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<FacturaProps>)}
             columns={columns}
             data={data ?? []}
             initialState={{
@@ -191,29 +186,29 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                     </>
                   }
                 >
-                  <StyledMenuItem
+                  <SimpleMenuItem
                     onClick={() => {
                       openInNewTab(row.original.representacionGrafica.pdf)
                     }}
                   >
                     <PictureAsPdf /> Pdf Medio Oficio
-                  </StyledMenuItem>
+                  </SimpleMenuItem>
 
-                  <StyledMenuItem
+                  <SimpleMenuItem
                     onClick={() => {
                       openInNewTab(row.original.representacionGrafica.xml)
                     }}
                   >
                     <FileOpen /> Xml
-                  </StyledMenuItem>
+                  </SimpleMenuItem>
 
-                  <StyledMenuItem
+                  <SimpleMenuItem
                     onClick={() => {
                       openInNewTab(row.original.representacionGrafica.sin)
                     }}
                   >
                     <FileOpen /> Url S.I.N.
-                  </StyledMenuItem>
+                  </SimpleMenuItem>
                 </SimpleMenu>
                 <Button
                   size={'small'}
@@ -225,14 +220,6 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
                 </Button>
               </>
             )}
-            displayColumnDefOptions={{
-              'mrt-row-actions': {
-                muiTableHeadCellProps: {
-                  align: 'center',
-                },
-                size: 120,
-              },
-            }}
           />
         </DialogContent>
         <DialogActions>

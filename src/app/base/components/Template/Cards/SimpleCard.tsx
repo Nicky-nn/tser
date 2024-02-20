@@ -74,7 +74,7 @@ const SimpleCard: FC<SimpleCardProps> = ({
     <CardRoot elevation={6}>
       {title && (
         <CardHeader
-          avatar={title && (childIcon ? childIcon : <ArrowRight />)}
+          avatar={title && childIcon && childIcon}
           title={title && <H4>{title.toUpperCase()}</H4>}
           subheader={subtitle && subtitle}
         />

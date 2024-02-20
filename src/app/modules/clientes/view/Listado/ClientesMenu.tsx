@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material'
 import React, { FunctionComponent, useState } from 'react'
 
 import AuditIconButton from '../../../../base/components/Auditoria/AuditIconButton'
-import SimpleMenu, { StyledMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
 import { ClienteProps } from '../../interfaces/cliente'
 import Cliente99001ActualizarDialog from '../actualizar/Cliente99001ActualizarDialog'
 import ClienteActualizarDialog from '../actualizar/ClienteActualizarDialog'
@@ -32,7 +32,7 @@ const ClientesMenu: FunctionComponent<Props> = (props) => {
             </>
           }
         >
-          <StyledMenuItem
+          <SimpleMenuItem
             onClick={() => {
               if (row.numeroDocumento === '99001') {
                 setOpenCliente99001Actualizar(true)
@@ -40,7 +40,7 @@ const ClientesMenu: FunctionComponent<Props> = (props) => {
             }}
           >
             <Edit /> Modificar
-          </StyledMenuItem>
+          </SimpleMenuItem>
         </SimpleMenu>
         <AuditIconButton row={row} />
       </div>

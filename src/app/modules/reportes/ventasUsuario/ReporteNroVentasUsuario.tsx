@@ -1,4 +1,4 @@
-import { Box, useTheme } from '@mui/material'
+import { Box } from '@mui/material'
 import {
   type MRT_ColumnDef,
   MRT_Table,
@@ -9,11 +9,7 @@ import React, { FC, useMemo } from 'react'
 
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { genReplaceEmpty } from '../../../utils/helper'
-import {
-  DCDO,
-  DcdoProps,
-  MuiTableBasicOptionsProps,
-} from '../../../utils/materialReactTableUtils'
+import { MuiTableBasicOptionsProps } from '../../../utils/muiTable/materialReactTableUtils'
 import {
   ReporteVentasUsuarioComposeProps,
   ReporteVentasUsuarioDetalleComposeProps,
@@ -26,7 +22,6 @@ interface OwnProps {
 type Props = OwnProps
 
 const ReporteNroVentasUsuario: FC<Props> = (props) => {
-  const theme = useTheme()
   const { data } = props
   const columns = useMemo<MRT_ColumnDef<ReporteVentasUsuarioDetalleComposeProps, any>[]>(
     () => [
@@ -64,16 +59,9 @@ const ReporteNroVentasUsuario: FC<Props> = (props) => {
     [],
   )
   const table = useMaterialReactTable({
-    ...(MuiTableBasicOptionsProps(
-      theme,
-    ) as MRT_TableOptions<ReporteVentasUsuarioDetalleComposeProps>),
+    ...(MuiTableBasicOptionsProps as MRT_TableOptions<ReporteVentasUsuarioDetalleComposeProps>),
     columns,
     data: data.detalle || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    initialState: {
-      density: 'compact',
-    },
-    displayColumnDefOptions: DCDO as DcdoProps<ReporteVentasUsuarioDetalleComposeProps>,
-    muiTableBodyRowProps: { hover: false },
     enableTableHead: true,
   })
 

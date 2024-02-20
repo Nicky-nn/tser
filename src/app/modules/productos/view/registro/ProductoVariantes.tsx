@@ -8,7 +8,11 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { genReplaceEmpty } from '../../../../utils/helper'
-import { DCDO, DcdoProps, MuiTableProps } from '../../../../utils/materialReactTableUtils'
+import {
+  DcdoProps,
+  MuiDisplayColumnDefOptions,
+  MuiTableProps,
+} from '../../../../utils/muiTable/materialReactTableUtils'
 import { notError } from '../../../../utils/notification'
 import { swalConfirmDialog } from '../../../../utils/swal'
 import {
@@ -89,7 +93,9 @@ const ProductoVariantes: FunctionComponent<Props> = (props) => {
                     density: 'compact',
                   }}
                   muiTableProps={MuiTableProps}
-                  displayColumnDefOptions={DCDO as DcdoProps<ProductoVarianteInputProps>}
+                  displayColumnDefOptions={
+                    MuiDisplayColumnDefOptions as DcdoProps<ProductoVarianteInputProps>
+                  }
                   enableBottomToolbar={false}
                   enableTopToolbar={false}
                   positionActionsColumn="last"

@@ -1,15 +1,16 @@
 import { Delete } from '@mui/icons-material'
-import { Button, Chip, useTheme } from '@mui/material'
+import { Button, Chip } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import type {
-  ColumnFiltersState,
-  PaginationState,
-  RowSelectionState,
-} from '@tanstack/react-table'
-import { SortingState } from '@tanstack/react-table'
 import { sumBy } from 'lodash'
-import { MaterialReactTable, MRT_ColumnDef, MRT_TableOptions } from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import {
+  MaterialReactTable,
+  MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_RowSelectionState,
+  MRT_SortingState,
+  MRT_TableOptions,
+} from 'material-react-table'
 import { FunctionComponent, useMemo, useState } from 'react'
 
 import StackMenuActionTable, {
@@ -17,14 +18,8 @@ import StackMenuActionTable, {
 } from '../../../../base/components/MyMenu/StackMenuActionTable'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, genReplaceEmpty } from '../../../../utils/helper'
-import {
-  DCDO,
-  MuiFilterTextFieldProps,
-  MuiSearchTextFieldProps,
-  MuiTableAdvancedOptionsProps,
-  MuiTableProps,
-  MuiToolbarAlertBannerProps,
-} from '../../../../utils/materialReactTableUtils'
+import { MuiToolbarAlertBannerProps } from '../../../../utils/muiTable/materialReactTableUtils'
+import { MuiTableAdvancedOptionsProps } from '../../../../utils/muiTable/muiTableAdvancedOptionsProps'
 import { notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiProductos } from '../../api/producto.api'
@@ -93,23 +88,18 @@ const tableColumns: MRT_ColumnDef<ProductoProps>[] = [
  * @constructor
  */
 const ProductosListado: FunctionComponent<Props> = (props) => {
-  const theme = useTheme()
   // ESTADO DATATABLE
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([])
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
   })
   const [rowCount, setRowCount] = useState(0)
-  const [isRefetching, setIsRefetching] = useState(false)
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = useState('')
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [sorting, setSorting] = useState<MRT_SortingState>([])
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
   // FIN ESTADO DATATABLE
 
-  const { data, isError, isFetching, isLoading, status, refetch } = useQuery<
-    ProductoProps[]
-  >({
+  const { data, isError, isLoading, refetch, isRefetching } = useQuery<ProductoProps[]>({
     queryKey: [
       'productosListado',
       columnFilters,
@@ -143,7 +133,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
     const products = data.map((item: any) => item.original._id)
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir',
-      preConfirm: () => {
+      preConfirm: async () => {
         return apiProductosEliminar(products).catch((err) => {
           swalException(err)
           return false
@@ -160,7 +150,7 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
   return (
     <>
       <MaterialReactTable
-        {...(MuiTableAdvancedOptionsProps(theme) as MRT_TableOptions<ProductoProps>)}
+        {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<ProductoProps>)}
         columns={columns}
         data={data ?? []}
         initialState={{ showColumnFilters: true }}
@@ -179,7 +169,6 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
           sorting,
           rowSelection,
         }}
-        muiSearchTextFieldProps={MuiSearchTextFieldProps}
         renderRowActions={({ row }) => (
           <ProductoMenu row={row.original} refetch={refetch} />
         )}
@@ -203,8 +192,6 @@ const ProductosListado: FunctionComponent<Props> = (props) => {
             </StackMenuActionTable>
           )
         }}
-        muiTableProps={MuiTableProps}
-        displayColumnDefOptions={DCDO}
       />
     </>
   )
