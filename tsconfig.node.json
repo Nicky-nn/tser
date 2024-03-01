@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsxImportSource": "@emotion/react"
+  },
+  "include": [
+    "vite.config.mts", "./pwaOptions.ts"
+  ]
+}
