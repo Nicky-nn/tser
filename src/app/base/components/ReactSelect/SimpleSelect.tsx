@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import Select, { Props } from 'react-select'
 
-import { reactSelectStyles } from '../MySelect/ReactSelect'
+import { reactSelectStyle } from '../MySelect/ReactSelect'
 
 type SelectProps = Props & {
   id?: string
@@ -9,7 +9,7 @@ type SelectProps = Props & {
 }
 
 const SimpleSelect: FunctionComponent<SelectProps> = (props: SelectProps) => {
-  return <Select {...props} styles={reactSelectStyles} menuPosition={'fixed'} />
+  return <Select {...props} styles={reactSelectStyle(false)} menuPosition={'fixed'} />
 }
 
 export default SimpleSelect
