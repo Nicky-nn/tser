@@ -54,8 +54,6 @@ const DatosActividadEconomica: FunctionComponent<Props> = (props) => {
     return <AlertError mensaje={actError?.message!} />
   }
 
-  const t = useTheme()
-
   return (
     <>
       <SimpleCard>

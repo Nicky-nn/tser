@@ -35,9 +35,9 @@ const NotFound = () => {
           color="primary"
           variant="contained"
           sx={{ textTransform: 'capitalize' }}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/', { replace: true })}
         >
-          Volver a la página anterior
+          Volver a la Página Principal
         </Button>
       </JustifyBox>
     </NotFoundRoot>

@@ -6,7 +6,7 @@ import Select, { SingleValue } from 'react-select'
 import AlertError from '../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../base/components/MySelect/ReactSelect'
 import { genReplaceEmpty } from '../../../utils/helper'
 import useQueryTiposProducto from '../hooks/useQueryTiposProducto'
 import {
@@ -42,7 +42,7 @@ const TipoProductoForm: FunctionComponent<Props> = (props) => {
               >
                 <MyInputLabel shrink>Tipo Producto</MyInputLabel>
                 <Select<TipoProductoProps>
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(Boolean(formik.errors.codigoParent))}
                   menuPosition={'fixed'}
                   name="codigoParent"
                   isClearable

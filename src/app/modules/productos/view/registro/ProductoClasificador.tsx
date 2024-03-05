@@ -5,10 +5,7 @@ import Select, { SingleValue } from 'react-select'
 
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import {
-  reactSelectStyle,
-  reactSelectStyles,
-} from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import useQueryTiposProducto from '../../../tipoProducto/hooks/useQueryTiposProducto'
 import { TipoProductoProps } from '../../../tipoProducto/interfaces/tipoProducto.interface'

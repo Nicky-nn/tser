@@ -8,12 +8,13 @@ const pwaOptions = (env: any): Partial<VitePWAOptions> => ({
   includeAssets: [`${env.ISI_FAVICON}`],
   workbox: {
     globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg}'],
+    mode: 'minimal',
   },
   manifest: {
     name: `Facturación compra venta`,
     short_name: 'FCV',
     theme_color: '#ffffff',
-    display: 'standalone',
+    display: 'minimal-ui',
     icons: [
       {
         src: `${env.ISI_ASSETS_URL}/64.png`, // <== don't add slash, for testing

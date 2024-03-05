@@ -28,6 +28,7 @@ export const StackMenu: FC<Props> = (props) => {
       sx={{
         p: '0.1rem',
         mb: 1,
+        pt: 0.7,
         background: (theme) => alpha(theme.palette.background.default, 0.5),
         backdropFilter: 'blur(1px)',
       }}

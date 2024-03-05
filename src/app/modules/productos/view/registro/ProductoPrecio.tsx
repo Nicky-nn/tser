@@ -8,13 +8,12 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import React, { FunctionComponent } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
-import Select, { SingleValue } from 'react-select'
+import { SingleValue } from 'react-select'
 
 import AlertError from '../../../../base/components/Alert/AlertError'
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
+import FormSelect from '../../../../base/components/Form/FormSelect'
 import { NumeroFormat } from '../../../../base/components/Mask/NumeroFormat'
-import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { handleSelect } from '../../../../utils/helper'
 import { apiSinUnidadMedida } from '../../../sin/api/sinUnidadMedida.api'
@@ -71,38 +70,29 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
               control={control}
               name={'variante.unidadMedida'}
               render={({ field }) => (
-                <FormControl
-                  fullWidth
-                  sx={{ mb: 1 }}
+                <FormSelect<SinUnidadMedidaProps>
+                  formControlProps={{ sx: { mb: 1 } }}
+                  inputLabel={'Unidad Medida'}
+                  formHelperText={errors.variante?.unidadMedida?.message}
                   error={Boolean(errors.variante?.unidadMedida)}
-                >
-                  <MyInputLabel shrink>Unidad Medida</MyInputLabel>
-                  <Select<SinUnidadMedidaProps>
-                    {...field}
-                    styles={reactSelectStyle(Boolean(errors.variante?.unidadMedida))}
-                    menuPosition={'fixed'}
-                    placeholder={'Seleccione la unidad de medida'}
-                    value={field.value}
-                    onChange={async (unidadMedida: SingleValue<SinUnidadMedidaProps>) => {
-                      field.onChange(unidadMedida)
-                      setValue(
-                        'variantes',
-                        variantesWatch.map((vs) => ({
-                          ...vs,
-                          unidadMedida,
-                        })),
-                      )
-                    }}
-                    options={unidadesMedida}
-                    getOptionValue={(item) => item.codigoClasificador}
-                    getOptionLabel={(item) =>
-                      `${item.codigoClasificador} - ${item.descripcion}`
-                    }
-                  />
-                  <FormHelperText>
-                    {errors.variante?.unidadMedida?.message}
-                  </FormHelperText>
-                </FormControl>
+                  placeholder={'Seleccione la unidad de medida'}
+                  value={field.value}
+                  onChange={async (unidadMedida: SingleValue<SinUnidadMedidaProps>) => {
+                    field.onChange(unidadMedida)
+                    setValue(
+                      'variantes',
+                      variantesWatch.map((vs) => ({
+                        ...vs,
+                        unidadMedida,
+                      })),
+                    )
+                  }}
+                  options={unidadesMedida}
+                  getOptionValue={(item) => item.codigoClasificador}
+                  getOptionLabel={(item) =>
+                    `${item.codigoClasificador} - ${item.descripcion}`
+                  }
+                />
               )}
             />
           )}
@@ -116,11 +106,9 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
               <FormControl fullWidth error={Boolean(errors.variante?.precio)} required>
                 <InputLabel>Precio</InputLabel>
                 <OutlinedInput
-                  {...field}
                   label={'Precio'}
                   size={'small'}
                   value={field.value}
-                  onFocus={handleSelect}
                   onChange={field.onChange}
                   onBlur={(e) => {
                     setValue(
@@ -132,7 +120,6 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                     )
                   }}
                   inputComponent={NumeroFormat as any}
-                  inputProps={{}}
                   error={Boolean(errors.variante?.precio)}
                 />
                 <FormHelperText>{errors.variante?.precio?.message || ''}</FormHelperText>

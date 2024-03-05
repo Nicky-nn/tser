@@ -3,7 +3,7 @@ import { lazy } from 'react'
 import { authRoles } from '../../../../auth/authRoles'
 import Loadable from '../../../base/components/Template/Loadable/Loadable'
 
-const Analytics = Loadable(lazy(() => import('./Home')))
+const Home = Loadable(lazy(() => import('./Home')))
 
 export const homeRoutesMap = {
   home: {
@@ -18,7 +18,7 @@ export const homeRoutesMap = {
 const homeRoutes = [
   {
     path: homeRoutesMap.home.path,
-    element: <Analytics />,
+    element: <Home />,
     auth: authRoles.admin,
   },
 ]

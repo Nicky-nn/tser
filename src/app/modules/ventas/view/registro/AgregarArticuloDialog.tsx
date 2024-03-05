@@ -14,9 +14,10 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import Select from 'react-select'
 
 import AlertError from '../../../../base/components/Alert/AlertError'
+import FormSelect from '../../../../base/components/Form/FormSelect'
 import { NumeroMask } from '../../../../base/components/Mask/NumeroMask'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../base/components/MySelect/ReactSelect'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
 import useAuth from '../../../../base/hooks/useAuth'
 import {
   genRandomString,
@@ -163,34 +164,32 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
           {!isError ? (
             <Grid container spacing={2.5}>
               <Grid item lg={12} md={12} xs={12}>
-                <FormControl fullWidth component={'div'}>
-                  <MyInputLabel shrink>Tipo de Producto Homologado</MyInputLabel>
-                  <Select<SinProductoServicioProps>
-                    styles={reactSelectStyles}
-                    menuPosition={'fixed'}
-                    name="productoServicio"
-                    placeholder={'Seleccione producto para homologación'}
-                    value={genReplaceEmpty(inputForm.sinProductoServicio, null)}
-                    onChange={(resp) => {
-                      setInputForm({
-                        ...inputForm,
-                        sinProductoServicio: resp || ({} as SinProductoServicioProps),
-                      })
-                    }}
-                    options={productosServicios}
-                    getOptionValue={(ps) => ps.codigoProducto}
-                    getOptionLabel={(ps) =>
-                      `${ps.codigoProducto} - ${ps.descripcionProducto}`
-                    }
-                  />
-                </FormControl>
+                <FormSelect<SinProductoServicioProps>
+                  formHelperText={'Seleccione producto para homologación'}
+                  inputLabel={'Producto para homologación'}
+                  error={false}
+                  name={'ProductoServicio1'}
+                  placeholder={'Seleccione producto para homologación'}
+                  value={genReplaceEmpty(inputForm.sinProductoServicio, null)}
+                  onChange={(resp) => {
+                    setInputForm({
+                      ...inputForm,
+                      sinProductoServicio: resp || ({} as SinProductoServicioProps),
+                    })
+                  }}
+                  options={productosServicios}
+                  getOptionValue={(ps) => ps.codigoProducto}
+                  getOptionLabel={(ps) =>
+                    `${ps.codigoProducto} - ${ps.descripcionProducto}`
+                  }
+                />
               </Grid>
 
               <Grid item lg={12} md={12} xs={12}>
                 <FormControl fullWidth component={'div'}>
                   <MyInputLabel shrink>Unidad Medida</MyInputLabel>
                   <Select<SinUnidadMedidaProps>
-                    styles={reactSelectStyles}
+                    styles={reactSelectStyle(false)}
                     menuPosition={'fixed'}
                     name="unidadMedida"
                     placeholder={'Seleccione la unidad de medida'}

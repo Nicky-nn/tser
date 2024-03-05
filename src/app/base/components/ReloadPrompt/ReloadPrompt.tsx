@@ -53,7 +53,7 @@ const ReloadPrompt: FC<any> = () => {
               size="small"
               onClick={handleClose}
             >
-              Recargar
+              Actualizar
             </Button>
           </Fragment>
         }

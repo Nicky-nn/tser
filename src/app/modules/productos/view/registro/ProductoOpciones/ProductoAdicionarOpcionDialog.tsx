@@ -12,8 +12,7 @@ import { OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import { MyInputLabel } from '../../../../../base/components/MyInputs/MyInputLabel'
-import { reactSelectStyles } from '../../../../../base/components/MySelect/ReactSelect'
-import { SelectInputLabel } from '../../../../../base/components/ReactSelect/SelectInputLabel'
+import { reactSelectStyle } from '../../../../../base/components/MySelect/ReactSelect'
 import {
   genRandomString,
   genReplaceEmpty,
@@ -41,6 +40,11 @@ interface SelectOption {
   value: string
 }
 
+/**
+ * @description Dialogo para adicionar opciones de producto
+ * @param props
+ * @constructor
+ */
 const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
   const { onClose, open, opcion, ...other } = props
   const [tipo, setTipo] = useState<OnChangeValue<SelectOption, false>>(null)
@@ -102,7 +106,7 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
               <FormControl fullWidth>
                 <MyInputLabel shrink>Seleccione nombre de opción</MyInputLabel>
                 <CreatableSelect
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(false)}
                   menuPosition={'fixed'}
                   onChange={handleChangeTipo}
                   defaultValue={undefined}
@@ -117,7 +121,7 @@ const ProductoAdicionarOpcionDialog: FunctionComponent<Props> = (props) => {
                 <MyInputLabel shrink>Registre los valores de la opción</MyInputLabel>
                 <CreatableSelect
                   components={components}
-                  styles={reactSelectStyles}
+                  styles={reactSelectStyle(false)}
                   menuPosition={'fixed'}
                   isClearable
                   isMulti
