@@ -16,6 +16,7 @@ export interface LayoutSettingsProps {
 
 /**
  * @description propiedades del layout 1
+ * las funcionalidades de este layout se pasaron a settings.ts
  */
 const Layout1Settings: LayoutSettingsProps = {
   leftSidebar: {

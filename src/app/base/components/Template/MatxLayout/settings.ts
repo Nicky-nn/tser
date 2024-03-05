@@ -22,35 +22,9 @@ export interface MatxLayoutSettingsProps {
   }
 }
 
-const isiTheme: ThemeTypeColorsProps =
-  (import.meta.env.ISI_THEME as ThemeTypeColorsProps) || ''
-let activeTheme: ThemeTypeColorsProps = 'default'
-let color2: ThemeTypeColorsProps = 'defaultDark'
-
-if (isiTheme === 'green') {
-  activeTheme = 'green'
-  color2 = 'greenDark'
-}
-
-if (isiTheme === 'blue') {
-  activeTheme = 'blue'
-  color2 = 'blueDark'
-}
-
-if (isiTheme === 'blue1') {
-  activeTheme = 'blue1'
-  color2 = 'blueDark1'
-}
-
-if (isiTheme === 'purple') {
-  activeTheme = 'purple'
-  color2 = 'purpleDark'
-}
-
-if (isiTheme === 'indigo') {
-  activeTheme = 'indigo'
-  color2 = 'indigoDark'
-}
+const activeTheme: ThemeTypeColorsProps = (import.meta.env.ISI_THEME ||
+  'default') as ThemeTypeColorsProps
+const activeThemeDark = `${activeTheme}Dark` as ThemeTypeColorsProps
 
 // UPDATE BELOW CODE
 // DOC http://demos.ui-lib.com/matx-react-doc/layout.html
@@ -65,7 +39,7 @@ export const MatxLayoutSettings: MatxLayoutSettingsProps = {
     leftSidebar: {
       show: true,
       mode: 'full', // full, close, compact, mobile,
-      theme: color2, // View all valid theme colors inside MatxTheme/themeColors.js
+      theme: activeThemeDark, // View all valid theme colors inside MatxTheme/themeColors.js
       bgImgURL: '/assets/images/sidebar/sidebar-bg-dark.jpg',
     },
     topbar: {
@@ -78,12 +52,12 @@ export const MatxLayoutSettings: MatxLayoutSettingsProps = {
   secondarySidebar: {
     show: false,
     open: false,
-    theme: color2, // View all valid theme colors inside MatxTheme/themeColors.js
+    theme: activeTheme, // View all valid theme colors inside MatxTheme/themeColors.js
   },
   // Footer options
   footer: {
     show: true,
     fixed: false,
-    theme: activeTheme, // View all valid theme colors inside MatxTheme/themeColors.js
+    theme: activeThemeDark, // View all valid theme colors inside MatxTheme/themeColors.js
   },
 }

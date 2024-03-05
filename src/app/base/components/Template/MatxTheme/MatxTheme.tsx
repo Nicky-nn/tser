@@ -15,8 +15,7 @@ type MatxThemeProps = {
  */
 const MatxTheme: FC<MatxThemeProps> = ({ children }: MatxThemeProps) => {
   const { settings } = useSettings()
-  // @ts-ignore
-  let activeTheme: CreateMatxThemesProps = { ...settings.themes[settings.activeTheme] }
+  let activeTheme = { ...settings.themes[settings.activeTheme] }
   return (
     <ThemeProvider theme={activeTheme}>
       <CssBaseline />

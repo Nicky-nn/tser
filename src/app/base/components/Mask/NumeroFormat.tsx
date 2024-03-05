@@ -36,9 +36,6 @@ export const NumeroFormat = forwardRef<NumericFormatProps, CustomProps>(
             },
           })
         }}
-        onBlur={(values) => {
-          console.log(values)
-        }}
         thousandSeparator={' '}
         decimalScale={decimalScale || 2}
         fixedDecimalScale={false}

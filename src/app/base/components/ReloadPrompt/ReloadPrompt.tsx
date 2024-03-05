@@ -44,7 +44,7 @@ const ReloadPrompt: FC<any> = () => {
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         open={open}
-        message="Nueva versión disponible, haga clic en el botón recargar para actualizar el sistema."
+        message="Nueva versión disponible, haga clic en el botón actualizar para recargar el sistema."
         action={
           <Fragment>
             <Button
@@ -53,7 +53,7 @@ const ReloadPrompt: FC<any> = () => {
               size="small"
               onClick={handleClose}
             >
-              Recargar
+              Actualizar
             </Button>
           </Fragment>
         }

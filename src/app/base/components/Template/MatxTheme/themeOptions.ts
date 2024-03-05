@@ -1,18 +1,12 @@
+import { ThemeOptions } from '@mui/material'
 import { red } from '@mui/material/colors'
 
 import { components } from './components'
 
-export interface ThemeOptionsProps {
-  typography: {
-    fontSize: number | string
-    body1: {
-      fontSize: number | string
-    }
-  }
+export interface ThemeOptionsProps extends ThemeOptions {
   status: {
     danger: any
   }
-  components: any
 }
 
 const themeOptions: ThemeOptionsProps = {
