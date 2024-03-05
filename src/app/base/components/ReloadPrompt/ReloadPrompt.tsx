@@ -33,9 +33,9 @@ const ReloadPrompt: FC<any> = () => {
   })
 
   // Cuando se clickea en el botón de actualizar
-  const handleClose = async () => {
+  const handleClose = () => {
     setOpen(false)
-    await updateSW(true)
+    updateSW(true).then(() => window.location.reload())
     // registerSW({ immediate: true })
   }
 
@@ -44,7 +44,7 @@ const ReloadPrompt: FC<any> = () => {
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         open={open}
-        message="Nueva versión disponible, haga clic en el botón recargar para actualizar el sistema."
+        message="Nueva versión disponible, haga clic en el botón actualizar para recargar el sistema."
         action={
           <Fragment>
             <Button

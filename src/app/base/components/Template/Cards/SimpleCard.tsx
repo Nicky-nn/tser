@@ -1,15 +1,5 @@
-import { ArrowRight } from '@mui/icons-material'
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  CSSObject,
-  styled,
-  SxProps,
-  Theme,
-} from '@mui/material'
-import { CSSProperties, FC, PropsWithChildren, ReactNode } from 'react'
+import { Card, CardContent, CardHeader, CardProps, styled } from '@mui/material'
+import { FC, ReactNode } from 'react'
 
 import { H4 } from '../Typography'
 
@@ -21,13 +11,13 @@ const CardRoot = styled(Card)(({ theme }) => ({
     paddingLeft: 1,
     paddingRight: 1,
     paddingTop: 1,
-    paddingBottom: 25,
+    paddingBottom: 15,
   },
   '& .MuiCardContent-root': {
     paddingLeft: 1.5,
     paddingRight: 1,
     paddingTop: 1,
-    paddingBottom: 1,
+    paddingBottom: 10,
   },
   '& .MuiCardHeader-avatar': {
     marginRight: '8px',
@@ -37,41 +27,25 @@ const CardRoot = styled(Card)(({ theme }) => ({
   '& .MuiAvatar-root': {
     backgroundColor: theme.palette.primary.light,
   },
-})) as typeof Card
+}))
 
-interface CardTitleProps {
-  subtitle?: string
-}
-
-const CardTitle: FC<PropsWithChildren<CardTitleProps>> = styled('div')(
-  ({ subtitle }: CardTitleProps): CSSObject => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    marginBottom: !subtitle ? '22px' : '0px',
-  }),
-)
-
-export interface SimpleCardProps {
+export interface SimpleCardProps extends CardProps {
   title?: string
   subtitle?: string
   childIcon?: ReactNode
   children: ReactNode
-  style?: CSSProperties
-  sx?: SxProps<Theme> | undefined
 }
 
-const SimpleCard: FC<SimpleCardProps> = ({
-  children,
-  title,
-  subtitle,
-  childIcon,
-  style,
-  sx,
-}: SimpleCardProps) => {
-  const Nstyle: CSSProperties = { ...style }
-  const Nsx: SxProps<Theme> | undefined = { ...sx }
+/**
+ * SimpleCard para box con titulo y contenido
+ * @param props
+ * @constructor
+ */
+const SimpleCard: FC<SimpleCardProps> = (props: SimpleCardProps) => {
+  const { children, title, subtitle, childIcon, ...others } = props
+
   return (
-    <CardRoot elevation={6}>
+    <CardRoot variant={'outlined'} {...others}>
       {title && (
         <CardHeader
           avatar={title && childIcon && childIcon}

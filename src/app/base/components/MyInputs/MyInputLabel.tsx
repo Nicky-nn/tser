@@ -7,7 +7,7 @@ interface Props extends InputLabelProps {}
  */
 export const MyInputLabel = styled((props: Props) => {
   const { ...other } = props
-  return <InputLabel shrink={true} {...other} />
+  return <InputLabel color={'secondary'} shrink={true} {...other} />
 })(({ theme }) => ({
   '&.MuiInputLabel-shrink': {
     background: `linear-gradient(180deg, rgba(255,0,0,0) 25%, rgba(255,0,0,0) 25% 50%, ${theme.palette.background.default} 50% 75%, rgba(255,0,0,0) 75%)`,

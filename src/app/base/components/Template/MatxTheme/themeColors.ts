@@ -8,7 +8,7 @@ export type ThemeTypeColorsProps =
   | 'blue'
   | 'blueDark'
   | 'blue1'
-  | 'blueDark1'
+  | 'blue1Dark'
   | 'green'
   | 'greenDark'
 
@@ -78,7 +78,7 @@ export interface CreateMatxThemesProps {
   blue: ThemeColorsCompleteProps
   blueDark: ThemeColorsCompleteProps
   blue1: ThemeColorsCompleteProps
-  blueDark1: ThemeColorsCompleteProps
+  blue1Dark: ThemeColorsCompleteProps
   green: ThemeColorsCompleteProps
   greenDark: ThemeColorsCompleteProps
   default: ThemeColorsCompleteProps
@@ -100,7 +100,7 @@ interface ThemeColorsProps {
   blue: ThemeColorsSingleProps
   blueDark: ThemeColorsSingleProps
   blue1: ThemeColorsSingleProps
-  blueDark1: ThemeColorsSingleProps
+  blue1Dark: ThemeColorsSingleProps
   green: ThemeColorsSingleProps
   greenDark: ThemeColorsSingleProps
   default: ThemeColorsSingleProps
@@ -108,167 +108,6 @@ interface ThemeColorsProps {
 }
 
 export const themeColors: ThemeColorsProps = {
-  indigo: {
-    palette: {
-      mode: 'light',
-      primary: {
-        main: '#7052ff',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#ff7360',
-        dark: '#f55444',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#ffffff',
-        default: '#fafafa',
-      },
-      text: textLight,
-      error: errorColor,
-    },
-  },
-  indigoDark: {
-    palette: {
-      mode: 'dark',
-      primary: {
-        main: '#1c4c96',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#efb810',
-        contrastText: textLight.primary,
-      },
-      background: {
-        paper: '#222A45',
-        default: '#1a2038',
-      },
-      text: textDark,
-      error: errorColor,
-    },
-  },
-  purple: {
-    palette: {
-      mode: 'light',
-      primary: {
-        main: '#7052ff',
-        contrastText: '#ffffff',
-      },
-      secondary: {
-        main: '#ff9e43',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#fff',
-        default: '#fafafa',
-      },
-      text: textLight,
-      error: errorColor,
-    },
-  },
-  purpleDark: {
-    palette: {
-      mode: 'dark',
-      primary: {
-        main: '#7052ff',
-        contrastText: '#ffffff',
-      },
-      secondary: {
-        main: '#ff9e43',
-        contrastText: textLight.primary,
-      },
-      background: {
-        paper: '#222A45',
-        default: '#1a2038',
-      },
-      text: textDark,
-      error: errorColor,
-    },
-  },
-  blue: {
-    palette: {
-      mode: 'light',
-      primary: {
-        main: '#1976d2',
-        dark: '#1564c0',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#d27619',
-        dark: '#cb6816',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#fff',
-        default: '#fafafa',
-      },
-      text: textLight,
-      error: errorColor,
-    },
-  },
-  blueDark: {
-    palette: {
-      mode: 'dark',
-      primary: {
-        main: '#1976d2',
-        dark: '#1564c0',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#d27619',
-        dark: '#cb6816',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#222A45',
-        default: '#1a2038',
-      },
-      text: textDark,
-      error: errorColor,
-    },
-  },
-  blue1: {
-    palette: {
-      mode: 'light',
-      primary: {
-        main: '#00539A',
-        dark: '#003A6B',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#E15200',
-        dark: '#9D3900',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#fff',
-        default: '#fafafa',
-      },
-      text: textLight,
-      error: errorColor,
-    },
-  },
-  blueDark1: {
-    palette: {
-      mode: 'dark',
-      primary: {
-        main: '#00539A',
-        dark: '#003A6B',
-        contrastText: textDark.primary,
-      },
-      secondary: {
-        main: '#E15200',
-        dark: '#9D3900',
-        contrastText: textDark.primary,
-      },
-      background: {
-        paper: '#222A45',
-        default: '#1a2038',
-      },
-      text: textDark,
-      error: errorColor,
-    },
-  },
   green: {
     palette: {
       mode: 'light',
@@ -308,23 +147,181 @@ export const themeColors: ThemeColorsProps = {
         contrastText: textDark.primary,
       },
       background: {
-        paper: '#222A45',
+        paper: '#00625D',
         default: '#1a2038',
       },
       error: errorColor,
       text: textDark,
     },
   },
-  default: {
+  indigo: {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#1c4c96',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#ff7360',
+        dark: '#f55444',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#ffffff',
+        default: '#fafafa',
+      },
+      text: textLight,
+      error: errorColor,
+    },
+  },
+  indigoDark: {
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#1c4c96',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#efb810',
+        contrastText: textLight.primary,
+      },
+      background: {
+        paper: '#1c4c96',
+        default: '#1a2038',
+      },
+      text: textDark,
+      error: errorColor,
+    },
+  },
+  purple: {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#4745b6',
+        contrastText: textLight.primary,
+      },
+      secondary: {
+        main: '#ff8000',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#fff',
+        default: '#fafafa',
+      },
+      text: textLight,
+      error: errorColor,
+    },
+  },
+  purpleDark: {
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#4745b6',
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#ff8000',
+        contrastText: textLight.primary,
+      },
+      background: {
+        paper: '#4745b6',
+        default: '#1a2038',
+      },
+      text: textDark,
+      error: errorColor,
+    },
+  },
+  blue: {
     palette: {
       mode: 'light',
       primary: {
         main: '#1976d2',
-        dark: '#1565c0',
         contrastText: textDark.primary,
       },
       secondary: {
-        main: '#7b1fa2',
+        main: '#d27619',
+        dark: '#cb6816',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#fff',
+        default: '#fafafa',
+      },
+      text: textLight,
+      error: errorColor,
+    },
+  },
+  blueDark: {
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#1976d2',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#d27619',
+        dark: '#cb6816',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#1976d2',
+        default: '#1a2038',
+      },
+      text: textDark,
+      error: errorColor,
+    },
+  },
+  blue1: {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#00539A',
+        dark: '#003A6B',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#E15200',
+        dark: '#9D3900',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#fff',
+        default: '#fafafa',
+      },
+      text: textLight,
+      error: errorColor,
+    },
+  },
+  blue1Dark: {
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#00539A',
+        dark: '#003A6B',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#E15200',
+        dark: '#9D3900',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#00539A',
+        default: '#1a2038',
+      },
+      text: textDark,
+      error: errorColor,
+    },
+  },
+  default: {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#363e5d',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#df9c16',
         contrastText: textDark.primary,
       },
       background: {
@@ -339,11 +336,11 @@ export const themeColors: ThemeColorsProps = {
     palette: {
       mode: 'dark',
       primary: {
-        main: '#1E1E1E',
+        main: '#363e5d',
         contrastText: textDark.primary,
       },
       secondary: {
-        main: '#9c27b0',
+        main: '#df9c16',
         contrastText: textDark.primary,
       },
       background: {

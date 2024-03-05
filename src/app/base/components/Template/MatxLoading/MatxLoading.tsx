@@ -1,4 +1,4 @@
-import { Box, CircularProgress, styled } from '@mui/material'
+import { Box, CircularProgress, styled, useTheme } from '@mui/material'
 
 const StyledLoading = styled('div')(() => ({
   width: '100%',
@@ -14,19 +14,23 @@ const StyledLoading = styled('div')(() => ({
     position: 'absolute',
     left: -7,
     right: 0,
-    top: 'calc(50% - 25px)',
+    top: 'calc(55% - 25px)',
+  },
+  '& .MuiBox-root': {
+    position: 'absolute',
+    top: '45%',
   },
 }))
 
-const Loading = () => {
+const MatxLoading = () => {
   return (
     <StyledLoading>
-      <Box position="relative">
-        <img src="/assets/images/logo-circle.svg" alt="" />
-        <CircularProgress className="circleProgress" />
+      <Box>
+        <img src="/assets/images/logo-circle.svg" alt="Cargando..." />
+        <CircularProgress className="circleProgress" color={'primary'} />
       </Box>
     </StyledLoading>
   )
 }
 
-export default Loading
+export default MatxLoading

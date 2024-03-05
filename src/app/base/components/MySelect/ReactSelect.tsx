@@ -37,11 +37,11 @@ EJEMPLO
 
 /**
  * @description cuando enviar parametros para cambiar el color del select
- * @param error = generalmente usado para form, cambia a error si se envia true
+ * @param error
  */
 export const reactSelectStyle = (
   error: boolean = false,
-): StylesConfig<any, any, any> => ({
+): StylesConfig<any> | undefined => ({
   menuPortal: (base) => ({
     ...base,
     zIndex: 9999,
@@ -60,3 +60,18 @@ export const reactSelectStyle = (
     },
   }),
 })
+
+/**
+ * @deprecated
+ * Custom error para react-select
+ */
+export const reactSelectStyles: StylesConfig<any> | undefined = {
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: 99999,
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: '#a4a4a4',
+  }),
+}

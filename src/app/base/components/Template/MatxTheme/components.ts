@@ -1,6 +1,16 @@
+import { Components } from '@mui/material/styles/components'
+import { Theme } from '@mui/material/styles/createTheme'
+
 import { themeShadows } from './themeColors'
 
-export const components = {
+interface ComponentsProps extends Components<Omit<Theme, 'components'>> {
+  MUIDataTableSelectCell: any
+  MUIDataTableHeadCell: any
+  MUIDataTableBodyCell: any
+  MuiExpansionPanel: any
+}
+
+export const components: ComponentsProps = {
   MuiTable: {
     styleOverrides: {
       root: {

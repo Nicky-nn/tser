@@ -1,13 +1,27 @@
-import { PaperProps, TextFieldProps, Theme } from '@mui/material'
+import {
+  PaginationProps,
+  PaperProps,
+  SelectProps,
+  TextFieldProps,
+  Theme,
+} from '@mui/material'
 import { AlertProps } from '@mui/material/Alert'
 import { TableProps } from '@mui/material/Table'
 import {
+  MaterialReactTable,
   MRT_DisplayColumnDef,
   MRT_DisplayColumnIds,
   MRT_RowData,
+  MRT_TableInstance,
   MRT_TableOptions,
+  MRT_Theme,
 } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import React from 'react'
+
+import MuiRenderTopToolbarCustomActions from '../../base/components/MuiTable/MuiRenderTopToolbarCustomActions'
+import { FirmaDigitalProp } from '../../modules/firmaDigital/interfaces/firmaDigital'
+import FirmaDigitalMenu from '../../modules/firmaDigital/view/listado/FirmaDigitalMenu'
 
 export const muiTableApiEstado = ['ANULADO', 'VALIDADA', 'ELABORADO', 'PENDIENTE']
 
@@ -189,6 +203,7 @@ export const MuiTableBasicOptionsProps: MRT_TableOptions<any> = {
   enableFullScreenToggle: false,
   enableFilters: false,
   enableRowActions: false,
+  enableBottomToolbar: false,
   muiTableProps: MuiTableCompactProps,
   muiTableBodyRowProps: { hover: false },
   mrtTheme: (theme) => ({

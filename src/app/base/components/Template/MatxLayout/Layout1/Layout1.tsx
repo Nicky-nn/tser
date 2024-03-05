@@ -1,4 +1,5 @@
 import { Box, styled, ThemeProvider, useMediaQuery, useTheme } from '@mui/material'
+import { BoxProps } from '@mui/material/Box'
 import React, { useEffect, useRef } from 'react'
 import Scrollbar from 'react-perfect-scrollbar'
 import { Outlet } from 'react-router-dom'
@@ -25,6 +26,7 @@ const ContentBox = styled(Box)(() => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
 }))
+
 const StyledScrollBar = styled(Scrollbar)(() => ({
   height: '100%',
   position: 'relative',
@@ -33,25 +35,23 @@ const StyledScrollBar = styled(Scrollbar)(() => ({
   flexDirection: 'column',
 }))
 
-type LayoutContainerProps = {
+interface LayoutContainerProps extends BoxProps {
   width: string | number
-  secondary_sidebar: any
+  open: boolean
 }
 
-const LayoutContainer = styled(Box)(
-  ({ width, secondary_sidebar }: LayoutContainerProps) => ({
-    height: '100vh',
-    display: 'flex',
-    flexGrow: '1',
-    flexDirection: 'column',
-    verticalAlign: 'top',
-    marginLeft: width,
-    position: 'relative',
-    overflow: 'hidden',
-    transition: 'all 0.3s ease',
-    marginRight: secondary_sidebar.open ? 50 : 0,
-  }),
-)
+const LayoutContainer = styled(Box)(({ width, open }: LayoutContainerProps) => ({
+  height: '100vh',
+  display: 'flex',
+  flexGrow: '1',
+  flexDirection: 'column',
+  verticalAlign: 'top',
+  marginLeft: width,
+  position: 'relative',
+  overflow: 'hidden',
+  transition: 'all 0.3s ease',
+  marginRight: open ? 50 : 0,
+}))
 
 const Layout1 = () => {
   const { settings, updateSettings } = useSettings()
@@ -99,7 +99,7 @@ const Layout1 = () => {
         </SidenavTheme>
       )}
 
-      <LayoutContainer width={sidenavWidth} secondary_sidebar={secondarySidebar}>
+      <LayoutContainer width={sidenavWidth} open={secondarySidebar.open}>
         {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
           <>
             <ThemeProvider theme={topbarTheme}>

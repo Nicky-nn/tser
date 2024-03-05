@@ -7,12 +7,11 @@ const pwaOptions = (env: any): Partial<VitePWAOptions> => ({
   registerType: `${env.APP_ENV}` === 'local' ? 'autoUpdate' : 'prompt',
   includeAssets: [`${env.ISI_FAVICON}`],
   workbox: {
-    globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg}'],
-    mode: 'minimal',
+    globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp}'],
   },
   manifest: {
-    name: `Facturación compra venta`,
-    short_name: 'FCV',
+    name: `Módulo de Administración`,
+    short_name: 'ADM',
     theme_color: '#ffffff',
     display: 'minimal-ui',
     icons: [

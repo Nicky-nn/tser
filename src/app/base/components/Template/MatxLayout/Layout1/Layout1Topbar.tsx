@@ -149,13 +149,13 @@ const Layout1Topbar: FC<any> = () => {
           </StyledIconButton>
           <IconBox>
             <StyledIconButton>
-              <Tooltip title="Facturación Compra Venta">
+              <Tooltip title="Módulo de Administración">
                 <Chip
                   size={'small'}
                   icon={<ShoppingBag />}
                   color={'primary'}
                   variant={'outlined'}
-                  label={'FCV'}
+                  label={'ADM'}
                 />
               </Tooltip>
             </StyledIconButton>
