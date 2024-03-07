@@ -1,6 +1,7 @@
 import { ImportExport } from '@mui/icons-material'
-import { Alert, LoadingButton } from '@mui/lab'
+import { LoadingButton } from '@mui/lab'
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -8,8 +9,6 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material'
-import { setDefaultOptions } from 'date-fns'
-import { es } from 'date-fns/locale'
 import dayjs from 'dayjs'
 import exportFromJSON from 'export-from-json'
 import { convert } from 'html-to-text'
@@ -21,8 +20,6 @@ import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { clearAllLineBreak } from '../../../../utils/helper'
 import { notDanger } from '../../../../utils/notification'
 import { fetchFacturaListado } from '../../api/factura.listado.api'
-
-setDefaultOptions({ locale: es })
 
 interface OwnProps {
   id: string
