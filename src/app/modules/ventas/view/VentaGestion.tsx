@@ -137,7 +137,6 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
 ]
 
 const VentaGestion: FC<any> = () => {
-  const theme = useTheme()
   const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
   const [factura, setFactura] = useState<FacturaProps | null>(null)
   const [openExport, setOpenExport] = useState(false)
