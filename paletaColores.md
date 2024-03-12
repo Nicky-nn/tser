@@ -1,6 +1,6 @@
 # Customización de MARCA, THEMA Y PALETA DE COLORES PARA LOS SISTEMAS ISI.INVOICE
 
-Donde afectan los themas o colores?
+Donde afectan los themas o colores de la plantilla?
 
 en la siguiente imagen se visualiza el cambio y modificacion de colores y marca empresarial
 
