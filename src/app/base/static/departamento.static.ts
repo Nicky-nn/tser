@@ -1,4 +1,9 @@
-import { DepartamentoProps } from '../../modules/sucursal/interfaces/sucursal'
+interface DepartamentoProps {
+  codigo: number
+  codigoPais: number
+  departamento: string
+  sigla: string
+}
 
 /**
  * @description Lista de departamento por PAIS
