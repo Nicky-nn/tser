@@ -1,10 +1,14 @@
+/**
+ * Tipado de los datos parametricos que contengan valores de codigoClasificador y descripcion
+ */
 export interface ClasificadorProps {
-  codigoClasificador: string
+  codigoClasificador: number
   descripcion: string
 }
 
 /**
- * Estados suscritos para el ciclo de vida del registro
+ * Estados globales de los registros
+ * Se recomiendo crear su propio apiestado para cada uno de los módulos
  */
 export const apiEstado = {
   elaborado: 'ELABORADO',
@@ -19,14 +23,23 @@ export const apiEstado = {
   eliminado: 'ELIMINADO',
 }
 
+/**
+ * Acciones para el formulario, se usa para reutilización de formulacios
+ */
 export type ActionFormProps = 'REGISTER' | 'UPDATE' | 'DELETE'
 
+/**
+ * Tipado de acciones para la implementación de formularios
+ */
 export const actionForm: Record<ActionFormProps, ActionFormProps> = {
   REGISTER: 'REGISTER',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
 }
 
+/**
+ * Auditoria de los registros
+ */
 export interface AuditoriaProps {
   usucre: string
   createdAt: string
@@ -34,6 +47,9 @@ export interface AuditoriaProps {
   updatedAt: string
 }
 
+/**
+ * Información de paginación usada en las apis
+ */
 export interface PageInfoProps {
   hasNextPage: boolean
   hasPrevPage: boolean
@@ -43,6 +59,9 @@ export interface PageInfoProps {
   totalPages: number
 }
 
+/**
+ * Información de paginación por defecto
+ */
 export const PAGE_INFO_DEFAULT: PageInfoProps = {
   hasNextPage: false,
   hasPrevPage: false,
@@ -52,6 +71,9 @@ export const PAGE_INFO_DEFAULT: PageInfoProps = {
   totalPages: 1,
 }
 
+/**
+ * Argumentos de paginación para las apis
+ */
 export interface PageProps {
   limit: number
   page: number
@@ -59,17 +81,14 @@ export interface PageProps {
   query?: string
 }
 
+/**
+ * Tipado para las paginaciones
+ */
 export interface PageInputProps {
   limit: number
   page: number
   reverse: boolean
   query?: string
-}
-
-export interface PlantillaDetalleExtra {
-  title: string
-  description: string
-  content: string
 }
 
 export const PAGE_DEFAULT: PageInputProps = {
@@ -79,6 +98,9 @@ export const PAGE_DEFAULT: PageInputProps = {
   query: '',
 }
 
+/**
+ * Tipado de entidad para la implementación de formularios
+ */
 export interface EntidadInputProps {
   codigoSucursal: number
   codigoPuntoVenta: number
