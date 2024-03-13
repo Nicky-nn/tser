@@ -7,7 +7,7 @@ interface OwnProps {
   id: string
   keepMounted: boolean
   open: boolean
-  onClose: (value?: any) => void
+  onClose: (value?: boolean) => void
 }
 
 type Props = OwnProps
@@ -21,8 +21,8 @@ const CuentaRestriccionDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '100%', maxHeight: '90vh' } }}
-        maxWidth="lg"
+        sx={{ '& .MuiDialog-paper': { width: '90%', maxHeight: '85vh' } }}
+        maxWidth="md"
         open={open}
         {...other}
       >
