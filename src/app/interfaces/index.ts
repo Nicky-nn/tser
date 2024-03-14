@@ -91,6 +91,12 @@ export interface PageInputProps {
   query?: string
 }
 
+export interface PlantillaDetalleExtra {
+  title: string
+  description: string
+  content: string
+}
+
 export const PAGE_DEFAULT: PageInputProps = {
   limit: 10,
   page: 0,
