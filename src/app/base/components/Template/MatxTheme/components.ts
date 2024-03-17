@@ -148,7 +148,7 @@ export const components: ComponentsProps = {
         transform: 'translate(15px, -11px) scale(0.90) !important',
       },
       outlined: {
-        transform: 'translate(15px, 9px) scale(1)',
+        // transform: 'translate(15px, 9px) scale(1)',
         backgroundColor: 'none',
       },
     },
