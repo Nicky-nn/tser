@@ -1,3 +1,10 @@
+/**
+ * Convierte un numero en su equivalente con comas decimales 2
+ * se usa generalmente en validadores como yup
+ * @param x
+ * @param param1
+ * @returns
+ */
 export const numberWithCommas = (x: number | undefined, { userTyping, input }: any) => {
   if (userTyping) {
     return input
@@ -9,14 +16,15 @@ export const numberWithCommas = (x: number | undefined, { userTyping, input }: a
   return Number(x).toLocaleString('en', options)
 }
 
-export const numberWithCommas2 = (
+/**
+ * @description Convierte un numero en su equivalente con comas decimales
+ * @param value
+ * @param maximumFractionDigits
+ */
+export const numberWithCommasPlaces = (
   value: any | undefined,
-  { userTyping, input }: any,
   maximumFractionDigits = 2,
 ) => {
-  if (userTyping) {
-    return input
-  }
   const options = {
     minimumFractionDigits: maximumFractionDigits,
     maximumFractionDigits,
