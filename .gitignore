@@ -25,3 +25,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Para la plantilla
+.env
+.env.production
+.eslintignore
+index.html
+package.json
+vite.config.mts
+src/main.tsx
+src/vite-env.d.ts
+src/app/navigations.tsx
+src/app/base/components/Template/MatxLayout/Layout1/Layout1.tsx
+src/app/base/components/Template/MatxLayout/Layout1/Layout1Topbar.tsx
+src/app/modules/home/Home.tsx
+src/app/modules/home/HomeRoutes.tsx
+src/app/routes/routes.tsx
+
