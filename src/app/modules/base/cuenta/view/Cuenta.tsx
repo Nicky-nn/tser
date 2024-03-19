@@ -1,4 +1,4 @@
-import { Cached, HomeWork, Key, Person, Token } from '@mui/icons-material'
+import { Cached, HomeWork, Key, Person, PictureAsPdf, Token } from '@mui/icons-material'
 import {
   Box,
   Grid,
@@ -17,6 +17,7 @@ import CuentaPerfil from './Perfil/CuentaPerfil'
 import CuentaRecargarCache from './Perfil/CuentaRecargarCache'
 import CuentaSincronizacion from './Perfil/CuentaSincronizacion'
 import CuentaSucursal from './Perfil/CuentaSucursal'
+import CuentaTipoRepresentacionGrafica from './Perfil/CuentaTipoRepresentacionGrafica'
 
 interface OwnProps {}
 
@@ -92,6 +93,16 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                     </ListItemIcon>
                     <ListItemText primary="Recargar Cache" />
                   </ListItemButton>
+
+                  <ListItemButton
+                    selected={selectedIndex === 5}
+                    onClick={(event) => handleListItemClick(event, 5)}
+                  >
+                    <ListItemIcon>
+                      <PictureAsPdf />
+                    </ListItemIcon>
+                    <ListItemText primary="Tipo Representación Gráfica" />
+                  </ListItemButton>
                 </List>
               </Box>
             </SimpleCard>
@@ -102,6 +113,7 @@ const Cuenta: FunctionComponent<Props> = (props) => {
             {selectedIndex === 2 && <CuentaSucursal />}
             {selectedIndex === 3 && <CuentaSincronizacion />}
             {selectedIndex === 4 && <CuentaRecargarCache />}
+            {selectedIndex === 5 && <CuentaTipoRepresentacionGrafica />}
           </Grid>
         </Grid>
         <Box py="12px" />
