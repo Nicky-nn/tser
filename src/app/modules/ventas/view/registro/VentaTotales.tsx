@@ -136,7 +136,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     if (validator) {
       await swalAsyncConfirmDialog({
         text: '¿Confirma que desea emitir el documento fiscal?',
-        preConfirm: () => {
+        preConfirm: async () => {
           return fetchFacturaCreate(inputFactura).catch((err) => {
             swalException(err)
             return false

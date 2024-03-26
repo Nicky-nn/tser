@@ -162,6 +162,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
         rowCount={rowCount}
+        enableRowSelection={true}
         state={{
           isLoading,
           columnFilters,

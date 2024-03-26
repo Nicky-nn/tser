@@ -58,7 +58,7 @@ const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
 const LayoutRestriccion: FC<any> = () => {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
-  const { logout, user }: any = useAuth()
+  const { user }: any = useAuth()
 
   const handleChangeSucursal = () => {
     setOpen(true)
@@ -155,9 +155,7 @@ const LayoutRestriccion: FC<any> = () => {
 
                   <TableCell align="left" sx={{ width: 60 }}>
                     <Tooltip
-                      title={`Ambiente ${
-                        user.miEmpresa.codigoAmbiente === 1 ? 'PRODUCCIÓN' : 'PILOTO'
-                      }`}
+                      title={`Ambiente ${user.miEmpresa.codigoAmbiente === 1 ? 'PRODUCCIÓN' : 'PILOTO'}`}
                       leaveDelay={50}
                     >
                       <IconButton

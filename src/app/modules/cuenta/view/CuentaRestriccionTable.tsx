@@ -49,7 +49,7 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
   const changePuntoVenta = async (codigoSucursal: number, codigoPuntoVenta: number) => {
     await swalAsyncConfirmDialog({
       text: `¿Cambiar a la Sucursal <strong>${codigoSucursal}</strong> / Punto Venta <strong>${codigoPuntoVenta}</strong>?`,
-      preConfirm: () => {
+      preConfirm: async () => {
         return apiUsuarioActualizarRestriccion({
           codigoSucursal,
           codigoPuntoVenta,

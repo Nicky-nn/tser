@@ -23,7 +23,7 @@ interface Props {
  */
 export const apiUsuarioCambiarTipoRepresentacionGrafica = async (
   props: Props,
-): Promise<Boolean> => {
+): Promise<boolean> => {
   try {
     const { tipoRepresentacionGrafica } = props
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)

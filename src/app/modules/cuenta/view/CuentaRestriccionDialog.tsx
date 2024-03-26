@@ -1,27 +1,13 @@
-import { Cloud, ContentCopy, ContentCut, ContentPaste } from '@mui/icons-material'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Typography,
-} from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 
-import { ProveedorInputProp } from '../../proveedor/interfaces/proveedor.interface'
 import CuentaRestriccionTable from './CuentaRestriccionTable'
 
 interface OwnProps {
   id: string
   keepMounted: boolean
   open: boolean
-  onClose: (value?: ProveedorInputProp) => void
+  onClose: (value?: boolean) => void
 }
 
 type Props = OwnProps

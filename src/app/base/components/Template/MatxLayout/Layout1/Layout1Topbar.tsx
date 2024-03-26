@@ -3,7 +3,6 @@ import {
   PowerSettingsNew,
   Settings,
   ShoppingBag,
-  ShoppingBagOutlined,
   Store,
   Storefront,
 } from '@mui/icons-material'
@@ -149,13 +148,13 @@ const Layout1Topbar: FC<any> = () => {
           </StyledIconButton>
           <IconBox>
             <StyledIconButton>
-              <Tooltip title="Módulo de Administración">
+              <Tooltip title="Facturación Compra Venta">
                 <Chip
                   size={'small'}
                   icon={<ShoppingBag />}
                   color={'primary'}
                   variant={'outlined'}
-                  label={'ADM'}
+                  label={'FCV'}
                 />
               </Tooltip>
             </StyledIconButton>

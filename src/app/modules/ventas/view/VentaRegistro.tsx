@@ -31,14 +31,12 @@ const VentaRegistro = () => {
 
   return (
     <SimpleContainer>
-      <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Ventas', path: '/ventas/registro' },
-            { name: 'Registrar Venta' },
-          ]}
-        />
-      </div>
+      <Breadcrumb
+        routeSegments={[
+          { name: 'Ventas', path: '/ventas/registro' },
+          { name: 'Registrar Venta' },
+        ]}
+      />
       <form noValidate>
         <Grid container spacing={2}>
           <Grid item lg={12} md={12} xs={12}>
