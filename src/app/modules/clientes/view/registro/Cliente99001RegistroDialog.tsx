@@ -26,6 +26,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * Dialogo de registro de cliente 99001
+ * @param props
+ * @constructor
+ */
 const Cliente99001RegistroDialog: FunctionComponent<Props> = (props) => {
   const { onClose, keepMounted, open, ...other } = props
 

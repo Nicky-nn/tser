@@ -9,14 +9,17 @@ interface OwnProps {}
 
 type Props = OwnProps
 
+/**
+ * Componente para la gestión de clientes
+ * @param props
+ * @constructor
+ */
 const Clientes: FunctionComponent<Props> = (props) => {
   return (
     <SimpleContainer>
-      <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[{ name: 'Gestion de clientes', path: '/clientes/gestion' }]}
-        />
-      </div>
+      <Breadcrumb
+        routeSegments={[{ name: 'Gestion de clientes', path: '/clientes/gestion' }]}
+      />
       <form noValidate>
         <Grid container spacing={2}>
           <Grid item lg={12} md={12} xs={12}>

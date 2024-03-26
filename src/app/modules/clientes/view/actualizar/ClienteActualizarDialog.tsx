@@ -28,6 +28,11 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * Dialogo para actualizar un cliente
+ * @param props
+ * @constructor
+ */
 const ClienteActualizarDialog: FunctionComponent<Props> = (props) => {
   const { onClose, keepMounted, open, cliente, ...other } = props
 

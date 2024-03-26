@@ -1,5 +1,5 @@
 import { Delete, PersonAddAltSharp } from '@mui/icons-material'
-import { Box, Button, Chip, Stack } from '@mui/material'
+import { Box, Button, Chip } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import {
   MaterialReactTable,
@@ -62,6 +62,11 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
   },
 ]
 
+/**
+ * Listado de Clientes
+ * @param props
+ * @constructor
+ */
 const ClientesListado: FunctionComponent<Props> = (props) => {
   const [openClienteRegistro, setOpenClienteRegistro] = useState(false)
   const [openCliente99001Registro, setOpenCliente99001Registro] = useState(false)
@@ -106,6 +111,10 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
   })
   const columns = useMemo(() => tableColumns, [])
 
+  /**
+   * Eliminar registros
+   * @param original
+   */
   const handleDeleteData = async (original: any) => {
     const data = original.map((o: any) => o.original.codigoCliente)
     if (data.length === 0) {
@@ -114,7 +123,7 @@ const ClientesListado: FunctionComponent<Props> = (props) => {
     }
     await swalAsyncConfirmDialog({
       text: 'Confirma que desea eliminar los registros seleccionados y sus respectivas variantes, esta operación no se podra revertir',
-      preConfirm: () => {
+      preConfirm: async () => {
         return apiClientesEliminar(data).catch((err) => {
           swalException(err)
           return false

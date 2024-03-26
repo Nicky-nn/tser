@@ -15,6 +15,12 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * Menu de opciones para el listado de clientes
+ * Si los cuadros de dialogo tienen logica backend, no se recomienda el randerizado por tupla del listado
+ * @param props
+ * @constructor
+ */
 const ClientesMenu: FunctionComponent<Props> = (props) => {
   const { row, refetch } = props
   const [openClienteActualizar, setOpenClienteActualizar] = useState(false)
