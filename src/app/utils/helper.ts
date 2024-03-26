@@ -110,7 +110,7 @@ function isNumeric(str: any) {
 /**
  * Parseamos un array en formato query para envio de parametro query, a la api
  * @param data
- * @param extraQuery: query extra
+ * @param extraQuery = query extra
  */
 export const genApiQuery = (
   data: ColumnFiltersState,

@@ -12,9 +12,9 @@ import { appRoutes } from './app/routes/routes'
 
 function App() {
   const content = useRoutes(appRoutes)
+  const link = document.querySelector('link[rel="icon"]')
 
   useEffect(() => {
-    const link = document.querySelector('link[rel="icon"]')
     if (link) {
       if (import.meta.env.ISI_FAVICON) {
         link.setAttribute('href', import.meta.env.ISI_FAVICON)

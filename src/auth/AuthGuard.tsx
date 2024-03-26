@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import useAuth from '../app/base/hooks/useAuth'
 import { PerfilProps } from '../app/base/models/loginModel'
 import { appRoutes } from '../app/routes/routes'
-import { isEmptyValue } from '../app/utils/helper'
+import { isEmptyValue, logg } from '../app/utils/helper'
 import { flat } from '../app/utils/utils'
 
 // Verificamos si el usuario tiene acceso a cierto rol
@@ -38,8 +38,8 @@ const AuthGuard: FC<Props> = ({ children }: Props) => {
     // UNCOMMENT ABOVE TWO LINES, getUserRoleAuthStatus METHOD AND user VARIABLE
     // AND COMMENT OUT BELOW LINE
     const authenticated = isAuthenticated && hasPermission
+    logg('app,auth,authguard', pathname, authenticated)
 
-    console.info('app,auth,authguard', pathname, authenticated)
     return (
       <>
         {isAuthenticated ? (

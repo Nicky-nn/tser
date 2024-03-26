@@ -25,7 +25,7 @@ import { MyChip } from '../../../../base/components/MyChip/MyChip'
 import { themeShadows } from '../../../../base/components/Template/MatxTheme/themeColors'
 import useAuth from '../../../../base/hooks/useAuth'
 import { topBarHeightRestriccion } from '../../../../utils/constant'
-import CuentaRestriccionDialog from '../../../cuenta/view/CuentaRestriccionDialog'
+import CuentaRestriccionDialog from '../../cuenta/view/CuentaRestriccionDialog'
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -58,7 +58,7 @@ const RestriccionTopBarContainer = styled(Paper)(({ theme }) => ({
 const LayoutRestriccion: FC<any> = () => {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
-  const { user }: any = useAuth()
+  const { logout, user }: any = useAuth()
 
   const handleChangeSucursal = () => {
     setOpen(true)

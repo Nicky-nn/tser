@@ -1,5 +1,4 @@
-import { Components } from '@mui/material/styles/components'
-import { Theme } from '@mui/material/styles/createTheme'
+import { Components, Theme } from '@mui/material'
 
 import { themeShadows } from './themeColors'
 
@@ -148,7 +147,7 @@ export const components: ComponentsProps = {
         transform: 'translate(15px, -11px) scale(0.90) !important',
       },
       outlined: {
-        transform: 'translate(15px, 9px) scale(1)',
+        // transform: 'translate(15px 9px) scale(1)',
         backgroundColor: 'none',
       },
     },

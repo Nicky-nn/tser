@@ -2,9 +2,9 @@
 
 import { gql, GraphQLClient } from 'graphql-request'
 
-import { PuntoVentaProps } from '../../modules/puntoVenta/interfaces/puntoVenta'
-import { SinActividadesProps } from '../../modules/sin/interfaces/sin.interface'
-import { SucursalProps } from '../../modules/sucursal/interfaces/sucursal'
+import { PuntoVentaProps } from '../../interfaces/puntoVenta'
+import { SinActividadesProps } from '../../interfaces/sin.interface'
+import { SucursalProps } from '../../interfaces/sucursal'
 import { MonedaParamsProps, TipoRepresentacionGrafica } from '../interfaces/base'
 import { MyGraphQlError } from '../services/GraphqlError'
 
