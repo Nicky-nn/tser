@@ -23,7 +23,7 @@ import {
 import React, { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { cuentaRouteMap } from '../../../../../modules/cuenta/CuentaRoutesMap'
+import { cuentaRouteMap } from '../../../../../modules/base/cuenta/CuentaRoutesMap'
 import { topBarHeight } from '../../../../../utils/constant'
 import { NotificationProvider } from '../../../../contexts/NotificationContext'
 import useAuth from '../../../../hooks/useAuth'
