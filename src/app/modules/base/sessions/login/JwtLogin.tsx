@@ -46,7 +46,7 @@ const FlexBox = styled(Box)(() => ({
 
 const JustifyBox = styled(FlexBox)(() => ({
   justifyContent: 'center',
-  padding: '0 15px',
+  padding: '15px 15px 0 15px',
 }))
 
 const ContentBox = styled(Box)(() => ({
@@ -150,18 +150,15 @@ const JwtLogin = () => {
   return (
     <JWTRoot>
       <Card className="card">
-        <Grid container rowSpacing={2}>
+        <Grid container rowSpacing={1}>
           <Grid item sm={12} xs={12}>
             <JustifyBox p={4} height="100%">
-              <IMG
-                src={logo}
-                alt="Gestión de ventas y servicios"
-                style={{ paddingTop: '10px' }}
-              />
+              <IMG src={logo} alt="Gestión de ventas y servicios" />
             </JustifyBox>
+
             <Typography
               variant={'subtitle1'}
-              style={{ textAlign: 'center', marginTop: -6 }}
+              style={{ textAlign: 'center', marginTop: -7 }}
             >
               {import.meta.env.ISI_TITLE || ''}
             </Typography>
