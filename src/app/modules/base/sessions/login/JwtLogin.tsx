@@ -14,6 +14,7 @@ import {
   OutlinedInput,
   styled,
   TextField,
+  Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
@@ -25,7 +26,7 @@ import { object, string } from 'yup'
 import { apiCheckHuman } from '../../../../base/api/checkHuman.api'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
-import { Paragraph } from '../../../../base/components/Template/Typography'
+import { H2, H3, H4, Paragraph } from '../../../../base/components/Template/Typography'
 import useAuth from '../../../../base/hooks/useAuth'
 import { isEmptyValue } from '../../../../utils/helper'
 import {
@@ -56,8 +57,7 @@ const ContentBox = styled(Box)(() => ({
 }))
 
 const IMG = styled('img')(() => ({
-  width: '100%',
-  // maxHeight: '90px',
+  width: '90%',
 }))
 
 const JWTRoot = styled(JustifyBox)(() => ({
@@ -77,11 +77,9 @@ const validationSchema = object({
   shop: object({
     value: string().required('Url de comercio es requerido'),
   }).required('Url de comercio es requerido'),
-  email: string()
-    .email('Debe registrar un email válido')
-    .required('Licencia es requerido'),
+  email: string().email('Debe registrar un email válido').required('Correo es requerido'),
   password: string()
-    .min(6, 'Password debe contener al menos 6 caracteres')
+    .min(5, 'Password debe contener al menos 5 caracteres')
     .required('Password es requerido'),
 })
 
@@ -152,15 +150,21 @@ const JwtLogin = () => {
   return (
     <JWTRoot>
       <Card className="card">
-        <Grid container>
+        <Grid container rowSpacing={2}>
           <Grid item sm={12} xs={12}>
             <JustifyBox p={4} height="100%">
               <IMG
                 src={logo}
                 alt="Gestión de ventas y servicios"
-                style={{ paddingTop: '20px' }}
+                style={{ paddingTop: '10px' }}
               />
             </JustifyBox>
+            <Typography
+              variant={'subtitle1'}
+              style={{ textAlign: 'center', marginTop: -6 }}
+            >
+              {import.meta.env.ISI_TITLE || ''}
+            </Typography>
           </Grid>
 
           <Grid item sm={12} xs={12}>

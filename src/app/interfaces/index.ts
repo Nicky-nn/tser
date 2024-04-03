@@ -21,6 +21,7 @@ export const apiEstado = {
   paqueteObservado: 'OBSERVADA',
   anulado: 'ANULADO',
   eliminado: 'ELIMINADO',
+  rechazado: 'RECHAZADA',
 }
 
 /**
