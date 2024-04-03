@@ -7,7 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import SimpleContainer from '../../../base/components/Container/SimpleContainer'
 import StackMenu from '../../../base/components/MyMenu/StackMenu'
-import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuItem'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import { genRandomString, isEmptyValue } from '../../../utils/helper'
 import { notDanger, notError, notSuccess } from '../../../utils/notification'
