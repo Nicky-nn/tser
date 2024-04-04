@@ -69,8 +69,11 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
 
   // En caso no existiera valores en actividad economica
   useEffect(() => {
-    if (!actLoading && !actIsError && !getValues('actividadEconomica')) {
+    if (!actLoading && !actIsError && !actividadEconomicaWatch) {
       setValue('actividadEconomica', actividades![0])
+    } else {
+      setValue('actividadEconomica', null)
+      setValue('sinProductoServicio', null)
     }
   }, [actLoading])
 
@@ -105,9 +108,6 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
                       onChange={async (actividadEconomica: any) => {
                         field.onChange(actividadEconomica)
                         setValue('sinProductoServicio', null)
-                      }}
-                      onBlur={async (val) => {
-                        field.onBlur()
                       }}
                       isSearchable={false}
                       options={actividades}

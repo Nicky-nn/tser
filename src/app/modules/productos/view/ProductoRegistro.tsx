@@ -61,7 +61,6 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
       notError(val.join('<br>'))
     } else {
       const apiInput = productoComposeService(values)
-      console.log(apiInput)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
           const resp: any = await apiProductoRegistro(apiInput).catch((err) => ({
@@ -90,11 +89,7 @@ const ProductoRegistro: FunctionComponent<Props> = (props) => {
 
   return (
     <SimpleContainer>
-      <div className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[productosRouteMap.gestion, productosRouteMap.nuevo]}
-        />
-      </div>
+      <Breadcrumb routeSegments={[productosRouteMap.gestion, productosRouteMap.nuevo]} />
 
       <StackMenu asideSidebarFixed>
         <StackMenuItem>
