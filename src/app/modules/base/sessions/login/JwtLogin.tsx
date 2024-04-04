@@ -157,8 +157,9 @@ const JwtLogin = () => {
             </JustifyBox>
 
             <Typography
-              variant={'subtitle1'}
-              style={{ textAlign: 'center', marginTop: -7 }}
+              variant={'subtitle2'}
+              style={{ textAlign: 'center', marginTop: -5 }}
+              color={'primary'}
             >
               {import.meta.env.ISI_TITLE || ''}
             </Typography>
