@@ -54,7 +54,7 @@ export interface NcdProps {
   razonSocialEmisor: string
   numeroNotaCreditoDebito: number
   numeroFactura: number
-  cuf: String
+  cuf: string
   cufd: SinCufdProps
   cuis: SinCuisProps
   tipoFactura: SinTipoFacturaProps
@@ -76,7 +76,7 @@ export interface NcdProps {
   documentoSectorFactura: SinTipoDocumentoSectorProps
   documentoSector: SinTipoDocumentoSectorProps
   detalle: DetalleNcdProps[]
-  codigoRecepcion: String
+  codigoRecepcion: string
   motivoAnulacion: SinMotivoAnulacionProps
   representacionGrafica: RepresentacionGraficaProps
   usucre: string

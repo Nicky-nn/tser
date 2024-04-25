@@ -41,6 +41,7 @@ import { MuiTableAdvancedOptionsProps } from '../../../utils/muiTable/muiTableAd
 import { apiNotasCreditoDebito } from '../api/ncd.api'
 import { NcdProps } from '../interfaces/ncdInterface'
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
+import AnularNcdDialog from './gestion/AnularNcdDialog'
 
 const tableColumns: MRT_ColumnDef<NcdProps>[] = [
   {
@@ -130,7 +131,10 @@ const tableColumns: MRT_ColumnDef<NcdProps>[] = [
 ]
 
 const NcdGestion: FC<any> = () => {
-  const [openAnularNcd, setOpenAnularNcd] = useState(false)
+  const [openAnularNcd, setOpenAnularNcd] = useState<{
+    open: boolean
+    row: NcdProps | null
+  }>({ open: false, row: null })
 
   const [openExport, setOpenExport] = useState(false)
   // DATA TABLE
@@ -217,7 +221,10 @@ const NcdGestion: FC<any> = () => {
         >
           <SimpleMenuItem
             onClick={(e) => {
-              e.preventDefault()
+              setOpenAnularNcd({
+                open: true,
+                row: row.original,
+              })
             }}
           >
             <LayersClear /> Anular Documento
@@ -258,9 +265,7 @@ const NcdGestion: FC<any> = () => {
   return (
     <>
       <SimpleContainer>
-        <div className="breadcrumb">
-          <Breadcrumb routeSegments={[ncdRouteMap.gestion]} />
-        </div>
+        <Breadcrumb routeSegments={[ncdRouteMap.gestion]} />
 
         <StackMenu asideSidebarFixed>
           <StackMenuItem>
@@ -281,6 +286,21 @@ const NcdGestion: FC<any> = () => {
           </Grid>
         </Grid>
       </SimpleContainer>
+      <AnularNcdDialog
+        keepMounted
+        factura={openAnularNcd.row!}
+        id={'anularFactura'}
+        open={openAnularNcd.open}
+        onClose={async (resp: boolean) => {
+          setOpenAnularNcd({
+            open: false,
+            row: null,
+          })
+          if (resp) {
+            await refetch()
+          }
+        }}
+      />
     </>
   )
 }
