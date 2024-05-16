@@ -10,7 +10,7 @@ const pwaOptions = (env: any): Partial<VitePWAOptions> => ({
     globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp}'],
   },
   manifest: {
-    name: `Módulo de Administración`,
+    name: `${env.ISI_TITLE || 'isi.invoice'}`,
     short_name: 'ADM',
     theme_color: '#ffffff',
     display: 'minimal-ui',

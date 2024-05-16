@@ -16,17 +16,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import ReCAPTCHA, { ReCAPTCHAProps } from 'react-google-recaptcha'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import CreatableSelect from 'react-select/creatable'
-import Turnstile from 'react-turnstile'
 import { object, string } from 'yup'
 
-import { apiCheckHuman } from '../../../../base/api/checkHuman.api'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
-import { H2, H3, H4, Paragraph } from '../../../../base/components/Template/Typography'
+import { Paragraph } from '../../../../base/components/Template/Typography'
 import useAuth from '../../../../base/hooks/useAuth'
 import { isEmptyValue } from '../../../../utils/helper'
 import {
@@ -96,11 +95,12 @@ interface LoginProps {
  */
 const JwtLogin = () => {
   const navigate = useNavigate()
+  const reCaptchaRef = useRef<ReCAPTCHAProps | any>()
+
   const [loading, setLoading] = useState(false)
   const { login }: any = useAuth()
-
   const [message, setMessage] = useState('')
-  const [captchaValidator, setCaptchaValidator] = useState<boolean>(false)
+
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const shops = storageComercioListado()
@@ -120,10 +120,18 @@ const JwtLogin = () => {
    * @param values
    */
   const onSubmit: SubmitHandler<LoginProps> = async (values) => {
-    if (captchaValidator) {
+    try {
       setLoading(true)
-      const { shop, email, password, remember } = values
-      try {
+      setTimeout(() => {
+        setLoading(false)
+      }, 2500)
+
+      // Verificamos el token captcha
+      const newToken = await reCaptchaRef.current.executeAsync()
+
+      if (newToken) {
+        // setLoading(true)
+        const { shop, email, password, remember } = values
         await login(shop?.value, email, password)
         if (remember) {
           storageComercioActualizar(shop!.value)
@@ -133,10 +141,13 @@ const JwtLogin = () => {
           // localStorage.removeItem('shop')
         }
         navigate('/')
-      } catch (e: any) {
-        setMessage(e.message)
-        setLoading(false)
+      } else {
+        throw new Error('Error validación Captcha, Refresque la pagina CTRL + F5')
       }
+    } catch (e: any) {
+      setMessage(e.message)
+      setLoading(false)
+      setTimeout(() => reCaptchaRef.current.reset(), 500)
     }
   }
 
@@ -147,6 +158,15 @@ const JwtLogin = () => {
     }
   }, [])
 
+  // Ejecutamos el captcha validador
+  useEffect(() => {
+    if (reCaptchaRef) {
+      reCaptchaRef.current.reset()
+    }
+    setLoading(false)
+  }, [])
+
+  // @ts-ignore
   return (
     <JWTRoot>
       <Card className="card">
@@ -168,8 +188,18 @@ const JwtLogin = () => {
           <Grid item sm={12} xs={12}>
             <ContentBox>
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <Grid container spacing={5}>
-                  <Grid item lg={12} md={12} sm={12} xs={12} sx={{ mt: 2 }}>
+                <ReCAPTCHA
+                  size={'invisible'}
+                  sitekey={import.meta.env.ISI_CAPTCHA_KEY}
+                  ref={reCaptchaRef}
+                  onErrored={() =>
+                    setMessage(
+                      `Ocurrió un error en cargar el Captcha, contáctese con el administrador`,
+                    )
+                  }
+                />
+                <Grid container spacing={1} rowSpacing={3} sx={{ mt: 0 }}>
+                  <Grid item xs={12}>
                     <Controller
                       control={form.control}
                       name={'shop'}
@@ -177,7 +207,7 @@ const JwtLogin = () => {
                         <FormControl
                           fullWidth
                           error={Boolean(form.formState.errors.shop)}
-                          sx={{ mb: 2.5 }}
+                          sx={{ mb: 0.2 }}
                         >
                           <MyInputLabel shrink>URL Comercio</MyInputLabel>
                           <CreatableSelect<StorageShopProps>
@@ -197,14 +227,15 @@ const JwtLogin = () => {
                         </FormControl>
                       )}
                     />
-
+                  </Grid>
+                  <Grid item xs={12}>
                     <Controller
                       control={form.control}
                       render={({ field }) => (
                         <TextField
                           label="Correo Electrónico"
                           size={'small'}
-                          sx={{ mb: 3, width: '100%' }}
+                          sx={{ width: '100%', mb: 0.2 }}
                           id="email"
                           name="email"
                           value={field.value}
@@ -216,13 +247,13 @@ const JwtLogin = () => {
                       )}
                       name={'email'}
                     />
-
+                  </Grid>
+                  <Grid item xs={12}>
                     <Controller
                       render={({ field }) => (
                         <FormControl
                           size={'small'}
                           variant="outlined"
-                          sx={{ mb: 2 }}
                           onChange={field.onChange}
                           fullWidth={true}
                           error={Boolean(form.formState.errors.password)}
@@ -258,21 +289,10 @@ const JwtLogin = () => {
                       name={'password'}
                       control={form.control}
                     />
-
-                    <Turnstile
-                      style={{ marginBottom: 5 }}
-                      sitekey={import.meta.env.ISI_CAPTCHA_KEY || ''}
-                      theme={'light'}
-                      onVerify={async (token: any) => {
-                        setCaptchaValidator(true)
-                        await apiCheckHuman(token)
-                      }}
-                      onError={() => setCaptchaValidator(false)}
-                      onLoad={() => setCaptchaValidator(false)}
-                    />
-
+                  </Grid>
+                  <Grid item xs={12}>
                     <FlexBox justifyContent="space-between">
-                      <FlexBox gap={1}>
+                      <FlexBox gap={0}>
                         <Controller
                           control={form.control}
                           render={({ field }) => (
@@ -299,14 +319,14 @@ const JwtLogin = () => {
                       </NavLink>
                          */}
                     </FlexBox>
-
+                  </Grid>
+                  <Grid item xs={12}>
                     <LoadingButton
                       type="submit"
                       color="primary"
                       loading={loading}
                       variant="contained"
                       size={'large'}
-                      disabled={!captchaValidator}
                       fullWidth
                       sx={{ my: 2 }}
                     >
@@ -314,7 +334,6 @@ const JwtLogin = () => {
                     </LoadingButton>
                   </Grid>
                 </Grid>
-
                 {message && <Paragraph sx={{ color: 'red' }}>{message}</Paragraph>}
               </form>
             </ContentBox>
