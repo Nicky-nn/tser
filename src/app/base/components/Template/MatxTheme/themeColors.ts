@@ -11,6 +11,7 @@ export type ThemeTypeColorsProps =
   | 'blue1Dark'
   | 'green'
   | 'greenDark'
+  | 'blue2'
 
 interface TextLightDarkProps {
   primary: string
@@ -83,6 +84,7 @@ export interface CreateMatxThemesProps {
   greenDark: ThemeColorsCompleteProps
   default: ThemeColorsCompleteProps
   defaultDark: ThemeColorsCompleteProps
+  blue2: ThemeColorsCompleteProps
 }
 
 /****
@@ -101,6 +103,8 @@ interface ThemeColorsProps {
   blueDark: ThemeColorsSingleProps
   blue1: ThemeColorsSingleProps
   blue1Dark: ThemeColorsSingleProps
+  blue2: ThemeColorsSingleProps
+  blue2Dark: ThemeColorsSingleProps
   green: ThemeColorsSingleProps
   greenDark: ThemeColorsSingleProps
   default: ThemeColorsSingleProps
@@ -307,6 +311,44 @@ export const themeColors: ThemeColorsProps = {
       },
       background: {
         paper: '#00539A',
+        default: '#1a2038',
+      },
+      text: textDark,
+      error: errorColor,
+    },
+  },
+  blue2: {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#25368B',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#FCC346',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#fff',
+        default: '#fafafa',
+      },
+      text: textLight,
+      error: errorColor,
+    },
+  },
+  blue2Dark: {
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#25368B',
+        contrastText: textDark.primary,
+      },
+      secondary: {
+        main: '#FCC346',
+        contrastText: textDark.primary,
+      },
+      background: {
+        paper: '#25368B',
         default: '#1a2038',
       },
       text: textDark,

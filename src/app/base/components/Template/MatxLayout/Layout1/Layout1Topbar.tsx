@@ -148,13 +148,13 @@ const Layout1Topbar: FC<any> = () => {
           </StyledIconButton>
           <IconBox>
             <StyledIconButton>
-              <Tooltip title="Facturación Compra Venta">
+              <Tooltip title={import.meta.env.ISI_TITLE || ''}>
                 <Chip
                   size={'small'}
                   icon={<ShoppingBag />}
                   color={'primary'}
                   variant={'outlined'}
-                  label={'FCV'}
+                  label={import.meta.env.ISI_SIGLA || ''}
                 />
               </Tooltip>
             </StyledIconButton>

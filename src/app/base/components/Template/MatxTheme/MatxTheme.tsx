@@ -2,7 +2,6 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { FC, ReactNode } from 'react'
 
 import useSettings from '../../../hooks/useSettings'
-import { CreateMatxThemesProps } from './themeColors'
 
 type MatxThemeProps = {
   children: ReactNode | ReactNode[]
