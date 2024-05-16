@@ -20,13 +20,11 @@ import { useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import CreatableSelect from 'react-select/creatable'
-import Turnstile from 'react-turnstile'
 import { object, string } from 'yup'
 
-import { apiCheckHuman } from '../../../../base/api/checkHuman.api'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
-import { H2, H3, H4, Paragraph } from '../../../../base/components/Template/Typography'
+import { Paragraph } from '../../../../base/components/Template/Typography'
 import useAuth from '../../../../base/hooks/useAuth'
 import { isEmptyValue } from '../../../../utils/helper'
 import {
@@ -100,7 +98,7 @@ const JwtLogin = () => {
   const { login }: any = useAuth()
 
   const [message, setMessage] = useState('')
-  const [captchaValidator, setCaptchaValidator] = useState<boolean>(false)
+  const [captchaValidator, setCaptchaValidator] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const shops = storageComercioListado()
@@ -259,17 +257,19 @@ const JwtLogin = () => {
                       control={form.control}
                     />
 
-                    <Turnstile
-                      style={{ marginBottom: 5 }}
-                      sitekey={import.meta.env.ISI_CAPTCHA_KEY || ''}
-                      theme={'light'}
-                      onVerify={async (token: any) => {
-                        setCaptchaValidator(true)
-                        await apiCheckHuman(token)
-                      }}
-                      onError={() => setCaptchaValidator(false)}
-                      onLoad={() => setCaptchaValidator(false)}
-                    />
+                    {/*
+                          <Turnstile
+                            style={{ marginBottom: 5 }}
+                            sitekey={import.meta.env.ISI_CAPTCHA_KEY || ''}
+                            theme={'light'}
+                            onVerify={async (token: any) => {
+                              setCaptchaValidator(true)
+                              await apiCheckHuman(token)
+                            }}
+                            onError={() => setCaptchaValidator(false)}
+                            onLoad={() => setCaptchaValidator(false)}
+                          />
+                       */}
 
                     <FlexBox justifyContent="space-between">
                       <FlexBox gap={1}>
@@ -299,14 +299,13 @@ const JwtLogin = () => {
                       </NavLink>
                          */}
                     </FlexBox>
-
+                    {/* disabled={!captchaValidator} */}
                     <LoadingButton
                       type="submit"
                       color="primary"
                       loading={loading}
                       variant="contained"
                       size={'large'}
-                      disabled={!captchaValidator}
                       fullWidth
                       sx={{ my: 2 }}
                     >
