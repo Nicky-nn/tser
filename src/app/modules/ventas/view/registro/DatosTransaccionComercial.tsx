@@ -41,7 +41,6 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
   const {
     form: {
       control,
-      watch,
       setValue,
       getValues,
       formState: { errors },

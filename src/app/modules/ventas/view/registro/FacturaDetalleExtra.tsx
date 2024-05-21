@@ -7,8 +7,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Editor } from '@tinymce/tinymce-react'
-import { FunctionComponent } from 'react'
+import JoditEditor, { IJoditEditorProps } from 'jodit-react'
+import { FunctionComponent, useMemo, useRef } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { TINYMCE_TEMPLATES } from '../../../../interfaces/tinimce.template'
@@ -21,16 +21,72 @@ interface OwnProps {
 
 type Props = OwnProps
 
+/**
+ * Factura detalle extra que permite contenido html
+ * @param props
+ * @constructor
+ */
 const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
   const {
-    form: {
-      control,
-      setValue,
-      getValues,
-      formState: { errors },
-    },
-    detalleExtra,
+    form: { getValues, setValue },
+    detalleExtra, // array que llega del servidor
   } = props
+
+  const editor = useRef<any>(null)
+
+  const config: any = useMemo<IJoditEditorProps['config']>(
+    () => ({
+      readonly: false,
+      autofocus: true,
+      useSearch: false,
+      toolbarButtonSize: 'large',
+      showWordsCounter: false,
+      defaultActionOnPaste: 'insert_only_text',
+      toolbarSticky: false,
+      cleanHTML: {
+        denyTags: 'script,img',
+      },
+      askBeforePasteHTML: false,
+      askBeforePasteFromWord: false,
+      disablePlugins: [
+        'iframe',
+        'ai-assistant',
+        'search',
+        'class-span',
+        'color',
+        'video',
+        'image',
+        'powered-by-jodit',
+      ],
+      buttons: [
+        'bold',
+        'italic',
+        'eraser',
+        'spellcheck',
+        'copy',
+        'paste',
+        'selectall',
+        'copyformat',
+        'table',
+        'ul',
+        'ol',
+        'left',
+        'undo',
+        'redo',
+        'source',
+        'fullsize',
+        'preview',
+        {
+          name: 'plantilla',
+          tooltip: 'Inserta desde una plantilla',
+          exec: (editor: any) => {
+            editor.s.insertHTML(TINYMCE_TEMPLATES[1].content)
+          },
+        },
+      ],
+    }),
+    [],
+  )
 
   return (
     <>
@@ -44,31 +100,15 @@ const FacturaDetalleExtra: FunctionComponent<Props> = (props) => {
         </Tooltip>
         <AccordionDetails>
           <Box sx={{ alignItems: 'right', textAlign: 'left' }}>
-            <Editor
-              apiKey="niud727ae46xgl3s5morxk4v03hq6rrv7lpkvustyt2ilp2k"
+            <JoditEditor
+              ref={editor}
               value={getValues('detalleExtra') || ''}
-              onInit={(evt, editor) => {
-                editor.on('blur', (e: any) => {
-                  setValue('detalleExtraText', editor.getContent({ format: 'text' }))
-                })
-              }}
-              onEditorChange={(newValue, editor) => {
-                setValue('detalleExtra', editor.getContent())
-                // dispatch(setFactura({...factura, detalleExtra: editor.getContent()}))
-              }}
-              init={{
-                plugins: ['table', 'template', 'code'],
-                toolbar:
-                  'undo redo | bold italic | alignleft aligncenter alignright alignjustify | table | template | code',
-                menubar: false,
-                table_default_attributes: {
-                  border: 'none',
-                },
-                min_height: 250,
-                height: 250,
-                max_height: 500,
-                templates: detalleExtra.length > 0 ? detalleExtra : TINYMCE_TEMPLATES,
-              }}
+              config={config}
+              onBlur={(newContent) => {
+                setValue('detalleExtra', newContent)
+                return false
+              }} // preferred to use only this option to update the content for performance reasons
+              onChange={(newContent) => {}}
             />
           </Box>
         </AccordionDetails>

@@ -325,7 +325,7 @@ ISI_THEME=blue
 
 ```
 
-Modificar el archivo `.eslintrc.js` y añadir la siguiente regla para no permitir anidación de dependencias para eslint
+Modificar el archivo `.eslintrc.cjs` y añadir la siguiente regla para no permitir anidación de dependencias para eslint
 
 ```bash
 'no-restricted-imports': [

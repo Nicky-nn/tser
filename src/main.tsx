@@ -1,3 +1,10 @@
+import '@fontsource/roboto' // Defaults to weight 400
+import '@fontsource/roboto/300.css' // Specify weight
+import '@fontsource/roboto/400.css' // Specify weight
+import '@fontsource/roboto/500.css' // Specify weight
+import '@fontsource/roboto/700.css' // Specify weight
+import '@fontsource/roboto/900.css' // Specify weight
+import '@fontsource/roboto/400-italic.css' // Specify weight and style
 import './index.css'
 import 'rc-input-number/assets/index.css'
 import 'react-toastify/dist/ReactToastify.css'

@@ -25,7 +25,7 @@ export const TINYMCE_TEMPLATES = [
     title: 'Items dos items',
     description: 'Tabla de 2 items.',
     content: `
-        <table style="border-collapse: collapse; width: 100%;" border="0"><colgroup><col style="width: 13.9859%;"><col style="width: 85.9435%;"></colgroup>
+        <table border="0">
             <tbody>
                 <tr>
                 <td><strong>Item1</strong></td>
