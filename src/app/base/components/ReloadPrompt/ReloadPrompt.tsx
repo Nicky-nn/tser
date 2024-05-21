@@ -1,6 +1,6 @@
 import { Button, Snackbar } from '@mui/material'
-import React, { FC, Fragment, useState } from 'react'
-import { registerSW } from 'virtual:pwa-register'
+import React, { FC, Fragment, useEffect, useState } from 'react'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 /**
  * Componente que muestra un mensaje de actualización disponible
@@ -26,18 +26,16 @@ import { registerSW } from 'virtual:pwa-register'
  */
 const ReloadPrompt: FC<any> = () => {
   const [open, setOpen] = useState(false)
-  const updateSW = registerSW({
-    onNeedRefresh() {
-      setOpen(true)
-    },
-  })
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW()
 
-  // Cuando se clickea en el botón de actualizar
-  const handleClose = () => {
-    setOpen(false)
-    updateSW(true).then(() => window.location.reload())
-    // registerSW({ immediate: true })
-  }
+  useEffect(() => {
+    if (needRefresh) {
+      setOpen(true)
+    }
+  }, [needRefresh, updateServiceWorker])
 
   return (
     <>
@@ -51,7 +49,7 @@ const ReloadPrompt: FC<any> = () => {
               variant={'contained'}
               color="secondary"
               size="small"
-              onClick={handleClose}
+              onClick={() => updateServiceWorker(true)}
             >
               Actualizar
             </Button>
