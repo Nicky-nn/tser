@@ -11,7 +11,7 @@ const pwaOptions = (env: any): Partial<VitePWAOptions> => ({
   },
   manifest: {
     name: `${env.ISI_TITLE || 'isi.invoice'}`,
-    short_name: 'ADM',
+    short_name: `${env.ISI_SIGLA || 'ISI'}`,
     theme_color: '#ffffff',
     display: 'minimal-ui',
     icons: [
