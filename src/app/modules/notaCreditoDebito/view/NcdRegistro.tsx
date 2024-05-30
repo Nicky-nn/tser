@@ -18,8 +18,8 @@ import { NcdInputProps } from '../interfaces/ncdInterface'
 import { ncdRouteMap } from '../NotaCreditoDebitoRoutesMap'
 import { ncdInputCompose } from '../services/ncdInputCompose'
 import { ncdRegistroValidationSchema } from '../validator/ncdRegistroValidator'
-import NcdFacturaDevolucion from './registro/NcdFacturaDevolucion'
-import NcdFacturaOriginal from './registro/NcdFacturaOriginal'
+import NcdFacturaDevolucion from './Registro/NcdFacturaDevolucion'
+import NcdFacturaOriginal from './Registro/NcdFacturaOriginal'
 
 const NcdRegistro = () => {
   const mySwal = withReactContent(Swal)
