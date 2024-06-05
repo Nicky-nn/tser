@@ -424,8 +424,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const options = useMemo(() => {
-    const mesasExistentes = new Set()
-    return mesas.flatMap((mesa) => {
+    const result: {
+      value: number
+      nroPedido: number | null
+      nroOrden: number | null
+      mesa: string
+      state: string
+    }[] = []
+
+    mesas.forEach((mesa, index) => {
       const pedidoEncontrado = data?.find(
         (pedido) =>
           pedido.mesa.nombre
@@ -433,57 +440,42 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             .includes(`${mesa.split(' ')[1]}`.toLowerCase()) &&
           !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase()),
       )
+
       if (pedidoEncontrado) {
         const { numeroPedido, numeroOrden, mesa, state } = pedidoEncontrado
-        const mesasUnidas = mesa.nombre.split('-').map((m: any) => `Mesa ${m}`)
-        if (mesasUnidas.length > 1) {
-          const mesaUnida = mesa.nombre
-          if (!mesasExistentes.has(mesaUnida)) {
-            mesasExistentes.add(mesaUnida)
-            return [
-              {
-                value: Number(mesa.nombre.replace(/-/g, '')),
-                nroPedido: numeroPedido,
-                nroOrden: numeroOrden,
-                mesa: mesa.nombre,
-                state,
-              },
-            ]
-          }
-        } else {
-          if (!mesasExistentes.has(mesa.nombre)) {
-            mesasExistentes.add(mesa.nombre)
-            return [
-              {
-                value: Number(mesa.nombre),
-                nroPedido: numeroPedido,
-                nroOrden: numeroOrden,
-                mesa: mesa.nombre,
-                state,
-              },
-            ]
-          }
-        }
-      } else {
-        const mesaLibre = `Mesa ${mesa.split(' ')[1]}`
-        if (!mesasExistentes.has(mesaLibre)) {
-          mesasExistentes.add(mesaLibre)
-          return [
-            {
-              value: Number(mesa.split(' ')[1]),
-              nroPedido: null,
-              nroOrden: null,
-              mesa: mesa.split(' ')[1],
-              state: 'Libre',
-            },
-          ]
-        }
-      }
-      return []
-    })
-  }, [data])
+        const mesasUnidas = mesa.nombre.split('-').map((m) => `Mesa ${m}`)
+        const numberValue = Number(mesasUnidas[0].split(' ')[1])
 
-  console.log(selectedOption)
+        result.push({
+          value: numberValue,
+          nroPedido: numeroPedido,
+          nroOrden: numeroOrden,
+          mesa: mesa.nombre,
+          state,
+        })
+      } else {
+        const value = Number(mesa.split(' ')[1])
+        console.log('value', value)
+        result.push({
+          value,
+          nroPedido: null,
+          nroOrden: null,
+          mesa: mesa.split(' ')[1],
+          state: 'Libre',
+        })
+      }
+    })
+
+    // Mover el valor "10" a la posición correcta
+    const index10 = result.findIndex((item) => item.value === 10)
+    if (index10 !== -1) {
+      const item10 = result.splice(index10, 1)[0]
+      result.splice(9, 0, item10)
+    }
+
+    return result
+  }, [data])
+  console.log('options', options)
 
   useEffect(() => {
     const updateCart = () => {
@@ -541,13 +533,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         if (response.restPedidoExpressRegistro) {
           const { numeroPedido, numeroOrden, mesa, state } =
             response.restPedidoExpressRegistro
+          setPermitirSeleccionMultiple(false)
+          const numberValue = Number(mesa.nombre.split('-')[0])
+          console.log('numberValue', numberValue)
           setSelectedOption({
-            value: Number(mesa.nombre),
+            value: numberValue,
             nroPedido: numeroPedido,
             nroOrden: numeroOrden,
             mesa: mesa.nombre,
             state,
           })
+          console.log(
+            'value',
+            numberValue,
+            'nroPedido',
+            numeroPedido,
+            'nroOrden',
+            numeroOrden,
+            'mesa',
+            mesa.nombre,
+            'state',
+            state,
+          )
         }
       })
       .catch((error) => {
@@ -942,6 +949,50 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       prevCart.map((item, i) => (i === index ? { ...item, price: newPrice } : item)),
     )
   }
+  const [mesasSeleccionadas, setMesasSeleccionadas] = useState<Option[]>([])
+  const [permitirSeleccionMultiple, setPermitirSeleccionMultiple] =
+    useState<boolean>(false)
+
+  const manejarPresionTecla = (evento: React.KeyboardEvent<HTMLDivElement>) => {
+    if ((evento.metaKey || evento.ctrlKey) && evento.key !== 'Control') {
+      setPermitirSeleccionMultiple((prevState) => !prevState)
+    }
+  }
+
+  const manejarCambioSeleccion = (opcionesSeleccionadas: Option | Option[] | null) => {
+    const mesasSeleccionadas = opcionesSeleccionadas
+      ? Array.isArray(opcionesSeleccionadas)
+        ? opcionesSeleccionadas
+        : [opcionesSeleccionadas]
+      : []
+
+    const mesasLibresSeleccionadas = permitirSeleccionMultiple
+      ? mesasSeleccionadas.filter((opcion) => opcion.state === 'Libre')
+      : mesasSeleccionadas
+
+    if (permitirSeleccionMultiple) {
+      setMesasSeleccionadas(mesasLibresSeleccionadas)
+
+      let newMesasSeleccionadas = [] as string[]
+      mesasLibresSeleccionadas.forEach((mesa) => {
+        newMesasSeleccionadas.push(mesa.value.toString())
+      })
+
+      let mesasCombinadas = {
+        // value: newMesasSeleccionadas.join('-'),
+        value: Number(newMesasSeleccionadas[0]),
+        nroPedido: null,
+        nroOrden: null,
+        mesa: newMesasSeleccionadas.join('-'),
+        state: 'Libre',
+      }
+      setSelectedOption(mesasCombinadas)
+      console.log('mesasCombinadas', mesasCombinadas)
+    } else {
+      setMesasSeleccionadas(mesasLibresSeleccionadas)
+      setSelectedOption(mesasLibresSeleccionadas[0])
+    }
+  }
 
   return (
     <Grid container spacing={3}>
@@ -1249,7 +1300,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
           {selectedView === 'lista' || selectedView === null || selectedView === '' ? (
             <>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Select<Option>
                   styles={reactSelectStyle(Boolean(errors.mesa))}
                   name={'mesa'}
@@ -1258,6 +1309,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   value={selectedOption}
                   isClearable={true}
                   onChange={(resp) => {
+                    console.log('resp', resp)
                     setSelectedOption(resp)
                   }}
                   options={options}
@@ -1268,6 +1320,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     item.nroOrden
                       ? `Mesa: ${item.mesa} - Pedido: ${item.nroOrden} - Estado: ${item.state}`
                       : `Mesa: ${item.mesa} - Estado: ${item.state}`
+                  }
+                />
+              </Grid> */}
+              <Grid item xs={12}>
+                <Select
+                  styles={reactSelectStyle(Boolean(errors.mesa))}
+                  name={'mesa'}
+                  placeholder={'Seleccione una mesa'}
+                  menuPosition={'fixed'}
+                  value={mesasSeleccionadas}
+                  // solo se permite el isclearable si se permite seleccion multiple
+                  // isClearable={!permitirSeleccionMultiple}
+                  isClearable={true}
+                  onChange={manejarCambioSeleccion}
+                  onKeyDown={manejarPresionTecla}
+                  options={options}
+                  isMulti={permitirSeleccionMultiple}
+                  getOptionValue={(opcion) => opcion.value.toString()}
+                  getOptionLabel={(opcion) =>
+                    opcion.nroOrden
+                      ? `Mesa: ${opcion.mesa} - Pedido: ${opcion.nroOrden} - Estado: ${opcion.state}`
+                      : `Mesa: ${opcion.mesa} - Estado: ${opcion.state}`
                   }
                 />
               </Grid>
