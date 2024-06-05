@@ -418,38 +418,72 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     refetchOnWindowFocus: false,
   })
 
-  const mesas: string[] = []
-
+  const mesas = [] as string[]
   for (let i = 1; i <= 50; i++) {
     mesas.push(`Mesa ${i}`)
   }
+
   const options = useMemo(() => {
-    return (mesas as string[]).map((mesa: string) => {
+    const mesasExistentes = new Set()
+    return mesas.flatMap((mesa) => {
       const pedidoEncontrado = data?.find(
         (pedido) =>
-          pedido.mesa.nombre.toLowerCase() === `${mesa.split(' ')[1]}`.toLowerCase() &&
+          pedido.mesa.nombre
+            .toLowerCase()
+            .includes(`${mesa.split(' ')[1]}`.toLowerCase()) &&
           !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase()),
       )
       if (pedidoEncontrado) {
         const { numeroPedido, numeroOrden, mesa, state } = pedidoEncontrado
-        return {
-          value: Number(`${mesa.nombre}`),
-          nroPedido: numeroPedido,
-          nroOrden: numeroOrden,
-          mesa: mesa.nombre,
-          state,
+        const mesasUnidas = mesa.nombre.split('-').map((m: any) => `Mesa ${m}`)
+        if (mesasUnidas.length > 1) {
+          const mesaUnida = mesa.nombre
+          if (!mesasExistentes.has(mesaUnida)) {
+            mesasExistentes.add(mesaUnida)
+            return [
+              {
+                value: Number(mesa.nombre.replace(/-/g, '')),
+                nroPedido: numeroPedido,
+                nroOrden: numeroOrden,
+                mesa: mesa.nombre,
+                state,
+              },
+            ]
+          }
+        } else {
+          if (!mesasExistentes.has(mesa.nombre)) {
+            mesasExistentes.add(mesa.nombre)
+            return [
+              {
+                value: Number(mesa.nombre),
+                nroPedido: numeroPedido,
+                nroOrden: numeroOrden,
+                mesa: mesa.nombre,
+                state,
+              },
+            ]
+          }
         }
       } else {
-        return {
-          value: Number(mesa.split(' ')[1]),
-          nroPedido: null,
-          nroOrden: null,
-          mesa: mesa.split(' ')[1],
-          state: 'Libre',
+        const mesaLibre = `Mesa ${mesa.split(' ')[1]}`
+        if (!mesasExistentes.has(mesaLibre)) {
+          mesasExistentes.add(mesaLibre)
+          return [
+            {
+              value: Number(mesa.split(' ')[1]),
+              nroPedido: null,
+              nroOrden: null,
+              mesa: mesa.split(' ')[1],
+              state: 'Libre',
+            },
+          ]
         }
       }
+      return []
     })
   }, [data])
+
+  console.log(selectedOption)
 
   useEffect(() => {
     const updateCart = () => {
@@ -667,7 +701,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       toast.error('Debe seleccionar una mesa')
       return
     }
-    console.log('selectedOption', selectedButton)
     if (
       selectedButton === 'Credito' &&
       (getValues('numeroTarjeta') === '' ||
