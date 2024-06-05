@@ -8,6 +8,7 @@ import NotFound from '../modules/base/sessions/NotFound'
 import sessionRoutes from '../modules/base/sessions/SessionRoutes'
 import clientesRoutes from '../modules/clientes/ClientesRoutes'
 import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDebitoRoutes'
+import pedidosRoutes from '../modules/pos/PosRoutes'
 import productosRoutes from '../modules/productos/ProductosRoutes'
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes'
 import ventasRoutes from '../modules/ventas/VentasRoutes'
@@ -27,6 +28,7 @@ export const appRoutes = [
       ...cuentaRoutes,
       ...proveedorRoutes,
       ...notaCreditoDebitoRoutes,
+      ...pedidosRoutes,
     ],
   },
   ...sessionRoutes,
