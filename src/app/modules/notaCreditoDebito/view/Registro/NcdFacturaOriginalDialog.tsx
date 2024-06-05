@@ -20,6 +20,7 @@ import React, { FunctionComponent, useMemo, useState } from 'react'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/SimpleMenu'
+import useAuth from '../../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../../utils/helper'
 import { MuiToolbarAlertBannerProps } from '../../../../utils/muiTable/materialReactTableUtils'
@@ -95,6 +96,14 @@ type Props = OwnProps
  * @constructor
  */
 const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
+
+  const entidad = {
+    codigoSucursal: sucursal.codigo,
+    codigoPuntoVenta: puntoVenta.codigo,
+  }
   const theme = useTheme()
   const { onClose, open, ...other } = props
 
@@ -131,7 +140,7 @@ const NcdFacturaOriginalDialog: FunctionComponent<Props> = (props) => {
         reverse: sorting.length <= 0,
         query,
       }
-      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination)
+      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination, entidad)
       setRowCount(pageInfo.totalDocs)
       return docs
     },

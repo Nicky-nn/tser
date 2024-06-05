@@ -32,6 +32,14 @@ type Props = OwnProps
 
 const MisVentasDialog: FunctionComponent<Props> = (props) => {
   const { user } = useAuth()
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
+
+  const entidad = {
+    codigoSucursal: sucursal.codigo,
+    codigoPuntoVenta: puntoVenta.codigo,
+  }
 
   const { onClose, open, ...other } = props
   const [loading, setLoading] = useState(false)
@@ -61,7 +69,7 @@ const MisVentasDialog: FunctionComponent<Props> = (props) => {
       reverse: false,
       query,
     }
-    const { docs } = await fetchFacturaListado(fetchPagination)
+    const { docs } = await fetchFacturaListado(fetchPagination, entidad)
     setLoading(false)
     if (docs.length > 0) {
       const dataExport: any = docs.map((item) => ({

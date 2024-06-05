@@ -16,6 +16,7 @@ import { convert } from 'html-to-text'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
 
+import useAuth from '../../../../base/hooks/useAuth'
 import { PAGE_DEFAULT, PageProps } from '../../../../interfaces'
 import { clearAllLineBreak } from '../../../../utils/helper'
 import { notDanger } from '../../../../utils/notification'
@@ -33,6 +34,13 @@ interface OwnProps {
 type Props = OwnProps
 
 const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
+  const entidad = {
+    codigoSucursal: sucursal.codigo,
+    codigoPuntoVenta: puntoVenta.codigo,
+  }
   const { onClose, open, ...other } = props
   const [loading, setLoading] = useState(false)
 
@@ -53,7 +61,7 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
       reverse: false,
       query,
     }
-    const { docs } = await fetchFacturaListado(fetchPagination)
+    const { docs } = await fetchFacturaListado(fetchPagination, entidad)
     setLoading(false)
     if (docs.length > 0) {
       const dataExport: any = docs.map((item) => ({

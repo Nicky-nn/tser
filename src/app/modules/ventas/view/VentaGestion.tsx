@@ -17,6 +17,7 @@ import StackMenuActionTable, {
   StackMenuItem,
 } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import useAuth from '../../../base/hooks/useAuth'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery } from '../../../utils/helper'
 import {
@@ -137,6 +138,15 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
 ]
 
 const VentaGestion: FC<any> = () => {
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
+
+  const entidad = {
+    codigoSucursal: sucursal.codigo,
+    codigoPuntoVenta: puntoVenta.codigo,
+  }
+
   const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
   const [factura, setFactura] = useState<FacturaProps | null>(null)
   const [openExport, setOpenExport] = useState(false)
@@ -177,7 +187,7 @@ const VentaGestion: FC<any> = () => {
         reverse: sorting.length <= 0,
         query,
       }
-      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination)
+      const { pageInfo, docs } = await fetchFacturaListado(fetchPagination, entidad)
       setRowCount(pageInfo.totalDocs)
       return docs
     },
@@ -193,7 +203,7 @@ const VentaGestion: FC<any> = () => {
           <Breadcrumb
             routeSegments={[
               { name: 'Ventas', path: '/ventas/gestion' },
-              { name: 'Gestión de Ventas' },
+              { name: 'Gestión de Facturas', path: '/ventas/gestion' },
             ]}
           />
         </div>
