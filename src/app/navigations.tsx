@@ -1,7 +1,6 @@
 import { homeRoutesMap } from './modules/base/home/HomeRoutes'
 import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap'
-import { productosRouteMap } from './modules/productos/ProductosRoutesMap'
-import { proveedorRouteMap } from './modules/proveedor/ProveedorRoutesMap'
+import { pedidosRouteMap } from './modules/pos/view/listado/PedidosRoutesMap'
 
 export interface NavigationProps {
   name: string
@@ -21,7 +20,7 @@ export interface NavigationProps {
 export const navigations: NavigationProps[] = [
   {
     name: homeRoutesMap.home.name,
-    icon: 'dashboard',
+    icon: 'home',
     path: homeRoutesMap.home.path,
   },
   {
@@ -30,16 +29,21 @@ export const navigations: NavigationProps[] = [
     type: 'label',
   },
   {
-    name: 'Ventas',
+    name: 'Ventas y Pedidos',
     icon: 'shopping_cart',
     children: [
       {
-        name: 'Registrar Venta',
-        iconText: 'VE',
-        path: '/ventas/registro',
+        name: 'Registrar Pedido',
+        iconText: 'RP',
+        path: '/pedidos/registrar',
       },
       {
-        name: 'Gestión de Ventas',
+        name: pedidosRouteMap.gestion.name,
+        iconText: 'PG',
+        path: 'pedidos/gestion',
+      },
+      {
+        name: 'Gestión de Facturas',
         iconText: 'VEGE',
         path: '/ventas/gestion',
       },
@@ -56,22 +60,22 @@ export const navigations: NavigationProps[] = [
       },
     ],
   },
-  {
-    name: 'Productos',
-    icon: 'inventory_sharp',
-    children: [
-      {
-        name: productosRouteMap.gestion.name,
-        iconText: 'GP',
-        path: productosRouteMap.gestion.path,
-      },
-      {
-        name: 'Proveedores',
-        iconText: 'PR',
-        path: proveedorRouteMap.gestion,
-      },
-    ],
-  },
+  // {
+  //   name: 'Productos',
+  //   icon: 'inventory_sharp',
+  //   children: [
+  //     {
+  //       name: productosRouteMap.gestion.name,
+  //       iconText: 'GP',
+  //       path: productosRouteMap.gestion.path,
+  //     },
+  //     {
+  //       name: 'Proveedores',
+  //       iconText: 'PR',
+  //       path: proveedorRouteMap.gestion,
+  //     },
+  //   ],
+  // },
   {
     name: 'Clientes',
     icon: 'person_sharp',
