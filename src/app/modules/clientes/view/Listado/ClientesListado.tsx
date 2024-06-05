@@ -67,6 +67,7 @@ const tableColumns: MRT_ColumnDef<ClienteProps>[] = [
  * @param props
  * @constructor
  */
+// eslint-disable-next-line no-unused-vars
 const ClientesListado: FunctionComponent<Props> = (props) => {
   const [openClienteRegistro, setOpenClienteRegistro] = useState(false)
   const [openCliente99001Registro, setOpenCliente99001Registro] = useState(false)

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   Add,
   AttachMoney,
@@ -36,7 +35,6 @@ import {
   Divider,
   FormControl,
   Grid,
-  Icon,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -50,8 +48,6 @@ import {
   Paper,
   Skeleton,
   styled,
-  Table,
-  TextField,
   Tooltip,
   Typography,
   Zoom,
@@ -81,9 +77,7 @@ import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../base/components/MySelect/ReactSelect'
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import useAuth from '../../../base/hooks/useAuth'
-import { PuntoVentaProps } from '../../../interfaces/puntoVenta'
-import { SucursalProps } from '../../../interfaces/sucursal'
-import { genReplaceEmpty, openInNewTab } from '../../../utils/helper'
+import { genReplaceEmpty } from '../../../utils/helper'
 import { swalException } from '../../../utils/swal'
 import { apiClienteBusqueda } from '../../clientes/api/clienteBusqueda.api'
 import ClienteExplorarDialog from '../../clientes/components/ClienteExplorarDialog'
@@ -185,6 +179,7 @@ interface Option {
 }
 interface OwnProps {
   form: UseFormReturn<any>
+  // eslint-disable-next-line no-unused-vars
   changeTab: (newTabIndex: number) => void
 }
 type Props = OwnProps
@@ -196,10 +191,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       watch,
       setValue,
       getValues,
-      handleSubmit,
       formState: { errors },
     },
-    changeTab,
   } = props
   const {
     user: { sucursal, puntoVenta, tipoRepresentacionGrafica, usuario },
@@ -250,7 +243,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
-  const { data: articulosProd, isLoading } = useQuery<ProductoProps[]>({
+  const { data: articulosProd } = useQuery<ProductoProps[]>({
     queryKey: ['articulosListado'],
     queryFn: async () => {
       const query = ''
@@ -260,7 +253,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         reverse: true,
         query,
       }
-      const { pageInfo, docs } = await apiListadoArticulos(fetchPagination)
+      const { docs } = await apiListadoArticulos(fetchPagination)
       return docs
     },
     refetchOnWindowFocus: false,
@@ -390,21 +383,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
   }
 
-  const handleDetalleExtraChange = (index: number, extraDetalle: string) => {
-    setCart((prevCart) =>
-      prevCart.map((item, i) => (i === index ? { ...item, extraDetalle } : item)),
-    )
-  }
-
   const subtotal = cart.reduce(
     (total, product) => total + product.price * product.quantity - product.discount,
     0,
   )
 
-  const discountTotal = cart.reduce(
-    (total, product) => total + product.price * product.quantity - product.discount,
-    0,
-  )
   const total = subtotal - additionalDiscount - giftCardAmount
 
   const handleButtonClick = (buttonText: string) => {
@@ -553,76 +536,46 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       () => {
         refetch()
       },
-    )
-      .then((responseActualizar) => {
-        const { numeroPedido, numeroOrden, mesa, state } =
-          //@ts-ignore
-          responseActualizar.restPedidoActualizarItem
-        setSelectedOption({
-          value: Number(mesa.nombre),
-          nroPedido: numeroPedido,
-          nroOrden: numeroOrden,
-          mesa: mesa.nombre,
-          state,
-        })
+    ).then((responseActualizar) => {
+      const { numeroPedido, numeroOrden, mesa, state } =
+        //@ts-ignore
+        responseActualizar.restPedidoActualizarItem
+      setSelectedOption({
+        value: Number(mesa.nombre),
+        nroPedido: numeroPedido,
+        nroOrden: numeroOrden,
+        mesa: mesa.nombre,
+        state,
+      })
 
-        // Verificamos si hay al menos un producto en el carrito que sea distinto de fromDatabase
-        const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)
+      // Verificamos si hay al menos un producto en el carrito que sea distinto de fromDatabase
+      const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)
 
-        // Si hay productos nuevos en el carrito, llamamos a adicionarItemPedido
-        if (hasNonDatabaseProduct) {
-          adicionarItemPedido(
-            puntoVenta,
-            sucursal,
-            selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-            deletedProducts,
-            cart,
-            () => {
-              refetch()
-            },
-          )
-            .then((responseAdicionar) => {
-              const { numeroPedido, numeroOrden, mesa, state } =
-                //@ts-ignore
-                responseAdicionar.restPedidoAdicionarItem
+      // Si hay productos nuevos en el carrito, llamamos a adicionarItemPedido
+      if (hasNonDatabaseProduct) {
+        adicionarItemPedido(
+          puntoVenta,
+          sucursal,
+          selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
+          deletedProducts,
+          cart,
+          () => {
+            refetch()
+          },
+        ).then((responseAdicionar) => {
+          const { numeroPedido, numeroOrden, mesa, state } =
+            //@ts-ignore
+            responseAdicionar.restPedidoAdicionarItem
 
-              setSelectedOption({
-                value: Number(mesa.nombre),
-                nroPedido: numeroPedido,
-                nroOrden: numeroOrden,
-                mesa: mesa.nombre,
-                state,
-              })
+          setSelectedOption({
+            value: Number(mesa.nombre),
+            nroPedido: numeroPedido,
+            nroOrden: numeroOrden,
+            mesa: mesa.nombre,
+            state,
+          })
 
-              // Verificamos si hay productos eliminados para llamar a eliminarPedido
-              if (deletedProducts.length > 0) {
-                eliminarPedido(
-                  puntoVenta,
-                  sucursal,
-                  selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-                  deletedProducts,
-                  () => {
-                    refetch()
-                  },
-                )
-                  .then((responseEliminar) => {
-                    const { numeroPedido, numeroOrden, mesa, state } =
-                      responseEliminar.restPedidoEliminarItem
-                    setSelectedOption({
-                      value: Number(mesa.nombre),
-                      nroPedido: numeroPedido,
-                      nroOrden: numeroOrden,
-                      mesa: mesa.nombre,
-                      state,
-                    })
-                    setDeletedProducts([])
-                  })
-                  .catch((errorEliminar) => {})
-              }
-            })
-            .catch((errorAdicionar) => {})
-        } else {
-          // Si no hay productos nuevos, simplemente llamamos a eliminarPedido si hay elementos en deletedProducts
+          // Verificamos si hay productos eliminados para llamar a eliminarPedido
           if (deletedProducts.length > 0) {
             eliminarPedido(
               puntoVenta,
@@ -632,24 +585,46 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               () => {
                 refetch()
               },
-            )
-              .then((responseEliminar) => {
-                const { numeroPedido, numeroOrden, mesa, state } =
-                  responseEliminar.restPedidoEliminarItem
-                setSelectedOption({
-                  value: Number(mesa.nombre),
-                  nroPedido: numeroPedido,
-                  nroOrden: numeroOrden,
-                  mesa: mesa.nombre,
-                  state,
-                })
-                setDeletedProducts([])
+            ).then((responseEliminar) => {
+              const { numeroPedido, numeroOrden, mesa, state } =
+                responseEliminar.restPedidoEliminarItem
+              setSelectedOption({
+                value: Number(mesa.nombre),
+                nroPedido: numeroPedido,
+                nroOrden: numeroOrden,
+                mesa: mesa.nombre,
+                state,
               })
-              .catch((errorEliminar) => {})
+              setDeletedProducts([])
+            })
           }
+        })
+      } else {
+        // Si no hay productos nuevos, simplemente llamamos a eliminarPedido si hay elementos en deletedProducts
+        if (deletedProducts.length > 0) {
+          eliminarPedido(
+            puntoVenta,
+            sucursal,
+            selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
+            deletedProducts,
+            () => {
+              refetch()
+            },
+          ).then((responseEliminar) => {
+            const { numeroPedido, numeroOrden, mesa, state } =
+              responseEliminar.restPedidoEliminarItem
+            setSelectedOption({
+              value: Number(mesa.nombre),
+              nroPedido: numeroPedido,
+              nroOrden: numeroOrden,
+              mesa: mesa.nombre,
+              state,
+            })
+            setDeletedProducts([])
+          })
         }
-      })
-      .catch((errorActualizar) => {})
+      }
+    })
   }
 
   const finalizarOrden = () => {
@@ -663,7 +638,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
       .then((response) => {
         if (response.restPedidoFinalizar) {
-          const { numeroPedido, mesa, state } = response.restPedidoFinalizar
+          const { mesa } = response.restPedidoFinalizar
           setSelectedOption({
             value: Number(mesa.nombre),
             nroPedido: null,
@@ -714,7 +689,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
       .then((response) => {
         if (response.restPedidoFinalizar) {
-          const { numeroPedido, mesa, state } = response.restPedidoFinalizar
+          const { numeroPedido, mesa } = response.restPedidoFinalizar
           setSelectedOption({
             value: Number(mesa.nombre),
             nroPedido: null,
@@ -734,7 +709,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           )
             .then((response) => {
               if (response) {
-                const { cuf, representacionGrafica } = response.factura
+                const { representacionGrafica } = response.factura
                 if (tipoRepresentacionGrafica === 'pdf')
                   printJS(representacionGrafica.pdf)
                 if (tipoRepresentacionGrafica === 'rollo')
@@ -806,7 +781,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           )
             .then((response) => {
               if (response.restPedidoFinalizar) {
-                const { numeroPedido, mesa, state } = response.restPedidoFinalizar
+                const { mesa } = response.restPedidoFinalizar
                 setSelectedOption({
                   value: Number(mesa.nombre),
                   nroPedido: null,
@@ -896,6 +871,44 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     localStorage.setItem('selectedView', selectedView)
   }, [selectedView])
+
+  useEffect(() => {
+    const setClientePorDefecto = async () => {
+      const clientePorDefecto = {
+        codigoCliente: '00',
+        apellidos: 'Sin Apellidos',
+        complemento: null,
+        numeroDocumento: '00',
+        razonSocial: 'Sin Razón Social',
+        state: 'ELABORADO',
+        nombres: 'Sin Nombre',
+        email: 'jmquirogaf@gmail.com',
+        tipoDocumentoIdentidad: {
+          codigoClasificador: '1',
+          descripcion: 'CI - CEDULA DE IDENTIDAD',
+        },
+      }
+      if (clientePorDefecto) {
+        setValue('cliente', clientePorDefecto)
+        setValue('emailCliente', genReplaceEmpty(clientePorDefecto.email, ''))
+      }
+    }
+
+    setClientePorDefecto()
+  }, [selectedOption])
+
+  /**
+   * Función para manejar el cambio de precio de un producto
+   * @param index Índice del producto en el carrito
+   * @param arg1  Nuevo precio del producto
+   */
+
+  const handlePriceChange = (index: number, arg1: number) => {
+    const newPrice = arg1
+    setCart((prevCart) =>
+      prevCart.map((item, i) => (i === index ? { ...item, price: newPrice } : item)),
+    )
+  }
 
   return (
     <Grid container spacing={3}>
@@ -1333,6 +1346,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     </AccordionSummary>
                     <AccordionDetails sx={{ display: 'flex' }}>
                       <Grid container spacing={2}>
+                        <Grid item xs={7}>
+                          <FormTextField
+                            label="Precio"
+                            type="number"
+                            value={product.price}
+                            onChange={(e) =>
+                              handlePriceChange(index, parseFloat(e.target.value) || 0)
+                            }
+                            sx={{ width: '100%' }}
+                          />
+                        </Grid>
                         <Grid item xs={5}>
                           <FormTextField
                             label="Descuento"
@@ -1344,7 +1368,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             sx={{ width: '100%' }}
                           />
                         </Grid>
-                        <Grid item xs={7}>
+                        <Grid item xs={12}>
                           <FormTextField
                             label="Notas"
                             value={product.extraDescription}
