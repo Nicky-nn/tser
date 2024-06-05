@@ -14,9 +14,26 @@ export interface ApiFacturaResponse {
   pageInfo: PageInfoProps
 }
 
+export interface EntidadParamsInput {
+  codigoSucursal: number
+  codigoPuntoVenta: number
+}
+
 const query = gql`
-  query LISTADO($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
-    facturaCompraVentaAll(limit: $limit, reverse: $reverse, page: $page, query: $query) {
+  query LISTADO(
+    $limit: Int!
+    $entidad: EntidadParamsInput!
+    $reverse: Boolean
+    $page: Int!
+    $query: String
+  ) {
+    restFacturaListado(
+      limit: $limit
+      entidad: $entidad
+      reverse: $reverse
+      page: $page
+      query: $query
+    ) {
       pageInfo {
         hasNextPage
         hasPrevPage
@@ -25,7 +42,6 @@ const query = gql`
         totalDocs
       }
       docs {
-        _id
         nitEmisor
         razonSocialEmisor
         numeroFactura
@@ -146,12 +162,13 @@ const query = gql`
 
 export const fetchFacturaListado = async (
   pageInfo: PageProps,
+  entidad: EntidadParamsInput,
 ): Promise<ApiFacturaResponse> => {
   const client = new GraphQLClient(import.meta.env.ISI_API_URL)
   const token = localStorage.getItem(AccessToken)
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, { ...pageInfo })
-  return data.facturaCompraVentaAll
+  const data: any = await client.request(query, { ...pageInfo, entidad })
+  return data.restFacturaListado
 }
