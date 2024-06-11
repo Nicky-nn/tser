@@ -243,6 +243,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
+  // Declara una variable para almacenar la caché de imágenes
+  const imageCache = {} as Record<string, string>
+
+  // Dentro de tu función o componente
   const { data: articulosProd } = useQuery<ProductoProps[]>({
     queryKey: ['articulosListado'],
     queryFn: async () => {
@@ -254,6 +258,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         query,
       }
       const { docs } = await apiListadoArticulos(fetchPagination)
+
+      // Almacenar en caché las URL de las imágenes
+      docs.forEach((producto) => {
+        const imageUrl = producto.imagen // Suponiendo que la URL de la imagen está en la propiedad 'imagen' del producto
+        const codigoArticulo = producto.codigoArticulo
+        imageCache[codigoArticulo] = imageUrl
+      })
+
       return docs
     },
     refetchOnWindowFocus: false,
@@ -578,8 +590,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               state,
             },
           ])
-          // Cambiamos el ustate para q categorias o productos no este seleccionado
-          setSelectedCategory(null)
         }
       })
       .catch((error) => {
@@ -622,7 +632,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           state,
         },
       ])
-      setSelectedCategory(null)
 
       // Verificamos si hay al menos un producto en el carrito que sea distinto de fromDatabase
       const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)

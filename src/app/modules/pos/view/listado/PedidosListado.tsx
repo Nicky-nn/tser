@@ -67,9 +67,9 @@ const tableColumns: MRT_ColumnDef<any>[] = [
       row.cliente ? row.cliente.numeroDocumento ?? 'Sin documento' : 'Sin documento',
   },
   {
-    accessorKey: 'fechaDocumento',
+    accessorKey: 'createdAt>',
     header: 'Fecha',
-    id: 'fechaCreacion',
+    id: 'createdAt>',
     accessorFn: (row) => row.fechaDocumento,
   },
   {
@@ -176,6 +176,7 @@ const PedidosListado: FunctionComponent<Props> = () => {
         reverse: sorting.length <= 0,
         query,
       }
+      console.log('fetchPagination', fetchPagination)
       const entidad = {
         codigoSucursal: sucursal.codigo,
         codigoPuntoVenta: puntoVenta.codigo,
@@ -200,33 +201,6 @@ const PedidosListado: FunctionComponent<Props> = () => {
     return totales
   }, [data])
 
-  // Calcular los totales agrupados por tipoDocumento, state y sigla de moneda
-  const totalesPorTipoDocumentoStateYSigla = useMemo(() => {
-    const totales: Record<string, Record<string, Record<string, number>>> = {}
-
-    data?.forEach((row) => {
-      const tipoDocumento = row.tipoDocumento
-      const state = row.state
-      const siglaMoneda = row.moneda?.sigla
-
-      if (!totales[tipoDocumento]) {
-        totales[tipoDocumento] = {}
-      }
-
-      if (!totales[tipoDocumento][state]) {
-        totales[tipoDocumento][state] = {}
-      }
-
-      if (!totales[tipoDocumento][state][siglaMoneda]) {
-        totales[tipoDocumento][state][siglaMoneda] = 0
-      }
-
-      totales[tipoDocumento][state][siglaMoneda] += row.montoTotal
-    })
-
-    return totales
-  }, [data])
-
   const columns = useMemo(() => tableColumns, [])
   const [mostrarTotales, setMostrarTotales] = useState(false)
 
@@ -246,11 +220,7 @@ const PedidosListado: FunctionComponent<Props> = () => {
       >
         {mostrarTotales ? 'Ocultar Totales' : 'Ver Totales'}
       </Button>
-      {mostrarTotales && (
-        <TotalesTabla
-          totalesPorTipoDocumentoYState={totalesPorTipoDocumentoStateYSigla}
-        />
-      )}
+      {mostrarTotales && <TotalesTabla />}
       <MaterialReactTable
         {...(MuiTableAdvancedOptionsProps as MRT_TableOptions<any>)}
         columns={columns}
