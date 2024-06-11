@@ -418,10 +418,21 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     refetchOnWindowFocus: false,
   })
 
+  // FUNCIONES PARA MESAS
+  /**
+   * Genera un arreglo de mesas del 1 al 50
+   */
+
   const mesas = [] as string[]
   for (let i = 1; i <= 50; i++) {
     mesas.push(`Mesa ${i}`)
   }
+  /**
+   * Genera un arreglo de opciones para el componente Select
+   * @returns Un arreglo de objetos con las propiedades value, nroPedido, nroOrden, mesa y state
+   *       de acuerdo a los pedidos encontrados en data
+   *       o a las mesas libres si no se encontró un pedido
+   */
 
   const options = useMemo(() => {
     const result: {
@@ -432,50 +443,66 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       state: string
     }[] = []
 
-    mesas.forEach((mesa, index) => {
-      const pedidoEncontrado = data?.find(
-        (pedido) =>
-          pedido.mesa.nombre
-            .toLowerCase()
-            .includes(`${mesa.split(' ')[1]}`.toLowerCase()) &&
-          !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase()),
-      )
+    const seenValues = new Set<number>()
+
+    mesas.forEach((mesa) => {
+      const mesaNumber = Number(mesa.split(' ')[1])
+
+      const pedidoEncontrado = data?.find((pedido) => {
+        const mesaNombres = pedido.mesa.nombre.split('-')
+        return (
+          mesaNombres.some((m: string) => m.trim() === `${mesaNumber}`) &&
+          !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase())
+        )
+      })
 
       if (pedidoEncontrado) {
-        const { numeroPedido, numeroOrden, mesa, state } = pedidoEncontrado
-        const mesasUnidas = mesa.nombre.split('-').map((m) => `Mesa ${m}`)
+        const { numeroPedido, numeroOrden, mesa: mesaPedido, state } = pedidoEncontrado
+        const mesasUnidas = mesaPedido.nombre.split('-').map((m: any) => `Mesa ${m}`)
         const numberValue = Number(mesasUnidas[0].split(' ')[1])
 
-        result.push({
-          value: numberValue,
-          nroPedido: numeroPedido,
-          nroOrden: numeroOrden,
-          mesa: mesa.nombre,
-          state,
-        })
+        if (!seenValues.has(numberValue)) {
+          result.push({
+            value: numberValue,
+            nroPedido: numeroPedido,
+            nroOrden: numeroOrden,
+            mesa: mesaPedido.nombre,
+            state,
+          })
+          mesasUnidas.forEach((m: string) => seenValues.add(Number(m.split(' ')[1])))
+        }
       } else {
-        const value = Number(mesa.split(' ')[1])
-        console.log('value', value)
-        result.push({
-          value,
-          nroPedido: null,
-          nroOrden: null,
-          mesa: mesa.split(' ')[1],
-          state: 'Libre',
-        })
+        if (!seenValues.has(mesaNumber)) {
+          result.push({
+            value: mesaNumber,
+            nroPedido: null,
+            nroOrden: null,
+            mesa: `${mesaNumber}`,
+            state: 'Libre',
+          })
+          seenValues.add(mesaNumber)
+        }
       }
     })
 
-    // Mover el valor "10" a la posición correcta
-    const index10 = result.findIndex((item) => item.value === 10)
-    if (index10 !== -1) {
-      const item10 = result.splice(index10, 1)[0]
-      result.splice(9, 0, item10)
+    // Asegurarse de que todas las mesas del 1 al 50 estén presentes
+    for (let i = 1; i <= 50; i++) {
+      if (!seenValues.has(i)) {
+        result.push({
+          value: i,
+          nroPedido: null,
+          nroOrden: null,
+          mesa: `${i}`,
+          state: 'Libre',
+        })
+      }
     }
+
+    // Ordenar los resultados por el valor
+    result.sort((a, b) => a.value - b.value)
 
     return result
   }, [data])
-  console.log('options', options)
 
   useEffect(() => {
     const updateCart = () => {
@@ -535,7 +562,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             response.restPedidoExpressRegistro
           setPermitirSeleccionMultiple(false)
           const numberValue = Number(mesa.nombre.split('-')[0])
-          console.log('numberValue', numberValue)
           setSelectedOption({
             value: numberValue,
             nroPedido: numeroPedido,
@@ -543,18 +569,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             mesa: mesa.nombre,
             state,
           })
-          console.log(
-            'value',
-            numberValue,
-            'nroPedido',
-            numeroPedido,
-            'nroOrden',
-            numeroOrden,
-            'mesa',
-            mesa.nombre,
-            'state',
-            state,
-          )
+          setMesasSeleccionadas([
+            {
+              value: numberValue,
+              nroPedido: numeroPedido,
+              nroOrden: numeroOrden,
+              mesa: mesa.nombre,
+              state,
+            },
+          ])
+          // Cambiamos el ustate para q categorias o productos no este seleccionado
+          setSelectedCategory(null)
         }
       })
       .catch((error) => {
@@ -588,6 +613,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         mesa: mesa.nombre,
         state,
       })
+      setMesasSeleccionadas([
+        {
+          value: Number(mesa.nombre),
+          nroPedido: numeroPedido,
+          nroOrden: numeroOrden,
+          mesa: mesa.nombre,
+          state,
+        },
+      ])
+      setSelectedCategory(null)
 
       // Verificamos si hay al menos un producto en el carrito que sea distinto de fromDatabase
       const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)
@@ -615,6 +650,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             mesa: mesa.nombre,
             state,
           })
+          setMesasSeleccionadas([
+            {
+              value: Number(mesa.nombre),
+              nroPedido: numeroPedido,
+              nroOrden: numeroOrden,
+              mesa: mesa.nombre,
+              state,
+            },
+          ])
+          setSelectedCategory(null)
 
           // Verificamos si hay productos eliminados para llamar a eliminarPedido
           if (deletedProducts.length > 0) {
@@ -636,6 +681,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 mesa: mesa.nombre,
                 state,
               })
+              setMesasSeleccionadas([
+                {
+                  value: Number(mesa.nombre),
+                  nroPedido: numeroPedido,
+                  nroOrden: numeroOrden,
+                  mesa: mesa.nombre,
+                  state,
+                },
+              ])
+              setSelectedCategory(null)
+
               setDeletedProducts([])
             })
           }
@@ -661,6 +717,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               mesa: mesa.nombre,
               state,
             })
+            setMesasSeleccionadas([
+              {
+                value: Number(mesa.nombre),
+                nroPedido: numeroPedido,
+                nroOrden: numeroOrden,
+                mesa: mesa.nombre,
+                state,
+              },
+            ])
+            setSelectedCategory(null)
+
             setDeletedProducts([])
           })
         }
@@ -680,17 +747,30 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       .then((response) => {
         if (response.restPedidoFinalizar) {
           const { mesa } = response.restPedidoFinalizar
+          const mesaNombre = mesa.nombre.split('-')[0] // Tomar el primer número antes del guion
+
           setSelectedOption({
-            value: Number(mesa.nombre),
+            value: Number(mesaNombre),
             nroPedido: null,
             nroOrden: null,
-            mesa: mesa.nombre,
+            mesa: mesaNombre,
             state: 'Libre',
           })
+
+          setMesasSeleccionadas([
+            {
+              value: Number(mesaNombre),
+              nroPedido: null,
+              nroOrden: null,
+              mesa: mesaNombre,
+              state: 'Libre',
+            },
+          ])
           // Eliinar cliente seleccionado
           setValue('cliente', null)
           setSelectedButton('Efectivo')
           setEnviaDatos(true)
+          setSelectedCategory(null)
         }
       })
       .catch((error) => {
@@ -737,6 +817,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             mesa: mesa.nombre,
             state: 'Libre',
           })
+          setMesasSeleccionadas([
+            {
+              value: Number(mesa.nombre),
+              nroPedido: null,
+              nroOrden: null,
+              mesa: mesa.nombre,
+              state: 'Libre',
+            },
+          ])
+          setSelectedCategory(null)
 
           // Aquí llamamos a facturarPedido dentro del then de finalizarPedido
           facturarPedido(
@@ -837,6 +927,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 selectedOption?.mesa,
                 selectedOption?.nroOrden?.toString(),
               )
+              setSelectedCategory(null)
             })
             .catch((error) => {
               console.error('Error al finalizar el pedido:', error)
@@ -972,6 +1063,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
     if (permitirSeleccionMultiple) {
       setMesasSeleccionadas(mesasLibresSeleccionadas)
+      setSelectedOption(mesasLibresSeleccionadas[0])
 
       let newMesasSeleccionadas = [] as string[]
       mesasLibresSeleccionadas.forEach((mesa) => {
@@ -987,7 +1079,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         state: 'Libre',
       }
       setSelectedOption(mesasCombinadas)
-      console.log('mesasCombinadas', mesasCombinadas)
     } else {
       setMesasSeleccionadas(mesasLibresSeleccionadas)
       setSelectedOption(mesasLibresSeleccionadas[0])
@@ -1300,29 +1391,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
           {selectedView === 'lista' || selectedView === null || selectedView === '' ? (
             <>
-              {/* <Grid item xs={12}>
-                <Select<Option>
-                  styles={reactSelectStyle(Boolean(errors.mesa))}
-                  name={'mesa'}
-                  placeholder={'Seleccione una mesa'}
-                  menuPosition={'fixed'}
-                  value={selectedOption}
-                  isClearable={true}
-                  onChange={(resp) => {
-                    console.log('resp', resp)
-                    setSelectedOption(resp)
-                  }}
-                  options={options}
-                  getOptionValue={(item) =>
-                    item.value ? item.value.toString() : 'default'
-                  }
-                  getOptionLabel={(item) =>
-                    item.nroOrden
-                      ? `Mesa: ${item.mesa} - Pedido: ${item.nroOrden} - Estado: ${item.state}`
-                      : `Mesa: ${item.mesa} - Estado: ${item.state}`
-                  }
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <Select
                   styles={reactSelectStyle(Boolean(errors.mesa))}
@@ -1594,7 +1662,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     style={{ color: 'white', height: '60px' }}
                     disabled={selectedOption?.state === 'COMPLETADO'}
                   >
-                    Registar, Finalizar y Comanda
+                    Registrar, Finalizar y Comanda
                   </Button>
                 </Grid>
               </Grid>
