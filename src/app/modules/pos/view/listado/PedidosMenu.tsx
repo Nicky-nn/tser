@@ -30,6 +30,7 @@ import SimpleMenu, { SimpleMenuItem } from '../../../../base/components/MyMenu/S
 import useAuth from '../../../../base/hooks/useAuth'
 import { MuiTableBasicOptionsProps } from '../../../../utils/muiTable/materialReactTableUtils'
 import { swalException } from '../../../../utils/swal'
+import AnularDocumentoDialog from '../../../ventas/view/VentaGestion/AnularDocumentoDialog'
 import { restPedidoAnularApi } from '../../api/anularPedido.api'
 import { generarComandaPDF } from '../../Pdf/Comanda'
 import { generarReciboPDF } from '../../Pdf/Recibo'
@@ -71,6 +72,9 @@ const PedidosMenu: React.FC<Props> = (props) => {
   const [selectAllItems, setSelectAllItems] = useState(true)
   const [selectAllStock, setSelectAllStock] = useState(true)
   const [selectedItems, setSelectedItems] = useState<any[]>([])
+  const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
+
+  const [factura, setFactura] = useState<any | null>(null)
 
   useEffect(() => {
     const mappedProducts = row.productos.map((producto: any) => ({
@@ -105,6 +109,20 @@ const PedidosMenu: React.FC<Props> = (props) => {
   const nroOrden = row.numeroOrden
 
   const handleAnularPedido = () => {
+    setFactura({
+      numeroFactura: row.refNroDocumento,
+      cuf: row.refDocumento,
+      cliente: {
+        apellidos: row.cliente.apellidos,
+        razonSocial: row.cliente.razonSocial,
+        complemento: row.cliente.complemento,
+        email: row.cliente.email,
+        nombres: row.cliente.nombres,
+        numeroDocumento: row.cliente.numeroDocumento,
+        codigoCliente: row.cliente.codigoCliente,
+      },
+      fechaEmision: row.fechaDocumento,
+    })
     setOpenAnularModal(true)
   }
 
@@ -146,6 +164,8 @@ const PedidosMenu: React.FC<Props> = (props) => {
         })
         refetch()
         handleCloseAnularModal()
+        // Abrimos dialogo de anulación de documento
+        setOpenAnularDocumento(true)
       } else {
         Swal.fire({
           icon: 'error',
@@ -351,6 +371,21 @@ const PedidosMenu: React.FC<Props> = (props) => {
           </Box>
         </Box>
       </Modal>
+      <>
+        <AnularDocumentoDialog
+          id={'anularDocumentoDialog'}
+          open={openAnularDocumento}
+          keepMounted
+          factura={factura}
+          onClose={async (val) => {
+            if (val) {
+              await refetch()
+            }
+            setFactura(null)
+            setOpenAnularDocumento(false)
+          }}
+        />
+      </>
     </>
   )
 }
