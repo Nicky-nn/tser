@@ -72,6 +72,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import { FormTextField } from '../../../base/components/Form'
+import { NumeroFormat } from '../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../base/components/MySelect/ReactSelect'
@@ -557,6 +558,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     updateCart()
   }, [selectedOption, data])
 
+  // useefct para  selectCategoria
+  useEffect(() => {
+    if (categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0].name)
+    }
+  }, [categories, selectedCategory])
+
   const registrarPedido = () => {
     restPedidoExpressRegistro(
       cart,
@@ -779,7 +787,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           setValue('cliente', null)
           setSelectedButton('Efectivo')
           setEnviaDatos(true)
-          setSelectedCategory(null)
+          setSelectedCategory(categories[0].name || null)
         }
       })
       .catch((error) => {
@@ -835,7 +843,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               state: 'Libre',
             },
           ])
-          setSelectedCategory(null)
+          setSelectedCategory(categories[0].name || null)
 
           // Aquí llamamos a facturarPedido dentro del then de finalizarPedido
           facturarPedido(
@@ -936,7 +944,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 selectedOption?.mesa,
                 selectedOption?.nroOrden?.toString(),
               )
-              setSelectedCategory(null)
+              setSelectedCategory(categories[0].name || null)
             })
             .catch((error) => {
               console.error('Error al finalizar el pedido:', error)
@@ -1531,26 +1539,42 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     <AccordionDetails sx={{ display: 'flex' }}>
                       <Grid container spacing={2}>
                         <Grid item xs={7}>
-                          <FormTextField
-                            label="Precio"
-                            type="number"
-                            value={product.price}
-                            onChange={(e) =>
-                              handlePriceChange(index, parseFloat(e.target.value) || 0)
-                            }
-                            sx={{ width: '100%' }}
-                          />
+                          <FormControl fullWidth size="small">
+                            <InputLabel htmlFor="precio">Precio</InputLabel>
+                            <OutlinedInput
+                              id="precio"
+                              label="Precio"
+                              size="small"
+                              value={product.price}
+                              onChange={(e) =>
+                                handlePriceChange(index, parseFloat(e.target.value) || 0)
+                              }
+                              onBlur={() => handlePriceChange(index, product.price)}
+                              inputComponent={NumeroFormat as any}
+                              inputProps={{}}
+                              sx={{ width: '100%' }}
+                            />
+                          </FormControl>
                         </Grid>
                         <Grid item xs={5}>
-                          <FormTextField
-                            label="Descuento"
-                            type="number"
-                            value={product.discount || 0}
-                            onChange={(e) =>
-                              handleDiscountChange(index, parseFloat(e.target.value) || 0)
-                            }
-                            sx={{ width: '100%' }}
-                          />
+                          <FormControl fullWidth size="small">
+                            <InputLabel htmlFor="descuento">Descuento</InputLabel>
+                            <OutlinedInput
+                              id="descuento"
+                              label="Descuento"
+                              size="small"
+                              value={product.discount}
+                              onChange={(e) =>
+                                handleDiscountChange(
+                                  index,
+                                  parseFloat(e.target.value) || 0,
+                                )
+                              }
+                              inputComponent={NumeroFormat as any}
+                              inputProps={{}}
+                              sx={{ width: '100%' }}
+                            />
+                          </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                           <FormTextField
