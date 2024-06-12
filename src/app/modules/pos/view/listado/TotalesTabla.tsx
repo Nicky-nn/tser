@@ -12,6 +12,7 @@ const colors = {
   ANULADO: '#FF9598',
   'FACTURA (FINALIZADO)': '#93C4EE',
   'NOTA_VENTA (FINALIZADO)': '#6EDDBD',
+  'NOTA_VENTA (ANULADO)': '#FFD700',
 } as Record<string, string>
 
 const TotalesTabla = () => {
