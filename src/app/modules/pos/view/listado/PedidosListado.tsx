@@ -176,7 +176,6 @@ const PedidosListado: FunctionComponent<Props> = () => {
         reverse: sorting.length <= 0,
         query,
       }
-      console.log('fetchPagination', fetchPagination)
       const entidad = {
         codigoSucursal: sucursal.codigo,
         codigoPuntoVenta: puntoVenta.codigo,

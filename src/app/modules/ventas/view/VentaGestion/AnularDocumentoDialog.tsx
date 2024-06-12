@@ -16,6 +16,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
+import useAuth from '../../../../base/hooks/useAuth'
 import { swalConfirm, swalException } from '../../../../utils/swal'
 import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api'
 import { SinMotivoAnulacionProps } from '../../../sin/interfaces/sin.interface'
@@ -26,6 +27,7 @@ interface OwnProps {
   id: string
   keepMounted: boolean
   open: boolean
+  // eslint-disable-next-line no-unused-vars
   onClose: (value?: any) => void
   factura: FacturaProps | null
 }
@@ -33,6 +35,9 @@ interface OwnProps {
 type Props = OwnProps
 
 const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
   const { onClose, open, factura, ...other } = props
   const [motivosAnulacion, setMotivosAnulacion] = useState<SinMotivoAnulacionProps[]>([])
   const [loading, setLoading] = useState(false)
@@ -50,7 +55,10 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
   useEffect(() => {
     const fetch = async (): Promise<void> => {
       await fetchSinMotivoAnulacion().then((res) => {
-        setMotivosAnulacion(res || [])
+        const filteredMotivos =
+          //@ts-ignore
+          res?.filter((motivo) => motivo.codigoClasificador !== '2') || []
+        setMotivosAnulacion(filteredMotivos)
       })
     }
     fetch().then()
@@ -59,6 +67,10 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
   const handleCancel = () => {
     onClose()
   }
+  const entidad = {
+    codigoSucursal: sucursal.codigo,
+    codigoPuntoVenta: puntoVenta.codigo,
+  }
 
   const handleOk = async () => {
     let aux = true
@@ -66,7 +78,7 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
       toast.error('Seleccione el motivo de la anulación')
       aux = false
     }
-    if (!factura?._id) {
+    if (!factura?.cuf) {
       toast.error('Seleccione el documento')
       aux = false
     }
@@ -77,8 +89,15 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
         showLoaderOnConfirm: true,
         preConfirm: () => {
           setLoading(true)
-          const input = { id: factura?._id, codigoMotivo: value.codigoMotivo }
-          return fetchFacturaAnular(factura?._id || '', value.codigoMotivo)
+          return fetchFacturaAnular(
+            factura?.cuf || '',
+            value.codigoMotivo,
+            entidad,
+          ).catch((err) => {
+            swalException(err)
+            setLoading(false)
+            return false
+          })
         },
         allowOutsideClick: () => !Swal.isLoading(),
       })
@@ -89,6 +108,7 @@ const AnularDocumentoDialog: FunctionComponent<Props> = (props: Props) => {
             setLoading(false)
           }
         })
+        // Abrimos Dialog
         .catch((err) => {
           swalException(err)
           setLoading(false)
