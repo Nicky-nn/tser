@@ -7,8 +7,8 @@ import { MyGraphQlError } from '../../../base/services/GraphqlError'
 import { FacturaProps } from '../interfaces/factura'
 
 export const FCV_ONLINE = gql`
-  mutation FCV_ANULAR($id: ID!, $codigoMotivo: Int!) {
-    facturaCompraVentaAnulacion(id: $id, codigoMotivo: $codigoMotivo) {
+  mutation FCV_ANULAR($cuf: String!, $codigoMotivo: Int!, $entidad: EntidadParamsInput!) {
+    restFacturaAnular(cuf: $cuf, codigoMotivo: $codigoMotivo, entidad: $entidad) {
       representacionGrafica {
         pdf
       }
@@ -20,10 +20,12 @@ export const FCV_ONLINE = gql`
  * @description Anula una factura
  * @param id
  * @param codigoMotivo
+ * @param entidad
  */
 export const fetchFacturaAnular = async (
-  id: string,
+  cuf: string,
   codigoMotivo: number,
+  entidad: { codigoSucursal: number; codigoPuntoVenta: number },
 ): Promise<FacturaProps> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
@@ -31,8 +33,8 @@ export const fetchFacturaAnular = async (
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data: any = await client.request(FCV_ONLINE, { id, codigoMotivo })
-    return data.facturaCompraVentaAnulacion
+    const data: any = await client.request(FCV_ONLINE, { cuf, codigoMotivo, entidad })
+    return data.restFacturaAnular
   } catch (e: any) {
     throw new MyGraphQlError(e)
   }
