@@ -188,18 +188,18 @@ const PedidosListado: FunctionComponent<Props> = () => {
     refetchOnWindowFocus: false,
   })
 
-  // Calcular los totales agrupados por sigla
-  const totalesPorSigla = useMemo(() => {
-    const totales: Record<string, number> = {}
-    data?.forEach((row) => {
-      const sigla = row.moneda.sigla
-      if (!totales[sigla]) {
-        totales[sigla] = 0
-      }
-      totales[sigla] += row.montoTotal
-    })
-    return totales
-  }, [data])
+  // // Calcular los totales agrupados por sigla
+  // const totalesPorSigla = useMemo(() => {
+  //   const totales: Record<string, number> = {}
+  //   data?.forEach((row) => {
+  //     const sigla = row.moneda.sigla
+  //     if (!totales[sigla]) {
+  //       totales[sigla] = 0
+  //     }
+  //     totales[sigla] += row.montoTotal
+  //   })
+  //   return totales
+  // }, [data])
 
   const columns = useMemo(() => tableColumns, [])
   const [mostrarTotales, setMostrarTotales] = useState(false)
@@ -249,17 +249,17 @@ const PedidosListado: FunctionComponent<Props> = () => {
         renderRowActions={({ row }) => (
           <PedidosMenu row={row.original} openModal={handleOpenModal} refetch={refetch} />
         )}
-        renderBottomToolbarCustomActions={() => (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {Object.entries(totalesPorSigla).map(([sigla, total]) => (
-              <div key={sigla} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div>
-                  Total {numberWithCommas(total, {})} {sigla}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        // renderBottomToolbarCustomActions={() => (
+        //   <div style={{ display: 'flex', flexDirection: 'column' }}>
+        //     {Object.entries(totalesPorSigla).map(([sigla, total]) => (
+        //       <div key={sigla} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        //         <div>
+        //           Total {numberWithCommas(total, {})} {sigla}
+        //         </div>
+        //       </div>
+        //     ))}
+        //   </div>
+        // )}
         onRowSelectionChange={setRowSelection}
         renderTopToolbarCustomActions={() => {
           return (
