@@ -50,18 +50,28 @@ const TotalesTabla = () => {
   const prepareDataForPieChart = (docs: any) => {
     if (!docs || !Array.isArray(docs)) {
       console.error('Invalid docs data:', docs)
-      return { data: [], totalDocuments: 0, grandTotal: {}, totalByDocumentTypeData: [] }
+      return {
+        data: [],
+        totalDocuments: 0,
+        grandTotal: {},
+        totalByDocumentTypeData: [],
+        totalByPaymentMethodData: [],
+      }
     }
 
     const data = [] as any[]
     const statesByDocumentType = {} as Record<string, Record<string, number>>
-    const grandTotal = {} as Record<string, number> // Objeto para almacenar el total por moneda
+    const grandTotal = {} as Record<string, number>
     const totalByDocumentType = {} as Record<string, number>
+    const totalByPaymentMethod = {} as Record<string, { total: number; count: number }>
 
     // Iterar sobre los documentos y contar las ocurrencias de cada estado por tipo de documento
     docs.forEach((doc: any) => {
-      const { tipoDocumento, state, montoTotal, moneda } = doc
+      const { tipoDocumento, state, montoTotal, moneda, metodoPago } = doc
       const { sigla } = moneda
+      const { descripcion: paymentMethod } = metodoPago || {
+        descripcion: 'Sin método de pago',
+      }
 
       // Inicializar el total por moneda si no existe
       if (!grandTotal[sigla]) {
@@ -71,9 +81,18 @@ const TotalesTabla = () => {
       if (!totalByDocumentType[tipoDocumento]) {
         totalByDocumentType[tipoDocumento] = 0
       }
+      // Inicializar el total y el contador por método de pago si no existen
+      if (!totalByPaymentMethod[paymentMethod]) {
+        totalByPaymentMethod[paymentMethod] = { total: 0, count: 0 }
+      }
 
-      grandTotal[sigla] += montoTotal // Sumar el monto al total de la moneda correspondiente
-      totalByDocumentType[tipoDocumento] += montoTotal
+      // Excluir documentos anulados del cálculo del total de ventas
+      if (state !== 'ANULADO') {
+        grandTotal[sigla] += montoTotal // Sumar el monto al total de la moneda correspondiente
+        totalByDocumentType[tipoDocumento] += montoTotal
+        totalByPaymentMethod[paymentMethod].total += montoTotal
+        totalByPaymentMethod[paymentMethod].count++
+      }
 
       if (!statesByDocumentType[tipoDocumento]) {
         statesByDocumentType[tipoDocumento] = {}
@@ -109,7 +128,22 @@ const TotalesTabla = () => {
       }),
     )
 
-    return { data, totalDocuments: docs.length, grandTotal, totalByDocumentTypeData }
+    const totalByPaymentMethodData = Object.entries(totalByPaymentMethod).map(
+      ([paymentMethod, { total, count }], i) => ({
+        paymentMethod,
+        total,
+        count,
+        fill: Object.values(colors)[i % Object.values(colors).length],
+      }),
+    )
+
+    return {
+      data,
+      totalDocuments: docs.length,
+      grandTotal,
+      totalByDocumentTypeData,
+      totalByPaymentMethodData,
+    }
   }
 
   // Obtener los datos para el gráfico de torta y el total general
@@ -118,6 +152,7 @@ const TotalesTabla = () => {
     totalDocuments,
     grandTotal,
     totalByDocumentTypeData,
+    totalByPaymentMethodData,
   } = prepareDataForPieChart(data)
 
   if (isLoading) {
@@ -169,7 +204,7 @@ const TotalesTabla = () => {
       </Grid>
 
       {/* First Pie Chart and its Information */}
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={3} lg={2}>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -190,7 +225,7 @@ const TotalesTabla = () => {
           </PieChart>
         </ResponsiveContainer>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={3} lg={2}>
         {pieChartData.map(({ tipoDocumento, total, fill }) => (
           <Box key={tipoDocumento} mb={2}>
             <Typography variant="subtitle1" color="textSecondary">
@@ -204,7 +239,7 @@ const TotalesTabla = () => {
       </Grid>
 
       {/* Second Pie Chart and its Information */}
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={3} lg={2}>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -225,14 +260,49 @@ const TotalesTabla = () => {
           </PieChart>
         </ResponsiveContainer>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={3} lg={2}>
         {totalByDocumentTypeData.map(({ tipoDocumento, total, fill }) => (
           <Box key={tipoDocumento} mb={2}>
             <Typography variant="subtitle1" color="textSecondary">
               {tipoDocumento}
             </Typography>
             <Typography variant="h6" fontWeight="bold" color={fill}>
-              {numberWithCommas(total, {})}
+              {numberWithCommas(total, {})} BOB
+            </Typography>
+          </Box>
+        ))}
+      </Grid>
+
+      {/* Third Pie Chart and its Information */}
+      <Grid item xs={12} md={3} lg={2}>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={totalByPaymentMethodData}
+              dataKey="total"
+              nameKey="paymentMethod"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              label
+            >
+              {totalByPaymentMethodData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </Grid>
+      <Grid item xs={12} md={3} lg={2}>
+        {totalByPaymentMethodData.map(({ paymentMethod, total, count, fill }) => (
+          <Box key={paymentMethod} mb={2}>
+            <Typography variant="subtitle1" color="textSecondary">
+              {paymentMethod} ({count})
+            </Typography>
+            <Typography variant="h6" fontWeight="bold" color={fill}>
+              {numberWithCommas(total, {})} BOB
             </Typography>
           </Box>
         ))}
