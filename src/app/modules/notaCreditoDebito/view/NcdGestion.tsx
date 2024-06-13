@@ -31,6 +31,7 @@ import StackMenuActionTable, {
   StackMenuItem,
 } from '../../../base/components/MyMenu/StackMenuActionTable'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import useAuth from '../../../base/hooks/useAuth'
 import { apiEstado, PAGE_DEFAULT, PageProps } from '../../../interfaces'
 import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import {
@@ -45,7 +46,7 @@ import AnularNcdDialog from './gestion/AnularNcdDialog'
 
 const tableColumns: MRT_ColumnDef<NcdProps>[] = [
   {
-    header: 'Nro. FCV',
+    header: 'Nro. Factura',
     accessorKey: 'numeroFactura',
     size: 140,
   },
@@ -136,7 +137,6 @@ const NcdGestion: FC<any> = () => {
     row: NcdProps | null
   }>({ open: false, row: null })
 
-  const [openExport, setOpenExport] = useState(false)
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0)
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -145,8 +145,12 @@ const NcdGestion: FC<any> = () => {
     pageIndex: PAGE_DEFAULT.page,
     pageSize: PAGE_DEFAULT.limit,
   })
+  // eslint-disable-next-line no-unused-vars
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   // FIN DATA TABLE
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
 
   const {
     data: gestionProductos,
@@ -171,7 +175,11 @@ const NcdGestion: FC<any> = () => {
         reverse: sorting.length <= 0,
         query,
       }
-      const { pageInfo, docs } = await apiNotasCreditoDebito(fetchPagination)
+      const { pageInfo, docs } = await apiNotasCreditoDebito(
+        fetchPagination,
+        sucursal.codigo,
+        puntoVenta.codigo,
+      )
       setRowCount(pageInfo.totalDocs)
       return docs
     },
@@ -220,7 +228,7 @@ const NcdGestion: FC<any> = () => {
           }
         >
           <SimpleMenuItem
-            onClick={(e) => {
+            onClick={() => {
               setOpenAnularNcd({
                 open: true,
                 row: row.original,

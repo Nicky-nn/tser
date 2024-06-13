@@ -16,6 +16,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
+import useAuth from '../../../../base/hooks/useAuth'
 import { notSuccess } from '../../../../utils/notification'
 import { swalConfirm, swalException } from '../../../../utils/swal'
 import { fetchSinMotivoAnulacion } from '../../../sin/api/sinMotivoAnulacion.api'
@@ -27,6 +28,7 @@ interface OwnProps {
   id: string
   keepMounted: boolean
   open: boolean
+  // eslint-disable-next-line no-unused-vars
   onClose: (value?: any) => void
   factura: NcdProps | null
 }
@@ -46,6 +48,9 @@ const AnularNcdDialog: FunctionComponent<Props> = (props: Props) => {
     codigoMotivo: null,
   }
   const [value, setValue] = useState(initalValues)
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
 
   useEffect(() => {
     if (open) {
@@ -56,7 +61,14 @@ const AnularNcdDialog: FunctionComponent<Props> = (props: Props) => {
   useEffect(() => {
     const fetch = async (): Promise<void> => {
       await fetchSinMotivoAnulacion().then((res) => {
-        setMotivosAnulacion(res || [])
+        const filteredMotivos =
+          // se ignore 1 y 3
+          res?.filter(
+            (motivo) =>
+              //@ts-ignore
+              motivo.codigoClasificador !== '1' && motivo.codigoClasificador !== '3',
+          ) || []
+        setMotivosAnulacion(filteredMotivos || [])
       })
     }
     fetch().then()
@@ -83,7 +95,12 @@ const AnularNcdDialog: FunctionComponent<Props> = (props: Props) => {
         showLoaderOnConfirm: true,
         preConfirm: () => {
           setLoading(true)
-          return apiNcdAnular([factura?.cuf!], value.codigoMotivo!)
+          return apiNcdAnular(
+            factura?.cuf!,
+            value.codigoMotivo!,
+            sucursal.codigo,
+            puntoVenta.codigo,
+          )
         },
         allowOutsideClick: () => !Swal.isLoading(),
       })

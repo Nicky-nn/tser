@@ -10,6 +10,7 @@ import StackMenu from '../../../base/components/MyMenu/StackMenu'
 import { StackMenuItem } from '../../../base/components/MyMenu/StackMenuActionTable'
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
+import useAuth from '../../../base/hooks/useAuth'
 import { openInNewTab } from '../../../utils/helper'
 import { notError, notSuccess } from '../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../utils/swal'
@@ -23,6 +24,10 @@ import NcdFacturaOriginal from './Registro/NcdFacturaOriginal'
 
 const NcdRegistro = () => {
   const mySwal = withReactContent(Swal)
+
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
 
   const form = useForm<NcdInputProps>({
     defaultValues: {
@@ -45,7 +50,11 @@ const NcdRegistro = () => {
       const apiInput = ncdInputCompose(values)
       await swalAsyncConfirmDialog({
         preConfirm: async () => {
-          const resp: any = await apiNcdRegistro(apiInput).catch((err) => ({
+          const resp: any = await apiNcdRegistro(
+            apiInput,
+            sucursal.codigo,
+            puntoVenta.codigo,
+          ).catch((err) => ({
             error: err,
           }))
           if (resp.error) {

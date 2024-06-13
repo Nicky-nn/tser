@@ -1,5 +1,3 @@
-// noinspection GraphQLUnresolvedReference
-
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
@@ -15,8 +13,18 @@ export interface ApiNotaCreditoDebitoResponse {
 }
 
 const query = gql`
-  query FCV_PRODUCTOS($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
-    notasCreditoDebitoFcv(limit: $limit, reverse: $reverse, page: $page, query: $query) {
+  query LISTADO(
+    $limit: Int!
+    $entidad: EntidadParamsInput
+    $reverse: Boolean
+    $query: String
+  ) {
+    restNotaCreditoDebitoListado(
+      limit: $limit
+      entidad: $entidad
+      reverse: $reverse
+      query: $query
+    ) {
       pageInfo {
         hasNextPage
         hasPrevPage
@@ -100,12 +108,19 @@ const query = gql`
 
 export const apiNotasCreditoDebito = async (
   pageInfo: PageInputProps,
+  codigoSucursal: number,
+  codigoPuntoVenta: number,
 ): Promise<ApiNotaCreditoDebitoResponse> => {
   const client = new GraphQLClient(import.meta.env.ISI_API_URL)
   const token = localStorage.getItem(AccessToken)
   // Set a single header
   client.setHeader('authorization', `Bearer ${token}`)
 
-  const data: any = await client.request(query, { ...pageInfo })
-  return data.notasCreditoDebitoFcv
+  const entidad = {
+    codigoSucursal,
+    codigoPuntoVenta,
+  }
+
+  const data: any = await client.request(query, { ...pageInfo, entidad })
+  return data.restNotaCreditoDebitoListado
 }

@@ -1,5 +1,3 @@
-// noinspection GraphQLUnresolvedReference
-
 import { gql, GraphQLClient } from 'graphql-request'
 
 import { AccessToken } from '../../../base/models/paramsModel'
@@ -8,15 +6,16 @@ import { NcdProps } from '../interfaces/ncdInterface'
 
 export interface NcdRegistroInputProps {
   facturaCuf: string
+  emailCliente: string
   detalle: {
     itemFactura: number
     cantidad: number
   }[]
 }
 
-const apiQuery = gql`
-  mutation NCD_FCV_REGISTRO($input: NotaDebitoCreditoFcvInput!) {
-    notaCreditoDebitoFcvRegistro(input: $input) {
+const apiMutation = gql`
+  mutation REGISTRO($entidad: EntidadParamsInput, $input: RestNotaCreditoDebitoInput!) {
+    restNotaCreditoDebitoRegistro(entidad: $entidad, input: $input) {
       cuf
       state
       representacionGrafica {
@@ -32,9 +31,13 @@ const apiQuery = gql`
 /**
  * @description Registro de una nota de credito debito
  * @param inputProps
+ * @param codigoSucursal
+ * @param codigoPuntoVenta
  */
 export const apiNcdRegistro = async (
   inputProps: NcdRegistroInputProps,
+  codigoSucursal: number,
+  codigoPuntoVenta: number,
 ): Promise<NcdProps> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
@@ -42,8 +45,13 @@ export const apiNcdRegistro = async (
     // Set a single header
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data: any = await client.request(apiQuery, { input: inputProps })
-    return data.notaCreditoDebitoFcvRegistro
+    const entidad = {
+      codigoSucursal,
+      codigoPuntoVenta,
+    }
+
+    const data: any = await client.request(apiMutation, { entidad, input: inputProps })
+    return data.restNotaCreditoDebitoRegistro
   } catch (e: any) {
     throw new MyGraphQlError(e)
   }
