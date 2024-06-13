@@ -1,4 +1,4 @@
-import { Button, Grid, Typography, useTheme } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -6,7 +6,7 @@ import {
   MRT_TableOptions,
 } from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { FormTextField } from '../../../../base/components/Form'
@@ -25,19 +25,13 @@ type Props = OwnProps
 
 const NcdFacturaOriginal: FunctionComponent<Props> = (props) => {
   const {
-    form: {
-      control,
-      setValue,
-      getValues,
-      watch,
-      formState: { errors },
-    },
+    form: { setValue, getValues },
   } = props
 
   const [openDialog, setOpenDialog] = useState(false)
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
 
-  const [selectedRows, setSelectedRows] = useState([])
+  const [, setSelectedRows] = useState([])
 
   const columns = useMemo<MRT_ColumnDef<DetalleFacturaProps>[]>(
     () => [

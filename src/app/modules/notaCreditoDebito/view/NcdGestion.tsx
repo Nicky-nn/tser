@@ -234,6 +234,7 @@ const NcdGestion: FC<any> = () => {
                 row: row.original,
               })
             }}
+            disabled={row.original.state !== apiEstado.validada}
           >
             <LayersClear /> Anular Documento
           </SimpleMenuItem>
