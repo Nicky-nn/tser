@@ -4,7 +4,7 @@ import { SinTipoDocumentoIdentidadProps } from '../../sin/interfaces/sin.interfa
 export interface ClienteProps extends AuditoriaProps {
   _id: string
   apellidos: string
-  codigoCliente: string
+  codigoCliente: string | null
   codigoExcepcion: number
   complemento: string
   email: string
@@ -18,6 +18,7 @@ export interface ClienteProps extends AuditoriaProps {
 
 export interface ClienteInputProps {
   sinTipoDocumento: SinTipoDocumentoIdentidadProps | null
+  codigoCliente: string
   razonSocial: string
   numeroDocumento: string
   complemento: string
@@ -27,6 +28,7 @@ export interface ClienteInputProps {
   telefono: string
   codigoExcepcion: number
   action: ActionFormProps
+  busquedaCliente?: string
 }
 
 export interface Cliente99001InputProps {
@@ -67,6 +69,7 @@ export const CLIENTE_99001_DEFAULT_INPUT: Cliente99001InputProps = {
 
 export const CLIENTE_DEFAULT_INPUT: ClienteInputProps = {
   sinTipoDocumento: null,
+  codigoCliente: '',
   razonSocial: '',
   numeroDocumento: '',
   complemento: '',

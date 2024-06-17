@@ -84,7 +84,7 @@ import { apiClienteBusqueda } from '../../clientes/api/clienteBusqueda.api'
 import ClienteExplorarDialog from '../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
-import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
+import ClienteCrudDialog from '../../clientes/view/registro/CRUDClienteDialog'
 import { apiListadoArticulos } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
 import { generarComandaPDF } from '../Pdf/Comanda'
@@ -1725,7 +1725,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         value={field.value || null}
                         getOptionValue={(item) => item.codigoCliente}
                         getOptionLabel={(item) =>
-                          `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial} - ${item.tipoDocumentoIdentidad.descripcion}`
+                          `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial}`
                         }
                         onChange={(cliente: SingleValue<ClienteProps>) => {
                           field.onChange(cliente)
@@ -1969,7 +1969,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value.codigoCliente || '')
               setExplorarCliente(false)
             } else {
               setExplorarCliente(false)
@@ -1986,7 +1986,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value.codigoCliente || '')
               setCliente99001(false)
             } else {
               setCliente99001(false)
@@ -1995,7 +1995,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         />
       </>
       <>
-        <ClienteRegistroDialog
+        <ClienteCrudDialog
           id={'nuevoClienteDialog'}
           keepMounted={false}
           open={openNuevoCliente}
@@ -2003,12 +2003,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value?.codigoCliente || '')
               setNuevoCliente(false)
             } else {
               setNuevoCliente(false)
             }
           }}
+          onFinished={handleFacturar}
         />
       </>
       <>

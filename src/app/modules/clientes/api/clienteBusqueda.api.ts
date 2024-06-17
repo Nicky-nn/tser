@@ -17,6 +17,7 @@ const queryGql = gql`
       nombres
       numeroDocumento
       razonSocial
+      telefono
       tipoDocumentoIdentidad {
         codigoClasificador
         descripcion
