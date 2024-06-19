@@ -12,7 +12,7 @@ export const cliente99001DecomposeService = (
   action: ActionFormProps,
 ): Cliente99001InputProps => {
   return {
-    codigoCliente: input.codigoCliente,
+    codigoCliente: input.codigoCliente || '',
     razonSocial: input.razonSocial,
     email: input.email,
     nombres: genReplaceEmpty(input.nombres, ''),

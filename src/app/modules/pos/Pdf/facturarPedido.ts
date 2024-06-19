@@ -28,8 +28,8 @@ export const facturarPedido = async (
     codigoPuntoVenta: puntoVenta.codigo,
   }
   const cliente = {
-    codigoCliente: data.cliente.codigoCliente,
-    email: data.cliente.email,
+    codigoCliente: data.cliente.codigoCliente || data.numeroDocumento,
+    email: data.emailCliente || data.cliente.email,
   }
 
   let codigoMetodoPago: number
@@ -57,6 +57,21 @@ export const facturarPedido = async (
   }
 
   try {
+    // Mostrar un mensaje de confirmación antes de emitir la factura
+    const confirmResp = await Swal.fire({
+      title: '¿Desea emitir la factura?',
+      text: 'Una vez emitida, la factura no podrá ser modificada, y el pedido se marcará como finalizado',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar',
+    })
+
+    // Si el usuario cancela, salir de la función
+    if (!confirmResp.isConfirmed) {
+      return false
+    }
+
     // Mostrar un mensaje de "Cargando..."
     Swal.fire({
       title: 'Cargando...',

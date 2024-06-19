@@ -81,7 +81,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
                   loadOptions={fetchClientes}
                   isClearable={true}
                   value={field.value || null}
-                  getOptionValue={(item) => item.codigoCliente}
+                  getOptionValue={(item) => item.codigoCliente || ''}
                   getOptionLabel={(item) =>
                     `${item.numeroDocumento}${item.complemento || ''} - ${
                       item.razonSocial
@@ -187,7 +187,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value.codigoCliente || '')
               setNuevoCliente(false)
             } else {
               setNuevoCliente(false)
@@ -204,7 +204,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value.codigoCliente || '')
               setExplorarCliente(false)
             } else {
               setExplorarCliente(false)
@@ -221,7 +221,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
-              await fetchClientes(value.codigoCliente)
+              await fetchClientes(value.codigoCliente || '')
               setCliente99001(false)
             } else {
               setCliente99001(false)

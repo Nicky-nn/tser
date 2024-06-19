@@ -21,6 +21,7 @@ export const finalizarPedido = async (
   descuentoAdicional: number = 0,
   onSuccess?: () => void,
   isCreatingNewClient: boolean = false,
+  mostrarModal: boolean = true,
 ) => {
   try {
     // Crear cliente si es necesario
@@ -134,6 +135,17 @@ export const finalizarPedido = async (
       montoTotal: 0,
     }
 
+    // Si mostrarModal es falso, ejecutar automáticamente la finalización del pedido
+    if (!mostrarModal) {
+      const response = await restPedidoFinalizarApi(entidad, cliente, numeroPedido, input)
+      if (onSuccess) {
+        onSuccess()
+        return response
+      }
+      return response
+    }
+
+    // Si mostrarModal es verdadero, mostrar el modal
     const confirmResp = await swalAsyncConfirmDialog({
       title: 'Finalizar Pedido',
       text: '¿Está seguro de finalizar el pedido?, esta acción marcará el pedido como finalizado y no podrá ser modificado',

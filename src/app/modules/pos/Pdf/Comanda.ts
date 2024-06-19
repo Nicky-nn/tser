@@ -1,17 +1,21 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
 import printJS from 'print-js'
 import { toast } from 'react-toastify'
-
-type Producto = {
-  name: string
-  quantity: number
-  extraDetalle: string
-  extraDescription: string
+;(pdfMake as any).fonts = {
+  Roboto: {
+    normal:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
+    bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
+    italics:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
+    bolditalics:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf',
+  },
 }
 
 export const generarComandaPDF = (
-  data: any,
-  usuario: any,
+  data: any[],
+  usuario: string,
   mesa: string = 'NAN',
   orden: string = '',
 ) => {
@@ -25,7 +29,7 @@ export const generarComandaPDF = (
   }
 
   // Crear un documento PDF
-  const documentDefinition = {
+  const documentDefinition: any = {
     pageOrientation: 'portrait',
     pageMargins: [1, 1, 1, 1], // Configurar todos los márgenes a cero
     pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: 264 mm (26.4 cm)
@@ -68,7 +72,7 @@ export const generarComandaPDF = (
           widths: ['auto', '*'], // Ancho automático para la primera columna, el resto se ajusta automáticamente
           body: [
             ['CANT.', 'DETALLE'],
-            ...(data as Producto[]).map((producto) => [
+            ...data.map((producto) => [
               producto.quantity.toString(),
               producto.name +
                 ' ' +
@@ -120,12 +124,10 @@ export const generarComandaPDF = (
   }
 
   // Generar el PDF
-  //@ts-ignore
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
   pdfDocGenerator.getBlob((blob: any) => {
     const pdfUrl = URL.createObjectURL(blob)
-
     printJS(pdfUrl)
   })
 }

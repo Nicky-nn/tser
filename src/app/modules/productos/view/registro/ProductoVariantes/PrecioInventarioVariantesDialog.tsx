@@ -104,7 +104,6 @@ const PrecioInventarioVariantesDialog: FunctionComponent<Props> = (props: Props)
       notError('Debe ingresar un codigo de producto válido')
       return
     }
-    console.log(data)
     onClose(data)
   }
 

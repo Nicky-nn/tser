@@ -1,11 +1,21 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
-import printJS from 'print-js'
 import { toast } from 'react-toastify'
+;(pdfMake as any).fonts = {
+  Roboto: {
+    normal:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
+    bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
+    italics:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
+    bolditalics:
+      'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf',
+  },
+}
 
 export const generarReciboPDF = (
   data: any,
-  usuario: any,
-  totalNeto: any,
+  usuario: string,
+  totalNeto: number,
   mesa: string = 'NAN',
   orden: string = '',
   descuentoAdicional: string = '0',
@@ -13,17 +23,17 @@ export const generarReciboPDF = (
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
 
-  // Verificar si hay productos en data.producto
+  // Verificar si hay productos en data
   if (!data || data.length === 0) {
     toast.error('Debe agregar al menos un producto')
     return
   }
 
   // Crear un documento PDF
-  const documentDefinition = {
+  const documentDefinition: any = {
     pageOrientation: 'portrait',
-    pageMargins: [1, 1, 1, 1], // Configurar todos los márgenes a cero
-    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: 264 mm (26.4 cm)
+    pageMargins: [1, 1, 1, 1],
+    pageSize: { width: 228, height: 'auto' },
     content: [
       { text: 'ESTADO DE CUENTA', style: 'header' },
       {
@@ -40,16 +50,15 @@ export const generarReciboPDF = (
             y2: 0,
             lineWidth: 1,
             dash: { length: 5 },
-          }, // Dibujar una línea segmentada de un lado al otro
+          },
         ],
-        margin: [0, 5, 0, 5], // Margen superior e inferior para separar la línea del contenido anterior y posterior
+        margin: [0, 5, 0, 5],
       },
-
       {
         style: 'tableExample',
         table: {
           headerRows: 1,
-          widths: ['auto', '*', 'auto', 'auto', 'auto'], // Ancho automático para la primera columna, el resto se ajusta automáticamente
+          widths: ['auto', '*', 'auto', 'auto', 'auto'],
           body: [
             ['CANT.', 'DETALLE', 'PRE. UNIT.', 'DESC.', 'IMPORTE'],
             ...data.map((producto: any) => [
@@ -77,7 +86,6 @@ export const generarReciboPDF = (
           ],
         },
       },
-
       {
         text: 'PROPINA:______________________',
         style: 'subheader',
@@ -105,7 +113,7 @@ export const generarReciboPDF = (
         fontSize: 14,
         bold: true,
         alignment: 'center',
-        margin: [0, 0, 0, 5], // Margen inferior para separarlo del contenido siguiente
+        margin: [0, 0, 0, 5],
       },
       subheader: {
         fontSize: 10,
@@ -117,22 +125,31 @@ export const generarReciboPDF = (
       },
     },
     defaultStyle: {
-      margin: [0, 0, 0, 0], // Eliminar todos los márgenes
+      margin: [0, 0, 0, 0],
     },
   }
 
   // Generar el PDF
-  //@ts-ignore
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
-  // Obtener la URL del PDF como un Blob
-  // Obtener la URL del PDF como un Blob
-  pdfDocGenerator.getBlob((blob: any) => {
-    const pdfUrl = URL.createObjectURL(blob)
-    // Abrir el PDF con PrintJS con el estilo personalizado para tamaño 100%
-    printJS({
-      printable: pdfUrl,
-      style: '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
+  pdfDocGenerator.getBlob((blob: Blob) => {
+    const formData = new FormData()
+    formData.append('file', blob, 'recibo.pdf')
+
+    fetch('http://localhost:7777/print', {
+      method: 'POST',
+      body: formData,
     })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          toast.error(`Error al imprimir: ${data.error}`)
+        } else {
+          toast.success('Impresión iniciada')
+        }
+      })
+      .catch((error) => {
+        toast.error(`Error al imprimir: ${error.message}`)
+      })
   })
 }

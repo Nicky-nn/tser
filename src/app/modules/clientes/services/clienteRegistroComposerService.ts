@@ -11,7 +11,7 @@ export const clienteRegistroComposeService = (
   return {
     nombres: input.nombres,
     apellidos: genReplaceEmpty(input.apellidos, ''),
-    codigoTipoDocumentoIdentidad: input.sinTipoDocumento?.codigoClasificador!,
+    codigoTipoDocumentoIdentidad: Number(input.sinTipoDocumento?.codigoClasificador!),
     numeroDocumento: input.numeroDocumento,
     complemento: genReplaceEmpty(input.complemento, null),
     email: input.email,

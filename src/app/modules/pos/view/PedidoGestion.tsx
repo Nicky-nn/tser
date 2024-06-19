@@ -32,6 +32,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Checkbox,
   Divider,
   FormControl,
   Grid,
@@ -48,6 +49,7 @@ import {
   Paper,
   Skeleton,
   styled,
+  TextField,
   Tooltip,
   Typography,
   Zoom,
@@ -64,6 +66,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select, { SingleValue } from 'react-select'
 import AsyncSelect from 'react-select/async'
@@ -71,6 +74,7 @@ import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
+import AlertLoading from '../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../base/components/Form'
 import { NumeroFormat } from '../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
@@ -78,13 +82,15 @@ import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../base/components/MySelect/ReactSelect'
 import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import useAuth from '../../../base/hooks/useAuth'
+import { SinTipoDocumentoIdentidadProps } from '../../../interfaces/sin.interface'
 import { genReplaceEmpty } from '../../../utils/helper'
 import { swalException } from '../../../utils/swal'
 import { apiClienteBusqueda } from '../../clientes/api/clienteBusqueda.api'
 import ClienteExplorarDialog from '../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
-import ClienteCrudDialog from '../../clientes/view/registro/CRUDClienteDialog'
+import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
+import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
 import { apiListadoArticulos } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
 import { generarComandaPDF } from '../Pdf/Comanda'
@@ -97,7 +103,6 @@ import { adicionarItemPedido } from '../utils/Pedidos/adicionarItems'
 import { eliminarPedido } from '../utils/Pedidos/pedidoEliminar'
 import { restPedidoExpressRegistro } from '../utils/Pedidos/PedidoExpress'
 import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
-import ColoredSVG from '../utils/userSvg'
 import CreditCardDialog from './CardDialog'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -231,11 +236,38 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
   const mySwal = withReactContent(Swal)
 
-  const fetchClientes = async (inputValue: string): Promise<any[]> => {
+  const [isCreatingNewClient, setIsCreatingNewClient] = useState(false)
+  const fetchClientes = async (inputValue: string): Promise<ClienteProps[]> => {
     try {
       if (inputValue.length > 2) {
         const clientes = await apiClienteBusqueda(inputValue)
-        if (clientes) return clientes
+        if (clientes.length === 0) {
+          return [
+            {
+              codigoCliente: '',
+              razonSocial: isNaN(Number(inputValue)) ? inputValue : '',
+              _id: '',
+              apellidos: '',
+              codigoExcepcion: 0,
+              complemento: '',
+              email: '',
+              nombres: '',
+              numeroDocumento: !isNaN(Number(inputValue)) ? inputValue : '',
+              tipoDocumentoIdentidad: {
+                codigoClasificador: 1,
+                descripcion: 'CI - CEDULA DE IDENTIDAD',
+              },
+              state: 'REGISTRO',
+              telefono: '',
+              usucre: '',
+              createdAt: '',
+              usumod: '',
+              updatedAt: '',
+            },
+          ]
+        }
+        setIsCreatingNewClient(false)
+        return clientes
       }
       return []
     } catch (e: any) {
@@ -760,6 +792,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : undefined,
       additionalDiscount,
       refetch,
+      isCreatingNewClient,
     )
       .then((response) => {
         if (response.restPedidoFinalizar) {
@@ -784,6 +817,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             },
           ])
           // Eliinar cliente seleccionado
+          eliminarCliente()
+          setIsCreatingNewClient(false)
           setValue('cliente', null)
           setSelectedButton('Efectivo')
           setEnviaDatos(true)
@@ -793,6 +828,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       .catch((error) => {
         console.error('Error al finalizar el pedido:', error)
       })
+  }
+
+  const eliminarCliente = () => {
+    setValue('cliente', null)
+    setValue('emailCliente', '')
+    setValue('razonSocial', '')
+    setValue('numeroDocumento', '')
+    setValue('sinTipoDocumento', null)
+    setValue('complemento', '')
   }
 
   const handleFacturar = () => {
@@ -823,6 +867,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       selectedOption?.nroPedido ?? 0,
       additionalDiscount,
       refetch,
+      isCreatingNewClient,
+      false,
     )
       .then((response) => {
         if (response.restPedidoFinalizar) {
@@ -856,6 +902,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           )
             .then((response) => {
               if (response) {
+                setIsCreatingNewClient(false)
                 const { representacionGrafica } = response.factura
                 if (tipoRepresentacionGrafica === 'pdf')
                   printJS(representacionGrafica.pdf)
@@ -925,6 +972,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             numeroPedido,
             additionalDiscount,
             refetch,
+            isCreatingNewClient,
           )
             .then((response) => {
               if (response.restPedidoFinalizar) {
@@ -936,7 +984,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   mesa: mesa.nombre,
                   state: 'Libre',
                 })
-                setValue('cliente', null)
+                eliminarCliente()
+                setIsCreatingNewClient(false)
+                setSelectedButton('Efectivo')
+                setEnviaDatos(true)
+                setSelectedCategory(categories[0].name || null)
               }
               generarComandaPDF(
                 cart,
@@ -1000,6 +1052,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setGiftCardAmount(0)
     setMontoRecibido(0)
     setValue('cliente', null)
+    eliminarCliente()
+    setValue('emailCliente', '')
     setEnviaDatos((prevState) => !prevState)
   }, [selectedOption])
 
@@ -1030,7 +1084,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         razonSocial: 'Sin Razón Social',
         state: 'ELABORADO',
         nombres: 'Sin Nombre',
-        email: 'jmquirogaf@gmail.com',
+        email: 'Sin Email',
         tipoDocumentoIdentidad: {
           codigoClasificador: '1',
           descripcion: 'CI - CEDULA DE IDENTIDAD',
@@ -1102,6 +1156,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
+  const { tiposDocumentoIdentidad, tdiLoading } = useQueryTipoDocumentoIdentidad()
+  const [isCheckedExecpcion, setIsCheckedExecpcion] = useState(false)
+  useEffect(() => {
+    setValue('codigoExcepcion', 0)
+  }, [])
+
   return (
     <Grid container spacing={3}>
       {selectedView === 'mosaico' ? (
@@ -1111,16 +1171,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               <div key={index} style={{ marginRight: '8px' }}>
                 <Card
                   sx={{
-                    width: 150,
-                    height: 150,
-                    backgroundColor: option.state === 'Libre' ? '#AFE3B7' : '#FFF6E9',
+                    width: 110,
+                    height: 110,
+                    backgroundColor: option.state === 'Libre' ? '#AFE3B7' : '#EF9999',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
                     // al pasar el mouse por encima, cambia el color de fondo
                     '&:hover': {
-                      backgroundColor: option.state === 'Libre' ? '#8CCF9B' : '#F8E9C9',
+                      backgroundColor: option.state === 'Libre' ? '#8CCF9B' : '#E57373',
                     },
                   }}
                   onClick={() => setSelectedOption(option)}
@@ -1134,7 +1194,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="h6" component="h2">
-                        {`Mesa: ${option.mesa}`}
+                        {`M.: ${option.mesa}`}
                       </Typography>
                     </div>
                     {option.nroOrden && (
@@ -1310,8 +1370,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   item
                   key={product.name}
                   xs={6}
-                  sm={4}
-                  md={3}
+                  sm={3}
+                  md={2}
                   sx={{ userSelect: 'none', textAlign: 'center' }}
                 >
                   <Card
@@ -1730,6 +1790,39 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         onChange={(cliente: SingleValue<ClienteProps>) => {
                           field.onChange(cliente)
                           setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
+                          setValue(
+                            'razonSocial',
+                            genReplaceEmpty(cliente?.razonSocial, ''),
+                          )
+                          // setValue(
+                          //   'numeroDocumento',
+                          //   genReplaceEmpty(cliente?.numeroDocumento, ''),
+                          // )
+                          // setValue('sinTipoDocumento', cliente?.tipoDocumentoIdentidad)
+                          // setValue(
+                          //   'complemento',
+                          //   genReplaceEmpty(cliente?.complemento, '') || '',
+                          // )
+                          // console.log(getValues('cliente'))
+                          if (cliente?.state === 'REGISTRO') {
+                            setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
+                            setValue(
+                              'razonSocial',
+                              genReplaceEmpty(cliente?.razonSocial, ''),
+                            )
+                            setValue(
+                              'numeroDocumento',
+                              genReplaceEmpty(cliente?.numeroDocumento, ''),
+                            )
+                            setValue('sinTipoDocumento', cliente?.tipoDocumentoIdentidad)
+                            setValue(
+                              'complemento',
+                              genReplaceEmpty(cliente?.complemento, '') || '',
+                            )
+                            setIsCreatingNewClient(true)
+                          } else {
+                            setIsCreatingNewClient(false)
+                          }
                         }}
                         onBlur={field.onBlur}
                         noOptionsMessage={() =>
@@ -1741,6 +1834,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   )}
                 />
               </Grid>
+
               {/* Agregamos 3 iconos: explorar, nuevo cliente, nuevo cliente excepcion */}
               <Grid item xs={1}>
                 <Tooltip title="Explorar Cliente">
@@ -1778,14 +1872,161 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   </IconButton>
                 </Tooltip>
               </Grid>
-              <Grid item xs={12}>
+
+              <Grid container>
+                <Grid item xs={6}>
+                  <Controller
+                    name="emailCliente"
+                    control={control}
+                    render={({ field }) => (
+                      <FormTextField
+                        {...field}
+                        label="Email"
+                        placeholder="Ingrese el Email"
+                        fullWidth
+                        margin="normal"
+                        size="small"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ px: 1 }}>
+                  <Controller
+                    name="razonSocial"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Razón Social"
+                        placeholder="Ingrese la Razón Social"
+                        name="razonSocial"
+                        id="razonSocial"
+                        margin="normal"
+                        size="small"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                {isCreatingNewClient && (
+                  <>
+                    <Grid item xs={8}>
+                      <Controller
+                        name="numeroDocumento"
+                        control={control}
+                        render={({ field }) => (
+                          <FormTextField
+                            {...field}
+                            label="Número de Documento"
+                            placeholder="Ingrese el Número de Documento"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={4} sx={{ px: 1 }}>
+                      <Controller
+                        name="complemento"
+                        control={control}
+                        render={({ field }) => (
+                          <FormTextField
+                            {...field}
+                            label="Complemento"
+                            placeholder="Ingrese el Complemento"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sx={{ mt: 1 }}>
+                      {tdiLoading ? (
+                        <AlertLoading />
+                      ) : (
+                        <Controller
+                          render={({ field }) => (
+                            <FormControl
+                              fullWidth
+                              error={Boolean(errors.sinTipoDocumento)}
+                              required
+                            >
+                              <MyInputLabel shrink>Tipo Documento Identidad</MyInputLabel>
+                              <Select<SinTipoDocumentoIdentidadProps>
+                                menuPosition={'fixed'}
+                                styles={reactSelectStyle(
+                                  Boolean(errors.sinTipoDocumento),
+                                )}
+                                name={'sinTipoDocumento'}
+                                placeholder={'Seleccione el tipo documento identidad'}
+                                value={field.value}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                isSearchable={false}
+                                options={tiposDocumentoIdentidad}
+                                getOptionValue={(item) =>
+                                  item.codigoClasificador.toString()
+                                }
+                                getOptionLabel={(item) => `${item.descripcion}`}
+                                required
+                              />
+                            </FormControl>
+                          )}
+                          name={'sinTipoDocumento'}
+                          control={control}
+                        />
+                      )}
+                    </Grid>
+                  </>
+                )}
+                <Grid item lg={12} xs={12} md={12}>
+                  <Checkbox
+                    checked={isCheckedExecpcion}
+                    sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                    style={{ marginRight: '0px' }}
+                    onClick={() => {
+                      setIsCheckedExecpcion((prev) => !prev) // Cambia el estado al valor opuesto
+                      setValue('codigoExcepcion', isCheckedExecpcion ? 0 : 1) // Envía 1 si está marcado, 0 si está desmarcado
+                    }}
+                  />
+                  <span
+                    style={{
+                      marginLeft: '8px',
+                      marginRight: '8px',
+                    }}
+                  >
+                    Facturación con NIT inválido
+                  </span>
+                </Grid>
+                {isCheckedExecpcion && (
+                  <Typography variant="body2" style={{ color: 'red', marginTop: '8px' }}>
+                    <strong>Nota:</strong> Se permitirá la facturación aunque el NIT esté
+                    inválido
+                  </Typography>
+                )}
+              </Grid>
+              {/* <Grid item xs={12}>
                 <ColoredSVG
                   name={clienteSeleccionado?.razonSocial || ''}
                   nit={clienteSeleccionado?.numeroDocumento || ''}
                   email={clienteSeleccionado?.email || ''}
                   form={form}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
 
             <hr />
@@ -1969,6 +2210,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
+              setValue('razonSocial', value.razonSocial)
               await fetchClientes(value.codigoCliente || '')
               setExplorarCliente(false)
             } else {
@@ -1995,7 +2237,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         />
       </>
       <>
-        <ClienteCrudDialog
+        <ClienteRegistroDialog
           id={'nuevoClienteDialog'}
           keepMounted={false}
           open={openNuevoCliente}
@@ -2009,7 +2251,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               setNuevoCliente(false)
             }
           }}
-          onFinished={handleFacturar}
         />
       </>
       <>

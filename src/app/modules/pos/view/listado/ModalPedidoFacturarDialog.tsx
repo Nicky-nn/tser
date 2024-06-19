@@ -259,7 +259,6 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
   })
 
   const handleFacturar = () => {
-    console.log('Codigo de excepcion', getValues('codigoExcepcion'))
     // Mensaje de cliente no seleccionado
     if (clienteSeleccionado === null || clienteSeleccionado === undefined) {
       toast.error('Debe seleccionar un cliente')
@@ -774,7 +773,7 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
                           loadOptions={fetchClientes}
                           isClearable={true}
                           value={field.value || null}
-                          getOptionValue={(item) => item.codigoCliente}
+                          getOptionValue={(item) => item.codigoCliente || ''}
                           getOptionLabel={(item) =>
                             `${item.numeroDocumento}${item.complemento || ''} - ${
                               item.razonSocial
@@ -993,7 +992,7 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
               if (value) {
                 setValue('cliente', value)
                 setValue('emailCliente', value.email)
-                await fetchClientes(value.codigoCliente)
+                await fetchClientes(value.codigoCliente || '')
                 setExplorarCliente(false)
               } else {
                 setExplorarCliente(false)
@@ -1010,7 +1009,7 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
               if (value) {
                 setValue('cliente', value)
                 setValue('emailCliente', value.email)
-                await fetchClientes(value.codigoCliente)
+                await fetchClientes(value.codigoCliente || '')
                 setCliente99001(false)
               } else {
                 setCliente99001(false)
@@ -1027,7 +1026,7 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
               if (value) {
                 setValue('cliente', value)
                 setValue('emailCliente', value.email)
-                await fetchClientes(value.codigoCliente)
+                await fetchClientes(value.codigoCliente || '')
                 setNuevoCliente(false)
               } else {
                 setNuevoCliente(false)

@@ -42,7 +42,6 @@ const TotalesTabla = () => {
         codigoPuntoVenta: puntoVenta.codigo,
       }
       const { docs } = await obtenerListadoPedidos(fetchPagination, entidad)
-      console.log('docs', docs)
       return docs
     },
     refetchOnWindowFocus: false,

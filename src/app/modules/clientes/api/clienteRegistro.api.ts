@@ -1,6 +1,7 @@
 // noinspection GraphQLUnresolvedReference
 
 import { gql, GraphQLClient } from 'graphql-request'
+import Swal from 'sweetalert2'
 
 import { AccessToken } from '../../../base/models/paramsModel'
 import { MyGraphQlError } from '../../../base/services/GraphqlError'
@@ -36,7 +37,16 @@ export const apiClienteRegistro = async (
 
     const data: any = await client.request(query, { input })
     return data.clienteCreate
-  } catch (e: any) {
-    throw new MyGraphQlError(e)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.errors?.[0]?.message || 'Error al registrar cliente'
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: errorMessage,
+      confirmButtonText: 'Entendido',
+    })
+    console.error('Error en apiClienteRegistro', error)
+    throw new MyGraphQlError(error)
   }
 }

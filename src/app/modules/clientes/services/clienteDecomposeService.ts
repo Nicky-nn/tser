@@ -11,6 +11,7 @@ export const clienteDecomposeService = (
   input: ClienteProps,
   action: ActionFormProps,
 ): ClienteInputProps => {
+  //@ts-ignore
   return {
     sinTipoDocumento: input.tipoDocumentoIdentidad,
     razonSocial: input.razonSocial,
