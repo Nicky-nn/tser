@@ -1381,7 +1381,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     {product.imagen && product.imagen.variants ? (
                       <CardMedia
                         component="img"
-                        height="194"
+                        height="130"
                         image={product.imagen.variants.medium}
                         alt={product.name}
                         sx={{
@@ -1391,7 +1391,24 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         }}
                       />
                     ) : (
-                      <></>
+                      <Box
+                        sx={{
+                          height: 130,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#f0f0f0',
+                          color: '#93C4EE',
+                          fontSize: '5rem',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {product.name
+                          .split(' ')
+                          .slice(0, 2)
+                          .map((word) => word[0])
+                          .join('')}
+                      </Box>
                     )}
                     <CardContent>
                       <Typography variant="body1" gutterBottom>
@@ -1607,9 +1624,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               size="small"
                               value={product.price}
                               onChange={(e) =>
-                                handlePriceChange(index, parseFloat(e.target.value) || 0)
+                                handlePriceChange(index, parseFloat(e.target.value))
                               }
-                              onBlur={() => handlePriceChange(index, product.price)}
+                              onBlur={() => handlePriceChange(index, product.price || 0)}
                               inputComponent={NumeroFormat as any}
                               inputProps={{}}
                               sx={{ width: '100%' }}
@@ -1625,10 +1642,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               size="small"
                               value={product.discount}
                               onChange={(e) =>
-                                handleDiscountChange(
-                                  index,
-                                  parseFloat(e.target.value) || 0,
-                                )
+                                handleDiscountChange(index, parseFloat(e.target.value))
+                              }
+                              onBlur={() =>
+                                handleDiscountChange(index, product.discount || 0)
                               }
                               inputComponent={NumeroFormat as any}
                               inputProps={{}}
@@ -1663,7 +1680,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   </Accordion>
                 </Zoom>
               ))}
-
               <hr />
               <Grid container spacing={2} style={{ marginTop: '10px' }}>
                 <Grid item xs={6}>
@@ -1794,16 +1810,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             'razonSocial',
                             genReplaceEmpty(cliente?.razonSocial, ''),
                           )
-                          // setValue(
-                          //   'numeroDocumento',
-                          //   genReplaceEmpty(cliente?.numeroDocumento, ''),
-                          // )
-                          // setValue('sinTipoDocumento', cliente?.tipoDocumentoIdentidad)
-                          // setValue(
-                          //   'complemento',
-                          //   genReplaceEmpty(cliente?.complemento, '') || '',
-                          // )
-                          // console.log(getValues('cliente'))
                           if (cliente?.state === 'REGISTRO') {
                             setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                             setValue(
