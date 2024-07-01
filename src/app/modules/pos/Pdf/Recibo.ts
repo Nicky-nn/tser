@@ -23,36 +23,38 @@ export const generarReciboPDF = (
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
 
-  // Verificar si hay productos en data
   if (!data || data.length === 0) {
     toast.error('Debe agregar al menos un producto')
     return
   }
 
-  // Crear un documento PDF
+  const printerSettings = localStorage.getItem('printers')
+  let selectedPrinter = ''
+  if (printerSettings) {
+    const parsedSettings = JSON.parse(printerSettings)
+    selectedPrinter = parsedSettings.estadoDeCuenta
+  }
+
+  if (!selectedPrinter) {
+    toast.error(
+      'Por favor, seleccione una impresora para Estado de Cuenta en la configuración',
+    )
+    return
+  }
+
   const documentDefinition: any = {
     pageOrientation: 'portrait',
-    pageMargins: [1, 1, 1, 1],
-    pageSize: { width: 228, height: 'auto' },
+    pageMargins: [0, 0, 0, 0], // Reducir márgenes a 0
+    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: automático
     content: [
       { text: 'ESTADO DE CUENTA', style: 'header' },
       {
-        text: `PEDIDO N°: ${orden} - MESA: ${mesa} - FECHA: ${fechaActual} - HORA: ${horaActual}`,
+        text: `PEDIDO N°: ${orden} - MESA: ${mesa}\nFECHA: ${fechaActual} - HORA: ${horaActual}`,
         style: 'subheader',
       },
       {
-        canvas: [
-          {
-            type: 'line',
-            x1: 0,
-            y1: 0,
-            x2: 520,
-            y2: 0,
-            lineWidth: 1,
-            dash: { length: 5 },
-          },
-        ],
-        margin: [0, 5, 0, 5],
+        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
+        margin: [0, 2, 0, 2],
       },
       {
         style: 'tableExample',
@@ -60,81 +62,68 @@ export const generarReciboPDF = (
           headerRows: 1,
           widths: ['auto', '*', 'auto', 'auto', 'auto'],
           body: [
-            ['CANT.', 'DETALLE', 'PRE. UNIT.', 'DESC.', 'IMPORTE'],
+            ['CANT', 'DETALLE', 'P.U.', 'DESC', 'IMP'],
             ...data.map((producto: any) => [
               producto.quantity.toString(),
               producto.name + ' ' + producto.extraDetalle,
-              producto.price.toString() + ' Bs.',
-              producto.discount.toString() + ' Bs.',
-              (producto.quantity * producto.price - producto.discount).toString() +
-                ' Bs.',
+              producto.price.toString(),
+              producto.discount.toString(),
+              (producto.quantity * producto.price - producto.discount).toString(),
             ]),
             [
-              { text: ' ', border: [false, false, false, false] },
-              { text: ' ', border: [false, false, false, false] },
-              { text: ' ', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
               'D. AD.',
-              { text: descuentoAdicional + ' Bs.', border: [true, true, true, false] },
+              { text: descuentoAdicional, border: [true, true, true, false] },
             ],
             [
-              { text: ' ', border: [false, false, false, false] },
-              { text: ' ', border: [false, false, false, false] },
-              { text: ' ', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
+              { text: '', border: [false, false, false, false] },
               'TOTAL:',
-              { text: totalNeto + ' Bs.', border: [true, true, true, true] },
+              { text: totalNeto.toString(), border: [true, true, true, true] },
             ],
           ],
         },
       },
-      {
-        text: 'PROPINA:______________________',
-        style: 'subheader',
-        alignment: 'right',
-      },
-      {
-        text: 'NIT:___________________________',
-        style: 'subheader',
-      },
-      {
-        text: 'NOMBRE:______________________________________',
-        style: 'subheader',
-      },
-      {
-        text: 'CORREO:______________________________________',
-        style: 'subheader',
-      },
-      {
-        text: 'Usuario: ' + usuario,
-        style: 'subheader',
-      },
+      { text: 'PROPINA:__________', style: 'footer', alignment: 'right' },
+      { text: 'NIT:______________', style: 'footer' },
+      { text: 'NOMBRE:___________', style: 'footer' },
+      { text: 'CORREO:___________', style: 'footer' },
+      { text: 'Usuario: ' + usuario, style: 'footer' },
     ],
     styles: {
       header: {
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
         alignment: 'center',
-        margin: [0, 0, 0, 5],
+        margin: [0, 0, 0, 2],
       },
       subheader: {
-        fontSize: 10,
+        fontSize: 8,
         bold: true,
-        margin: [0, 5, 0, 10],
+        margin: [0, 2, 0, 2],
       },
       tableExample: {
+        fontSize: 7,
+      },
+      footer: {
         fontSize: 8,
+        margin: [0, 2, 0, 0],
       },
     },
     defaultStyle: {
-      margin: [0, 0, 0, 0],
+      fontSize: 8,
     },
   }
 
-  // Generar el PDF
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
   pdfDocGenerator.getBlob((blob: Blob) => {
     const formData = new FormData()
-    formData.append('file', blob, 'recibo.pdf')
+    formData.append('file', blob, 'estado_de_cuenta.pdf')
+    formData.append('printer', selectedPrinter)
 
     fetch('http://localhost:7777/print', {
       method: 'POST',
@@ -145,7 +134,7 @@ export const generarReciboPDF = (
         if (data.error) {
           toast.error(`Error al imprimir: ${data.error}`)
         } else {
-          toast.success('Impresión iniciada')
+          toast.success('Impresión de Estado de Cuenta iniciada')
         }
       })
       .catch((error) => {

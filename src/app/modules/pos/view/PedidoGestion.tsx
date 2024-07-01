@@ -906,8 +906,30 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 const { representacionGrafica } = response.factura
                 if (tipoRepresentacionGrafica === 'pdf')
                   printJS(representacionGrafica.pdf)
-                if (tipoRepresentacionGrafica === 'rollo')
-                  printJS(representacionGrafica.rollo)
+                if (tipoRepresentacionGrafica === 'rollo') {
+                  const pdfUrl = representacionGrafica.rollo
+                  fetch('http://localhost:7777/printPDF', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      pdf_url: pdfUrl, // Envía la URL del PDF al servidor
+                    }),
+                  })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.message) {
+                        toast.success('Impresión iniciada')
+                      } else {
+                        toast.error('Error al iniciar la impresión')
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error al imprimir el PDF:', error)
+                      toast.error('Error al imprimir el PDF')
+                    })
+                }
                 mySwal.fire({
                   title: `Documento generado correctamente`,
                   html: (

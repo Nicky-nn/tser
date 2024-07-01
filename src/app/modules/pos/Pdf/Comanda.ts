@@ -1,5 +1,4 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
-import printJS from 'print-js'
 import { toast } from 'react-toastify'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -22,54 +21,45 @@ export const generarComandaPDF = (
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
 
-  // Verificar si hay productos en el array especificado
   if (!data || data.length === 0) {
     toast.error('Debe agregar al menos un producto')
     return
   }
 
-  // Crear un documento PDF
+  // Obtener la impresora seleccionada para Comanda
+  const printerSettings = localStorage.getItem('printers')
+  let selectedPrinter = ''
+  if (printerSettings) {
+    const parsedSettings = JSON.parse(printerSettings)
+    selectedPrinter = parsedSettings.comanda
+  }
+
+  if (!selectedPrinter) {
+    toast.error('Por favor, seleccione una impresora para Comanda en la configuración')
+    return
+  }
+
   const documentDefinition: any = {
     pageOrientation: 'portrait',
-    pageMargins: [1, 1, 1, 1], // Configurar todos los márgenes a cero
-    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: 264 mm (26.4 cm)
+    pageMargins: [0, 0, 0, 0], // Configurar todos los márgenes a cero
+    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: automático
     content: [
       { text: 'COMANDA', style: 'header' },
       { text: `MESA: ${mesa} - ORDEN: ${orden}`, style: 'subheader' },
       {
-        canvas: [
-          {
-            type: 'line',
-            x1: 0,
-            y1: 0,
-            x2: 520,
-            y2: 0,
-            lineWidth: 1,
-            dash: { length: 5 },
-          }, // Dibujar una línea segmentada de un lado al otro
-        ],
-        margin: [0, 5, 0, 5], // Margen superior e inferior para separar la línea del contenido anterior y posterior
+        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
+        margin: [0, 2, 0, 2],
       },
       { text: `Fecha: ${fechaActual}  Hora: ${horaActual}`, style: 'subheader' },
       {
-        canvas: [
-          {
-            type: 'line',
-            x1: 0,
-            y1: 0,
-            x2: 520,
-            y2: 0,
-            lineWidth: 1,
-            dash: { length: 5 },
-          }, // Dibujar una línea segmentada de un lado al otro
-        ],
-        margin: [0, 5, 0, 5], // Margen superior e inferior para separar la línea del contenido anterior y posterior
+        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
+        margin: [0, 2, 0, 2],
       },
       {
         style: 'tableExample',
         table: {
           headerRows: 1,
-          widths: ['auto', '*'], // Ancho automático para la primera columna, el resto se ajusta automáticamente
+          widths: ['auto', '*'],
           body: [
             ['CANT.', 'DETALLE'],
             ...data.map((producto) => [
@@ -84,50 +74,58 @@ export const generarComandaPDF = (
         },
       },
       {
-        canvas: [
-          {
-            type: 'line',
-            x1: 0,
-            y1: 0,
-            x2: 520,
-            y2: 0,
-            lineWidth: 1,
-            dash: { length: 5 },
-          }, // Dibujar una línea segmentada de un lado al otro
-        ],
-        margin: [0, 5, 0, 5], // Margen superior e inferior para separar la línea del contenido anterior y posterior
+        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
+        margin: [0, 2, 0, 2],
       },
       { text: 'Comentarios:', style: 'subheader' },
-      // Dejamos dos líneas de espacio
       { text: ' ' },
       { text: 'Usuario: ' + usuario, style: 'subheader' },
     ],
     styles: {
       header: {
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
         alignment: 'center',
-        margin: [0, 0, 0, 5], // Margen inferior para separarlo del contenido siguiente
+        margin: [0, 0, 0, 2],
       },
       subheader: {
-        fontSize: 10,
+        fontSize: 8,
         bold: true,
-        margin: [0, 5, 0, 10],
+        margin: [0, 2, 0, 2],
       },
       tableExample: {
-        fontSize: 8,
+        fontSize: 7,
       },
     },
     defaultStyle: {
-      margin: [0, 0, 0, 0], // Eliminar todos los márgenes
+      fontSize: 8,
+      margin: [0, 0, 0, 0],
     },
   }
 
-  // Generar el PDF
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
-  pdfDocGenerator.getBlob((blob: any) => {
-    const pdfUrl = URL.createObjectURL(blob)
-    printJS(pdfUrl)
+  pdfDocGenerator.getBlob((blob: Blob) => {
+    const formData = new FormData()
+    formData.append('file', blob, 'comanda.pdf')
+    formData.append('printer', selectedPrinter)
+    console.log('Imprimiendo Comanda...', formData)
+
+    fetch('http://localhost:7777/print', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          toast.error(`Error al imprimir: ${data.error}`)
+        } else {
+          toast.success('Impresión de Comanda iniciada')
+        }
+      })
+      .catch((error) => {
+        toast.error(`Error al imprimir: ${error.message}`)
+      })
+    console.log('Comanda generada', formData)
   })
 }
