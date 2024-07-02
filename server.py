@@ -16,10 +16,9 @@ app = Flask(__name__)
 CORS(app)  # Habilitar CORS para todas las rutas
 
 
-def print_pdf(file_path):
+def print_pdf(file_path, printer_name):
     system = platform.system()
     if system == "Windows":
-        printer_name = win32print.GetDefaultPrinter()
         win32api.ShellExecute(
             0,
             "print",
@@ -30,11 +29,8 @@ def print_pdf(file_path):
         )
     else:
         conn = cups.Connection()
-        printers = conn.getPrinters()
-        if not printers:
-            raise RuntimeError("No printers available")
-        # Selecciona la primera impresora
-        printer_name = list(printers.keys())[0]
+        if printer_name not in conn.getPrinters():
+            raise RuntimeError(f"Printer {printer_name} not found")
         conn.printFile(printer_name, file_path, "Python Print Job", {})
 
 
@@ -48,6 +44,10 @@ def print_document():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
+    printer_name = request.form.get('printer')
+    if not printer_name:
+        return jsonify({"error": "No printer specified"}), 400
+
     # Guardar el archivo temporalmente
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
         file.save(temp.name)
@@ -55,7 +55,9 @@ def print_document():
 
     # Imprimir el archivo
     try:
-        print_pdf(temp.name)
+        print_pdf(temp.name, printer_name)
+    except Exception as e:
+        return jsonify({"error": f"Error printing: {str(e)}"}), 500
     finally:
         os.remove(temp.name)
 
@@ -66,9 +68,13 @@ def print_document():
 def print_pdfURL():
     data = request.get_json()
     pdf_url = data.get('pdf_url')
+    printer_name = data.get('printer')
 
     if not pdf_url:
         return jsonify({"error": "No se ha proporcionado la URL del PDF"}), 400
+
+    if not printer_name:
+        return jsonify({"error": "No se ha especificado una impresora"}), 400
 
     # Descargar el archivo PDF de la URL
     try:
@@ -83,7 +89,7 @@ def print_pdfURL():
 
     # Imprimir el archivo
     try:
-        print_pdf(temp.name)
+        print_pdf(temp.name, printer_name)
     except Exception as e:
         return jsonify({"error": f"Error printing PDF: {str(e)}"}), 500
     finally:
