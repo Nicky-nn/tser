@@ -1,4 +1,5 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
+import printJS from 'print-js' // Import printJS
 import { toast } from 'react-toastify'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -17,6 +18,8 @@ export const generarComandaPDF = (
   usuario: string,
   mesa: string = 'NAN',
   orden: string = '',
+  productosEliminados: any[] = [],
+  tipoPedido: any = 'ACA',
 ) => {
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
@@ -34,17 +37,12 @@ export const generarComandaPDF = (
     selectedPrinter = parsedSettings.comanda
   }
 
-  if (!selectedPrinter) {
-    toast.error('Por favor, seleccione una impresora para Comanda en la configuración')
-    return
-  }
-
   const documentDefinition: any = {
-    pageOrientation: 'portrait',
-    pageMargins: [0, 0, 0, 0], // Configurar todos los márgenes a cero
-    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: automático
+    pageMargins: [0, 0, 0, 0],
+    pageSize: { width: 190, height: 'auto' },
     content: [
       { text: 'COMANDA', style: 'header' },
+      ...(tipoPedido ? [{ text: `PARA: ${tipoPedido}`, style: 'tipoPedido' }] : []),
       { text: `MESA: ${mesa} - ORDEN: ${orden}`, style: 'subheader' },
       {
         canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
@@ -70,6 +68,14 @@ export const generarComandaPDF = (
                 ' -  ' +
                 producto.extraDescription,
             ]),
+            ...productosEliminados.map((producto) => [
+              '0',
+              {
+                text: producto.nombreArticulo,
+                decoration: 'lineThrough',
+                style: 'eliminados',
+              },
+            ]),
           ],
         },
       },
@@ -78,6 +84,7 @@ export const generarComandaPDF = (
         margin: [0, 2, 0, 2],
       },
       { text: 'Comentarios:', style: 'subheader' },
+      { text: ' ' },
       { text: ' ' },
       { text: 'Usuario: ' + usuario, style: 'subheader' },
     ],
@@ -96,6 +103,17 @@ export const generarComandaPDF = (
       tableExample: {
         fontSize: 7,
       },
+      eliminados: {
+        fontSize: 7,
+        italics: true,
+        color: 'gray',
+      },
+      tipoPedido: {
+        fontSize: 8,
+        bold: true,
+        alignment: 'right',
+        margin: [0, 2, 0, 2],
+      },
     },
     defaultStyle: {
       fontSize: 8,
@@ -105,27 +123,37 @@ export const generarComandaPDF = (
 
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
-  pdfDocGenerator.getBlob((blob: Blob) => {
-    const formData = new FormData()
-    formData.append('file', blob, 'comanda.pdf')
-    formData.append('printer', selectedPrinter)
-    console.log('Imprimiendo Comanda...', formData)
+  if (selectedPrinter) {
+    pdfDocGenerator.getBlob((blob: Blob) => {
+      const formData = new FormData()
+      formData.append('file', blob, 'comanda.pdf')
+      formData.append('printer', selectedPrinter)
 
-    fetch('http://localhost:7777/print', {
-      method: 'POST',
-      body: formData,
+      fetch('http://localhost:7777/print', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            toast.error(`Error al imprimir: ${data.error}`)
+          } else {
+            toast.success('Impresión de Comanda iniciada')
+          }
+        })
+        .catch((error) => {
+          toast.error(`Error al imprimir: ${error.message}`)
+        })
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          toast.error(`Error al imprimir: ${data.error}`)
-        } else {
-          toast.success('Impresión de Comanda iniciada')
-        }
+  } else {
+    pdfDocGenerator.getBlob((blob: any) => {
+      const pdfUrl = URL.createObjectURL(blob)
+      printJS({
+        printable: pdfUrl,
+        type: 'pdf',
+        style:
+          '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
       })
-      .catch((error) => {
-        toast.error(`Error al imprimir: ${error.message}`)
-      })
-    console.log('Comanda generada', formData)
-  })
+    })
+  }
 }

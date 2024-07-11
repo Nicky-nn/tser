@@ -4,6 +4,8 @@ import {
   Close,
   CreditCard,
   Delete,
+  Done,
+  DoneAll,
   ExpandMore,
   HomeWork,
   LibraryAddCheck,
@@ -11,6 +13,7 @@ import {
   MoreVert,
   NineK,
   PersonAdd,
+  Print,
   QrCode,
   Receipt,
   RecentActors,
@@ -52,6 +55,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useTheme,
   Zoom,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
@@ -101,9 +105,13 @@ import MetodoPagoButton from '../utils/MetodoPagoButton'
 import { actualizarItemPedido } from '../utils/Pedidos/actualizarItem'
 import { adicionarItemPedido } from '../utils/Pedidos/adicionarItems'
 import { eliminarPedido } from '../utils/Pedidos/pedidoEliminar'
-import { restPedidoExpressRegistro } from '../utils/Pedidos/PedidoExpress'
+import {
+  ClienteOperacionInput,
+  restPedidoExpressRegistro,
+} from '../utils/Pedidos/PedidoExpress'
 import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
+import DeliveryDialog from './listado/PedidosDeliveryDialog'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -213,6 +221,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [giftCardAmount, setGiftCardAmount] = useState<number>(0)
   const [montoRecibido, setMontoRecibido] = useState<number>(0)
   const [selectedButton, setSelectedButton] = useState<string | null>('Efectivo')
+  const [selectedButtonTipoPedido, setSelectedButtonTipoPedido] = useState<string | null>(
+    'Para Interno',
+  )
   const [selectedOption, setSelectedOption] = useState<Option | null>(null)
 
   const [openNuevoCliente, setNuevoCliente] = useState(false)
@@ -233,6 +244,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [enviaDatos, setEnviaDatos] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [selectedView, setSelectedView] = useState<string>('')
+
+  const theme = useTheme()
 
   const mySwal = withReactContent(Swal)
 
@@ -449,6 +462,31 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
+  const [tiposPedidos, setTiposPedidos] = useState<string | null>(null)
+  const [openDeliveryDialog, setOpenDeliveryDialog] = useState(false)
+  const handleTipoPedidoButtonClick = (buttonText: string) => {
+    setSelectedButtonTipoPedido(buttonText)
+    let tipoPedido
+    switch (buttonText) {
+      case 'Para Interno':
+        tipoPedido = null
+        break
+      case 'Para Llevar':
+        tipoPedido = 'LLEVAR'
+        break
+      case 'Delivery':
+        tipoPedido = 'DELIVERY'
+        setOpenDeliveryDialog(true)
+        break
+      default:
+        tipoPedido = buttonText.toUpperCase()
+    }
+    setValue('tipoPedido', tipoPedido)
+    setTiposPedidos(tipoPedido)
+  }
+
+  const tiposPedido = ['Para Interno', 'Para Llevar', 'Delivery']
+
   const { data, refetch } = useQuery<any[]>({
     queryKey: ['pedidosListadao'],
     queryFn: async () => {
@@ -486,6 +524,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       nroOrden: number | null
       mesa: string
       state: string
+      cliente: ClienteProps | null
+      tipoPedido: string | null
     }[] = []
 
     const seenValues = new Set<number>()
@@ -513,6 +553,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             nroOrden: numeroOrden,
             mesa: mesaPedido.nombre,
             state,
+            cliente: pedidoEncontrado.cliente || null,
+            tipoPedido: pedidoEncontrado.tipo || null,
           })
           mesasUnidas.forEach((m: string) => seenValues.add(Number(m.split(' ')[1])))
         }
@@ -524,6 +566,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             nroOrden: null,
             mesa: `${mesaNumber}`,
             state: 'Libre',
+            cliente: null,
+            tipoPedido: null,
           })
           seenValues.add(mesaNumber)
         }
@@ -539,6 +583,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           nroOrden: null,
           mesa: `${i}`,
           state: 'Libre',
+          cliente: null,
+          tipoPedido: null,
         })
       }
     }
@@ -549,16 +595,49 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     return result
   }, [data])
 
+  const [itemEliminados, setItemEliminados] = useState([] as any)
+  const [dataDelivery, setDataDelivery] = useState<any>(null)
+
   useEffect(() => {
     const updateCart = () => {
       if (selectedOption?.nroPedido) {
         const pedidoEncontrado = data?.find(
           (pedido) => pedido.numeroPedido === selectedOption.nroPedido,
         )
+        setClienteSeleccionado(pedidoEncontrado?.cliente || null)
+        // si el cliente es null llamamos a cliente por defecto
+        setValue('cliente', pedidoEncontrado?.cliente || null)
+        setValue('emailCliente', pedidoEncontrado?.cliente?.email || '')
+        setValue('razonSocial', pedidoEncontrado?.cliente?.razonSocial || '')
+        setItemEliminados(pedidoEncontrado?.productosEliminados || [])
+
+        // obtenemos el tipo para el pedido y marcamos automaticamente los botones
+        const tipoPedido = pedidoEncontrado?.tipo || null
+        const tipoPedidoButton =
+          tipoPedido === null
+            ? 'Para Interno'
+            : tipoPedido === 'LLEVAR'
+              ? 'Para Llevar'
+              : tipoPedido === 'DELIVERY'
+                ? 'Delivery'
+                : tipoPedido || 'Para Interno'
+        handleTipoPedidoButtonClick(tipoPedidoButton)
 
         if (pedidoEncontrado && pedidoEncontrado.productos) {
-          // const codigoAlmacen = producto.almacen ? producto.almacen.codigoAlmacen : null
+          setItemEliminados(pedidoEncontrado?.productosEliminados || [])
+          const delivery = {
+            atributo1: pedidoEncontrado.atributo1,
+            atributo2: pedidoEncontrado.atributo2,
+            atributo3: pedidoEncontrado.atributo3,
+            atributo4: pedidoEncontrado.atributo4,
+            direccionEntrega: pedidoEncontrado.direccionEntrega,
+            fechaEntrega: pedidoEncontrado.fechaEntrega,
+            terminos: pedidoEncontrado.terminos,
+            fromDatabase: true,
+          }
+          setDataDelivery(delivery)
 
+          // const codigoAlmacen = producto.almacen ? producto.almacen.codigoAlmacen : null
           const mappedProducts: Product[] = pedidoEncontrado.productos.map(
             (producto: any): Product => ({
               imagen: '',
@@ -580,13 +659,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           )
           setCart(mappedProducts)
         } else {
+          setDataDelivery(null)
+          console.error('No se encontró el pedido')
           setCart([])
         }
       } else {
         setCart([])
+        setDataDelivery(null)
+        handleTipoPedidoButtonClick('Para Interno')
       }
     }
-
     updateCart()
   }, [selectedOption, data])
 
@@ -607,8 +689,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         setCart([])
         refetch()
       },
+      tiposPedidos,
+      clienteSeleccionado || null,
+      getValues(),
     )
-      .then((response) => {
+      .then(async (response) => {
         if (response.restPedidoExpressRegistro) {
           const { numeroPedido, numeroOrden, mesa, state } =
             response.restPedidoExpressRegistro
@@ -630,158 +715,138 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               state,
             },
           ])
+
+          // Leer la configuración de impresión automática del local storage
+          const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+          const impresionAutomatica = printerSettings.impresionAutomatica || {}
+
+          // Si la impresión automática de comanda está activada, generar e imprimir la comanda
+          if (impresionAutomatica.comanda) {
+            generarComandaPDF(
+              cart,
+              usuario,
+              mesa.nombre,
+              numeroOrden.toString(),
+              itemEliminados,
+              tiposPedidos,
+            )
+          }
         }
       })
       .catch((error) => {
         console.error('Error al registrar el pedido:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Hubo un error al registrar el pedido',
+          icon: 'error',
+        })
       })
   }
 
-  const actualizarPedido = () => {
-    if (selectedOption?.nroPedido === null || selectedOption?.nroPedido === undefined) {
+  const actualizarPedido = async () => {
+    if (!selectedOption?.nroPedido) {
       toast.error('No se puede actualizar un pedido sin número de pedido')
       return
     }
 
-    actualizarItemPedido(
-      puntoVenta,
-      sucursal,
-      selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-      deletedProducts,
-      cart,
-      () => {
-        refetch()
-      },
-    ).then((responseActualizar) => {
-      const { numeroPedido, numeroOrden, mesa, state } =
+    try {
+      let productosEliminados = itemEliminados // Usar itemEliminados por defecto
+
+      // Actualizar items del pedido
+      const responseActualizar = await actualizarItemPedido(
+        puntoVenta,
+        sucursal,
+        Number(selectedOption.nroPedido),
+        deletedProducts,
+        cart,
+      )
+
+      let { numeroPedido, numeroOrden, mesa, state } =
         //@ts-ignore
         responseActualizar.restPedidoActualizarItem
-      setSelectedOption({
+
+      let updatedOption = {
         value: Number(mesa.nombre),
         nroPedido: numeroPedido,
         nroOrden: numeroOrden,
         mesa: mesa.nombre,
         state,
-      })
-      setMesasSeleccionadas([
-        {
+      }
+
+      // Verificar si hay productos nuevos en el carrito
+      const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)
+
+      if (hasNonDatabaseProduct) {
+        // Adicionar items nuevos al pedido
+        const responseAdicionar = await adicionarItemPedido(
+          puntoVenta,
+          sucursal,
+          Number(selectedOption.nroPedido),
+          deletedProducts,
+          cart,
+        )
+
+        ;({ numeroPedido, numeroOrden, mesa, state } =
+          //@ts-ignore
+          responseAdicionar.restPedidoAdicionarItem)
+
+        updatedOption = {
           value: Number(mesa.nombre),
           nroPedido: numeroPedido,
           nroOrden: numeroOrden,
           mesa: mesa.nombre,
           state,
-        },
-      ])
-
-      // Verificamos si hay al menos un producto en el carrito que sea distinto de fromDatabase
-      const hasNonDatabaseProduct = cart.some((producto) => !producto.fromDatabase)
-
-      // Si hay productos nuevos en el carrito, llamamos a adicionarItemPedido
-      if (hasNonDatabaseProduct) {
-        adicionarItemPedido(
-          puntoVenta,
-          sucursal,
-          selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-          deletedProducts,
-          cart,
-          () => {
-            refetch()
-          },
-        ).then((responseAdicionar) => {
-          const { numeroPedido, numeroOrden, mesa, state } =
-            //@ts-ignore
-            responseAdicionar.restPedidoAdicionarItem
-
-          setSelectedOption({
-            value: Number(mesa.nombre),
-            nroPedido: numeroPedido,
-            nroOrden: numeroOrden,
-            mesa: mesa.nombre,
-            state,
-          })
-          setMesasSeleccionadas([
-            {
-              value: Number(mesa.nombre),
-              nroPedido: numeroPedido,
-              nroOrden: numeroOrden,
-              mesa: mesa.nombre,
-              state,
-            },
-          ])
-          setSelectedCategory(null)
-
-          // Verificamos si hay productos eliminados para llamar a eliminarPedido
-          if (deletedProducts.length > 0) {
-            eliminarPedido(
-              puntoVenta,
-              sucursal,
-              selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-              deletedProducts,
-              () => {
-                refetch()
-              },
-            ).then((responseEliminar) => {
-              const { numeroPedido, numeroOrden, mesa, state } =
-                responseEliminar.restPedidoEliminarItem
-              setSelectedOption({
-                value: Number(mesa.nombre),
-                nroPedido: numeroPedido,
-                nroOrden: numeroOrden,
-                mesa: mesa.nombre,
-                state,
-              })
-              setMesasSeleccionadas([
-                {
-                  value: Number(mesa.nombre),
-                  nroPedido: numeroPedido,
-                  nroOrden: numeroOrden,
-                  mesa: mesa.nombre,
-                  state,
-                },
-              ])
-              setSelectedCategory(null)
-
-              setDeletedProducts([])
-            })
-          }
-        })
-      } else {
-        // Si no hay productos nuevos, simplemente llamamos a eliminarPedido si hay elementos en deletedProducts
-        if (deletedProducts.length > 0) {
-          eliminarPedido(
-            puntoVenta,
-            sucursal,
-            selectedOption?.nroPedido ? Number(selectedOption.nroPedido) : 0,
-            deletedProducts,
-            () => {
-              refetch()
-            },
-          ).then((responseEliminar) => {
-            const { numeroPedido, numeroOrden, mesa, state } =
-              responseEliminar.restPedidoEliminarItem
-            setSelectedOption({
-              value: Number(mesa.nombre),
-              nroPedido: numeroPedido,
-              nroOrden: numeroOrden,
-              mesa: mesa.nombre,
-              state,
-            })
-            setMesasSeleccionadas([
-              {
-                value: Number(mesa.nombre),
-                nroPedido: numeroPedido,
-                nroOrden: numeroOrden,
-                mesa: mesa.nombre,
-                state,
-              },
-            ])
-            setSelectedCategory(null)
-
-            setDeletedProducts([])
-          })
         }
       }
-    })
+
+      // Si hay productos eliminados, eliminarlos del pedido
+      if (deletedProducts.length > 0) {
+        const responseEliminar = await eliminarPedido(
+          puntoVenta,
+          sucursal,
+          Number(selectedOption.nroPedido),
+          deletedProducts,
+        )
+
+        ;({ numeroPedido, numeroOrden, mesa, state, productosEliminados } =
+          responseEliminar.restPedidoEliminarItem)
+
+        updatedOption = {
+          value: Number(mesa.nombre),
+          nroPedido: numeroPedido,
+          nroOrden: numeroOrden,
+          mesa: mesa.nombre,
+          state,
+        }
+      }
+
+      // Actualizar el estado con los nuevos datos
+      setSelectedOption(updatedOption)
+      setMesasSeleccionadas([updatedOption])
+      setSelectedCategory(null)
+      setDeletedProducts([])
+      setItemEliminados(productosEliminados)
+
+      // Verificar si la impresión automática está activada
+      const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+      const impresionAutomatica = printerSettings.impresionAutomatica || {}
+
+      // Imprimir la comanda solo si la impresión automática está activada
+      if (impresionAutomatica.comanda) {
+        generarComandaPDF(
+          cart,
+          usuario,
+          updatedOption.mesa,
+          updatedOption.nroOrden.toString(),
+          productosEliminados,
+          tiposPedidos,
+        )
+      }
+    } catch (error) {
+      console.error('Error al actualizar el pedido:', error)
+    } finally {
+      refetch()
+    }
   }
 
   const finalizarOrden = () => {
@@ -794,10 +859,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       refetch,
       isCreatingNewClient,
     )
-      .then((response) => {
+      .then(async (response) => {
         if (response.restPedidoFinalizar) {
           const { mesa } = response.restPedidoFinalizar
-          const mesaNombre = mesa.nombre.split('-')[0] // Tomar el primer número antes del guion
+          const mesaNombre = mesa.nombre.split('-')[0]
 
           setSelectedOption({
             value: Number(mesaNombre),
@@ -816,13 +881,29 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               state: 'Libre',
             },
           ])
-          // Eliinar cliente seleccionado
+
           eliminarCliente()
           setIsCreatingNewClient(false)
           setValue('cliente', null)
           setSelectedButton('Efectivo')
           setEnviaDatos(true)
           setSelectedCategory(categories[0].name || null)
+
+          // Leer la configuración de impresión automática del local storage
+          const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+          const impresionAutomatica = printerSettings.impresionAutomatica || {}
+
+          // Si la impresión automática de estado de cuenta está activada, generar e imprimir el recibo
+          if (impresionAutomatica.estadoDeCuenta) {
+            generarReciboPDF(
+              cart,
+              usuario,
+              total,
+              selectedOption?.mesa,
+              selectedOption?.nroOrden?.toString(),
+              printDescuentoAdicional.toString(),
+            )
+          }
         }
       })
       .catch((error) => {
@@ -904,32 +985,54 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               if (response) {
                 setIsCreatingNewClient(false)
                 const { representacionGrafica } = response.factura
-                if (tipoRepresentacionGrafica === 'pdf')
-                  printJS(representacionGrafica.pdf)
-                if (tipoRepresentacionGrafica === 'rollo') {
-                  const pdfUrl = representacionGrafica.rollo
-                  fetch('http://localhost:7777/printPDF', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      pdf_url: pdfUrl, // Envía la URL del PDF al servidor
-                    }),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      if (data.message) {
-                        toast.success('Impresión iniciada')
-                      } else {
-                        toast.error('Error al iniciar la impresión')
-                      }
-                    })
-                    .catch((error) => {
-                      console.error('Error al imprimir el PDF:', error)
-                      toast.error('Error al imprimir el PDF')
-                    })
+
+                // Leer la configuración de impresión automática del local storage
+                const printerSettings = JSON.parse(
+                  localStorage.getItem('printers') || '{}',
+                )
+                const impresionAutomatica = printerSettings.impresionAutomatica || {}
+
+                if (impresionAutomatica.facturar) {
+                  if (tipoRepresentacionGrafica === 'pdf') {
+                    printJS(representacionGrafica.pdf)
+                  } else if (tipoRepresentacionGrafica === 'rollo') {
+                    const pdfUrl = representacionGrafica.rollo
+                    const selectedPrinter = printerSettings.facturar || ''
+
+                    if (selectedPrinter) {
+                      fetch('http://localhost:7777/printPDF', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          pdf_url: pdfUrl,
+                          printer: selectedPrinter,
+                        }),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.message) {
+                            toast.success('Impresión iniciada')
+                          } else {
+                            toast.error('Error al iniciar la impresión')
+                          }
+                        })
+                        .catch((error) => {
+                          console.error('Error al imprimir el PDF:', error)
+                          toast.error('Error al imprimir el PDF')
+                        })
+                    } else {
+                      printJS({
+                        printable: pdfUrl,
+                        type: 'pdf',
+                        style:
+                          '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
+                      })
+                    }
+                  }
                 }
+
                 mySwal.fire({
                   title: `Documento generado correctamente`,
                   html: (
@@ -945,7 +1048,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               setValue('metodoPago', 1)
               setValue('numeroTarjeta', '')
             })
-
             .catch((error) => {
               console.error('Error al facturar el pedido:', error)
             })
@@ -975,6 +1077,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         setCart([])
         refetch()
       },
+      tiposPedidos,
+      clienteSeleccionado || null,
+      getValues(),
     )
       .then((response) => {
         if (response.restPedidoExpressRegistro) {
@@ -1012,12 +1117,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setEnviaDatos(true)
                 setSelectedCategory(categories[0].name || null)
               }
-              generarComandaPDF(
-                cart,
-                usuario,
-                selectedOption?.mesa,
-                selectedOption?.nroOrden?.toString(),
-              )
+              const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+              const impresionAutomatica = printerSettings.impresionAutomatica || {}
+              if (impresionAutomatica.comanda) {
+                generarComandaPDF(
+                  cart,
+                  usuario,
+                  mesa.nombre,
+                  numeroOrden.toString(),
+                  itemEliminados,
+                  tiposPedidos,
+                )
+              }
               setSelectedCategory(categories[0].name || null)
             })
             .catch((error) => {
@@ -1073,10 +1184,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setAdditionalDiscount(0)
     setGiftCardAmount(0)
     setMontoRecibido(0)
-    setValue('cliente', null)
-    eliminarCliente()
-    setValue('emailCliente', '')
+    // setValue('cliente', null)
+    // eliminarCliente()
+    // setValue('emailCliente', '')
     setEnviaDatos((prevState) => !prevState)
+    // cambiamos el tipo a null
+
+    if (selectedOption?.state === 'Libre') {
+      setValue('tipoPedido', null)
+      setItemEliminados([])
+    }
   }, [selectedOption])
 
   const IMG = styled('img')(() => ({
@@ -1118,7 +1235,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       }
     }
 
-    setClientePorDefecto()
+    if (selectedOption?.state === 'Libre') {
+      setClientePorDefecto()
+    }
   }, [selectedOption])
 
   /**
@@ -1178,6 +1297,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
+  const truncateName = (name: string, maxLength: number) => {
+    if (name.length > maxLength) {
+      return name.substring(0, maxLength) + '...'
+    }
+    return name
+  }
+
   const { tiposDocumentoIdentidad, tdiLoading } = useQueryTipoDocumentoIdentidad()
   const [isCheckedExecpcion, setIsCheckedExecpcion] = useState(false)
   useEffect(() => {
@@ -1185,28 +1311,47 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }, [])
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={1}>
       {selectedView === 'mosaico' ? (
-        <div style={{ overflowX: 'auto', padding: '10px' }}>
+        <div style={{ overflowX: 'auto', padding: '1px' }}>
           <div style={{ display: 'flex' }}>
             {options.map((option, index) => (
               <div key={index} style={{ marginRight: '8px' }}>
                 <Card
                   sx={{
                     width: 110,
-                    height: 110,
+                    height: 75,
                     backgroundColor: option.state === 'Libre' ? '#AFE3B7' : '#EF9999',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    // al pasar el mouse por encima, cambia el color de fondo
+                    position: 'relative', // Needed to osition the top line
+                    // Change background color on hover
                     '&:hover': {
                       backgroundColor: option.state === 'Libre' ? '#8CCF9B' : '#E57373',
                     },
+                    overflow: 'hidden',
                   }}
                   onClick={() => setSelectedOption(option)}
                 >
+                  {/* Add a yellow line at the top if option.state is "DELIVERY" */}
+                  {option.tipoPedido === 'DELIVERY' && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: '#F4E790',
+                        color: '#333',
+                        padding: '2px 5px',
+                        fontSize: '0.7rem',
+                        transform: 'rotate(45deg) translate(15%, -50%)',
+                      }}
+                    >
+                      DELIVERY
+                    </div>
+                  )}
                   <CardContent
                     sx={{
                       display: 'flex',
@@ -1221,10 +1366,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     </div>
                     {option.nroOrden && (
                       <Typography color="textSecondary">
-                        {`Ped.: ${option.nroOrden}`}
+                        {[
+                          `Ped.: ${option.nroOrden}`,
+                          <br key="line-break" />,
+                          option.cliente && `${option.cliente.razonSocial}`,
+                        ]}
                       </Typography>
                     )}
-                    <TableRestaurant sx={{ marginRight: '8px' }} />
                   </CardContent>
                 </Card>
               </div>
@@ -1339,23 +1487,34 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 xs={6}
                 sm={4}
                 md={3}
+                lg={2}
                 sx={{ userSelect: 'none' }}
               >
-                <Paper
+                <Card
                   elevation={3}
                   sx={{
                     p: 2,
                     textAlign: 'center',
                     cursor: 'pointer',
                     backgroundColor:
-                      selectedCategory === category.name ? 'primary.main' : 'inherit',
+                      selectedCategory === category.name
+                        ? theme.palette.primary.main
+                        : theme.palette.common.white,
                     color:
                       selectedCategory === category.name ? 'common.white' : 'inherit',
+                    '&:hover': {
+                      backgroundColor:
+                        selectedCategory === category.name
+                          ? theme.palette.primary.dark
+                          : theme.palette.action.hover,
+                    },
                   }}
                   onClick={() => setSelectedCategory(category.name)}
                 >
-                  <Typography variant="body1">{category.name}</Typography>
-                </Paper>
+                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                    {category.name}
+                  </Typography>
+                </Card>
               </Grid>
             ))
           ) : (
@@ -1398,7 +1557,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 >
                   <Card
                     onClick={() => handleAddToCart(product)}
-                    sx={{ cursor: 'pointer' }}
+                    sx={{
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: theme.shadows[4],
+                      },
+                    }}
                   >
                     {product.imagen && product.imagen.variants ? (
                       <CardMedia
@@ -1413,15 +1579,16 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         }}
                       />
                     ) : (
+                      // <></>
                       <Box
                         sx={{
-                          height: 130,
+                          height: 26,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           backgroundColor: '#f0f0f0',
                           color: '#93C4EE',
-                          fontSize: '5rem',
+                          fontSize: '1.4rem',
                           fontWeight: 'bold',
                         }}
                       >
@@ -1433,9 +1600,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       </Box>
                     )}
                     <CardContent>
-                      <Typography variant="body1" gutterBottom>
-                        {product.name}
-                      </Typography>
+                      <Tooltip title={product.name} placement="top">
+                        <Typography variant="body1" gutterBottom>
+                          {truncateName(product.name, 18)}
+                        </Typography>
+                      </Tooltip>
                       <Typography variant="body1" fontWeight="bold">
                         {product.price.toFixed(2)} {product.sigla}
                       </Typography>
@@ -1448,7 +1617,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       </Grid>
       <Grid item xs={12} md={6} lg={4} sx={{ userSelect: 'none' }}>
         <Paper elevation={3} sx={{ p: 2 }}>
-          {/* Incio Visual  */}
           {selectedOption && (
             <Grid container justifyContent="center">
               <Grid
@@ -1478,7 +1646,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   </IconButton>
                 )}
 
-                <Grid container justifyContent="space-between" padding={1}>
+                <Grid container justifyContent="space-between">
                   <Grid item>
                     <Typography variant="h6">
                       {selectedOption.nroPedido !== null
@@ -1534,373 +1702,103 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             <></>
           )}
 
-          {cart.length === 0 ? (
-            <Box alignItems="center">
-              <Grid container direction="column" alignItems="center">
-                {/* CENTRAR  */}
-                <Grid item>
-                  <IconButton disabled>
-                    <ShoppingCartOutlined sx={{ fontSize: 100 }} />
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <Typography variant="body1">No hay productos en el carrito</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                backgroundColor: '#FFFFFF',
-                paddingTop: 2,
-              }}
-            >
-              {cart.map((product, index) => (
-                <Zoom in={true} key={index}>
-                  <Accordion
-                    key={index}
-                    sx={{ mb: 1 }}
-                    onClick={(event) => event.stopPropagation()}
-                    style={{ backgroundColor: '#EEF5FB', borderRadius: 7 }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMore />}
-                      sx={{
-                        backgroundColor: '#EEF5FB',
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          width: '100%',
-                        }}
-                        onClick={(event) => event.stopPropagation()} // Detener la propagación del evento en el elemento del producto
-                      >
-                        <Box sx={{ flex: 1 }}>
-                          <Typography variant="body1">{product.name}</Typography>
-                          <Typography variant="body1">
-                            {product.price.toFixed(2)} {product.sigla}
-                          </Typography>
-                          {/* <Typography variant="body2">{product.description}</Typography> */}
-                          {/* <Typography variant="body2">
-                          Subtotal: ${product.price * product.quantity - product.discount}
-                        </Typography> */}
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton
-                            color="primary"
-                            onClick={() => handleQuantityChange(index, 'subtract')}
-                          >
-                            <Remove />
-                          </IconButton>
-                          <Typography variant="h6">{product.quantity}</Typography>
-                          <IconButton
-                            color="primary"
-                            onClick={() => handleQuantityChange(index, 'add')}
-                          >
-                            <Add />
-                          </IconButton>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                            }}
-                          >
-                            {product.discount > 0 && (
-                              <Typography
-                                variant="body2"
-                                sx={{ textDecoration: 'line-through', color: 'gray' }}
-                              >
-                                {(product.price * product.quantity).toFixed(2)}{' '}
-                                {product.sigla}
-                              </Typography>
-                            )}
-                            <Typography variant="body1">
-                              {(
-                                product.price * product.quantity -
-                                product.discount
-                              ).toFixed(2)}{' '}
-                              {product.sigla}
-                            </Typography>
-                          </Box>
-                          <IconButton
-                            color="error"
-                            onClick={() => handleRemoveFromCart(index)}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ display: 'flex' }}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={7}>
-                          <FormControl fullWidth size="small">
-                            <InputLabel htmlFor="precio">Precio</InputLabel>
-                            <OutlinedInput
-                              id="precio"
-                              label="Precio"
-                              size="small"
-                              value={product.price}
-                              onChange={(e) =>
-                                handlePriceChange(index, parseFloat(e.target.value))
-                              }
-                              onBlur={() => handlePriceChange(index, product.price || 0)}
-                              inputComponent={NumeroFormat as any}
-                              inputProps={{}}
-                              sx={{ width: '100%' }}
-                            />
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={5}>
-                          <FormControl fullWidth size="small">
-                            <InputLabel htmlFor="descuento">Descuento</InputLabel>
-                            <OutlinedInput
-                              id="descuento"
-                              label="Descuento"
-                              size="small"
-                              value={product.discount}
-                              onChange={(e) =>
-                                handleDiscountChange(index, parseFloat(e.target.value))
-                              }
-                              onBlur={() =>
-                                handleDiscountChange(index, product.discount || 0)
-                              }
-                              inputComponent={NumeroFormat as any}
-                              inputProps={{}}
-                              sx={{ width: '100%' }}
-                            />
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <FormTextField
-                            label="Notas"
-                            value={product.extraDescription}
-                            onChange={(e) =>
-                              handleExtraDescriptionChange(index, e.target.value)
-                            }
-                            sx={{ width: '100%' }}
-                            multiline
-                          />
-                        </Grid>
-
-                        {/* <Grid item xs={12}>
-                          <TextField
-                            label="Detalle Extra"
-                            value={product.extraDetalle}
-                            onChange={(e) =>
-                              handleDetalleExtraChange(index, e.target.value)
-                            }
-                            sx={{ width: '100%' }}
-                          />
-                        </Grid> */}
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-                </Zoom>
-              ))}
-              <hr />
-              <Grid container spacing={2} style={{ marginTop: '10px' }}>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={
-                      selectedOption?.state === 'COMPLETADO'
-                        ? actualizarPedido
-                        : registrarPedido
-                    }
-                    style={{ color: 'white', height: '60px' }}
-                    endIcon={<Save />}
-                  >
-                    {selectedOption?.state === 'COMPLETADO'
-                      ? 'Actualizar Pedido'
-                      : 'Registrar Pedido'}
-                  </Button>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Button
-                    startIcon={<Receipt />}
-                    fullWidth
-                    onClick={finalizarOrden}
-                    variant="contained"
-                    color="secondary"
-                    style={{ color: 'white', height: '60px' }}
-                    disabled={selectedOption?.state === 'Libre'}
-                  >
-                    Finalizar Pedido
-                  </Button>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Button
-                    startIcon={<LibraryAddCheck />}
-                    fullWidth
-                    variant="contained"
-                    onClick={() =>
-                      generarComandaPDF(
-                        cart,
-                        usuario,
-                        selectedOption?.mesa,
-                        selectedOption?.nroOrden?.toString(),
-                      )
-                    }
-                    style={{
-                      color: 'white',
-                      height: '60px',
-                      backgroundColor: '#6e7b8c',
-                    }}
-                  >
-                    Comanda
-                  </Button>
-                </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    startIcon={<RecentActors />}
-                    fullWidth
-                    variant="contained"
-                    style={{
-                      color: 'white',
-                      height: '60px',
-                      backgroundColor: '#b69198',
-                    }}
-                    onClick={() =>
-                      generarReciboPDF(
-                        cart,
-                        usuario,
-                        total,
-                        selectedOption?.mesa,
-                        selectedOption?.nroOrden?.toString(),
-                        printDescuentoAdicional.toString(),
-                      )
-                    }
-                  >
-                    Estado de Cuenta
-                  </Button>
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    startIcon={<SendTimeExtension />}
-                    fullWidth
-                    onClick={handleRegisterAndFinalize}
-                    variant="contained"
-                    color="secondary"
-                    style={{ color: 'white', height: '60px' }}
-                    disabled={selectedOption?.state === 'COMPLETADO'}
-                  >
-                    Registrar, Finalizar y Comanda
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          )}
-        </Paper>
-        <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
-          <Grid item xs={12}>
-            <Grid container spacing={0}>
-              {/* Cliente */}
-              <Grid item xs={9}>
-                <Controller
-                  name="cliente"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth error={Boolean(errors.cliente)}>
-                      <AsyncSelect
-                        {...field}
-                        cacheOptions={false}
-                        defaultOptions={true}
-                        styles={reactSelectStyle(Boolean(errors.cliente))}
-                        menuPosition={'fixed'}
-                        name="clientes"
-                        placeholder={'Buscar Cliente'}
-                        loadOptions={fetchClientes}
-                        isClearable={true}
-                        value={field.value || null}
-                        getOptionValue={(item) => item.codigoCliente}
-                        getOptionLabel={(item) =>
-                          `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial}`
-                        }
-                        onChange={(cliente: SingleValue<ClienteProps>) => {
-                          field.onChange(cliente)
+          <Grid container spacing={0}>
+            {/* Cliente */}
+            <Grid item xs={9}>
+              <Controller
+                name="cliente"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth error={Boolean(errors.cliente)}>
+                    <AsyncSelect
+                      {...field}
+                      cacheOptions={false}
+                      defaultOptions={true}
+                      styles={reactSelectStyle(Boolean(errors.cliente))}
+                      menuPosition={'fixed'}
+                      name="clientes"
+                      placeholder={'Buscar Cliente'}
+                      loadOptions={fetchClientes}
+                      isClearable={true}
+                      value={field.value || null}
+                      getOptionValue={(item) => item.codigoCliente}
+                      getOptionLabel={(item) =>
+                        `${item.numeroDocumento}${item.complemento || ''} - ${item.razonSocial}`
+                      }
+                      onChange={(cliente: SingleValue<ClienteProps>) => {
+                        field.onChange(cliente)
+                        setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
+                        setValue('razonSocial', genReplaceEmpty(cliente?.razonSocial, ''))
+                        if (cliente?.state === 'REGISTRO') {
                           setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                           setValue(
                             'razonSocial',
                             genReplaceEmpty(cliente?.razonSocial, ''),
                           )
-                          if (cliente?.state === 'REGISTRO') {
-                            setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
-                            setValue(
-                              'razonSocial',
-                              genReplaceEmpty(cliente?.razonSocial, ''),
-                            )
-                            setValue(
-                              'numeroDocumento',
-                              genReplaceEmpty(cliente?.numeroDocumento, ''),
-                            )
-                            setValue('sinTipoDocumento', cliente?.tipoDocumentoIdentidad)
-                            setValue(
-                              'complemento',
-                              genReplaceEmpty(cliente?.complemento, '') || '',
-                            )
-                            setIsCreatingNewClient(true)
-                          } else {
-                            setIsCreatingNewClient(false)
-                          }
-                        }}
-                        onBlur={field.onBlur}
-                        noOptionsMessage={() =>
-                          'Ingrese al menos 3 caracteres para buscar un cliente'
+                          setValue(
+                            'numeroDocumento',
+                            genReplaceEmpty(cliente?.numeroDocumento, ''),
+                          )
+                          setValue('sinTipoDocumento', cliente?.tipoDocumentoIdentidad)
+                          setValue(
+                            'complemento',
+                            genReplaceEmpty(cliente?.complemento, '') || '',
+                          )
+                          setIsCreatingNewClient(true)
+                        } else {
+                          setIsCreatingNewClient(false)
                         }
-                        loadingMessage={() => 'Buscando...'}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
+                      }}
+                      onBlur={field.onBlur}
+                      noOptionsMessage={() =>
+                        'Ingrese al menos 3 caracteres para buscar un cliente'
+                      }
+                      loadingMessage={() => 'Buscando...'}
+                    />
+                  </FormControl>
+                )}
+              />
+            </Grid>
 
-              {/* Agregamos 3 iconos: explorar, nuevo cliente, nuevo cliente excepcion */}
-              <Grid item xs={1}>
-                <Tooltip title="Explorar Cliente">
-                  <IconButton
-                    aria-label="expand"
-                    color="primary"
-                    onClick={() => setExplorarCliente(true)}
-                    size="small"
-                  >
-                    <Search />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={1}>
-                <Tooltip title="Nuevo Cliente">
-                  <IconButton
-                    aria-label="expand"
-                    color="primary"
-                    onClick={() => setNuevoCliente(true)}
-                    size="small"
-                  >
-                    <PersonAdd />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={1}>
-                <Tooltip title="Cliente 99001">
-                  <IconButton
-                    aria-label="expand"
-                    color="primary"
-                    onClick={() => setCliente99001(true)}
-                    size="small"
-                  >
-                    <NineK />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
+            {/* Agregamos 3 iconos: explorar, nuevo cliente, nuevo cliente excepcion */}
+            <Grid item xs={1}>
+              <Tooltip title="Explorar Cliente">
+                <IconButton
+                  aria-label="expand"
+                  color="primary"
+                  onClick={() => setExplorarCliente(true)}
+                  size="small"
+                >
+                  <Search />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={1}>
+              <Tooltip title="Nuevo Cliente">
+                <IconButton
+                  aria-label="expand"
+                  color="primary"
+                  onClick={() => setNuevoCliente(true)}
+                  size="small"
+                >
+                  <PersonAdd />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={1}>
+              <Tooltip title="Cliente 99001">
+                <IconButton
+                  aria-label="expand"
+                  color="primary"
+                  onClick={() => setCliente99001(true)}
+                  size="small"
+                >
+                  <NineK />
+                </IconButton>
+              </Tooltip>
+            </Grid>
 
+            {clienteSeleccionado && (
               <Grid container>
                 <Grid item xs={6}>
                   <Controller
@@ -1911,6 +1809,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         {...field}
                         label="Email"
                         placeholder="Ingrese el Email"
+                        name="emailCliente"
+                        id="emailCliente"
                         fullWidth
                         margin="normal"
                         size="small"
@@ -2047,16 +1947,277 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   </Typography>
                 )}
               </Grid>
-              {/* <Grid item xs={12}>
-                <ColoredSVG
-                  name={clienteSeleccionado?.razonSocial || ''}
-                  nit={clienteSeleccionado?.numeroDocumento || ''}
-                  email={clienteSeleccionado?.email || ''}
-                  form={form}
-                />
-              </Grid> */}
-            </Grid>
+            )}
+          </Grid>
 
+          {/* 3 Botones de 1. Para Aca, Para LLevar y Delibery */}
+          <Grid container spacing={1}>
+            {tiposPedido.map((tipo) => (
+              <Grid item xs={4} key={tipo}>
+                <Button
+                  fullWidth
+                  variant={selectedButtonTipoPedido === tipo ? 'contained' : 'outlined'}
+                  onClick={() => handleTipoPedidoButtonClick(tipo)}
+                >
+                  {tipo}
+                </Button>
+              </Grid>
+            ))}
+          </Grid>
+
+          {cart.length === 0 ? (
+            <Box alignItems="center">
+              <Grid container direction="column" alignItems="center">
+                {/* CENTRAR  */}
+                <Grid item>
+                  <IconButton disabled>
+                    <ShoppingCartOutlined sx={{ fontSize: 100 }} />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Typography variant="body1">No hay productos en el carrito</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                backgroundColor: '#FFFFFF',
+                paddingTop: 2,
+              }}
+            >
+              {cart.map((product, index) => (
+                <Zoom in={true} key={index}>
+                  <Accordion
+                    key={index}
+                    sx={{ mb: 0.5 }}
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ backgroundColor: '#EEF5FB', borderRadius: 5 }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      sx={{ backgroundColor: '#EEF5FB', borderRadius: 2 }}
+                    >
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <Box sx={{ flex: 1 }}>
+                          <Tooltip title={product.name} placement="top">
+                            <Typography variant="body2">
+                              {truncateName(product.name, 15)}
+                            </Typography>
+                          </Tooltip>
+                          <Typography variant="body2">
+                            {product.price.toFixed(2)} {product.sigla}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleQuantityChange(index, 'subtract')}
+                          >
+                            <Remove />
+                          </IconButton>
+                          <Typography variant="body2">{product.quantity}</Typography>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleQuantityChange(index, 'add')}
+                          >
+                            <Add />
+                          </IconButton>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-end',
+                              mr: 1,
+                            }}
+                          >
+                            {product.discount > 0 && (
+                              <Typography
+                                variant="caption"
+                                sx={{ textDecoration: 'line-through', color: 'gray' }}
+                              >
+                                {(product.price * product.quantity).toFixed(2)}{' '}
+                                {product.sigla}
+                              </Typography>
+                            )}
+                            <Typography variant="body2">
+                              {(
+                                product.price * product.quantity -
+                                product.discount
+                              ).toFixed(2)}{' '}
+                              {product.sigla}
+                            </Typography>
+                          </Box>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => handleRemoveFromCart(index)}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 1 }}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={7}>
+                          <FormControl fullWidth size="small">
+                            <InputLabel htmlFor="precio">Precio</InputLabel>
+                            <OutlinedInput
+                              id="precio"
+                              label="Precio"
+                              size="small"
+                              value={product.price}
+                              onChange={(e) =>
+                                handlePriceChange(index, parseFloat(e.target.value))
+                              }
+                              onBlur={() => handlePriceChange(index, product.price || 0)}
+                              inputComponent={NumeroFormat as any}
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={5}>
+                          <FormControl fullWidth size="small">
+                            <InputLabel htmlFor="descuento">Descuento</InputLabel>
+                            <OutlinedInput
+                              id="descuento"
+                              label="Descuento"
+                              size="small"
+                              value={product.discount}
+                              onChange={(e) =>
+                                handleDiscountChange(index, parseFloat(e.target.value))
+                              }
+                              onBlur={() =>
+                                handleDiscountChange(index, product.discount || 0)
+                              }
+                              inputComponent={NumeroFormat as any}
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <FormTextField
+                            label="Notas"
+                            value={product.extraDescription}
+                            onChange={(e) =>
+                              handleExtraDescriptionChange(index, e.target.value)
+                            }
+                            multiline
+                            rows={2}
+                            fullWidth
+                          />
+                        </Grid>
+                      </Grid>
+                    </AccordionDetails>
+                  </Accordion>
+                </Zoom>
+              ))}
+              <hr />
+              <Grid container spacing={1} style={{ marginTop: '5px' }}>
+                <Grid item xs={6}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Save />}
+                    onClick={
+                      selectedOption?.state === 'COMPLETADO'
+                        ? actualizarPedido
+                        : registrarPedido
+                    }
+                    style={{ height: '50px' }}
+                  >
+                    {selectedOption?.state === 'COMPLETADO' ? 'Actualizar' : 'Registrar'}
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    fullWidth
+                    onClick={finalizarOrden}
+                    variant="contained"
+                    color="secondary"
+                    style={{ height: '50px' }}
+                    startIcon={<Done />}
+                    disabled={selectedOption?.state === 'Libre'}
+                  >
+                    Finalizar
+                  </Button>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() =>
+                      generarComandaPDF(
+                        cart,
+                        usuario,
+                        selectedOption?.mesa,
+                        selectedOption?.nroOrden?.toString(),
+                        itemEliminados,
+                        tiposPedidos,
+                      )
+                    }
+                    endIcon={<Print />}
+                    style={{ height: '50px', backgroundColor: '#6e7b8c' }}
+                  >
+                    Comanda
+                  </Button>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    style={{ height: '50px', backgroundColor: '#b69198' }}
+                    endIcon={<AttachMoney />}
+                    onClick={() =>
+                      generarReciboPDF(
+                        cart,
+                        usuario,
+                        total,
+                        selectedOption?.mesa,
+                        selectedOption?.nroOrden?.toString(),
+                        printDescuentoAdicional.toString(),
+                      )
+                    }
+                  >
+                    Cuenta
+                  </Button>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    fullWidth
+                    onClick={handleRegisterAndFinalize}
+                    variant="contained"
+                    color="secondary"
+                    style={{ height: '50px' }}
+                    disabled={selectedOption?.state === 'COMPLETADO'}
+                    endIcon={<DoneAll />}
+                  >
+                    Reg. y Fin.
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    onClick={handleFacturar}
+                    variant="contained"
+                    endIcon={<Receipt />}
+                    color="secondary"
+                    disabled={selectedOption?.state !== 'COMPLETADO'}
+                    style={{ height: '50px' }}
+                  >
+                    Facturar
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+
+          <Grid item xs={12}>
             <hr />
             <Typography variant="h6">Resumen del Pedido</Typography>
             <List dense>
@@ -2145,7 +2306,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 />
               </ListItem>
             </List>
-            <Grid container spacing={2} alignItems="center">
+            {/* <Grid container spacing={2} alignItems="center">
               <Grid item xs={6}>
                 <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
                   <MyInputLabel shrink>Ingrese Monto</MyInputLabel>
@@ -2171,61 +2332,46 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   />
                 </FormControl>
               </Grid>
-            </Grid>
+            </Grid> */}
 
             <hr />
             {/* Metodos de Pago 1. Efectivo, 2. Credito, Qr, Otro */}
             {selectedOption?.state === 'COMPLETADO' && (
-              <Grid container spacing={4}>
-                <Grid item xs={12}>
-                  <Typography variant="h6">Método de Pago</Typography>
-                </Grid>
-                <Grid item xs={6} sm={6} md={6} lg={3}>
+              <Grid container spacing={1}>
+                <Grid item xs={3} style={{ height: '60px' }}>
                   <MetodoPagoButton
                     text="Efectivo"
-                    icon={<AttachMoney />}
+                    icon={<AttachMoney fontSize="small" />}
                     selected={selectedButton === 'Efectivo'}
                     onClick={() => handleButtonClick('Efectivo')}
                   />
                 </Grid>
-                <Grid item xs={6} sm={6} md={6} lg={3}>
+                <Grid item xs={3} style={{ height: '40px' }}>
                   <MetodoPagoButton
                     text="Crédito"
-                    icon={<CreditCard />}
+                    icon={<CreditCard fontSize="small" />}
                     selected={selectedButton === 'Credito'}
                     onClick={() => handleButtonClick('Credito')}
                   />
                 </Grid>
-                <Grid item xs={6} sm={6} md={6} lg={3}>
+                <Grid item xs={3} style={{ height: '40px' }}>
                   <MetodoPagoButton
                     text="QR"
-                    icon={<QrCode />}
+                    icon={<QrCode fontSize="small" />}
                     selected={selectedButton === 'QR'}
                     onClick={() => handleButtonClick('QR')}
                   />
                 </Grid>
-                <Grid item xs={6} sm={6} md={6} lg={3}>
+                <Grid item xs={3} style={{ height: '40px' }}>
                   <MetodoPagoButton
                     text="Otro"
-                    icon={<MoreHoriz />}
+                    icon={<MoreHoriz fontSize="small" />}
                     selected={selectedButton === 'Otro'}
                     onClick={() => handleButtonClick('Otro')}
                   />
                 </Grid>
               </Grid>
             )}
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <Button
-              endIcon={<HomeWork />}
-              fullWidth
-              onClick={handleFacturar}
-              variant="contained"
-              disabled={selectedOption?.state !== 'COMPLETADO'}
-              style={{ color: 'white', height: '60px' }}
-            >
-              Facturar
-            </Button>
           </Grid>
         </Paper>
       </Grid>
@@ -2288,6 +2434,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           cliente={clienteSeleccionado}
           form={form}
           metodoPago={enviaDatos}
+        />
+      </>
+      <>
+        <DeliveryDialog
+          open={openDeliveryDialog}
+          onClose={() => setOpenDeliveryDialog(false)}
+          form={form}
+          dataDelivery={dataDelivery || {}}
         />
       </>
     </Grid>

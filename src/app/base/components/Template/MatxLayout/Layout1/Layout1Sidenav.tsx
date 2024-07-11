@@ -1,5 +1,6 @@
 import { Box, Hidden, styled, Switch, Theme, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
 import { convertHexToRGB } from '../../../../../utils/utils'
@@ -61,8 +62,7 @@ const Layout1Sidenav = () => {
   const { settings, updateSettings } = useSettings()
   const leftSidebar = settings.layout1Settings.leftSidebar
   const { mode, bgImgURL } = leftSidebar
-
-  // console.log(bgImgURL)
+  const location = useLocation()
 
   const getSidenavWidth = () => {
     switch (mode) {
@@ -88,6 +88,14 @@ const Layout1Sidenav = () => {
     updateSidebarMode({ mode: mode === 'compact' ? 'full' : 'compact' })
   }
 
+  const shouldBeCompact = location.pathname.includes('/pedidos/registrar')
+
+  useEffect(() => {
+    if (shouldBeCompact && mode !== 'compact') {
+      updateSidebarMode({ mode: 'compact' })
+    }
+  }, [shouldBeCompact])
+
   return (
     <SidebarNavRoot bgimgurl={bgImgURL} primarybg={primaryRGB} width={getSidenavWidth()}>
       <NavListBox>
@@ -95,7 +103,7 @@ const Layout1Sidenav = () => {
           <Hidden smDown>
             <Switch
               onChange={handleSidenavToggle}
-              checked={leftSidebar.mode !== 'full'}
+              checked={mode === 'compact'}
               color="secondary"
               size="small"
             />

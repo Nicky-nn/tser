@@ -1,5 +1,6 @@
 import { AppBar, styled, ThemeProvider, Toolbar, useTheme } from '@mui/material'
 import React, { FC } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { topBarHeight } from '../../../../utils/constant'
 import useSettings from '../../../hooks/useSettings'
@@ -38,8 +39,15 @@ const urlEmpresa = import.meta.env.ISI_URL || 'https://integrate.com.bo'
 const Footer: FC<any> = () => {
   const theme = useTheme()
   const { settings } = useSettings()
+  const location = useLocation()
+
+  const shouldBeCompact = location.pathname.includes('/pedidos/registrar')
 
   const footerTheme = settings.themes[settings.footer.theme] || theme
+
+  if (shouldBeCompact) {
+    return null // Si se cumple la condición, el Footer no se mostrará
+  }
 
   return (
     <ThemeProvider theme={footerTheme}>

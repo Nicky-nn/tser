@@ -1,4 +1,5 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
+import printJS from 'print-js' // Import printJS
 import { toast } from 'react-toastify'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -35,17 +36,10 @@ export const generarReciboPDF = (
     selectedPrinter = parsedSettings.estadoDeCuenta
   }
 
-  if (!selectedPrinter) {
-    toast.error(
-      'Por favor, seleccione una impresora para Estado de Cuenta en la configuración',
-    )
-    return
-  }
-
   const documentDefinition: any = {
     pageOrientation: 'portrait',
     pageMargins: [0, 0, 0, 0], // Reducir márgenes a 0
-    pageSize: { width: 228, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: automático
+    pageSize: { width: 190, height: 'auto' }, // Ancho: 80 mm (8 cm), Alto: automático
     content: [
       { text: 'ESTADO DE CUENTA', style: 'header' },
       {
@@ -87,10 +81,12 @@ export const generarReciboPDF = (
           ],
         },
       },
-      { text: 'PROPINA:__________', style: 'footer', alignment: 'right' },
-      { text: 'NIT:______________', style: 'footer' },
-      { text: 'NOMBRE:___________', style: 'footer' },
-      { text: 'CORREO:___________', style: 'footer' },
+      { text: ' ', style: 'footer' },
+      { text: 'PROPINA:_________________________', style: 'footer', alignment: 'right' },
+      { text: ' ', style: 'footer' },
+      { text: 'NIT:_____________________________', style: 'footer' },
+      { text: 'NOMBRE:__________________________', style: 'footer' },
+      { text: 'CORREO:__________________________', style: 'footer' },
       { text: 'Usuario: ' + usuario, style: 'footer' },
     ],
     styles: {
@@ -120,25 +116,37 @@ export const generarReciboPDF = (
 
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
-  pdfDocGenerator.getBlob((blob: Blob) => {
-    const formData = new FormData()
-    formData.append('file', blob, 'estado_de_cuenta.pdf')
-    formData.append('printer', selectedPrinter)
+  if (selectedPrinter) {
+    pdfDocGenerator.getBlob((blob: Blob) => {
+      const formData = new FormData()
+      formData.append('file', blob, 'estado_de_cuenta.pdf')
+      formData.append('printer', selectedPrinter)
 
-    fetch('http://localhost:7777/print', {
-      method: 'POST',
-      body: formData,
+      fetch('http://localhost:7777/print', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            toast.error(`Error al imprimir: ${data.error}`)
+          } else {
+            toast.success('Impresión de Estado de Cuenta iniciada')
+          }
+        })
+        .catch((error) => {
+          toast.error(`Error al imprimir: ${error.message}`)
+        })
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          toast.error(`Error al imprimir: ${data.error}`)
-        } else {
-          toast.success('Impresión de Estado de Cuenta iniciada')
-        }
+  } else {
+    pdfDocGenerator.getBlob((blob: any) => {
+      const pdfUrl = URL.createObjectURL(blob)
+      printJS({
+        printable: pdfUrl,
+        type: 'pdf',
+        style:
+          '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
       })
-      .catch((error) => {
-        toast.error(`Error al imprimir: ${error.message}`)
-      })
-  })
+    })
+  }
 }

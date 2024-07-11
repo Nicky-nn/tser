@@ -107,6 +107,11 @@ const mutationEliminarItem = gql`
       productos {
         nroItem
       }
+      productosEliminados {
+        nota
+        nombreArticulo
+        nroItem
+      }
     }
   }
 `

@@ -20,7 +20,7 @@ import useAuth from '../../../../base/hooks/useAuth'
 import { notDanger } from '../../../../utils/notification'
 import { restReportePedidosApi } from '../../api/reportesPedidos'
 
-//@ts-ignore
+// @ts-ignore
 registerLocale('es', es)
 
 interface OwnProps {
@@ -101,6 +101,32 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
       document.body.appendChild(link)
       link.click()
 
+      const printerSettings = localStorage.getItem('printers')
+      let selectedPrinter = ''
+      if (printerSettings) {
+        const parsedSettings = JSON.parse(printerSettings)
+        selectedPrinter = parsedSettings.comanda
+      }
+      // Llamar a la API de Flask para imprimir el PDF
+      const formData = new FormData()
+      formData.append('file', blob, 'reporte_ventas.pdf')
+      formData.append('printer', selectedPrinter)
+
+      const response = await fetch('http://localhost:7777/print', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Error en la impresión del PDF')
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Impresión iniciada',
+        text: 'El archivo PDF se está imprimiendo.',
+      })
+
       setLoading(false)
     } catch (error) {
       console.error('Error al exportar datos:', error)
@@ -124,7 +150,7 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
         open={open}
         {...other}
       >
-        <DialogTitle>Exportar Ventas</DialogTitle>
+        <DialogTitle>Exportar Reporte de Ventas</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
             <Grid item sm={5}>
@@ -200,7 +226,7 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
             variant={'contained'}
             style={{ marginRight: 15 }}
           >
-            Exportar Ventas
+            Exportar
           </LoadingButton>
         </DialogActions>
       </Dialog>

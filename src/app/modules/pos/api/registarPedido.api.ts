@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 
 import { AccessToken } from '../../../base/models/paramsModel'
 import { MyGraphQlError } from '../../../base/services/GraphqlError'
+import { ClienteOperacionInput } from '../utils/Pedidos/PedidoExpress'
 
 interface EntidadInput {
   codigoSucursal: number
@@ -36,8 +37,12 @@ interface PedidoExpressRegistroInput {
 }
 
 const mutationRegistro = gql`
-  mutation REGISTRO($entidad: EntidadParamsInput!, $input: RestPedidoExpressInput!) {
-    restPedidoExpressRegistro(entidad: $entidad, input: $input) {
+  mutation REGISTRO(
+    $entidad: EntidadParamsInput!
+    $cliente: ClienteOperacionInput
+    $input: RestPedidoExpressInput!
+  ) {
+    restPedidoExpressRegistro(entidad: $entidad, cliente: $cliente, input: $input) {
       numeroPedido
       numeroOrden
       mesa {
@@ -50,6 +55,11 @@ const mutationRegistro = gql`
       puntoVenta {
         codigo
       }
+      cliente {
+        email
+        nombres
+        codigoCliente
+      }
     }
   }
 `
@@ -61,6 +71,7 @@ const mutationRegistro = gql`
  */
 export const restPedidoExpressRegistroApi = async (
   entidad: EntidadInput,
+  cliente: ClienteOperacionInput | null,
   input: PedidoExpressRegistroInput,
 ): Promise<PedidoExpressRegistroData> => {
   try {
@@ -68,7 +79,7 @@ export const restPedidoExpressRegistroApi = async (
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const variables = { entidad, input }
+    const variables = { entidad, cliente, input }
     const data: PedidoExpressRegistroData = await client.request(
       mutationRegistro,
       variables,

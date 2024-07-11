@@ -28,6 +28,7 @@ export const eliminarPedido = async (
       preConfirm: async () => {
         // Llamar a la función que registra el pedido
         const response = await eliminarItem(nroPedido, entidad, input)
+        console.log('response', response)
         return response
       },
     })
@@ -39,6 +40,7 @@ export const eliminarPedido = async (
         text: `El item fue eliminado correctamente`,
       })
       if (onSuccess) onSuccess()
+      console.log('confirmResp', confirmResp.value)
       return confirmResp.value
     }
   } catch (error) {

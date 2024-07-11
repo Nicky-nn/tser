@@ -59,7 +59,7 @@ const LayoutRestriccion: FC<any> = () => {
 
   const location = useLocation() // Obtener la ubicación actual
 
-  const shouldShowTopBar = !location.pathname.includes('/pedidos/registrar') // Condición para mostrar u ocultar
+  const shouldShowTopBar = !location.pathname.includes('/pedidos/registrarr') // Condición para mostrar u ocultar
 
   const handleChangeSucursal = () => {
     setOpen(true)

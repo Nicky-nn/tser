@@ -1,6 +1,4 @@
-import { Button, useTheme } from '@mui/material'
-
-import { buttonStyles } from './ButtonCompraStyles'
+import { Box, IconButton, Typography, useTheme } from '@mui/material'
 
 interface MetodoPagoButtonProps {
   text: string
@@ -12,27 +10,38 @@ interface MetodoPagoButtonProps {
 const MetodoPagoButton = ({ text, icon, selected, onClick }: MetodoPagoButtonProps) => {
   const theme = useTheme()
 
-  const handleClick = () => {
-    if (!selected) {
-      onClick()
-    }
-  }
-
   return (
-    <Button
-      variant="contained"
-      onClick={handleClick}
+    <Box
+      onClick={onClick}
       sx={{
-        ...buttonStyles,
-        borderColor: selected ? theme.palette.primary.main : '#D7D9DB',
-        backgroundColor: selected ? theme.palette.primary.main : '#FFFFFF',
-        color: selected ? '#FFFFFF' : '#D7D9DB',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        cursor: 'pointer',
       }}
-      startIcon={icon}
-      fullWidth
     >
-      {text}
-    </Button>
+      <IconButton
+        sx={{
+          backgroundColor: selected ? theme.palette.primary.main : '#FFFFFF',
+          color: selected ? '#FFFFFF' : theme.palette.text.secondary,
+          border: `1px solid ${selected ? theme.palette.primary.main : '#D7D9DB'}`,
+          '&:hover': {
+            backgroundColor: selected ? theme.palette.primary.dark : '#F5F5F5',
+          },
+        }}
+      >
+        {icon}
+      </IconButton>
+      <Typography
+        variant="caption"
+        sx={{
+          mt: 0.5,
+          color: selected ? theme.palette.primary.main : theme.palette.text.secondary,
+        }}
+      >
+        {text}
+      </Typography>
+    </Box>
   )
 }
 

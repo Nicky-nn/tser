@@ -250,6 +250,19 @@ const LISTADO_PEDIDOS_QUERY = gql`
         fechaEntrega
         direccionEntrega
         detalleExtra
+        tipo
+        atributo1
+        atributo2
+        atributo3
+        atributo4
+        direccionEntrega
+        fechaEntrega
+        terminos
+        productosEliminados {
+          nota
+          nombreArticulo
+          nroItem
+        }
         tipoDocumento
         refNroDocumento
         refDocumento

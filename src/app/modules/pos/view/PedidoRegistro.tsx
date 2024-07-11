@@ -17,12 +17,12 @@ const PedidoRegistro = () => {
   return (
     <div
       style={{
-        padding: '40px',
+        padding: '10px',
       }}
     >
-      <div className="breadcrumb">
+      {/* <div className="breadcrumb">
         <Breadcrumb routeSegments={[pedidosRouteMap.registro]} />
-      </div>
+      </div> */}
 
       <Grid container spacing={2}>
         <Grid item lg={12} md={12} xs={12}>
