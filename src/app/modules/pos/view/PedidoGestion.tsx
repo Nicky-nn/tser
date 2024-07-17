@@ -249,6 +249,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [selectedView, setSelectedView] = useState<string>('')
   const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState<string>('')
 
   const theme = useTheme()
 
@@ -332,6 +333,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     refetchOnWindowFocus: false,
     refetchInterval: false,
   })
+
+  useEffect(() => {
+    const savedLocation = localStorage.getItem('selectedLocation')
+    if (savedLocation) {
+      setSelectedLocation(savedLocation)
+    }
+  }, [])
+
+  const handleLocationChange = (location: string) => {
+    setSelectedLocation(location)
+    localStorage.setItem('selectedLocation', location)
+  }
 
   const categories = useMemo(() => {
     if (!articulosProd) return []
