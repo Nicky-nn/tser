@@ -18,6 +18,7 @@ import {
   Receipt,
   RecentActors,
   Remove,
+  Room,
   Save,
   Search,
   SendTimeExtension,
@@ -58,7 +59,7 @@ import {
   useTheme,
   Zoom,
 } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import pdfMake from 'pdfmake/build/pdfmake'
 import printJS from 'print-js'
 import InputNumber from 'rc-input-number'
@@ -95,8 +96,9 @@ import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
 import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
-import { apiListadoArticulos } from '../api/articulos.api'
+import { apiListadoPorInventarioEntidad } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
+import { ApiEspacioResponse, apiListadoEspacios } from '../api/restauranteEspacios.api'
 import { generarComandaPDF } from '../Pdf/Comanda'
 import { facturarPedido } from '../Pdf/facturarPedido'
 import { finalizarPedido } from '../Pdf/finalizarPedido'
@@ -112,6 +114,7 @@ import {
 import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
+import NuevoEspacioDialog from './registro/DialogRegistroMesas'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -214,6 +217,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
   const form = props.form
   const logo = import.meta.env.ISI_LOGO_FULL
+  const queryClient = useQueryClient()
 
   const [cart, setCart] = useState<Product[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -222,7 +226,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [montoRecibido, setMontoRecibido] = useState<number>(0)
   const [selectedButton, setSelectedButton] = useState<string | null>('Efectivo')
   const [selectedButtonTipoPedido, setSelectedButtonTipoPedido] = useState<string | null>(
-    'Para Interno',
+    'C. Interno',
   )
   const [selectedOption, setSelectedOption] = useState<Option | null>(null)
 
@@ -244,6 +248,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [enviaDatos, setEnviaDatos] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [selectedView, setSelectedView] = useState<string>('')
+  const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
 
   const theme = useTheme()
 
@@ -296,25 +301,36 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const { data: articulosProd } = useQuery<ProductoProps[]>({
     queryKey: ['articulosListado'],
     queryFn: async () => {
-      const query = ''
-      const fetchPagination = {
-        page: 1,
-        limit: 100,
-        reverse: true,
-        query,
+      const entidad = {
+        codigoSucursal: sucursal.codigo,
+        codigoPuntoVenta: puntoVenta.codigo,
       }
-      const { docs } = await apiListadoArticulos(fetchPagination)
-
+      const { articuloEntidadInventarioListado } =
+        await apiListadoPorInventarioEntidad(entidad)
       // Almacenar en caché las URL de las imágenes
-      docs.forEach((producto) => {
+      articuloEntidadInventarioListado.forEach((producto: any) => {
         const imageUrl = producto.imagen // Suponiendo que la URL de la imagen está en la propiedad 'imagen' del producto
         const codigoArticulo = producto.codigoArticulo
         imageCache[codigoArticulo] = imageUrl
       })
-
-      return docs
+      return articuloEntidadInventarioListado
     },
     refetchOnWindowFocus: false,
+  })
+
+  const { data: espacios } = useQuery<any>({
+    queryKey: ['espaciosListado'],
+    queryFn: async () => {
+      const entidad = {
+        codigoSucursal: sucursal.codigo,
+        codigoPuntoVenta: puntoVenta.codigo,
+      }
+      const data = await apiListadoEspacios(entidad)
+      console.log(data.restEspacioPorEntidad)
+      return data.restEspacioPorEntidad || []
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   })
 
   const categories = useMemo(() => {
@@ -468,7 +484,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setSelectedButtonTipoPedido(buttonText)
     let tipoPedido
     switch (buttonText) {
-      case 'Para Interno':
+      case 'C. Interno':
         tipoPedido = null
         break
       case 'Para Llevar':
@@ -485,7 +501,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setTiposPedidos(tipoPedido)
   }
 
-  const tiposPedido = ['Para Interno', 'Para Llevar', 'Delivery']
+  const tiposPedido = ['C. Interno', 'Para Llevar', 'Delivery']
 
   const { data, refetch } = useQuery<any[]>({
     queryKey: ['pedidosListadao'],
@@ -615,12 +631,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         const tipoPedido = pedidoEncontrado?.tipo || null
         const tipoPedidoButton =
           tipoPedido === null
-            ? 'Para Interno'
+            ? 'C. Interno'
             : tipoPedido === 'LLEVAR'
               ? 'Para Llevar'
               : tipoPedido === 'DELIVERY'
                 ? 'Delivery'
-                : tipoPedido || 'Para Interno'
+                : tipoPedido || 'C. Interno'
         handleTipoPedidoButtonClick(tipoPedidoButton)
 
         if (pedidoEncontrado && pedidoEncontrado.productos) {
@@ -666,7 +682,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       } else {
         setCart([])
         setDataDelivery(null)
-        handleTipoPedidoButtonClick('Para Interno')
+        handleTipoPedidoButtonClick('C. Interno')
       }
     }
     updateCart()
@@ -823,7 +839,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       // Actualizar el estado con los nuevos datos
       setSelectedOption(updatedOption)
       setMesasSeleccionadas([updatedOption])
-      setSelectedCategory(null)
       setDeletedProducts([])
       setItemEliminados(productosEliminados)
 
@@ -1033,14 +1048,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   }
                 }
 
-                mySwal.fire({
-                  title: `Documento generado correctamente`,
-                  html: (
-                    <RepresentacionGraficaUrls
-                      representacionGrafica={representacionGrafica}
-                    />
-                  ),
+                Swal.fire({
+                  title: 'Pedido Facturado',
+                  text: 'El pedido ha sido facturado con éxito',
+                  icon: 'success',
                 })
+
                 setSelectedButton('Efectivo')
                 setEnviaDatos(true)
               }
@@ -1462,6 +1475,34 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     </ListItemIcon>
                     <Typography variant="inherit">Vista en lista</Typography>
                   </MenuItem>
+                  {espacios &&
+                    espacios.map((espacio: any) => (
+                      <MenuItem
+                        key={espacio._id}
+                        onClick={() => {
+                          // Aquí puedes manejar la selección del espacio
+                          console.log('Espacio seleccionado:', espacio.descripcion)
+                          setAnchorEl(null)
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Room fontSize="small" />
+                        </ListItemIcon>
+                        <Typography variant="inherit">{espacio.descripcion}</Typography>
+                      </MenuItem>
+                    ))}
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      setDialogEspacioOpen(true)
+                      setAnchorEl(null)
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Add fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Crear nuevo</Typography>
+                  </MenuItem>
                 </Menu>
               </>
             )}
@@ -1632,7 +1673,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 }}
               >
                 {/* Ícono de cierre */}
-                {selectedOption.state !== 'Libre' && (
+                {selectedOption.state === 'ELABORADO' && (
                   <IconButton
                     sx={{
                       position: 'absolute',
@@ -2163,6 +2204,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     }
                     endIcon={<Print />}
                     style={{ height: '50px', backgroundColor: '#6e7b8c' }}
+                    disabled={selectedOption?.state === 'Libre'}
                   >
                     Comanda
                   </Button>
@@ -2173,6 +2215,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     variant="contained"
                     style={{ height: '50px', backgroundColor: '#b69198' }}
                     endIcon={<AttachMoney />}
+                    disabled={selectedOption?.state === 'Libre'}
                     onClick={() =>
                       generarReciboPDF(
                         cart,
@@ -2444,6 +2487,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           dataDelivery={dataDelivery || {}}
         />
       </>
+      <NuevoEspacioDialog
+        open={dialogEspacioOpen}
+        onClose={() => setDialogEspacioOpen(false)}
+        entidad={{
+          codigoSucursal: sucursal.codigo,
+          codigoPuntoVenta: puntoVenta.codigo,
+        }}
+        onEspacioCreado={() => {
+          queryClient.invalidateQueries('espaciosListado')
+        }}
+      />
     </Grid>
   )
 }
