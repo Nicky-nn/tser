@@ -4,7 +4,8 @@ interface MetodoPagoButtonProps {
   text: string
   icon: React.ReactNode
   selected: boolean
-  onClick: () => void
+  // eslint-disable-next-line no-unused-vars
+  onClick: (event: React.MouseEvent<HTMLDivElement>) => void
 }
 
 const MetodoPagoButton = ({ text, icon, selected, onClick }: MetodoPagoButtonProps) => {
