@@ -29,6 +29,7 @@ export interface PerfilProps {
   monedaTienda: MonedaParamsProps
   razonSocial: string
   miEmpresa: {
+    email: string
     razonSocial: string
     codigoModalidad: number
     codigoAmbiente: number
@@ -55,6 +56,7 @@ const mutation = gql`
           codigoModalidad
           codigoAmbiente
           fechaValidezToken
+          email
         }
         usuario
         razonSocial
