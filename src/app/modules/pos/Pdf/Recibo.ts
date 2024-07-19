@@ -46,6 +46,20 @@ export const generarReciboPDF = (
         text: `PEDIDO N°: ${orden} - MESA: ${mesa}\nFECHA: ${fechaActual} - HORA: ${horaActual}`,
         style: 'subheader',
       },
+      ...(() => {
+        const ubicacionStr = localStorage.getItem('ubicacion')
+        if (ubicacionStr) {
+          try {
+            const ubicacion = JSON.parse(ubicacionStr)
+            if (ubicacion.descripcion) {
+              return [{ text: `UBICACIÓN: ${ubicacion.descripcion}`, style: 'subheader' }]
+            }
+          } catch (e) {
+            console.error('Error al parsear la ubicación:', e)
+          }
+        }
+        return [] // Si no hay descripción, no añadimos nada
+      })(),
       {
         canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
         margin: [0, 2, 0, 2],
