@@ -6,7 +6,9 @@ import {
   Delete,
   Done,
   DoneAll,
+  Edit,
   ExpandMore,
+  Home,
   HomeWork,
   LibraryAddCheck,
   MoreHoriz,
@@ -115,7 +117,8 @@ import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
-;(pdfMake as any).fonts = {
+;import useQueryMetodosPago from '../../base/metodoPago/hooks/useQueryMetodosPago'
+(pdfMake as any).fonts = {
   Roboto: {
     normal:
       'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
@@ -248,8 +251,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [enviaDatos, setEnviaDatos] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [selectedView, setSelectedView] = useState<string>('')
+  const [selectedUbicacion, setSelectedUbicacion] = useState<string | null>(null)
   const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
-  const [selectedLocation, setSelectedLocation] = useState<string>('')
 
   const theme = useTheme()
 
@@ -327,24 +330,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         codigoPuntoVenta: puntoVenta.codigo,
       }
       const data = await apiListadoEspacios(entidad)
-      console.log(data.restEspacioPorEntidad)
       return data.restEspacioPorEntidad || []
     },
     refetchOnWindowFocus: false,
     refetchInterval: false,
   })
-
-  useEffect(() => {
-    const savedLocation = localStorage.getItem('selectedLocation')
-    if (savedLocation) {
-      setSelectedLocation(savedLocation)
-    }
-  }, [])
-
-  const handleLocationChange = (location: string) => {
-    setSelectedLocation(location)
-    localStorage.setItem('selectedLocation', location)
-  }
 
   const categories = useMemo(() => {
     if (!articulosProd) return []
@@ -531,20 +521,22 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   })
 
   // FUNCIONES PARA MESAS
-  /**
-   * Genera un arreglo de mesas del 1 al 50
-   */
 
-  const mesas = [] as string[]
-  for (let i = 1; i <= 50; i++) {
-    mesas.push(`Mesa ${i}`)
+  // Genera un arreglo de mesas basado en el número proporcionado
+  const generarMesas = (nroMesas: number, descripcion: string) => {
+    const mesas = [] as string[]
+    for (let i = 1; i <= nroMesas; i++) {
+      mesas.push(descripcion ? `${descripcion} ${i}` : `${i}`)
+    }
+    return mesas
   }
-  /**
-   * Genera un arreglo de opciones para el componente Select
-   * @returns Un arreglo de objetos con las propiedades value, nroPedido, nroOrden, mesa y state
-   *       de acuerdo a los pedidos encontrados en data
-   *       o a las mesas libres si no se encontró un pedido
-   */
+
+  // Obtener la ubicación seleccionada del localStorage
+  const ubicacionSeleccionada = JSON.parse(localStorage.getItem('ubicacion') || '{}')
+
+  // Descripción de la ubicación y número de mesas
+  const descripcion = ubicacionSeleccionada?.descripcion || ''
+  const nroMesas = ubicacionSeleccionada?.nroMesas || 50
 
   const options = useMemo(() => {
     const result: {
@@ -557,27 +549,24 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       tipoPedido: string | null
     }[] = []
 
-    const seenValues = new Set<number>()
+    const seenValues = new Set<string>()
+    const mesas = generarMesas(nroMesas, descripcion)
 
     mesas.forEach((mesa) => {
-      const mesaNumber = Number(mesa.split(' ')[1])
+      const mesaNumber = Number(mesa.split(' ').pop())
 
       const pedidoEncontrado = data?.find((pedido) => {
-        const mesaNombres = pedido.mesa.nombre.split('-')
         return (
-          mesaNombres.some((m: string) => m.trim() === `${mesaNumber}`) &&
+          pedido.mesa.nombre === mesa &&
           !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase())
         )
       })
 
       if (pedidoEncontrado) {
         const { numeroPedido, numeroOrden, mesa: mesaPedido, state } = pedidoEncontrado
-        const mesasUnidas = mesaPedido.nombre.split('-').map((m: any) => `Mesa ${m}`)
-        const numberValue = Number(mesasUnidas[0].split(' ')[1])
-
-        if (!seenValues.has(numberValue)) {
+        if (!seenValues.has(mesa)) {
           result.push({
-            value: numberValue,
+            value: mesaNumber,
             nroPedido: numeroPedido,
             nroOrden: numeroOrden,
             mesa: mesaPedido.nombre,
@@ -585,44 +574,44 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             cliente: pedidoEncontrado.cliente || null,
             tipoPedido: pedidoEncontrado.tipo || null,
           })
-          mesasUnidas.forEach((m: string) => seenValues.add(Number(m.split(' ')[1])))
+          seenValues.add(mesa)
         }
       } else {
-        if (!seenValues.has(mesaNumber)) {
+        if (!seenValues.has(mesa)) {
           result.push({
             value: mesaNumber,
             nroPedido: null,
             nroOrden: null,
-            mesa: `${mesaNumber}`,
+            mesa,
             state: 'Libre',
             cliente: null,
             tipoPedido: null,
           })
-          seenValues.add(mesaNumber)
+          seenValues.add(mesa)
         }
       }
     })
 
-    // Asegurarse de que todas las mesas del 1 al 50 estén presentes
-    for (let i = 1; i <= 50; i++) {
-      if (!seenValues.has(i)) {
+    // Asegurarse de que todas las mesas estén presentes
+    mesas.forEach((mesa, index) => {
+      if (!seenValues.has(mesa)) {
         result.push({
-          value: i,
+          value: index + 1,
           nroPedido: null,
           nroOrden: null,
-          mesa: `${i}`,
+          mesa,
           state: 'Libre',
           cliente: null,
           tipoPedido: null,
         })
       }
-    }
+    })
 
     // Ordenar los resultados por el valor
     result.sort((a, b) => a.value - b.value)
 
     return result
-  }, [data])
+  }, [data, espacios, ubicacionSeleccionada])
 
   const [itemEliminados, setItemEliminados] = useState([] as any)
   const [dataDelivery, setDataDelivery] = useState<any>(null)
@@ -727,7 +716,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           const { numeroPedido, numeroOrden, mesa, state } =
             response.restPedidoExpressRegistro
           setPermitirSeleccionMultiple(false)
-          const numberValue = Number(mesa.nombre.split('-')[0])
+          // const numberValue = Number(mesa.nombre.split('-')[0]) -> Funconn si hay mesas unidas , sirve para separarlas, la logica es la misma, te explico tnemeos una variable mesa que es un string, la cual tiene el valor de "1-2-3" y queremos obtener el valor de 1, entonces usamos el metodo split que nos devuelve un array con los valores separados por el guion, en este caso [1,2,3] y luego accedemos al primer valor con el indice 0
+          // const numberValue = mesa.nombre.split('-')[0] || mesa.nombre
+          const numberValue =
+            Number(mesa.nombre.split('-')[0]) || Number(mesa.nombre.split(' ').pop())
           setSelectedOption({
             value: numberValue,
             nroPedido: numeroPedido,
@@ -754,7 +746,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             generarComandaPDF(
               cart,
               usuario,
-              mesa.nombre,
+              selectedOption?.value?.toString(),
               numeroOrden.toString(),
               itemEliminados,
               tiposPedidos,
@@ -794,8 +786,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         //@ts-ignore
         responseActualizar.restPedidoActualizarItem
 
+      const value = mesa.nombre.split(' ').pop()
+
       let updatedOption = {
-        value: Number(mesa.nombre),
+        value: Number(value),
         nroPedido: numeroPedido,
         nroOrden: numeroOrden,
         mesa: mesa.nombre,
@@ -819,8 +813,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           //@ts-ignore
           responseAdicionar.restPedidoAdicionarItem)
 
+        const value = mesa.nombre.split(' ').pop()
+
         updatedOption = {
-          value: Number(mesa.nombre),
+          value: Number(value),
           nroPedido: numeroPedido,
           nroOrden: numeroOrden,
           mesa: mesa.nombre,
@@ -840,8 +836,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         ;({ numeroPedido, numeroOrden, mesa, state, productosEliminados } =
           responseEliminar.restPedidoEliminarItem)
 
+        const value = mesa.nombre.split(' ').pop()
+
         updatedOption = {
-          value: Number(mesa.nombre),
+          value: Number(value),
           nroPedido: numeroPedido,
           nroOrden: numeroOrden,
           mesa: mesa.nombre,
@@ -864,7 +862,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         generarComandaPDF(
           cart,
           usuario,
-          updatedOption.mesa,
+          updatedOption.value.toString(),
           updatedOption.nroOrden.toString(),
           productosEliminados,
           tiposPedidos,
@@ -891,9 +889,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         if (response.restPedidoFinalizar) {
           const { mesa } = response.restPedidoFinalizar
           const mesaNombre = mesa.nombre.split('-')[0]
+          const NumberValue = Number(mesa.nombre.split(' ').pop())
 
           setSelectedOption({
-            value: Number(mesaNombre),
+            value: NumberValue,
             nroPedido: null,
             nroOrden: null,
             mesa: mesaNombre,
@@ -902,7 +901,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
           setMesasSeleccionadas([
             {
-              value: Number(mesaNombre),
+              value: NumberValue,
               nroPedido: null,
               nroOrden: null,
               mesa: mesaNombre,
@@ -927,7 +926,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               cart,
               usuario,
               total,
-              selectedOption?.mesa,
+              selectedOption?.value?.toString(),
               selectedOption?.nroOrden?.toString(),
               printDescuentoAdicional.toString(),
             )
@@ -982,8 +981,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       .then((response) => {
         if (response.restPedidoFinalizar) {
           const { numeroPedido, mesa } = response.restPedidoFinalizar
+          const value = Number(mesa.nombre.split(' ').pop())
           setSelectedOption({
-            value: Number(mesa.nombre),
+            value,
             nroPedido: null,
             nroOrden: null,
             mesa: mesa.nombre,
@@ -991,7 +991,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           })
           setMesasSeleccionadas([
             {
-              value: Number(mesa.nombre),
+              value,
               nroPedido: null,
               nroOrden: null,
               mesa: mesa.nombre,
@@ -1111,8 +1111,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         if (response.restPedidoExpressRegistro) {
           const { numeroPedido, numeroOrden, mesa, state } =
             response.restPedidoExpressRegistro
+
+          const value = Number(mesa.nombre.split(' ').pop())
           setSelectedOption({
-            value: Number(mesa.nombre),
+            value,
             nroPedido: numeroPedido,
             nroOrden: numeroOrden,
             mesa: mesa.nombre,
@@ -1131,7 +1133,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               if (response.restPedidoFinalizar) {
                 const { mesa } = response.restPedidoFinalizar
                 setSelectedOption({
-                  value: Number(mesa.nombre),
+                  value,
                   nroPedido: null,
                   nroOrden: null,
                   mesa: mesa.nombre,
@@ -1228,10 +1230,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }))
 
   useEffect(() => {
-    // Obtiene el valor de selectedView del localStorage y lo asigna a selectedView
-    const selectedView = localStorage.getItem('selectedView')
-    if (selectedView) {
-      setSelectedView(selectedView)
+    const savedView = localStorage.getItem('selectedView')
+    if (savedView) {
+      setSelectedView(savedView)
+    }
+
+    const savedUbicacion = localStorage.getItem('ubicacion')
+    if (savedUbicacion) {
+      const x = JSON.parse(savedUbicacion)
+      setSelectedUbicacion(x.descripcion)
+    } else {
+      setSelectedUbicacion(null)
     }
   }, [])
 
@@ -1332,9 +1341,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
   const { tiposDocumentoIdentidad, tdiLoading } = useQueryTipoDocumentoIdentidad()
   const [isCheckedExecpcion, setIsCheckedExecpcion] = useState(false)
+  const [currentEspacio, setCurrentEspacio] = useState(null)
   useEffect(() => {
     setValue('codigoExcepcion', 0)
   }, [])
+
+  const handleOpenUbicacionEditar = () => {
+    const ubicacionStr = localStorage.getItem('ubicacion')
+    if (ubicacionStr) {
+      const ubicacion = JSON.parse(ubicacionStr)
+      setCurrentEspacio(ubicacion)
+    }
+    setDialogEspacioOpen(true)
+  }
+
+  const handleOpenUbicacionCrear = () => {
+    setCurrentEspacio(null)
+    setDialogEspacioOpen(true)
+    setAnchorEl(null)
+  }
+
+  const { metodosPago, mpIsError, mpError, mpLoading } = useQueryMetodosPago()
+  console.log('metodosPago', metodosPago)
 
   return (
     <Grid container spacing={1}>
@@ -1387,7 +1415,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="h6" component="h2">
-                        {`M.: ${option.mesa}`}
+                        {`M.: ${option.value}`}
                       </Typography>
                     </div>
                     {option.nroOrden && (
@@ -1488,15 +1516,29 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     </ListItemIcon>
                     <Typography variant="inherit">Vista en lista</Typography>
                   </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      localStorage.removeItem('ubicacion')
+                      setSelectedUbicacion(null)
+                      setAnchorEl(null)
+                    }}
+                    selected={selectedUbicacion === null}
+                  >
+                    <ListItemIcon>
+                      <Home fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Salón principal</Typography>
+                  </MenuItem>
                   {espacios &&
                     espacios.map((espacio: any) => (
                       <MenuItem
                         key={espacio._id}
                         onClick={() => {
-                          // Aquí puedes manejar la selección del espacio
-                          console.log('Espacio seleccionado:', espacio.descripcion)
+                          localStorage.setItem('ubicacion', JSON.stringify(espacio))
+                          setSelectedUbicacion(espacio.descripcion)
                           setAnchorEl(null)
                         }}
+                        selected={selectedUbicacion === espacio.descripcion}
                       >
                         <ListItemIcon>
                           <Room fontSize="small" />
@@ -1505,12 +1547,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       </MenuItem>
                     ))}
                   <Divider />
-                  <MenuItem
-                    onClick={() => {
-                      setDialogEspacioOpen(true)
-                      setAnchorEl(null)
-                    }}
-                  >
+                  <MenuItem onClick={handleOpenUbicacionCrear}>
                     <ListItemIcon>
                       <Add fontSize="small" />
                     </ListItemIcon>
@@ -1702,14 +1739,51 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
                 <Grid container justifyContent="space-between">
                   <Grid item>
+                    <Typography
+                      onClick={handleOpenUbicacionEditar}
+                      sx={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          textDecoration: 'underline',
+                          '& .editIcon': {
+                            visibility: 'visible',
+                          },
+                        },
+                      }}
+                    >
+                      {(() => {
+                        const ubicacionStr = localStorage.getItem('ubicacion')
+                        if (ubicacionStr) {
+                          try {
+                            const ubicacion = JSON.parse(ubicacionStr)
+                            return (
+                              <>
+                                {ubicacion.descripcion || 'Ubicación'}
+                                <Edit
+                                  className="editIcon"
+                                  sx={{ marginLeft: 0.1, visibility: 'hidden' }}
+                                  style={{ fontSize: 16 }}
+                                />
+                              </>
+                            )
+                          } catch (e) {
+                            console.error('Error al parsear la ubicación:', e)
+                            return 'Ubicación'
+                          }
+                        }
+                        return ''
+                      })()}
+                    </Typography>
+
                     <Typography variant="h6">
                       {selectedOption.nroPedido !== null
                         ? `Pedido: ${selectedOption.nroOrden}`
-                        : `Mesa: ${selectedOption.mesa}`}
+                        : `Mesa: ${selectedOption.value}`}
                     </Typography>
                     <Typography variant="body1">
                       {selectedOption.nroPedido !== null
-                        ? `Mesa: ${selectedOption.mesa}`
+                        ? `Mesa: ${selectedOption.value}`
                         : ``}
                     </Typography>
                   </Grid>
@@ -2209,7 +2283,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       generarComandaPDF(
                         cart,
                         usuario,
-                        selectedOption?.mesa,
+                        selectedOption?.value.toString(),
                         selectedOption?.nroOrden?.toString(),
                         itemEliminados,
                         tiposPedidos,
@@ -2234,7 +2308,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         cart,
                         usuario,
                         total,
-                        selectedOption?.mesa,
+                        selectedOption?.value.toString(),
                         selectedOption?.nroOrden?.toString(),
                         printDescuentoAdicional.toString(),
                       )
@@ -2507,9 +2581,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           codigoSucursal: sucursal.codigo,
           codigoPuntoVenta: puntoVenta.codigo,
         }}
-        onEspacioCreado={() => {
+        onSuccess={() => {
+          // Recaragamos la llamda a la api de usequery
           queryClient.invalidateQueries('espaciosListado')
         }}
+        onEspacioCreado={() => {
+          //@ts-ignore
+          queryClient.invalidateQueries('espaciosListado')
+        }}
+        espacio={currentEspacio}
       />
     </Grid>
   )
