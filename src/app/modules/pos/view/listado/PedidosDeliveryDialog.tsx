@@ -1,6 +1,7 @@
 import {
   AccessTime as AccessTimeIcon,
   Apartment as ApartmentIcon,
+  Close,
   ContactPhone as ContactPhoneIcon,
   DateRange as DateRangeIcon,
   LocationCity as LocationCityIcon,
@@ -202,7 +203,21 @@ const DeliveryDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Información de Entrega</DialogTitle>
+      <DialogTitle>
+        Información de Entrega
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
