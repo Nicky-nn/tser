@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
 import {
+  AccountBalance,
   Add,
+  AltRoute,
   AttachMoney,
   Close,
   CreditCard,
+  CurrencyExchange,
   Delete,
   Done,
   DoneAll,
@@ -15,10 +19,13 @@ import {
   MoreVert,
   NineK,
   PersonAdd,
+  Pix,
+  PointOfSale,
   Print,
   QrCode,
   Receipt,
   RecentActors,
+  Redeem,
   Remove,
   Room,
   Save,
@@ -53,6 +60,7 @@ import {
   MenuItem,
   OutlinedInput,
   Paper,
+  Popover,
   Skeleton,
   styled,
   TextField,
@@ -92,6 +100,8 @@ import useAuth from '../../../base/hooks/useAuth'
 import { SinTipoDocumentoIdentidadProps } from '../../../interfaces/sin.interface'
 import { genReplaceEmpty } from '../../../utils/helper'
 import { swalException } from '../../../utils/swal'
+import useQueryMetodosPago from '../../base/metodoPago/hooks/useQueryMetodosPago'
+import { MetodoPagoProp } from '../../base/metodoPago/interfaces/metodoPago'
 import { apiClienteBusqueda } from '../../clientes/api/clienteBusqueda.api'
 import ClienteExplorarDialog from '../../clientes/components/ClienteExplorarDialog'
 import { ClienteProps } from '../../clientes/interfaces/cliente'
@@ -117,8 +127,7 @@ import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
-;import useQueryMetodosPago from '../../base/metodoPago/hooks/useQueryMetodosPago'
-(pdfMake as any).fonts = {
+;(pdfMake as any).fonts = {
   Roboto: {
     normal:
       'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
@@ -129,7 +138,17 @@ import NuevoEspacioDialog from './registro/DialogRegistroMesas'
       'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf',
   },
 }
-
+const ICONS = {
+  EFECTIVO: AttachMoney,
+  TARJETA: CreditCard,
+  'EFECTIVO-TARJETA': PointOfSale,
+  'TRANSFERENCIA BANCARIA': AccountBalance,
+  'TARJETA-CHEQUE': CreditCard,
+  'EFECTIVO-DEPOSITO EN CUENTA': CurrencyExchange,
+  CHEQUE: Receipt,
+  'GIFT-CARD': Redeem,
+  OTROS: AltRoute,
+}
 interface Product {
   sigla: ReactNode
   imagen: any
@@ -215,7 +234,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     },
   } = props
   const {
-    user: { sucursal, puntoVenta, tipoRepresentacionGrafica, usuario },
+    user: { sucursal, puntoVenta, tipoRepresentacionGrafica, usuario, miEmpresa },
   } = useAuth()
 
   const form = props.form
@@ -227,7 +246,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [additionalDiscount, setAdditionalDiscount] = useState<number>(0)
   const [giftCardAmount, setGiftCardAmount] = useState<number>(0)
   const [montoRecibido, setMontoRecibido] = useState<number>(0)
-  const [selectedButton, setSelectedButton] = useState<string | null>('Efectivo')
   const [selectedButtonTipoPedido, setSelectedButtonTipoPedido] = useState<string | null>(
     'C. Interno',
   )
@@ -272,7 +290,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               apellidos: '',
               codigoExcepcion: 0,
               complemento: '',
-              email: '',
+              email: miEmpresa.email,
               nombres: '',
               numeroDocumento: !isNaN(Number(inputValue)) ? inputValue : '',
               tipoDocumentoIdentidad: {
@@ -467,19 +485,38 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
   const total = subtotal - additionalDiscount - giftCardAmount
 
-  const handleButtonClick = (buttonText: string) => {
-    setSelectedButton(buttonText === selectedButton ? null : buttonText)
-    if (buttonText === 'Efectivo') {
-      setValue('metodoPago', 1)
-    } else if (buttonText === 'Credito') {
-      setValue('metodoPago', 2)
+  const { metodosPago } = useQueryMetodosPago()
+  const [selectedId, setSelectedId] = React.useState<number | null>(null)
+  const [otrosAnchorEl, setOtrosAnchorEl] = React.useState<HTMLDivElement | null>(null)
+
+  const handleClick = (metodo: MetodoPagoProp) => () => {
+    setSelectedId(metodo.codigoClasificador)
+    setValue('metodoPago', metodo.codigoClasificador)
+    setOtrosAnchorEl(null)
+
+    // Abrir el diálogo de tarjeta si el código es 2 (tarjeta)
+    if (metodo.codigoClasificador === 2) {
       setOpenDialogCard(true)
-    } else if (buttonText === 'QR') {
-      setValue('metodoPago', 7)
-    } else if (buttonText === 'Otro') {
-      setValue('metodoPago', 'Otro')
     }
   }
+
+  const handleOtrosClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setOtrosAnchorEl(event.currentTarget)
+  }
+
+  const renderMetodoPago = (metodo: MetodoPagoProp) => (
+    <Grid item xs={3} key={metodo.codigoClasificador}>
+      <MetodoPagoButton
+        text={metodo.descripcion}
+        icon={React.createElement(
+          ICONS[metodo.descripcion.toUpperCase() as keyof typeof ICONS] || Pix,
+          { fontSize: 'small' },
+        )}
+        selected={selectedId === metodo.codigoClasificador}
+        onClick={handleClick(metodo)}
+      />
+    </Grid>
+  )
 
   const [tiposPedidos, setTiposPedidos] = useState<string | null>(null)
   const [openDeliveryDialog, setOpenDeliveryDialog] = useState(false)
@@ -697,6 +734,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }, [categories, selectedCategory])
 
+  useEffect(() => {
+    if (metodosPago && metodosPago.length > 0) {
+      const efectivoMetodo = metodosPago.find(
+        (metodo) => metodo.descripcion.toUpperCase() === 'EFECTIVO',
+      )
+      if (efectivoMetodo) {
+        setSelectedId(efectivoMetodo.codigoClasificador)
+        setValue('metodoPago', efectivoMetodo.codigoClasificador)
+      }
+    }
+  }, [metodosPago])
+
   const registrarPedido = () => {
     restPedidoExpressRegistro(
       cart,
@@ -876,6 +925,20 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const finalizarOrden = () => {
+    const tarjetaId =
+      metodosPago?.find((m) => m.descripcion.toUpperCase() === 'TARJETA')
+        ?.codigoClasificador ?? 2
+
+    if (
+      selectedId === tarjetaId &&
+      (getValues('numeroTarjeta') === '' ||
+        getValues('numeroTarjeta') === null ||
+        getValues('numeroTarjeta') === undefined)
+    ) {
+      toast.error('Debe ingresar el número de tarjeta')
+      return
+    }
+
     finalizarPedido(
       getValues(),
       puntoVenta,
@@ -912,7 +975,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           eliminarCliente()
           setIsCreatingNewClient(false)
           setValue('cliente', null)
-          setSelectedButton('Efectivo')
+          const efectivoId =
+            metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+              ?.codigoClasificador ?? 1
+          setSelectedId(efectivoId)
+          setValue('metodoPago', efectivoId)
+          setValue('numeroTarjeta', '')
           setEnviaDatos(true)
           setSelectedCategory(categories[0].name || null)
 
@@ -957,8 +1025,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       toast.error('Debe seleccionar una mesa')
       return
     }
+    const tarjetaId =
+      metodosPago?.find((m) => m.descripcion.toUpperCase() === 'TARJETA')
+        ?.codigoClasificador ?? 2
+
     if (
-      selectedButton === 'Credito' &&
+      selectedId === tarjetaId &&
       (getValues('numeroTarjeta') === '' ||
         getValues('numeroTarjeta') === null ||
         getValues('numeroTarjeta') === undefined)
@@ -1067,11 +1139,19 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   icon: 'success',
                 })
 
-                setSelectedButton('Efectivo')
+                const efectivoId =
+                  metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+                    ?.codigoClasificador ?? 1
+                setSelectedId(efectivoId)
+                setValue('metodoPago', efectivoId)
                 setEnviaDatos(true)
               }
 
-              setValue('metodoPago', 1)
+              const efectivoId =
+                metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+                  ?.codigoClasificador ?? 1
+              setSelectedId(efectivoId)
+              setValue('metodoPago', efectivoId)
               setValue('numeroTarjeta', '')
             })
             .catch((error) => {
@@ -1094,6 +1174,20 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       toast.error('Debe seleccionar una mesa')
       return
     }
+    const tarjetaId =
+      metodosPago?.find((m) => m.descripcion.toUpperCase() === 'TARJETA')
+        ?.codigoClasificador ?? 2
+
+    if (
+      selectedId === tarjetaId &&
+      (getValues('numeroTarjeta') === '' ||
+        getValues('numeroTarjeta') === null ||
+        getValues('numeroTarjeta') === undefined)
+    ) {
+      toast.error('Debe ingresar el número de tarjeta')
+      return
+    }
+
     restPedidoExpressRegistro(
       cart,
       puntoVenta,
@@ -1141,7 +1235,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 })
                 eliminarCliente()
                 setIsCreatingNewClient(false)
-                setSelectedButton('Efectivo')
+                const efectivoId =
+                  metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+                    ?.codigoClasificador ?? 1
+                setSelectedId(efectivoId)
+                setValue('metodoPago', efectivoId)
+                setValue('numeroTarjeta', '')
                 setEnviaDatos(true)
                 setSelectedCategory(categories[0].name || null)
               }
@@ -1197,11 +1296,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     const clienteSeleccionado = getValues('cliente')
     setClienteSeleccionado(clienteSeleccionado)
   }, [watch('cliente')])
-
-  //useefect para metodo de pago al cargar la pagina
-  useEffect(() => {
-    setValue('metodoPago', 1)
-  }, [])
 
   useEffect(() => {
     setPrintDescuentoAdicional(additionalDiscount)
@@ -1360,9 +1454,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setDialogEspacioOpen(true)
     setAnchorEl(null)
   }
-
-  const { metodosPago, mpIsError, mpError, mpLoading } = useQueryMetodosPago()
-  console.log('metodosPago', metodosPago)
 
   return (
     <Grid container spacing={1}>
@@ -1750,6 +1841,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             visibility: 'visible',
                           },
                         },
+                        fontWeight: 'bold',
                       }}
                     >
                       {(() => {
@@ -1772,7 +1864,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             return 'Ubicación'
                           }
                         }
-                        return ''
+                        return 'Salón Principal'
                       })()}
                     </Typography>
 
@@ -2465,43 +2557,50 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             </Grid> */}
 
             <hr />
-            {/* Metodos de Pago 1. Efectivo, 2. Credito, Qr, Otro */}
-            {selectedOption?.state === 'COMPLETADO' && (
-              <Grid container spacing={1}>
-                <Grid item xs={3} style={{ height: '60px' }}>
-                  <MetodoPagoButton
-                    text="Efectivo"
-                    icon={<AttachMoney fontSize="small" />}
-                    selected={selectedButton === 'Efectivo'}
-                    onClick={() => handleButtonClick('Efectivo')}
-                  />
+            {/* {selectedOption?.state === 'COMPLETADO' && ( */}
+            <Grid
+              container
+              spacing={1}
+              justifyContent={metodosPago?.length ? 'flex-start' : 'center'}
+              alignItems="center"
+              direction="row"
+            >
+              {metodosPago && metodosPago.length > 0 ? (
+                <>
+                  {metodosPago.slice(0, 3).map(renderMetodoPago)}
+                  {metodosPago.length > 3 && (
+                    <>
+                      <Grid item xs={3}>
+                        <MetodoPagoButton
+                          text="Otros"
+                          icon={<MoreHoriz fontSize="small" />}
+                          selected={false}
+                          onClick={handleOtrosClick}
+                        />
+                      </Grid>
+                      <Popover
+                        sx={{ p: 20 }}
+                        open={Boolean(otrosAnchorEl)}
+                        anchorEl={otrosAnchorEl}
+                        onClose={() => setOtrosAnchorEl(null)}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      >
+                        <Grid container spacing={1} sx={{ p: 2 }}>
+                          {metodosPago.slice(3).map(renderMetodoPago)}
+                        </Grid>
+                      </Popover>
+                    </>
+                  )}
+                </>
+              ) : (
+                <Grid item xs={12} container justifyContent="center">
+                  <Typography variant="body2" color="textSecondary">
+                    Habilite los métodos de pago en el administrador.
+                  </Typography>
                 </Grid>
-                <Grid item xs={3} style={{ height: '40px' }}>
-                  <MetodoPagoButton
-                    text="Crédito"
-                    icon={<CreditCard fontSize="small" />}
-                    selected={selectedButton === 'Credito'}
-                    onClick={() => handleButtonClick('Credito')}
-                  />
-                </Grid>
-                <Grid item xs={3} style={{ height: '40px' }}>
-                  <MetodoPagoButton
-                    text="QR"
-                    icon={<QrCode fontSize="small" />}
-                    selected={selectedButton === 'QR'}
-                    onClick={() => handleButtonClick('QR')}
-                  />
-                </Grid>
-                <Grid item xs={3} style={{ height: '40px' }}>
-                  <MetodoPagoButton
-                    text="Otro"
-                    icon={<MoreHoriz fontSize="small" />}
-                    selected={selectedButton === 'Otro'}
-                    onClick={() => handleButtonClick('Otro')}
-                  />
-                </Grid>
-              </Grid>
-            )}
+              )}
+            </Grid>
+            {/* )} */}
           </Grid>
         </Paper>
       </Grid>
@@ -2583,6 +2682,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         }}
         onSuccess={() => {
           // Recaragamos la llamda a la api de usequery
+          // @ts-ignore
           queryClient.invalidateQueries('espaciosListado')
         }}
         onEspacioCreado={() => {
