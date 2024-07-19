@@ -126,7 +126,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 fullWidth
                 label="Impresora para Comanda"
               >
-                <MenuItem value="" disabled>
+                <MenuItem value="">
                   {printers.length > 0
                     ? 'Seleccione impresora para Comanda'
                     : 'No hay impresoras disponibles'}
@@ -153,7 +153,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 fullWidth
                 label="Impresora para Estado de Cuenta"
               >
-                <MenuItem value="" disabled>
+                <MenuItem value="">
                   {printers.length > 0
                     ? 'Seleccione impresora para Estado de Cuenta'
                     : 'No hay impresoras disponibles'}
@@ -176,7 +176,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 fullWidth
                 label="Impresora para Facturar"
               >
-                <MenuItem value="" disabled>
+                <MenuItem value="">
                   {printers.length > 0
                     ? 'Seleccione impresora para Facturar'
                     : 'No hay impresoras disponibles'}
