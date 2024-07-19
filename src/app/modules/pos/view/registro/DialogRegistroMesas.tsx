@@ -61,7 +61,15 @@ const NuevoEspacioDialog: React.FC<EspacioDialogProps> = ({
       }
 
       if (espacio) {
-        await apiActualizarEspacio(espacio._id, parsedData)
+        await apiActualizarEspacio(espacio._id, parsedData).then((res) => {
+          const ubicacionDefault = localStorage.getItem('ubicacion')
+          if (ubicacionDefault) {
+            const ubicacion = JSON.parse(ubicacionDefault)
+            if (ubicacion._id === espacio._id) {
+              localStorage.setItem('ubicacion', JSON.stringify(res.restEspacioActualizar))
+            }
+          }
+        })
       } else {
         await apiRegistroEspacio(entidad, parsedData)
         onEspacioCreado()
