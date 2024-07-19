@@ -44,6 +44,20 @@ export const generarComandaPDF = (
       { text: 'COMANDA', style: 'header' },
       ...(tipoPedido ? [{ text: `PARA: ${tipoPedido}`, style: 'tipoPedido' }] : []),
       { text: `MESA: ${mesa} - ORDEN: ${orden}`, style: 'subheader' },
+      ...(() => {
+        const ubicacionStr = localStorage.getItem('ubicacion')
+        if (ubicacionStr) {
+          try {
+            const ubicacion = JSON.parse(ubicacionStr)
+            if (ubicacion.descripcion) {
+              return [{ text: `UBICACIÓN: ${ubicacion.descripcion}`, style: 'subheader' }]
+            }
+          } catch (e) {
+            console.error('Error al parsear la ubicación:', e)
+          }
+        }
+        return [] // Si no hay descripción, no añadimos nada
+      })(),
       {
         canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
         margin: [0, 2, 0, 2],
@@ -62,11 +76,7 @@ export const generarComandaPDF = (
             ['CANT.', 'DETALLE'],
             ...data.map((producto) => [
               producto.quantity.toString(),
-              producto.name +
-                ' ' +
-                producto.extraDetalle +
-                ' -  ' +
-                producto.extraDescription,
+              `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}`,
             ]),
             ...productosEliminados.map((producto) => [
               '0',
