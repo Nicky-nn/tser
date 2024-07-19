@@ -20,7 +20,7 @@ import useAuth from '../../../../base/hooks/useAuth'
 import { notDanger } from '../../../../utils/notification'
 import { restReporteVentasVsPedidosApi } from '../../api/reportesVentasVsPedido.api'
 
-//@ts-ignore
+// @ts-ignore
 registerLocale('es', es)
 
 interface OwnProps {
@@ -107,6 +107,37 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
       )
       document.body.appendChild(link)
       link.click()
+
+      // Imprimir el PDF
+      const printerSettings = localStorage.getItem('printers')
+      let selectedPrinter = ''
+      if (printerSettings) {
+        const parsedSettings = JSON.parse(printerSettings)
+        selectedPrinter = parsedSettings.comanda
+      }
+      // Llamar a la API de Flask para imprimir el PDF
+      const formData = new FormData()
+      formData.append(
+        'file',
+        blob,
+        `reporte_ventas_vs_pedidos_${dayjs().format('DDMMYYYY_HHmm')}.pdf`,
+      )
+      formData.append('printer', selectedPrinter)
+
+      const response = await fetch('http://localhost:7777/print', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Error en la impresión del PDF')
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Impresión iniciada',
+        text: 'El archivo PDF se está imprimiendo.',
+      })
 
       setLoading(false)
     } catch (error) {
