@@ -1,5 +1,5 @@
 import * as pdfMake from 'pdfmake/build/pdfmake'
-import printJS from 'print-js' // Import printJS
+import printJS from 'print-js'
 import { toast } from 'react-toastify'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -11,6 +11,21 @@ import { toast } from 'react-toastify'
     bolditalics:
       'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf',
   },
+}
+
+function getStorageKey(orden: string, mesa: string): string {
+  return `comanda_${orden}_${mesa}`
+}
+
+function getComandaStorage(orden: string, mesa: string): any[] {
+  const key = getStorageKey(orden, mesa)
+  const storage = localStorage.getItem(key)
+  return storage ? JSON.parse(storage) : []
+}
+
+function setComandaStorage(orden: string, mesa: string, data: any[]) {
+  const key = getStorageKey(orden, mesa)
+  localStorage.setItem(key, JSON.stringify(data))
 }
 
 export const generarComandaPDF = (
@@ -28,6 +43,18 @@ export const generarComandaPDF = (
     toast.error('Debe agregar al menos un producto')
     return
   }
+
+  // Obtener los productos anteriores
+  const productosAnteriores = getComandaStorage(orden, mesa)
+
+  // Comprobar si hay productos nuevos
+  const productosNuevos = data.filter(
+    (producto) =>
+      !productosAnteriores.some((p: any) => p.codigoArticulo === producto.codigoArticulo),
+  )
+
+  // Actualizar el almacenamiento con los nuevos productos
+  setComandaStorage(orden, mesa, data)
 
   // Obtener la impresora seleccionada para Comanda
   const printerSettings = localStorage.getItem('printers')
@@ -56,7 +83,7 @@ export const generarComandaPDF = (
             console.error('Error al parsear la ubicación:', e)
           }
         }
-        return [] // Si no hay descripción, no añadimos nada
+        return []
       })(),
       {
         canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
@@ -76,7 +103,14 @@ export const generarComandaPDF = (
             ['CANT.', 'DETALLE'],
             ...data.map((producto) => [
               producto.quantity.toString(),
-              `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}`,
+              {
+                text: `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}${productosNuevos.some((p) => p.codigoArticulo === producto.codigoArticulo) ? ' (NUEVO)' : ''}`,
+                style: productosNuevos.some(
+                  (p) => p.codigoArticulo === producto.codigoArticulo,
+                )
+                  ? 'nuevos'
+                  : null,
+              },
             ]),
             ...productosEliminados.map((producto) => [
               '0',
@@ -123,6 +157,11 @@ export const generarComandaPDF = (
         bold: true,
         alignment: 'right',
         margin: [0, 2, 0, 2],
+      },
+      nuevos: {
+        fontSize: 7,
+        bold: true,
+        color: 'blue',
       },
     },
     defaultStyle: {
