@@ -1347,12 +1347,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
   }
 
-  const filteredProducts = articulosProd?.filter((product) =>
-    product.nombreArticulo.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
-
-  console.log('filteredProducts', filteredProducts)
-
   useEffect(() => {
     const clienteSeleccionado = getValues('cliente')
     setClienteSeleccionado(clienteSeleccionado)
@@ -1526,6 +1520,27 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setDialogEspacioOpen(true)
     setAnchorEl(null)
   }
+
+  const TotalBox = styled(Box)(({ theme }) => ({
+    position: 'sticky',
+    bottom: 0,
+    backgroundColor: '#f3f3f3',
+    color: 'white',
+    zIndex: 1000,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    borderRadius: '12px 12px 0 0', // Bordes redondeados en la parte superior
+    transition: 'background-color 0.3s, color 0.3s',
+    // sombra ancha
+    boxShadow: '0px -15px 10px -10px rgba(0,0,0,0.1)',
+    // contorno en la parte superior
+    borderTop: '1px solid rgba(0,0,0,0.1)',
+
+    '&:hover': {
+      backgroundColor: '#f9f9f9',
+      color: 'white',
+    },
+  }))
 
   return (
     <Grid container spacing={1}>
@@ -2280,263 +2295,269 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               </Grid>
             ))}
           </Grid>
-
-          {cart.length === 0 ? (
-            <Box alignItems="center">
-              <Grid container direction="column" alignItems="center">
-                {/* CENTRAR  */}
-                <Grid item>
-                  <IconButton disabled>
-                    <ShoppingCartOutlined sx={{ fontSize: 100 }} />
-                  </IconButton>
+          <Grid item xs={12}>
+            {cart.length === 0 ? (
+              <Box alignItems="center">
+                <Grid container direction="column" alignItems="center">
+                  {/* CENTRAR  */}
+                  <Grid item>
+                    <IconButton disabled>
+                      <ShoppingCartOutlined sx={{ fontSize: 100 }} />
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body1">
+                      No hay productos en el carrito
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Typography variant="body1">No hay productos en el carrito</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                backgroundColor: '#FFFFFF',
-                paddingTop: 2,
-              }}
-            >
-              {cart.map((product, index) => (
-                <Zoom in={true} key={index}>
-                  <Accordion
-                    key={index}
-                    sx={{ mb: 0.5 }}
-                    onClick={(event) => event.stopPropagation()}
-                    style={{ backgroundColor: '#EEF5FB', borderRadius: 5 }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMore />}
-                      sx={{ backgroundColor: '#EEF5FB', borderRadius: 2 }}
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  backgroundColor: '#FFFFFF',
+                  paddingTop: 2,
+                }}
+              >
+                {cart.map((product, index) => (
+                  <Zoom in={true} key={index}>
+                    <Accordion
+                      key={index}
+                      sx={{ mb: 0.5 }}
+                      onClick={(event) => event.stopPropagation()}
+                      style={{ backgroundColor: '#EEF5FB', borderRadius: 5 }}
                     >
-                      <Box
-                        sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
-                        onClick={(event) => event.stopPropagation()}
+                      <AccordionSummary
+                        expandIcon={<ExpandMore />}
+                        sx={{ backgroundColor: '#EEF5FB', borderRadius: 2 }}
                       >
-                        <Box sx={{ flex: 1 }}>
-                          <Tooltip title={product.name} placement="top">
-                            <Typography variant="body2">
-                              {truncateName(product.name, 15)}
-                            </Typography>
-                          </Tooltip>
-                          <Typography variant="body2">
-                            {product.price.toFixed(2)} {product.sigla}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => handleQuantityChange(index, 'subtract')}
-                          >
-                            <Remove />
-                          </IconButton>
-                          <Typography variant="body2">{product.quantity}</Typography>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => handleQuantityChange(index, 'add')}
-                          >
-                            <Add />
-                          </IconButton>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'flex-end',
-                              mr: 1,
-                            }}
-                          >
-                            {product.discount > 0 && (
-                              <Typography
-                                variant="caption"
-                                sx={{ textDecoration: 'line-through', color: 'gray' }}
-                              >
-                                {(product.price * product.quantity).toFixed(2)}{' '}
-                                {product.sigla}
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <Box sx={{ flex: 1 }}>
+                            <Tooltip title={product.name} placement="top">
+                              <Typography variant="body2">
+                                {truncateName(product.name, 15)}
                               </Typography>
-                            )}
+                            </Tooltip>
                             <Typography variant="body2">
-                              {(
-                                product.price * product.quantity -
-                                product.discount
-                              ).toFixed(2)}{' '}
-                              {product.sigla}
+                              {product.price.toFixed(2)} {product.sigla}
                             </Typography>
                           </Box>
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleRemoveFromCart(index)}
-                          >
-                            <Delete />
-                          </IconButton>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => handleQuantityChange(index, 'subtract')}
+                            >
+                              <Remove />
+                            </IconButton>
+                            <Typography variant="body2">{product.quantity}</Typography>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => handleQuantityChange(index, 'add')}
+                            >
+                              <Add />
+                            </IconButton>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-end',
+                                mr: 1,
+                              }}
+                            >
+                              {product.discount > 0 && (
+                                <Typography
+                                  variant="caption"
+                                  sx={{ textDecoration: 'line-through', color: 'gray' }}
+                                >
+                                  {(product.price * product.quantity).toFixed(2)}{' '}
+                                  {product.sigla}
+                                </Typography>
+                              )}
+                              <Typography variant="body2">
+                                {(
+                                  product.price * product.quantity -
+                                  product.discount
+                                ).toFixed(2)}{' '}
+                                {product.sigla}
+                              </Typography>
+                            </Box>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleRemoveFromCart(index)}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Box>
                         </Box>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ pt: 1 }}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={7}>
-                          <FormControl fullWidth size="small">
-                            <InputLabel htmlFor="precio">Precio</InputLabel>
-                            <OutlinedInput
-                              id="precio"
-                              label="Precio"
-                              size="small"
-                              value={product.price}
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ pt: 1 }}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={7}>
+                            <FormControl fullWidth size="small">
+                              <InputLabel htmlFor="precio">Precio</InputLabel>
+                              <OutlinedInput
+                                id="precio"
+                                label="Precio"
+                                size="small"
+                                value={product.price}
+                                onChange={(e) =>
+                                  handlePriceChange(index, parseFloat(e.target.value))
+                                }
+                                onBlur={() =>
+                                  handlePriceChange(index, product.price || 0)
+                                }
+                                inputComponent={NumeroFormat as any}
+                              />
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={5}>
+                            <FormControl fullWidth size="small">
+                              <InputLabel htmlFor="descuento">Descuento</InputLabel>
+                              <OutlinedInput
+                                id="descuento"
+                                label="Descuento"
+                                size="small"
+                                value={product.discount}
+                                onChange={(e) =>
+                                  handleDiscountChange(index, parseFloat(e.target.value))
+                                }
+                                onBlur={() =>
+                                  handleDiscountChange(index, product.discount || 0)
+                                }
+                                inputComponent={NumeroFormat as any}
+                              />
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <FormTextField
+                              label="Notas"
+                              value={product.extraDescription}
                               onChange={(e) =>
-                                handlePriceChange(index, parseFloat(e.target.value))
+                                handleExtraDescriptionChange(index, e.target.value)
                               }
-                              onBlur={() => handlePriceChange(index, product.price || 0)}
-                              inputComponent={NumeroFormat as any}
+                              multiline
+                              rows={2}
+                              fullWidth
                             />
-                          </FormControl>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={5}>
-                          <FormControl fullWidth size="small">
-                            <InputLabel htmlFor="descuento">Descuento</InputLabel>
-                            <OutlinedInput
-                              id="descuento"
-                              label="Descuento"
-                              size="small"
-                              value={product.discount}
-                              onChange={(e) =>
-                                handleDiscountChange(index, parseFloat(e.target.value))
-                              }
-                              onBlur={() =>
-                                handleDiscountChange(index, product.discount || 0)
-                              }
-                              inputComponent={NumeroFormat as any}
-                            />
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <FormTextField
-                            label="Notas"
-                            value={product.extraDescription}
-                            onChange={(e) =>
-                              handleExtraDescriptionChange(index, e.target.value)
-                            }
-                            multiline
-                            rows={2}
-                            fullWidth
-                          />
-                        </Grid>
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-                </Zoom>
-              ))}
-              <hr />
-              <Grid container spacing={1} style={{ marginTop: '5px' }}>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    startIcon={<Save />}
-                    onClick={
-                      selectedOption?.state === 'COMPLETADO'
-                        ? actualizarPedido
-                        : registrarPedido
-                    }
-                    style={{ height: '50px' }}
-                  >
-                    {selectedOption?.state === 'COMPLETADO' ? 'Actualizar' : 'Registrar'}
-                  </Button>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Zoom>
+                ))}
+                <hr />
+                <Grid container spacing={1} style={{ marginTop: '5px' }}>
+                  <Grid item xs={6}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Save />}
+                      onClick={
+                        selectedOption?.state === 'COMPLETADO'
+                          ? actualizarPedido
+                          : registrarPedido
+                      }
+                      style={{ height: '50px' }}
+                    >
+                      {selectedOption?.state === 'COMPLETADO'
+                        ? 'Actualizar'
+                        : 'Registrar'}
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      fullWidth
+                      onClick={finalizarOrden}
+                      variant="contained"
+                      color="secondary"
+                      style={{ height: '50px' }}
+                      startIcon={<Done />}
+                      disabled={selectedOption?.state === 'Libre'}
+                    >
+                      Finalizar
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      onClick={() =>
+                        generarComandaPDF(
+                          cart,
+                          usuario,
+                          selectedOption?.value.toString(),
+                          selectedOption?.nroOrden?.toString(),
+                          itemEliminados,
+                          tiposPedidos,
+                          clienteSeleccionado,
+                        )
+                      }
+                      endIcon={<Print />}
+                      style={{ height: '50px', backgroundColor: '#6e7b8c' }}
+                      disabled={selectedOption?.state === 'Libre'}
+                    >
+                      Comanda
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      style={{ height: '50px', backgroundColor: '#b69198' }}
+                      endIcon={<AttachMoney />}
+                      disabled={selectedOption?.state === 'Libre'}
+                      onClick={() =>
+                        generarReciboPDF(
+                          cart,
+                          usuario,
+                          total,
+                          selectedOption?.value.toString(),
+                          selectedOption?.nroOrden?.toString(),
+                          printDescuentoAdicional.toString(),
+                        )
+                      }
+                    >
+                      Cuenta
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button
+                      fullWidth
+                      onClick={handleRegisterAndFinalize}
+                      variant="contained"
+                      color="secondary"
+                      style={{ height: '50px' }}
+                      disabled={selectedOption?.state === 'COMPLETADO'}
+                      endIcon={<DoneAll />}
+                    >
+                      Reg. y Fin.
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      fullWidth
+                      onClick={handleFacturar}
+                      variant="contained"
+                      endIcon={<Receipt />}
+                      // color="secondary"
+                      disabled={selectedOption?.state !== 'COMPLETADO'}
+                      style={{ height: '50px', backgroundColor: '#f0ad4e' }}
+                    >
+                      Facturar
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    onClick={finalizarOrden}
-                    variant="contained"
-                    color="secondary"
-                    style={{ height: '50px' }}
-                    startIcon={<Done />}
-                    disabled={selectedOption?.state === 'Libre'}
-                  >
-                    Finalizar
-                  </Button>
-                </Grid>
-                <Grid item xs={4}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={() =>
-                      generarComandaPDF(
-                        cart,
-                        usuario,
-                        selectedOption?.value.toString(),
-                        selectedOption?.nroOrden?.toString(),
-                        itemEliminados,
-                        tiposPedidos,
-                        clienteSeleccionado,
-                      )
-                    }
-                    endIcon={<Print />}
-                    style={{ height: '50px', backgroundColor: '#6e7b8c' }}
-                    disabled={selectedOption?.state === 'Libre'}
-                  >
-                    Comanda
-                  </Button>
-                </Grid>
-                <Grid item xs={4}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    style={{ height: '50px', backgroundColor: '#b69198' }}
-                    endIcon={<AttachMoney />}
-                    disabled={selectedOption?.state === 'Libre'}
-                    onClick={() =>
-                      generarReciboPDF(
-                        cart,
-                        usuario,
-                        total,
-                        selectedOption?.value.toString(),
-                        selectedOption?.nroOrden?.toString(),
-                        printDescuentoAdicional.toString(),
-                      )
-                    }
-                  >
-                    Cuenta
-                  </Button>
-                </Grid>
-                <Grid item xs={4}>
-                  <Button
-                    fullWidth
-                    onClick={handleRegisterAndFinalize}
-                    variant="contained"
-                    color="secondary"
-                    style={{ height: '50px' }}
-                    disabled={selectedOption?.state === 'COMPLETADO'}
-                    endIcon={<DoneAll />}
-                  >
-                    Reg. y Fin.
-                  </Button>
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    onClick={handleFacturar}
-                    variant="contained"
-                    endIcon={<Receipt />}
-                    // color="secondary"
-                    disabled={selectedOption?.state !== 'COMPLETADO'}
-                    style={{ height: '50px', backgroundColor: '#f0ad4e' }}
-                  >
-                    Facturar
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          )}
+              </Box>
+            )}
 
-          <Grid item xs={12}>
+            {/* <Grid item xs={12}> */}
             <hr />
             <Typography variant="h6">Resumen del Pedido</Typography>
             <List dense>
@@ -2604,27 +2625,39 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 </Grid>
               </List>
             </List>
-            <List>
-              <ListItem
-                style={{ padding: 0 }}
-                secondaryAction={
-                  <Typography variant="h6" gutterBottom>
-                    <span style={{ fontWeight: 'bold', color: 'green' }}>
-                      {numberWithCommas(total, {})}
-                      <span> BOB</span>
-                    </span>
-                  </Typography>
-                }
-              >
-                <ListItemText
-                  primary={
-                    <Typography variant="h6" color="error" style={{ fontWeight: 'bold' }}>
-                      Total
+
+            <TotalBox>
+              <List>
+                <ListItem
+                  style={{ padding: 0 }}
+                  secondaryAction={
+                    <Typography
+                      gutterBottom
+                      sx={{ fontWeight: 'bold', fontSize: '1.6em' }}
+                    >
+                      <span
+                        className="total-amount"
+                        style={{ fontWeight: 'bold', color: 'green' }}
+                      >
+                        {numberWithCommas(total, {})}
+                        <span> BOB</span>
+                      </span>
                     </Typography>
                   }
-                />
-              </ListItem>
-            </List>
+                >
+                  <ListItemText
+                    primary={
+                      <Typography
+                        color="error"
+                        style={{ fontWeight: 'bold', fontSize: '1.6em' }}
+                      >
+                        Total
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              </List>
+            </TotalBox>
             {/* <Grid container spacing={2} alignItems="center">
               <Grid item xs={6}>
                 <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
