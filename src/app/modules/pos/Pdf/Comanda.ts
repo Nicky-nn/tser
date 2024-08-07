@@ -71,7 +71,7 @@ export const generarComandaPDF = (
 
   const documentDefinition: any = {
     pageMargins: [0, 0, 0, 0],
-    pageSize: { width: 190, height: 'auto' },
+    pageSize: { width: 180, height: 'auto' },
     content: [
       { text: 'COMANDA', style: 'header' },
       ...(cliente
@@ -98,17 +98,17 @@ export const generarComandaPDF = (
         margin: [0, 2, 0, 2],
       },
       { text: `Fecha: ${fechaActual}  Hora: ${horaActual}`, style: 'subheader' },
-      {
-        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
-        margin: [0, 2, 0, 2],
-      },
+
       {
         style: 'tableExample',
         table: {
           headerRows: 1,
           widths: ['auto', '*'],
           body: [
-            ['CANT.', 'DETALLE'],
+            [
+              { text: 'CANT', style: 'tableHeader' },
+              { text: 'DETALLE', style: 'tableHeader' },
+            ],
             ...data.map((producto) => {
               const productoAnterior = productosAnteriores.find(
                 (p: any) => p.codigoArticulo === producto.codigoArticulo,
@@ -132,30 +132,56 @@ export const generarComandaPDF = (
             ]),
           ],
         },
+        layout: {
+          hLineWidth: function (i: number, node: { table: { body: string | any[] } }) {
+            return i === 0 || i === node.table.body.length ? 0.5 : 0.3
+          },
+          vLineWidth: function () {
+            return 0
+          },
+          hLineColor: function () {
+            return '#aaa'
+          },
+          paddingLeft: function () {
+            return 2
+          },
+          paddingRight: function () {
+            return 2
+          },
+          paddingTop: function () {
+            return 1
+          },
+          paddingBottom: function () {
+            return 1
+          },
+        },
       },
-      {
-        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
-        margin: [0, 2, 0, 2],
-      },
+
       { text: 'Comentarios:', style: 'subheader' },
+      { text: ' ' },
       { text: ' ' },
       { text: ' ' },
       { text: 'Usuario: ' + usuario, style: 'subheader' },
     ],
     styles: {
       header: {
-        fontSize: 12,
+        fontSize: 9,
         bold: true,
         alignment: 'center',
-        margin: [0, 0, 0, 2],
+        margin: [0, 0, 0, 1],
       },
       subheader: {
         fontSize: 8,
-        bold: true,
-        margin: [0, 2, 0, 2],
+        margin: [0, 1, 0, 0],
       },
       tableExample: {
         fontSize: 7,
+        margin: [0, 1, 0, 1],
+      },
+      tableHeader: {
+        fontSize: 9,
+        bold: true,
+        alignment: 'center',
       },
       eliminados: {
         fontSize: 7,
@@ -163,20 +189,27 @@ export const generarComandaPDF = (
         color: 'gray',
       },
       tipoPedido: {
-        fontSize: 8,
+        fontSize: 9,
         bold: true,
         alignment: 'right',
-        margin: [0, 2, 0, 2],
+        margin: [0, 0, 0, 1],
       },
       nuevos: {
-        fontSize: 7,
+        fontSize: 9,
         bold: true,
         color: 'blue',
       },
+      fecha: {
+        fontSize: 8,
+        margin: [0, 1, 0, 1],
+      },
+      usuario: {
+        fontSize: 6,
+        margin: [0, 1, 0, 0],
+      },
     },
     defaultStyle: {
-      fontSize: 8,
-      margin: [0, 0, 0, 0],
+      fontSize: 6,
     },
   }
 

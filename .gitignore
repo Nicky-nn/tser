@@ -29,3 +29,8 @@ dist-ssr
 *.sw?
 dev-dist/sw.js
 dev-dist/workbox-5199072c.js
+corte.py
+productos.py
+server.py
+dev-dist/sw.js
+server.py

@@ -67,6 +67,7 @@ const mutationFactura = gql`
           rollo
           sin
         }
+        createdAt
       }
       pedido {
         numeroPedido

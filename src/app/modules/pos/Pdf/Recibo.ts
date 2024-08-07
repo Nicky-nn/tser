@@ -61,10 +61,6 @@ export const generarReciboPDF = (
         return [] // Si no hay descripción, no añadimos nada
       })(),
       {
-        canvas: [{ type: 'line', x1: 0, y1: 0, x2: 228, y2: 0, lineWidth: 1 }],
-        margin: [0, 2, 0, 2],
-      },
-      {
         style: 'tableExample',
         table: {
           headerRows: 1,
@@ -94,6 +90,29 @@ export const generarReciboPDF = (
             ],
           ],
         },
+        layout: {
+          hLineWidth: function (i: number, node: { table: { body: string | any[] } }) {
+            return i === 0 || i === node.table.body.length ? 0.5 : 0.3
+          },
+          vLineWidth: function () {
+            return 0
+          },
+          hLineColor: function () {
+            return '#aaa'
+          },
+          paddingLeft: function () {
+            return 2
+          },
+          paddingRight: function () {
+            return 2
+          },
+          paddingTop: function () {
+            return 1
+          },
+          paddingBottom: function () {
+            return 1
+          },
+        },
       },
       { text: ' ', style: 'footer' },
       { text: 'PROPINA:_________________________', style: 'footer', alignment: 'right' },
@@ -101,11 +120,11 @@ export const generarReciboPDF = (
       { text: 'NIT:_____________________________', style: 'footer' },
       { text: 'NOMBRE:__________________________', style: 'footer' },
       { text: 'CORREO:__________________________', style: 'footer' },
-      { text: 'Usuario: ' + usuario, style: 'footer' },
+      { text: 'Usuario: ' + usuario, style: 'usuario' },
     ],
     styles: {
       header: {
-        fontSize: 12,
+        fontSize: 8,
         bold: true,
         alignment: 'center',
         margin: [0, 0, 0, 2],
@@ -121,6 +140,10 @@ export const generarReciboPDF = (
       footer: {
         fontSize: 8,
         margin: [0, 2, 0, 0],
+      },
+      usuario: {
+        fontSize: 6,
+        margin: [0, 2, 0, 2],
       },
     },
     defaultStyle: {
