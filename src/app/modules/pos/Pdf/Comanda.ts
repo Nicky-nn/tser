@@ -35,6 +35,7 @@ export const generarComandaPDF = (
   orden: string = '',
   productosEliminados: any[] = [],
   tipoPedido: any = 'ACA',
+  cliente: any = null,
 ) => {
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
@@ -47,14 +48,18 @@ export const generarComandaPDF = (
   // Obtener los productos anteriores
   const productosAnteriores = getComandaStorage(orden, mesa)
 
-  // Comprobar si hay productos nuevos
-  const productosNuevos = data.filter(
-    (producto) =>
-      !productosAnteriores.some((p: any) => p.codigoArticulo === producto.codigoArticulo),
-  )
+  // Verificar si es la primera creación de la comanda
+  const esPrimeraCreacion = productosAnteriores.length === 0
 
-  // Actualizar el almacenamiento con los nuevos productos
-  setComandaStorage(orden, mesa, data)
+  // Función para comparar productos y determinar cambios
+  const compararProductos = (productoNuevo: any, productoAnterior: any) => {
+    if (esPrimeraCreacion) return '' // No marcar como nuevo si es la primera creación
+    if (!productoAnterior) return ' (NUEVO)'
+    if (productoNuevo.quantity > productoAnterior.quantity) {
+      return ` (+ ${productoNuevo.quantity - productoAnterior.quantity})`
+    }
+    return ''
+  }
 
   // Obtener la impresora seleccionada para Comanda
   const printerSettings = localStorage.getItem('printers')
@@ -69,6 +74,9 @@ export const generarComandaPDF = (
     pageSize: { width: 190, height: 'auto' },
     content: [
       { text: 'COMANDA', style: 'header' },
+      ...(cliente
+        ? [{ text: `CLIENTE: ${cliente.razonSocial}`, style: 'subheader' }]
+        : []),
       ...(tipoPedido ? [{ text: `PARA: ${tipoPedido}`, style: 'tipoPedido' }] : []),
       { text: `MESA: ${mesa} - ORDEN: ${orden}`, style: 'subheader' },
       ...(() => {
@@ -101,17 +109,19 @@ export const generarComandaPDF = (
           widths: ['auto', '*'],
           body: [
             ['CANT.', 'DETALLE'],
-            ...data.map((producto) => [
-              producto.quantity.toString(),
-              {
-                text: `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}${productosNuevos.some((p) => p.codigoArticulo === producto.codigoArticulo) ? ' (NUEVO)' : ''}`,
-                style: productosNuevos.some(
-                  (p) => p.codigoArticulo === producto.codigoArticulo,
-                )
-                  ? 'nuevos'
-                  : null,
-              },
-            ]),
+            ...data.map((producto) => {
+              const productoAnterior = productosAnteriores.find(
+                (p: any) => p.codigoArticulo === producto.codigoArticulo,
+              )
+              const cambio = compararProductos(producto, productoAnterior)
+              return [
+                producto.quantity.toString(),
+                {
+                  text: `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}${cambio}`,
+                  style: cambio && !esPrimeraCreacion ? 'nuevos' : null,
+                },
+              ]
+            }),
             ...productosEliminados.map((producto) => [
               '0',
               {
@@ -170,6 +180,9 @@ export const generarComandaPDF = (
     },
   }
 
+  // Actualizar el almacenamiento con los nuevos productos
+  setComandaStorage(orden, mesa, data)
+
   const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
 
   if (selectedPrinter) {
@@ -177,7 +190,6 @@ export const generarComandaPDF = (
       const formData = new FormData()
       formData.append('file', blob, 'comanda.pdf')
       formData.append('printer', selectedPrinter)
-
       fetch('http://localhost:7777/print', {
         method: 'POST',
         body: formData,
