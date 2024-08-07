@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   AccountBalance,
   Add,
@@ -13,8 +12,6 @@ import {
   Edit,
   ExpandMore,
   Home,
-  HomeWork,
-  LibraryAddCheck,
   MoreHoriz,
   MoreVert,
   NineK,
@@ -22,17 +19,13 @@ import {
   Pix,
   PointOfSale,
   Print,
-  QrCode,
   Receipt,
-  RecentActors,
   Redeem,
   Remove,
   Room,
   Save,
   Search,
-  SendTimeExtension,
   ShoppingCartOutlined,
-  TableRestaurant,
   ViewList,
   ViewModule,
 } from '@mui/icons-material'
@@ -72,22 +65,13 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import pdfMake from 'pdfmake/build/pdfmake'
 import printJS from 'print-js'
-import InputNumber from 'rc-input-number'
-import {
-  FunctionComponent,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select, { SingleValue } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 
 import AlertLoading from '../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../base/components/Form'
@@ -95,7 +79,6 @@ import { NumeroFormat } from '../../../base/components/Mask/NumeroFormat'
 import { MyInputLabel } from '../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../base/components/MySelect/ReactSelect'
-import RepresentacionGraficaUrls from '../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import useAuth from '../../../base/hooks/useAuth'
 import { SinTipoDocumentoIdentidadProps } from '../../../interfaces/sin.interface'
 import { genReplaceEmpty } from '../../../utils/helper'
@@ -110,7 +93,7 @@ import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroD
 import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
 import { apiListadoPorInventarioEntidad } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
-import { ApiEspacioResponse, apiListadoEspacios } from '../api/restauranteEspacios.api'
+import { apiListadoEspacios } from '../api/restauranteEspacios.api'
 import { generarComandaPDF } from '../Pdf/Comanda'
 import { facturarPedido } from '../Pdf/facturarPedido'
 import { finalizarPedido } from '../Pdf/finalizarPedido'
@@ -119,10 +102,7 @@ import MetodoPagoButton from '../utils/MetodoPagoButton'
 import { actualizarItemPedido } from '../utils/Pedidos/actualizarItem'
 import { adicionarItemPedido } from '../utils/Pedidos/adicionarItems'
 import { eliminarPedido } from '../utils/Pedidos/pedidoEliminar'
-import {
-  ClienteOperacionInput,
-  restPedidoExpressRegistro,
-} from '../utils/Pedidos/PedidoExpress'
+import { restPedidoExpressRegistro } from '../utils/Pedidos/PedidoExpress'
 import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
@@ -245,6 +225,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [additionalDiscount, setAdditionalDiscount] = useState<number>(0)
   const [giftCardAmount, setGiftCardAmount] = useState<number>(0)
+  // eslint-disable-next-line no-unused-vars
   const [montoRecibido, setMontoRecibido] = useState<number>(0)
   const [selectedButtonTipoPedido, setSelectedButtonTipoPedido] = useState<string | null>(
     'C. Interno',
@@ -273,8 +254,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
 
   const theme = useTheme()
-
-  const mySwal = withReactContent(Swal)
 
   const [isCreatingNewClient, setIsCreatingNewClient] = useState(false)
   const fetchClientes = async (inputValue: string): Promise<ClienteProps[]> => {
@@ -759,6 +738,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       tiposPedidos,
       clienteSeleccionado || null,
       getValues(),
+      isCreatingNewClient,
     )
       .then(async (response) => {
         if (response.restPedidoExpressRegistro) {
@@ -799,8 +779,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               numeroOrden.toString(),
               itemEliminados,
               tiposPedidos,
+              clienteSeleccionado,
             )
           }
+          setIsCreatingNewClient(false)
+          eliminarCliente()
         }
       })
       .catch((error) => {
@@ -915,6 +898,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           updatedOption.nroOrden.toString(),
           productosEliminados,
           tiposPedidos,
+          clienteSeleccionado,
         )
       }
     } catch (error) {
@@ -1013,6 +997,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setValue('numeroDocumento', '')
     setValue('sinTipoDocumento', null)
     setValue('complemento', '')
+    setValue('telefono', '')
   }
 
   const handleFacturar = () => {
@@ -1084,7 +1069,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             .then((response) => {
               if (response) {
                 setIsCreatingNewClient(false)
-                const { representacionGrafica } = response.factura
+                //@ts-ignore
+                const { representacionGrafica, cuf, numeroFactura, createdAt } =
+                  response.factura
 
                 // Leer la configuración de impresión automática del local storage
                 const printerSettings = JSON.parse(
@@ -1145,6 +1132,85 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setSelectedId(efectivoId)
                 setValue('metodoPago', efectivoId)
                 setEnviaDatos(true)
+
+                // Enviar el mensaje de WhatsApp al cliente seleccionado
+                const sendMessage = async () => {
+                  const phoneNumber = clienteSeleccionado?.telefono
+                  if (!phoneNumber) {
+                    console.error('Número de teléfono no disponible')
+                    return
+                  }
+
+                  const url = 'https://graph.facebook.com/v20.0/284418394755861/messages'
+                  const token =
+                    'EAAZAPTVTuAZBYBO30ekhtSPUNk9AIARDnUdoAuWM6zAZA8mAin1QBLa15rl7ZCGzGte2fn9aFp9ZCZBiDRmpaPSOa4TJam5tRBz0755f4DSGuYXfhrFUHioJn9Sh0gJxzgxtnAmHhEv2UUH36TXXvDKgzOl2zajtbVYBvxZCqlUPLTaqmB656vxAqI2rMogIAz5ZCkkSZBZBln9zZBJQWcEV9wZD'
+
+                  const messageData = {
+                    messaging_product: 'whatsapp',
+                    to: '59168048228',
+                    type: 'template',
+                    template: {
+                      name: 'whatsapp', // Nombre de la plantilla
+                      language: {
+                        code: 'es', // Código del idioma
+                      },
+                      components: [
+                        {
+                          type: 'body',
+                          parameters: [
+                            {
+                              type: 'text',
+                              text: clienteSeleccionado?.razonSocial || 'Cliente', // Nombre del cliente
+                            },
+                            {
+                              type: 'text',
+                              text: clienteSeleccionado?.codigoCliente || '', // Tipo de documento
+                            },
+                            {
+                              type: 'text',
+                              text: numeroFactura.toString(), // Número de factura
+                            },
+                            {
+                              type: 'text',
+                              text: cuf, // CUF
+                            },
+                            {
+                              type: 'text',
+                              text: createdAt, // Fecha de emisión
+                            },
+                            // link de descarga del PDF
+                            {
+                              type: 'text',
+                              text: representacionGrafica.rollo,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  }
+
+                  try {
+                    const response = await fetch(url, {
+                      method: 'POST',
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(messageData),
+                    })
+
+                    const result = await response.json()
+                    if (response.ok) {
+                      console.log('Mensaje de WhatsApp enviado', result)
+                    } else {
+                      console.error('Error al enviar mensaje de WhatsApp', result)
+                    }
+                  } catch (error) {
+                    console.error('Error al enviar mensaje de WhatsApp', error)
+                  }
+                }
+
+                sendMessage()
               }
 
               const efectivoId =
@@ -1254,6 +1320,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   numeroOrden.toString(),
                   itemEliminados,
                   tiposPedidos,
+                  clienteSeleccionado,
                 )
               }
               setSelectedCategory(categories[0].name || null)
@@ -1280,17 +1347,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
   }
 
-  const handleSearchChange = (event: { target: { value: SetStateAction<string> } }) => {
-    setSearchTerm(event.target.value)
-  }
-
-  const filteredCategories = categories.filter(
-    (category) =>
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.products.some((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+  const filteredProducts = articulosProd?.filter((product) =>
+    product.nombreArticulo.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  console.log('filteredProducts', filteredProducts)
 
   useEffect(() => {
     const clienteSeleccionado = getValues('cliente')
@@ -1357,10 +1418,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           codigoClasificador: '1',
           descripcion: 'CI - CEDULA DE IDENTIDAD',
         },
+        telefono: '',
       }
       if (clientePorDefecto) {
         setValue('cliente', clientePorDefecto)
         setValue('emailCliente', genReplaceEmpty(clientePorDefecto.email, ''))
+        setValue('razonSocial', genReplaceEmpty(clientePorDefecto.razonSocial, ''))
+        setValue('telefono', genReplaceEmpty(clientePorDefecto.telefono, ''))
       }
     }
 
@@ -1433,6 +1497,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     return name
   }
 
+  function toCamelCase(str: string) {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
   const { tiposDocumentoIdentidad, tdiLoading } = useQueryTipoDocumentoIdentidad()
   const [isCheckedExecpcion, setIsCheckedExecpcion] = useState(false)
   const [currentEspacio, setCurrentEspacio] = useState(null)
@@ -1497,6 +1569,24 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       DELIVERY
                     </div>
                   )}
+
+                  {/* Add a green line at the top if option.state is "PARA LLEVAR" */}
+                  {option.tipoPedido === 'LLEVAR' && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        backgroundColor: '#C2F490',
+                        color: '#333',
+                        padding: '2px 5px',
+                        fontSize: '0.7rem',
+                        transform: 'rotate(-45deg) translate(-15%, -50%)',
+                      }}
+                    >
+                      LLEVAR
+                    </div>
+                  )}
                   <CardContent
                     sx={{
                       display: 'flex',
@@ -1510,13 +1600,23 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       </Typography>
                     </div>
                     {option.nroOrden && (
-                      <Typography color="textSecondary">
-                        {[
-                          `Ped.: ${option.nroOrden}`,
-                          <br key="line-break" />,
-                          option.cliente && `${option.cliente.razonSocial}`,
-                        ]}
-                      </Typography>
+                      <Tooltip
+                        title={
+                          option.cliente ? toCamelCase(option.cliente.razonSocial) : ''
+                        }
+                        placement="top"
+                        key="tooltip"
+                      >
+                        <Typography color="textSecondary">
+                          {`Ped.: ${option.nroOrden}`}
+                          <br />
+                          <span>
+                            {option.cliente
+                              ? truncateName(toCamelCase(option.cliente.razonSocial), 7)
+                              : ''}
+                          </span>
+                        </Typography>
+                      </Tooltip>
                     )}
                   </CardContent>
                 </Card>
@@ -1529,184 +1629,156 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       )}
 
       <Grid item xs={12} md={6} lg={8}>
-        <Grid
-          container
-          alignItems="center"
-          spacing={2}
-          paddingBottom={2}
-          sx={{ userSelect: 'none' }}
-        >
-          <Grid item xs={3}>
-            {/* Si filteredCategories está vacío y searchTerm está vacío, muestra un skeleton, de lo contrario, muestra el texto */}
-            {filteredCategories.length === 0 && searchTerm.trim() === '' ? (
-              <Skeleton variant="text" width={150} height={40} animation="wave" />
-            ) : (
-              <Typography variant="h4">Categorías</Typography>
-            )}
+        <Grid container spacing={2} paddingBottom={2} sx={{ userSelect: 'none' }}>
+          <Grid item xs={7}>
+            <Typography variant="h4">Categorías</Typography>
           </Grid>
-          <Grid container justifyContent="right" item xs={9}>
-            {/* Si filteredCategories está vacío, muestra un skeleton, de lo contrario, muestra el TextField */}
-            {filteredCategories.length === 0 && searchTerm.trim() === '' ? (
-              <Skeleton variant="rectangular" width={300} height={56} animation="wave" />
-            ) : (
-              <>
-                <FormTextField
-                  label="Buscar categorías y productos"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  fullWidth
-                  margin="normal"
-                  style={{ width: '50%' }}
-                  InputProps={{
-                    endAdornment: <Search />,
-                  }}
-                />
-                <IconButton
-                  style={{
-                    padding: '0px', // Reduced the padding
-                    color: 'primary.main',
-                    backgroundColor: 'transparent',
-                  }}
-                  aria-label="more"
-                  aria-controls="submenu"
-                  aria-haspopup="true"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                  size="large"
+          <Grid item xs={5} container alignItems="center">
+            <Grid item xs={11}>
+              <FormTextField
+                label="Buscar Producto por Nombre"
+                fullWidth
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                margin="normal"
+                style={{ width: '100%' }}
+                InputProps={{ endAdornment: <Search /> }}
+              />
+            </Grid>
+            <Grid item xs={1} container justifyContent="flex-end">
+              <IconButton
+                style={{
+                  padding: '0px',
+                  color: 'primary.main',
+                  backgroundColor: 'transparent',
+                }}
+                aria-label="more"
+                aria-controls="submenu"
+                aria-haspopup="true"
+                onClick={(event) => setAnchorEl(event.currentTarget)}
+                size="large"
+              >
+                <MoreVert />
+              </IconButton>
+              <Menu
+                id="submenu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClick={(event) => {
+                  const selectedOption = (event.target as HTMLElement).textContent
+                  if (selectedOption === 'Vista mosaico') {
+                    setSelectedView('mosaico')
+                  } else if (selectedOption === 'Vista en lista') {
+                    setSelectedView('lista')
+                  }
+                  setAnchorEl(null)
+                }}
+              >
+                <MenuItem
+                  onClick={() => setSelectedView('mosaico')}
+                  selected={selectedView === 'mosaico'}
                 >
-                  <MoreVert />
-                </IconButton>
-                <Menu
-                  id="submenu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClick={(event) => {
-                    const selectedOption = (event.target as HTMLElement).textContent
-                    if (selectedOption === 'Vista mosaico') {
-                      setSelectedView('mosaico')
-                    } else if (selectedOption === 'Vista en lista') {
-                      setSelectedView('lista')
-                    }
+                  <ListItemIcon>
+                    <ViewModule fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Vista mosaico</Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setSelectedView('lista')}
+                  selected={selectedView === 'lista'}
+                >
+                  <ListItemIcon>
+                    <ViewList fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Vista en lista</Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    localStorage.removeItem('ubicacion')
+                    setSelectedUbicacion(null)
                     setAnchorEl(null)
                   }}
+                  selected={selectedUbicacion === null}
                 >
-                  <MenuItem
-                    onClick={() => setSelectedView('mosaico')}
-                    selected={selectedView === 'mosaico'}
-                  >
-                    <ListItemIcon>
-                      <ViewModule fontSize="small" />
-                    </ListItemIcon>
-                    <Typography variant="inherit">Vista mosaico</Typography>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => setSelectedView('lista')}
-                    selected={selectedView === 'lista'}
-                  >
-                    <ListItemIcon>
-                      <ViewList fontSize="small" />
-                    </ListItemIcon>
-                    <Typography variant="inherit">Vista en lista</Typography>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      localStorage.removeItem('ubicacion')
-                      setSelectedUbicacion(null)
-                      setAnchorEl(null)
-                    }}
-                    selected={selectedUbicacion === null}
-                  >
-                    <ListItemIcon>
-                      <Home fontSize="small" />
-                    </ListItemIcon>
-                    <Typography variant="inherit">Salón principal</Typography>
-                  </MenuItem>
-                  {espacios &&
-                    espacios.map((espacio: any) => (
-                      <MenuItem
-                        key={espacio._id}
-                        onClick={() => {
-                          localStorage.setItem('ubicacion', JSON.stringify(espacio))
-                          setSelectedUbicacion(espacio.descripcion)
-                          setAnchorEl(null)
-                        }}
-                        selected={selectedUbicacion === espacio.descripcion}
-                      >
-                        <ListItemIcon>
-                          <Room fontSize="small" />
-                        </ListItemIcon>
-                        <Typography variant="inherit">{espacio.descripcion}</Typography>
-                      </MenuItem>
-                    ))}
-                  <Divider />
-                  <MenuItem onClick={handleOpenUbicacionCrear}>
-                    <ListItemIcon>
-                      <Add fontSize="small" />
-                    </ListItemIcon>
-                    <Typography variant="inherit">Crear nuevo</Typography>
-                  </MenuItem>
-                </Menu>
-              </>
-            )}
+                  <ListItemIcon>
+                    <Home fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Salón principal</Typography>
+                </MenuItem>
+                {espacios &&
+                  espacios.map((espacio: any) => (
+                    <MenuItem
+                      key={espacio._id}
+                      onClick={() => {
+                        localStorage.setItem('ubicacion', JSON.stringify(espacio))
+                        setSelectedUbicacion(espacio.descripcion)
+                        setAnchorEl(null)
+                      }}
+                      selected={selectedUbicacion === espacio.descripcion}
+                    >
+                      <ListItemIcon>
+                        <Room fontSize="small" />
+                      </ListItemIcon>
+                      <Typography variant="inherit">{espacio.descripcion}</Typography>
+                    </MenuItem>
+                  ))}
+                <Divider />
+                <MenuItem onClick={handleOpenUbicacionCrear}>
+                  <ListItemIcon>
+                    <Add fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Crear nuevo</Typography>
+                </MenuItem>
+              </Menu>
+            </Grid>
           </Grid>
         </Grid>
+
         <Grid container spacing={2} sx={{ mb: 2 }}>
-          {/* Primero, verifica si hay categorías filtradas */}
-          {filteredCategories.length === 0 && searchTerm.trim() === '' ? (
-            // Si no hay categorías filtradas y el término de búsqueda está vacío, muestra skeletons para las tarjetas
-            [1, 2, 3, 4, 5, 6].map((item) => (
-              <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
-                <Skeleton variant="rectangular" height={80} animation="wave" />
-              </Grid>
-            ))
-          ) : filteredCategories.some((category) =>
-              category.name.toLowerCase().includes(searchTerm.toLowerCase()),
-            ) ? (
-            // Si hay coincidencias con el término de búsqueda, muestra las tarjetas normalmente
-            filteredCategories.map((category) => (
-              <Grid
-                item
-                key={category.name}
-                xs={6}
-                sm={4}
-                md={3}
-                lg={2}
-                sx={{ userSelect: 'none' }}
-              >
-                <Card
-                  elevation={3}
-                  sx={{
-                    p: 2,
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    backgroundColor:
-                      selectedCategory === category.name
-                        ? theme.palette.primary.main
-                        : theme.palette.common.white,
-                    color:
-                      selectedCategory === category.name ? 'common.white' : 'inherit',
-                    '&:hover': {
+          {/* Muestra todas las categorías sin filtrarlas */}
+          {categories.length === 0
+            ? [1, 2, 3, 4, 5, 6].map((item) => (
+                <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
+                  <Skeleton variant="rectangular" height={80} animation="wave" />
+                </Grid>
+              ))
+            : categories.map((category) => (
+                <Grid
+                  item
+                  key={category.name}
+                  xs={6}
+                  sm={4}
+                  md={3}
+                  lg={2}
+                  sx={{ userSelect: 'none' }}
+                >
+                  <Card
+                    elevation={3}
+                    sx={{
+                      p: 2,
+                      textAlign: 'center',
+                      cursor: 'pointer',
                       backgroundColor:
                         selectedCategory === category.name
-                          ? theme.palette.primary.dark
-                          : theme.palette.action.hover,
-                    },
-                  }}
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    {category.name}
-                  </Typography>
-                </Card>
-              </Grid>
-            ))
-          ) : (
-            // Si no hay coincidencias, muestra un mensaje en lugar de skeletons
-            <Grid item xs={12}>
-              <Typography variant="h6" align="center">
-                No se encontraron resultados
-              </Typography>
-            </Grid>
-          )}
+                          ? theme.palette.primary.main
+                          : theme.palette.common.white,
+                      color:
+                        selectedCategory === category.name ? 'common.white' : 'inherit',
+                      '&:hover': {
+                        backgroundColor:
+                          selectedCategory === category.name
+                            ? theme.palette.primary.dark
+                            : theme.palette.action.hover,
+                      },
+                    }}
+                    onClick={() => setSelectedCategory(category.name)}
+                  >
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      {category.name}
+                    </Typography>
+                  </Card>
+                </Grid>
+              ))}
         </Grid>
         <Divider />
         <Grid container spacing={2} sx={{ mt: 2, position: 'relative' }}>
@@ -1715,20 +1787,31 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               src={logo}
               alt="Logo"
               style={{
-                opacity: 0.2, // Reducir la opacidad
+                opacity: 0.2,
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                margin: 'auto', // Centrar la imagen horizontalmente
-                maxWidth: '50%', // Limitar el ancho máximo al 50% del contenedor
-                maxHeight: '50%', // Limitar la altura máxima al 50% del contenedor
+                margin: 'auto',
+                maxWidth: '50%',
+                maxHeight: '50%',
               }}
             />
           ) : (
             categories
               .find((category) => category.name === selectedCategory)
-              ?.products.map((product) => (
+              ?.products.filter((product) => {
+                const normalizedProductName = product.name
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .toLowerCase()
+                const normalizedSearchTerm = searchTerm
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .toLowerCase()
+                return normalizedProductName.includes(normalizedSearchTerm)
+              })
+              .map((product) => (
                 <Grid
                   item
                   key={product.name}
@@ -1761,33 +1844,26 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         }}
                       />
                     ) : (
-                      // <></>
                       <Box
                         sx={{
-                          height: 26,
+                          height: 10,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          backgroundColor: '#f0f0f0',
+                          backgroundColor: '#93C4EE',
                           color: '#93C4EE',
                           fontSize: '1.4rem',
                           fontWeight: 'bold',
                         }}
-                      >
-                        {product.name
-                          .split(' ')
-                          .slice(0, 2)
-                          .map((word) => word[0])
-                          .join('')}
-                      </Box>
+                      ></Box>
                     )}
                     <CardContent>
                       <Tooltip title={product.name} placement="top">
-                        <Typography variant="body1" gutterBottom>
+                        <Typography variant="body1" gutterBottom fontWeight="bold">
                           {truncateName(product.name, 18)}
                         </Typography>
                       </Tooltip>
-                      <Typography variant="body1" fontWeight="bold">
+                      <Typography variant="body1" fontWeight="inherit">
                         {product.price.toFixed(2)} {product.sigla}
                       </Typography>
                     </CardContent>
@@ -1797,6 +1873,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           )}
         </Grid>
       </Grid>
+
       <Grid item xs={12} md={6} lg={4} sx={{ userSelect: 'none' }}>
         <Paper elevation={3} sx={{ p: 2 }}>
           {selectedOption && (
@@ -2139,6 +2216,25 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         />
                       )}
                     </Grid>
+                    <Grid item xs={12} sx={{ mt: 1 }}>
+                      <Controller
+                        name="telefono"
+                        control={control}
+                        render={({ field }) => (
+                          <FormTextField
+                            {...field}
+                            label="Teléfono"
+                            placeholder="Ingrese el Teléfono"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
                   </>
                 )}
                 <Grid item lg={12} xs={12} md={12}>
@@ -2379,6 +2475,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         selectedOption?.nroOrden?.toString(),
                         itemEliminados,
                         tiposPedidos,
+                        clienteSeleccionado,
                       )
                     }
                     endIcon={<Print />}
@@ -2428,9 +2525,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     onClick={handleFacturar}
                     variant="contained"
                     endIcon={<Receipt />}
-                    color="secondary"
+                    // color="secondary"
                     disabled={selectedOption?.state !== 'COMPLETADO'}
-                    style={{ height: '50px' }}
+                    style={{ height: '50px', backgroundColor: '#f0ad4e' }}
                   >
                     Facturar
                   </Button>
