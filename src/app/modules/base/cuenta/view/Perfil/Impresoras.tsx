@@ -52,6 +52,7 @@ const Impresoras: FunctionComponent<Props> = () => {
   const [newPrinterIP, setNewPrinterIP] = useState('')
   const [manualPrinters, setManualPrinters] = useState<Printer[]>([])
   const [isMobile, setIsMobile] = useState<boolean>(false)
+  const [errorIP, setErrorIP] = useState(false)
 
   const scanPrinters = async () => {
     try {
@@ -112,6 +113,22 @@ const Impresoras: FunctionComponent<Props> = () => {
     })
   }, [manualPrinters])
 
+  const getPrinterValue = (selectedPrinter: string) => {
+    const printer = printers.find((p) => p.name === selectedPrinter)
+    if (printer && printer.ip) {
+      return printer.ip // Devuelve la IP para impresoras manuales
+    }
+    return selectedPrinter // Devuelve el nombre para impresoras automáticas
+  }
+
+  const getPrinterDisplayValue = (selectedPrinter: string) => {
+    const printer = printers.find((p) => p.name === selectedPrinter)
+    if (printer && printer.ip) {
+      return `${printer.name} (${printer.ip})`
+    }
+    return selectedPrinter
+  }
+
   const handleSave = () => {
     const printerSettings: PrinterSettings = {
       comanda: getPrinterValue(selectedComandaPrinter),
@@ -127,10 +144,6 @@ const Impresoras: FunctionComponent<Props> = () => {
       title: 'Configuraciones Guardadas',
       text: 'Las configuraciones de impresoras y de impresión automática se han guardado exitosamente.',
     })
-  }
-
-  const getPrinterValue = (selectedPrinter: string) => {
-    return selectedPrinter
   }
 
   const handleImpresionAutomaticaChange =
@@ -153,6 +166,19 @@ const Impresoras: FunctionComponent<Props> = () => {
       setNewPrinterIP('')
     }
   }
+
+  const validateIP = (value: any) => {
+    const ipPortPattern =
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/
+    return ipPortPattern.test(value)
+  }
+
+  const handleChange = (e: any) => {
+    const value = e.target.value
+    setNewPrinterIP(value)
+    setErrorIP(!validateIP(value) && value !== '')
+  }
+
   return (
     <>
       <SimpleCard title={'IMPRESORAS'} childIcon={<Print />}>
@@ -171,7 +197,9 @@ const Impresoras: FunctionComponent<Props> = () => {
                 onChange={(e) => setSelectedComandaPrinter(e.target.value as string)}
                 fullWidth
                 label="Impresora para Comanda"
-                renderValue={(value) => value || 'Seleccione una impresora'}
+                renderValue={(value) =>
+                  getPrinterDisplayValue(value as string) || 'Seleccione una impresora'
+                }
               >
                 <MenuItem value="">
                   {printers.length > 0
@@ -180,7 +208,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 </MenuItem>
                 {printers.map((printer) => (
                   <MenuItem key={printer.name} value={printer.name}>
-                    {printer.name}
+                    {printer.ip ? `${printer.name} (${printer.ip})` : printer.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -199,7 +227,9 @@ const Impresoras: FunctionComponent<Props> = () => {
                 }
                 fullWidth
                 label="Impresora para Estado de Cuenta"
-                renderValue={(value) => value || 'Seleccione una impresora'}
+                renderValue={(value) =>
+                  getPrinterDisplayValue(value as string) || 'Seleccione una impresora'
+                }
               >
                 <MenuItem value="">
                   {printers.length > 0
@@ -208,7 +238,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 </MenuItem>
                 {printers.map((printer) => (
                   <MenuItem key={printer.name} value={printer.name}>
-                    {printer.name}
+                    {printer.ip ? `${printer.name} (${printer.ip})` : printer.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -223,7 +253,9 @@ const Impresoras: FunctionComponent<Props> = () => {
                 onChange={(e) => setSelectedFacturarPrinter(e.target.value as string)}
                 fullWidth
                 label="Impresora para Facturar"
-                renderValue={(value) => value || 'Seleccione una impresora'}
+                renderValue={(value) =>
+                  getPrinterDisplayValue(value as string) || 'Seleccione una impresora'
+                }
               >
                 <MenuItem value="">
                   {printers.length > 0
@@ -232,7 +264,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 </MenuItem>
                 {printers.map((printer) => (
                   <MenuItem key={printer.name} value={printer.name}>
-                    {printer.name}
+                    {printer.ip ? `${printer.name} (${printer.ip})` : printer.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -263,8 +295,10 @@ const Impresoras: FunctionComponent<Props> = () => {
                   fullWidth
                   label="Dirección IP"
                   value={newPrinterIP}
-                  onChange={(e) => setNewPrinterIP(e.target.value)}
+                  onChange={handleChange}
                   placeholder="Ejemplo: 192.168.1.100"
+                  error={errorIP}
+                  helperText={errorIP ? 'Dirección IP o IP con puerto inválida' : ''}
                 />
               </Grid>
               <Grid item xs={12}>
