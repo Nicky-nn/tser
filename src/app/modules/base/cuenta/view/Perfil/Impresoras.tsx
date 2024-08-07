@@ -8,10 +8,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from '@mui/material'
 import { FunctionComponent, useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
+import { FormTextField } from '../../../../../base/components/Form'
 import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
 
 interface OwnProps {}
@@ -20,6 +22,7 @@ type Props = OwnProps
 
 interface Printer {
   name: string
+  ip?: string
 }
 
 interface PrinterSettings {
@@ -31,6 +34,7 @@ interface PrinterSettings {
     estadoDeCuenta: boolean
     facturar: boolean
   }
+  manualPrinters: Printer[]
 }
 
 const Impresoras: FunctionComponent<Props> = () => {
@@ -44,6 +48,10 @@ const Impresoras: FunctionComponent<Props> = () => {
     estadoDeCuenta: false,
     facturar: false,
   })
+  const [newPrinterName, setNewPrinterName] = useState('')
+  const [newPrinterIP, setNewPrinterIP] = useState('')
+  const [manualPrinters, setManualPrinters] = useState<Printer[]>([])
+  const [isMobile, setIsMobile] = useState<boolean>(false)
 
   const scanPrinters = async () => {
     try {
@@ -52,14 +60,13 @@ const Impresoras: FunctionComponent<Props> = () => {
       const availablePrinters = data.printers.map((printerName: string) => ({
         name: printerName,
       }))
-      setPrinters(availablePrinters)
+      setPrinters([...availablePrinters, ...manualPrinters])
     } catch (error) {
       console.error('Error al escanear impresoras:', error)
     }
   }
 
   useEffect(() => {
-    // Cargar impresoras y configuraciones guardadas en localStorage al iniciar
     const savedPrinters = localStorage.getItem('printers')
     if (savedPrinters) {
       try {
@@ -74,20 +81,37 @@ const Impresoras: FunctionComponent<Props> = () => {
             facturar: false,
           },
         )
+        setManualPrinters(parsedPrinters.manualPrinters || [])
       } catch (error) {
         console.error('Error parsing printers from localStorage:', error)
       }
     }
 
     scanPrinters()
+
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+    if (/android/i.test(userAgent)) {
+      setIsMobile(true)
+    }
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+      setIsMobile(true)
+    }
   }, [])
+
+  useEffect(() => {
+    setPrinters((prevPrinters) => {
+      const existingPrinters = prevPrinters.filter((p) => !p.ip)
+      return [...existingPrinters, ...manualPrinters]
+    })
+  }, [manualPrinters])
 
   const handleSave = () => {
     const printerSettings: PrinterSettings = {
-      comanda: selectedComandaPrinter,
-      estadoDeCuenta: selectedEstadoDeCuentaPrinter,
-      facturar: selectedFacturarPrinter,
+      comanda: getPrinterValue(selectedComandaPrinter),
+      estadoDeCuenta: getPrinterValue(selectedEstadoDeCuentaPrinter),
+      facturar: getPrinterValue(selectedFacturarPrinter),
       impresionAutomatica,
+      manualPrinters,
     }
     localStorage.setItem('printers', JSON.stringify(printerSettings))
 
@@ -96,6 +120,13 @@ const Impresoras: FunctionComponent<Props> = () => {
       title: 'Configuraciones Guardadas',
       text: 'Las configuraciones de impresoras y de impresión automática se han guardado exitosamente.',
     })
+  }
+
+  const getPrinterValue = (selectedPrinter: string) => {
+    const printer = [...printers, ...manualPrinters].find(
+      (p) => p.name === selectedPrinter,
+    )
+    return printer && printer.ip ? printer.ip : selectedPrinter
   }
 
   const handleImpresionAutomaticaChange =
@@ -107,6 +138,17 @@ const Impresoras: FunctionComponent<Props> = () => {
       }))
     }
 
+  const handleAddPrinter = () => {
+    if (newPrinterName && newPrinterIP) {
+      const newPrinter: Printer = {
+        name: newPrinterName,
+        ip: newPrinterIP,
+      }
+      setManualPrinters([...manualPrinters, newPrinter])
+      setNewPrinterName('')
+      setNewPrinterIP('')
+    }
+  }
   return (
     <>
       <SimpleCard title={'IMPRESORAS'} childIcon={<Print />}>
@@ -189,6 +231,42 @@ const Impresoras: FunctionComponent<Props> = () => {
               </Select>
             </FormControl>
           </Grid>
+          {isMobile && (
+            <>
+              <Grid item xs={12}>
+                <Typography
+                  style={{
+                    fontSize: '1.25rem',
+                  }}
+                >
+                  Agregar Impresora Manual
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormTextField
+                  fullWidth
+                  label="Nombre/Modelo de Impresora"
+                  value={newPrinterName}
+                  onChange={(e) => setNewPrinterName(e.target.value)}
+                  placeholder='Ejemplo: "Impresora de Cocina - Epson TM-T20II"'
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormTextField
+                  fullWidth
+                  label="Dirección IP"
+                  value={newPrinterIP}
+                  onChange={(e) => setNewPrinterIP(e.target.value)}
+                  placeholder="Ejemplo: 192.168.1.100"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button onClick={handleAddPrinter} variant="contained">
+                  Agregar Impresora
+                </Button>
+              </Grid>
+            </>
+          )}
           <Grid item xs={12}>
             <FormControlLabel
               control={
@@ -224,7 +302,7 @@ const Impresoras: FunctionComponent<Props> = () => {
           </Grid>
           <Grid item xs={12}>
             <Button onClick={handleSave} variant="contained">
-              Guardar
+              Guardar Configuración
             </Button>
           </Grid>
         </Grid>
