@@ -71,6 +71,14 @@ const Impresoras: FunctionComponent<Props> = () => {
       setPrinters(uniquePrinters)
     } catch (error) {
       console.error('Error al escanear impresoras:', error)
+      const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+      if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al escanear impresoras',
+          text: 'No se pudo escanear las impresoras disponibles en la red, verifique que la Aplicación de Impresión esté en ejecución.',
+        })
+      }
     }
   }
 
