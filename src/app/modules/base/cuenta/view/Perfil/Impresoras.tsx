@@ -60,7 +60,14 @@ const Impresoras: FunctionComponent<Props> = () => {
       const availablePrinters = data.printers.map((printerName: string) => ({
         name: printerName,
       }))
-      setPrinters([...availablePrinters, ...manualPrinters])
+
+      // Combinar las impresoras escaneadas con las manuales, eliminando duplicados
+      const combinedPrinters = [...availablePrinters, ...manualPrinters]
+      const uniquePrinters = Array.from(new Set(combinedPrinters.map((p) => p.name))).map(
+        (name) => combinedPrinters.find((p) => p.name === name)!,
+      )
+
+      setPrinters(uniquePrinters)
     } catch (error) {
       console.error('Error al escanear impresoras:', error)
     }
@@ -123,10 +130,7 @@ const Impresoras: FunctionComponent<Props> = () => {
   }
 
   const getPrinterValue = (selectedPrinter: string) => {
-    const printer = [...printers, ...manualPrinters].find(
-      (p) => p.name === selectedPrinter,
-    )
-    return printer && printer.ip ? printer.ip : selectedPrinter
+    return selectedPrinter
   }
 
   const handleImpresionAutomaticaChange =
@@ -167,6 +171,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 onChange={(e) => setSelectedComandaPrinter(e.target.value as string)}
                 fullWidth
                 label="Impresora para Comanda"
+                renderValue={(value) => value || 'Seleccione una impresora'}
               >
                 <MenuItem value="">
                   {printers.length > 0
@@ -194,6 +199,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 }
                 fullWidth
                 label="Impresora para Estado de Cuenta"
+                renderValue={(value) => value || 'Seleccione una impresora'}
               >
                 <MenuItem value="">
                   {printers.length > 0
@@ -217,6 +223,7 @@ const Impresoras: FunctionComponent<Props> = () => {
                 onChange={(e) => setSelectedFacturarPrinter(e.target.value as string)}
                 fullWidth
                 label="Impresora para Facturar"
+                renderValue={(value) => value || 'Seleccione una impresora'}
               >
                 <MenuItem value="">
                   {printers.length > 0
