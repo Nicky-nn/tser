@@ -59,6 +59,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
   Zoom,
 } from '@mui/material'
@@ -391,11 +392,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       return
     }
 
-    const existingProduct = cart.find((p) => p.name === product.name)
+    const existingProduct = cart.find((p) => p.codigoArticulo === product.codigoArticulo)
     if (existingProduct) {
       setCart((prevCart) =>
         prevCart.map((p) =>
-          p.name === product.name ? { ...p, quantity: p.quantity + 1 } : p,
+          p.codigoArticulo === product.codigoArticulo
+            ? { ...p, quantity: p.quantity + 1 }
+            : p,
         ),
       )
     } else {
@@ -1542,6 +1545,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     },
   }))
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   return (
     <Grid container spacing={1}>
       {selectedView === 'mosaico' ? (
@@ -1749,12 +1753,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          {/* Muestra todas las categorías sin filtrarlas */}
+        <Grid
+          container
+          spacing={1}
+          sx={{
+            mb: 2,
+            flexWrap: isMobile ? 'nowrap' : 'wrap',
+            overflowX: isMobile ? 'auto' : 'initial',
+            '&::-webkit-scrollbar': {
+              height: isMobile ? '8px' : 0,
+              borderRadius: '8px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: '8px',
+            },
+            backgroundColor: 'F3F3F3',
+          }}
+        >
           {categories.length === 0
             ? [1, 2, 3, 4, 5, 6].map((item) => (
                 <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
-                  <Skeleton variant="rectangular" height={80} animation="wave" />
+                  <Skeleton variant="rectangular" height={60} animation="wave" />
                 </Grid>
               ))
             : categories.map((category) => (
@@ -1786,15 +1806,25 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             : theme.palette.action.hover,
                       },
                     }}
-                    onClick={() => setSelectedCategory(category.name)}
+                    onClick={() => {
+                      setSelectedCategory(category.name)
+                    }}
                   >
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                      {category.name}
-                    </Typography>
+                    <Tooltip
+                      title={category.name}
+                      placement="top"
+                      disableFocusListener
+                      disableTouchListener
+                    >
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        {truncateName(category.name, 15)}
+                      </Typography>
+                    </Tooltip>
                   </Card>
                 </Grid>
               ))}
         </Grid>
+
         <Divider />
         <Grid container spacing={2} sx={{ mt: 2, position: 'relative' }}>
           {!selectedCategory ? (
@@ -1815,21 +1845,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           ) : (
             categories
               .find((category) => category.name === selectedCategory)
-              ?.products.filter((product) => {
-                const normalizedProductName = product.name
-                  .normalize('NFD')
-                  .replace(/[\u0300-\u036f]/g, '')
-                  .toLowerCase()
-                const normalizedSearchTerm = searchTerm
-                  .normalize('NFD')
-                  .replace(/[\u0300-\u036f]/g, '')
-                  .toLowerCase()
-                return normalizedProductName.includes(normalizedSearchTerm)
-              })
-              .map((product) => (
+              ?.products.map((product) => (
                 <Grid
                   item
-                  key={product.name}
+                  key={product.codigoArticulo}
                   xs={6}
                   sm={3}
                   md={2}
@@ -1865,10 +1884,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          backgroundColor: '#93C4EE',
-                          color: '#93C4EE',
-                          fontSize: '1.4rem',
-                          fontWeight: 'bold',
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.common.white,
                         }}
                       ></Box>
                     )}
