@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material'
 import {
   Avatar,
+  Badge,
   Box,
   Chip,
   Hidden,
@@ -32,6 +33,18 @@ import MatxMenu from '../../MatxMenu/MatxMenu'
 import { themeShadows } from '../../MatxTheme/themeColors'
 import NotificationBar from '../../NotificationBar/NotificationBar'
 import { Span } from '../../Typography'
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.success.main,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&.MuiBadge-anchorOriginTopRightCircular': {
+      top: '0',
+      right: '0',
+    },
+  },
+}))
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -239,7 +252,22 @@ const Layout1Topbar: FC<any> = () => {
                     Hola <strong>{user.nombres}</strong>
                   </Span>
                 </Hidden>
-                <Avatar src={user.avatar} sx={{ cursor: 'pointer' }} />
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  variant="dot"
+                >
+                  <Avatar sx={{ cursor: 'pointer' }}>
+                    <img
+                      src="/assets/images/avatars/001-man.svg"
+                      onError={(e) => {
+                        e.currentTarget.src = user.avatar // En caso de error, cargar la imagen de usuario
+                      }}
+                      alt="User Avatar"
+                      width="100%"
+                    />
+                  </Avatar>
+                </StyledBadge>
               </UserMenu>
             }
           >

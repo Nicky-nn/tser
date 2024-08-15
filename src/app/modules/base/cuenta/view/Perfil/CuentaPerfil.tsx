@@ -96,7 +96,7 @@ const CuentaPerfil: FunctionComponent = () => {
   const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
     setWhatsappEnabled(enabled)
-    localStorage.setItem('facturacionWhatsapp', String(enabled))
+    localStorage.setItem('whatsappEnabled', String(enabled))
   }
 
   return (
@@ -231,7 +231,7 @@ const CuentaPerfil: FunctionComponent = () => {
                 <Checkbox
                   checked={whatsappEnabled}
                   onChange={handleWhatsappEnabledChange}
-                  disabled={!hasPlan} // Ahora se basa en la variable hasPlan
+                  disabled={hasPlan} // Ahora se basa en la variable hasPlan
                 />
               }
               label="Habilitar envío por WhatsApp"

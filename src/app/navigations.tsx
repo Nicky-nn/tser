@@ -44,7 +44,7 @@ export const navigations: NavigationProps[] = [
       },
       {
         name: 'Gestión de Facturas',
-        iconText: 'VEGE',
+        iconText: 'GEF',
         path: '/ventas/gestion',
       },
     ],

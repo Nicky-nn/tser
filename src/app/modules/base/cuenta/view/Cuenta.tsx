@@ -8,6 +8,7 @@ import {
   Token,
 } from '@mui/icons-material'
 import {
+  Badge,
   Box,
   Grid,
   List,
@@ -58,7 +59,16 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                     onClick={(event) => handleListItemClick(event, 0)}
                   >
                     <ListItemIcon>
-                      <Person />
+                      <Badge
+                        badgeContent="Nuevo"
+                        color="secondary"
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                      >
+                        <Person />
+                      </Badge>
                     </ListItemIcon>
                     <ListItemText primary="Información Básica" />
                   </ListItemButton>

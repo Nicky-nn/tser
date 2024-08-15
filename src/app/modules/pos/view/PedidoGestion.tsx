@@ -99,6 +99,7 @@ import { generarComandaPDF } from '../Pdf/Comanda'
 import { facturarPedido } from '../Pdf/facturarPedido'
 import { finalizarPedido } from '../Pdf/finalizarPedido'
 import { generarReciboPDF } from '../Pdf/Recibo'
+import { useWhatsappSender } from '../Pdf/sendWhatsappMessage'
 import MetodoPagoButton from '../utils/MetodoPagoButton'
 import { actualizarItemPedido } from '../utils/Pedidos/actualizarItem'
 import { adicionarItemPedido } from '../utils/Pedidos/adicionarItems'
@@ -218,6 +219,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     user: { sucursal, puntoVenta, tipoRepresentacionGrafica, usuario, miEmpresa },
   } = useAuth()
 
+  const { user } = useAuth()
+  const sendWhatsappMessage = useWhatsappSender(user)
+
   const form = props.form
   const logo = import.meta.env.ISI_LOGO_FULL
   const queryClient = useQueryClient()
@@ -253,6 +257,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [selectedView, setSelectedView] = useState<string>('')
   const [selectedUbicacion, setSelectedUbicacion] = useState<string | null>(null)
   const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
+  const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
+    localStorage.getItem('whatsappEnabled') === 'true',
+  )
 
   const theme = useTheme()
 
@@ -646,6 +653,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         setValue('cliente', pedidoEncontrado?.cliente || null)
         setValue('emailCliente', pedidoEncontrado?.cliente?.email || '')
         setValue('razonSocial', pedidoEncontrado?.cliente?.razonSocial || '')
+        setValue('telefono', pedidoEncontrado?.cliente?.telefono || '')
         setItemEliminados(pedidoEncontrado?.productosEliminados || [])
 
         // obtenemos el tipo para el pedido y marcamos automaticamente los botones
@@ -1069,7 +1077,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             usuario,
             refetch,
           )
-            .then((response) => {
+            .then(async (response) => {
               if (response) {
                 setIsCreatingNewClient(false)
                 //@ts-ignore
@@ -1136,84 +1144,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setValue('metodoPago', efectivoId)
                 setEnviaDatos(true)
 
-                // Enviar el mensaje de WhatsApp al cliente seleccionado
-                const sendMessage = async () => {
-                  const phoneNumber = clienteSeleccionado?.telefono
-                  if (!phoneNumber) {
-                    console.error('Número de teléfono no disponible')
-                    return
-                  }
+                if (whatsappEnabled) {
+                  const mensaje = `*Hola, tu pedido ha sido facturado con éxito.*\n\nNúmero de factura: *${numeroFactura}*\nCuf: *${cuf}*\nFecha: *${createdAt}*\n\nGracias por tu preferencia.`
+                  const telefono = clienteSeleccionado?.telefono || ''
+                  const documentUrl = representacionGrafica.pdf
+                  const documentFileName = 'Factura.pdf'
 
-                  const url = 'https://graph.facebook.com/v20.0/284418394755861/messages'
-                  const token =
-                    'EAAZAPTVTuAZBYBO30ekhtSPUNk9AIARDnUdoAuWM6zAZA8mAin1QBLa15rl7ZCGzGte2fn9aFp9ZCZBiDRmpaPSOa4TJam5tRBz0755f4DSGuYXfhrFUHioJn9Sh0gJxzgxtnAmHhEv2UUH36TXXvDKgzOl2zajtbVYBvxZCqlUPLTaqmB656vxAqI2rMogIAz5ZCkkSZBZBln9zZBJQWcEV9wZD'
-
-                  const messageData = {
-                    messaging_product: 'whatsapp',
-                    to: '59168048228',
-                    type: 'template',
-                    template: {
-                      name: 'whatsapp', // Nombre de la plantilla
-                      language: {
-                        code: 'es', // Código del idioma
-                      },
-                      components: [
-                        {
-                          type: 'body',
-                          parameters: [
-                            {
-                              type: 'text',
-                              text: clienteSeleccionado?.razonSocial || 'Cliente', // Nombre del cliente
-                            },
-                            {
-                              type: 'text',
-                              text: clienteSeleccionado?.codigoCliente || '', // Tipo de documento
-                            },
-                            {
-                              type: 'text',
-                              text: numeroFactura.toString(), // Número de factura
-                            },
-                            {
-                              type: 'text',
-                              text: cuf, // CUF
-                            },
-                            {
-                              type: 'text',
-                              text: createdAt, // Fecha de emisión
-                            },
-                            // link de descarga del PDF
-                            {
-                              type: 'text',
-                              text: representacionGrafica.rollo,
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  }
-
-                  try {
-                    const response = await fetch(url, {
-                      method: 'POST',
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(messageData),
-                    })
-
-                    const result = await response.json()
-                    if (response.ok) {
-                      console.log('Mensaje de WhatsApp enviado', result)
-                    } else {
-                      console.error('Error al enviar mensaje de WhatsApp', result)
+                  if (telefono) {
+                    try {
+                      await sendWhatsappMessage(
+                        telefono,
+                        mensaje,
+                        documentUrl,
+                        documentFileName,
+                      )
+                      console.log('Mensaje de WhatsApp enviado con éxito')
+                    } catch (error) {
+                      console.error('Error al enviar mensaje de WhatsApp:', error)
                     }
-                  } catch (error) {
-                    console.error('Error al enviar mensaje de WhatsApp', error)
+                  } else {
+                    console.error('Número de teléfono no disponible')
                   }
                 }
-
-                sendMessage()
               }
 
               const efectivoId =
@@ -1386,6 +1338,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     if (savedView) {
       setSelectedView(savedView)
     }
+
+    const enabled = localStorage.getItem('whatsappEnabled') === 'true'
+    setWhatsappEnabled(enabled)
 
     const savedUbicacion = localStorage.getItem('ubicacion')
     if (savedUbicacion) {
@@ -2058,6 +2013,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         field.onChange(cliente)
                         setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                         setValue('razonSocial', genReplaceEmpty(cliente?.razonSocial, ''))
+                        setValue('telefono', genReplaceEmpty(cliente?.telefono, ''))
                         if (cliente?.state === 'REGISTRO') {
                           setValue('emailCliente', genReplaceEmpty(cliente?.email, ''))
                           setValue(
@@ -2171,6 +2127,39 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     )}
                   />
                 </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    // quitamos espacio de arriba
+                    marginTop: '-15px',
+                  }}
+                >
+                  {whatsappEnabled && (
+                    <Controller
+                      name="telefono"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Teléfono"
+                          placeholder="Ingrese el Teléfono - Whatsapp"
+                          name="telefono"
+                          id="telefono"
+                          margin="normal"
+                          size="small"
+                          fullWidth
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      )}
+                    />
+                  )}
+                </Grid>
                 {isCreatingNewClient && (
                   <>
                     <Grid item xs={8}>
@@ -2247,25 +2236,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           control={control}
                         />
                       )}
-                    </Grid>
-                    <Grid item xs={12} sx={{ mt: 1 }}>
-                      <Controller
-                        name="telefono"
-                        control={control}
-                        render={({ field }) => (
-                          <FormTextField
-                            {...field}
-                            label="Teléfono"
-                            placeholder="Ingrese el Teléfono"
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          />
-                        )}
-                      />
                     </Grid>
                   </>
                 )}

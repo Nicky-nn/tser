@@ -14,6 +14,7 @@ interface ImportMetaEnv {
   readonly ISI_THEME: string
   readonly ISI_FAVICON: string
   readonly ISI_SIGLA: string
+  readonly API_WHAPI_URL: string
   // more env variables...
 }
 
