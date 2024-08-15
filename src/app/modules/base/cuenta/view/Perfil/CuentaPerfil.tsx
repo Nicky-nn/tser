@@ -2,9 +2,11 @@ import { Person, WhatsApp } from '@mui/icons-material'
 import {
   Badge,
   Box,
-  Button, // Importa el componente Button
+  Button,
+  Checkbox,
   Chip,
   FormControl,
+  FormControlLabel,
   Grid,
   Stack,
   TextField,
@@ -32,7 +34,11 @@ const CuentaPerfil: FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null)
   const [errorColor, setErrorColor] = useState<'error' | 'success'>('error')
   const [isLoading, setIsLoading] = useState(true)
-  const [whatsappConnected, setWhatsappConnected] = useState<boolean>(false) // Estado para verificar si está logueado en WhatsApp
+  const [whatsappConnected, setWhatsappConnected] = useState<boolean>(false)
+  const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
+    localStorage.getItem('whatsappEnabled') === 'true',
+  )
+  const [hasPlan, setHasPlan] = useState<boolean>(false)
 
   const fetchQRCode = useCallback(async () => {
     try {
@@ -45,6 +51,7 @@ const CuentaPerfil: FunctionComponent = () => {
         qr.make()
         setQrCodeSrc(qr.createDataURL(10, 0))
         setError(null)
+        setHasPlan(true) // Aquí asumimos que si se obtiene el QR, el usuario tiene un plan
       } else {
         throw new Error('No se pudo obtener el código QR')
       }
@@ -55,11 +62,13 @@ const CuentaPerfil: FunctionComponent = () => {
       setError(message)
       if (err.message === 'El usuario ya está logueado en WhatsApp') {
         setErrorColor('success')
-        setWhatsappConnected(true) // Marca como conectado
+        setWhatsappConnected(true)
+        setHasPlan(true) // Aquí asumimos que si ya está logueado, el usuario tiene un plan
       } else {
         setErrorColor('error')
       }
       setQrCodeSrc(null)
+      setHasPlan(false) // Si ocurre un error y no es "ya está logueado", asumimos que no tiene un plan
     } finally {
       setIsLoading(false)
     }
@@ -67,23 +76,28 @@ const CuentaPerfil: FunctionComponent = () => {
 
   useEffect(() => {
     fetchQRCode()
-    const intervalId = setInterval(fetchQRCode, 30000) // Actualizar cada 30 segundos
+    const intervalId = setInterval(fetchQRCode, 30000)
     return () => clearInterval(intervalId)
   }, [fetchQRCode])
 
   const handleLogout = async () => {
     try {
       await apiLogout({ username: user.miEmpresa.tienda })
-      setWhatsappConnected(false) // Actualiza el estado después de cerrar sesión
-      setError('Sesión cerrada correctamente') // Mensaje de éxito
-      setQrCodeSrc(null) // Opcionalmente, limpia el QR
+      setWhatsappConnected(false)
+      setError('Sesión cerrada correctamente')
+      setQrCodeSrc(null)
+      setHasPlan(false) // Al cerrar sesión, asumimos que el plan ya no está activo
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
-      setError('Error al cerrar sesión') // Mensaje de error
+      setError('Error al cerrar sesión')
     }
   }
 
-  console.log('whatsappConnected:', whatsappConnected)
+  const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const enabled = event.target.checked
+    setWhatsappEnabled(enabled)
+    localStorage.setItem('facturacionWhatsapp', String(enabled))
+  }
 
   return (
     <>
@@ -210,8 +224,22 @@ const CuentaPerfil: FunctionComponent = () => {
             </Box>
           </Grid>
 
+          {/* Nueva sección: Habilitar Envío por WhatsApp */}
           <Grid item lg={12} md={12} xs={12}>
-            {whatsappConnected && ( // Muestra el botón solo si está logueado en WhatsApp
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={whatsappEnabled}
+                  onChange={handleWhatsappEnabledChange}
+                  disabled={!hasPlan} // Ahora se basa en la variable hasPlan
+                />
+              }
+              label="Habilitar envío por WhatsApp"
+            />
+          </Grid>
+
+          <Grid item lg={12} md={12} xs={12}>
+            {whatsappConnected && (
               <Button
                 variant="contained"
                 color="error"
