@@ -99,6 +99,7 @@ const query = gql`
           nombres
           apellidos
           email
+          telefono
         }
         metodoPago {
           codigoClasificador

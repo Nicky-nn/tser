@@ -30,6 +30,7 @@ import { FacturaProps } from '../interfaces/factura'
 import AnularDocumentoDialog from './VentaGestion/AnularDocumentoDialog'
 import MisVentasDialog from './VentaGestion/MisVentasDialog'
 import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
+import ReenviarWhatsAppDialog from './VentaGestion/ReenviarWhatsappDialog'
 import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
 import VentaGestionMenu from './VentaGestion/VentaGestionMenu'
@@ -152,6 +153,7 @@ const VentaGestion: FC<any> = () => {
   const [openExport, setOpenExport] = useState(false)
   const [openExportDetalle, setOpenExportDetalle] = useState(false)
   const [openReenviarEmails, setOpenReenviarEmails] = useState(false)
+  const [openReenviarWhatsapp, setOpenReenviarWhatsapp] = useState(false)
   const [openMisVentas, setOpenMisVentas] = useState(false)
   // DATA TABLE
   const [rowCount, setRowCount] = useState(0)
@@ -278,6 +280,7 @@ const VentaGestion: FC<any> = () => {
                   setOpenReenviarEmails={setOpenReenviarEmails}
                   setOpenAnularDocumento={setOpenAnularDocumento}
                   setFactura={setFactura}
+                  setOpenReenviarWhatsapp={setOpenReenviarWhatsapp}
                 />
               )}
               renderTopToolbarCustomActions={({ table }) => {
@@ -337,6 +340,16 @@ const VentaGestion: FC<any> = () => {
         onClose={() => {
           setFactura(null)
           setOpenReenviarEmails(false)
+        }}
+        factura={factura}
+      />
+      <ReenviarWhatsAppDialog
+        id={'reenviarWhatsapp'}
+        keepMounted={true}
+        open={openReenviarWhatsapp}
+        onClose={() => {
+          setFactura(null)
+          setOpenReenviarWhatsapp(false)
         }}
         factura={factura}
       />

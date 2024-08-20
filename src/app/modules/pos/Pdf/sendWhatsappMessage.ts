@@ -17,9 +17,13 @@ export const useWhatsappSender = (user: User) => {
   ) => {
     try {
       console.log('Enviando mensaje...', user.miEmpresa.tienda)
+
+      // Si el número tiene más de 8 dígitos, se asume que es internacional y no se agrega el prefijo '591'
+      const numeroWhatsApp = telefono.length > 8 ? telefono : '591' + telefono
+
       await apiSendMessageWhatsApp({
         username: user.miEmpresa.tienda,
-        to: '591' + telefono,
+        to: numeroWhatsApp,
         text: mensaje,
         mediaUrl: documentUrl,
         mediaType: documentUrl ? 'document' : undefined,
@@ -33,7 +37,7 @@ export const useWhatsappSender = (user: User) => {
       if (showAlert) {
         const { value: confirm } = await Swal.fire({
           title: 'Mensaje Enviado',
-          text: 'El mensaje de WhatsApp ha sido enviado correctamente.',
+          text: 'Factura enviada correctamente por WhatsApp para el número ' + telefono,
           icon: 'success',
           showCancelButton: true,
           confirmButtonText: 'Aceptar',

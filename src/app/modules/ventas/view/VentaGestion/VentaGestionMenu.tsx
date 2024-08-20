@@ -1,4 +1,11 @@
-import { FileOpen, LayersClear, Mail, MenuOpen, PictureAsPdf } from '@mui/icons-material'
+import {
+  FileOpen,
+  LayersClear,
+  Mail,
+  MenuOpen,
+  PictureAsPdf,
+  WhatsApp,
+} from '@mui/icons-material'
 import { Box, IconButton } from '@mui/material'
 import React, { Dispatch, FunctionComponent, SetStateAction } from 'react'
 
@@ -13,6 +20,7 @@ interface OwnProps {
   setOpenAnularDocumento: Dispatch<SetStateAction<boolean>>
   setOpenReenviarEmails: Dispatch<SetStateAction<boolean>>
   setFactura: Dispatch<SetStateAction<FacturaProps | null>>
+  setOpenReenviarWhatsapp: Dispatch<SetStateAction<boolean>>
 }
 
 type Props = OwnProps
@@ -23,7 +31,13 @@ type Props = OwnProps
  * @constructor
  */
 const VentaGestionMenu: FunctionComponent<Props> = (props) => {
-  const { row, setOpenAnularDocumento, setOpenReenviarEmails, setFactura } = props
+  const {
+    row,
+    setOpenAnularDocumento,
+    setOpenReenviarEmails,
+    setFactura,
+    setOpenReenviarWhatsapp,
+  } = props
   return (
     <>
       <Box>
@@ -86,6 +100,15 @@ const VentaGestionMenu: FunctionComponent<Props> = (props) => {
             }}
           >
             <Mail /> Reenviar Correo
+          </SimpleMenuItem>
+          <SimpleMenuItem
+            onClick={(e) => {
+              e.preventDefault()
+              setOpenReenviarWhatsapp(true)
+              setFactura(row)
+            }}
+          >
+            <WhatsApp /> Reenviar Whatsapp
           </SimpleMenuItem>
         </SimpleMenu>
         <AuditIconButton row={row} />
