@@ -115,9 +115,14 @@ export const restPedidoExpressRegistro = async (
     codigoSucursal: sucursal.codigo,
     codigoPuntoVenta: puntoVenta.codigo,
   }
+
+  console.log('cliente', cliente?.email)
+
   const dataCliente = {
     codigoCliente: cliente?.codigoCliente || '',
-    email: cliente?.email || '',
+    email: data.emailCliente || '',
+    razonSocial: data.razonSocial || '',
+    telefono: data.telefono || '',
   } as ClienteOperacionInput
 
   const input: any = {

@@ -1081,7 +1081,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               if (response) {
                 setIsCreatingNewClient(false)
                 //@ts-ignore
-                const { representacionGrafica, cuf, numeroFactura, createdAt } =
+                const { representacionGrafica, numeroFactura, createdAt, cliente } =
                   response.factura
 
                 // Leer la configuración de impresión automática del local storage
@@ -1145,8 +1145,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setEnviaDatos(true)
 
                 if (whatsappEnabled) {
-                  const mensaje = `*Hola, tu pedido ha sido facturado con éxito.*\n\nNúmero de factura: *${numeroFactura}*\nCuf: *${cuf}*\nFecha: *${createdAt}*\n\nGracias por tu preferencia.`
-                  const telefono = clienteSeleccionado?.telefono || ''
+                  const mensaje = `Estimado Sr(a) ${clienteSeleccionado?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${clienteSeleccionado?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
+
+                  const telefono = cliente.telefono || ''
                   const documentUrl = representacionGrafica.pdf
                   const documentFileName = 'Factura.pdf'
 
@@ -1365,7 +1366,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         razonSocial: 'Sin Razón Social',
         state: 'ELABORADO',
         nombres: 'Sin Nombre',
-        email: 'Sin Email',
+        email: miEmpresa.email,
         tipoDocumentoIdentidad: {
           codigoClasificador: '1',
           descripcion: 'CI - CEDULA DE IDENTIDAD',
@@ -1500,6 +1501,22 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     },
   }))
 
+  function getColorSuffix(hexColor: any, adjustment: { r: any; g: any; b: any }) {
+    // const adjustment = { r: 186 - 0, g: 225 - 87, b: 187 - 82 }
+    // Convertir el color hexadecimal a valores RGB
+    let r = parseInt(hexColor.slice(1, 3), 16)
+    let g = parseInt(hexColor.slice(3, 5), 16)
+    let b = parseInt(hexColor.slice(5, 7), 16)
+
+    // Ajustar el brillo y la saturación del color
+    r = Math.min(255, Math.max(0, r + adjustment.r))
+    g = Math.min(255, Math.max(0, g + adjustment.g))
+    b = Math.min(255, Math.max(0, b + adjustment.b))
+
+    // Convertir los componentes a hexadecimal y concatenar
+    return `#${r.toString(16).padStart(2, '0').toUpperCase()}${g.toString(16).padStart(2, '0').toUpperCase()}${b.toString(16).padStart(2, '0').toUpperCase()}`
+  }
+
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   return (
     <Grid container spacing={1}>
@@ -1512,7 +1529,19 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   sx={{
                     width: 110,
                     height: 75,
-                    backgroundColor: option.state === 'Libre' ? '#AFE3B7' : '#EF9999',
+                    // backgroundColor: option.state === 'Libre' ? theme.palette.primary.main : '#EF9999',
+                    backgroundColor:
+                      option.state === 'Libre'
+                        ? getColorSuffix(theme.palette.primary.main, {
+                            r: 186 - 0,
+                            g: 225 - 87,
+                            b: 187 - 82,
+                          })
+                        : '#EF9999',
+                    // backgroundColor: getBackgroundColor(
+                    //   theme.palette.primary.main,
+                    //   option.state,
+                    // ),
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1520,7 +1549,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     position: 'relative', // Needed to osition the top line
                     // Change background color on hover
                     '&:hover': {
-                      backgroundColor: option.state === 'Libre' ? '#8CCF9B' : '#E57373',
+                      backgroundColor:
+                        option.state === 'Libre'
+                          ? getColorSuffix(theme.palette.primary.main, {
+                              r: 140 - 5,
+                              g: 207 - 87,
+                              b: 155 - 82,
+                            })
+                          : '#E57373',
                     },
                     overflow: 'hidden',
                   }}

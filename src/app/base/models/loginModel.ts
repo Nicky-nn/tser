@@ -29,6 +29,7 @@ export interface PerfilProps {
   monedaTienda: MonedaParamsProps
   razonSocial: string
   miEmpresa: {
+    emailFake: string
     email: string
     razonSocial: string
     codigoModalidad: number

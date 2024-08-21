@@ -109,7 +109,9 @@ export const finalizarPedido = async (
     }
     const cliente = {
       codigoCliente: data.cliente.codigoCliente || data.numeroDocumento,
-      email: data.emailCliente || data.cliente.email,
+      email: data.emailCliente || '',
+      razonSocial: data.razonSocial || '',
+      telefono: data.telefono || '',
     }
 
     let codigoMetodoPago: number

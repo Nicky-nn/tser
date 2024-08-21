@@ -67,6 +67,12 @@ const mutationFactura = gql`
           rollo
           sin
         }
+        cliente {
+          razonSocial
+          numeroDocumento
+          email
+          telefono
+        }
         createdAt
       }
       pedido {

@@ -30,6 +30,8 @@ export const facturarPedido = async (
   const cliente = {
     codigoCliente: data.cliente.codigoCliente || data.numeroDocumento,
     email: data.emailCliente || data.cliente.email,
+    razonSocial: data.razonSocial || data.cliente.razonSocial,
+    telefono: data.telefonoCliente || data.cliente.telefono,
   }
 
   let codigoMetodoPago: number
