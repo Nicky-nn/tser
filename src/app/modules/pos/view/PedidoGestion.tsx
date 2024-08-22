@@ -277,7 +277,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               apellidos: '',
               codigoExcepcion: 0,
               complemento: '',
-              email: miEmpresa.email,
+              email: miEmpresa.emailFake,
               nombres: '',
               numeroDocumento: !isNaN(Number(inputValue)) ? inputValue : '',
               tipoDocumentoIdentidad: {
@@ -1145,7 +1145,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setEnviaDatos(true)
 
                 if (whatsappEnabled) {
-                  const mensaje = `Estimado Sr(a) ${clienteSeleccionado?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${clienteSeleccionado?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
+                  const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
 
                   const telefono = cliente.telefono || ''
                   const documentUrl = representacionGrafica.pdf
@@ -1317,9 +1317,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setAdditionalDiscount(0)
     setGiftCardAmount(0)
     setMontoRecibido(0)
-    // setValue('cliente', null)
-    // eliminarCliente()
-    // setValue('emailCliente', '')
+    // setNuevoCliente(false)
+    setIsCreatingNewClient(false)
     setEnviaDatos((prevState) => !prevState)
     // cambiamos el tipo a null
 
@@ -1366,7 +1365,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         razonSocial: 'Sin Razón Social',
         state: 'ELABORADO',
         nombres: 'Sin Nombre',
-        email: miEmpresa.email,
+        email: miEmpresa.emailFake,
         tipoDocumentoIdentidad: {
           codigoClasificador: '1',
           descripcion: 'CI - CEDULA DE IDENTIDAD',
