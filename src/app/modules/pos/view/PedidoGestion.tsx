@@ -2783,6 +2783,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
+              setValue('razonSocial', value.razonSocial)
+              setValue('telefono', value.telefono)
               await fetchClientes(value.codigoCliente || '')
               setCliente99001(false)
             } else {
@@ -2800,6 +2802,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             if (value) {
               setValue('cliente', value)
               setValue('emailCliente', value.email)
+              setValue('razonSocial', value.razonSocial)
+              setValue('telefono', value.telefono)
               await fetchClientes(value?.codigoCliente || '')
               setNuevoCliente(false)
             } else {

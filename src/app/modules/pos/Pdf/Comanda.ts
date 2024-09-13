@@ -197,7 +197,6 @@ export const generarComandaPDF = (
       nuevos: {
         fontSize: 9,
         bold: true,
-        color: 'blue',
       },
       fecha: {
         fontSize: 8,

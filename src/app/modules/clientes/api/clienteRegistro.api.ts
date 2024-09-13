@@ -22,6 +22,7 @@ const query = gql`
       nombres
       apellidos
       email
+      telefono
     }
   }
 `

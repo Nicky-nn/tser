@@ -17,6 +17,7 @@ const query = gql`
         codigoAmbiente
         fechaValidezToken
         email
+        emailFake
       }
       usuario
       razonSocial

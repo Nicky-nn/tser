@@ -220,7 +220,11 @@ const JwtLogin = () => {
                             onChange={(newValue) => form.setValue('shop', newValue)}
                             options={shops}
                             isClearable
+                            noOptionsMessage={() => 'No hay opciones'}
+                            loadingMessage={() => 'Cargando...'}
+                            formatCreateLabel={(inputValue) => `Crear: ${inputValue}`}
                           />
+
                           <FormHelperText>
                             {form.formState.errors.shop?.message || ''}
                           </FormHelperText>
