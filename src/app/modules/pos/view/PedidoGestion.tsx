@@ -494,17 +494,19 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const renderMetodoPago = (metodo: MetodoPagoProp) => (
-    <Grid item xs={3} key={metodo.codigoClasificador}>
-      <MetodoPagoButton
-        text={metodo.descripcion}
-        icon={React.createElement(
-          ICONS[metodo.descripcion.toUpperCase() as keyof typeof ICONS] || Pix,
-          { fontSize: 'small' },
-        )}
-        selected={selectedId === metodo.codigoClasificador}
-        onClick={handleClick(metodo)}
-      />
-    </Grid>
+    <Tooltip title={metodo.descripcion}>
+      <Grid item xs={3} key={metodo.codigoClasificador}>
+        <MetodoPagoButton
+          text={truncateName(metodo.descripcion, 10)}
+          icon={React.createElement(
+            ICONS[metodo.descripcion.toUpperCase() as keyof typeof ICONS] || Pix,
+            { fontSize: 'small' },
+          )}
+          selected={selectedId === metodo.codigoClasificador}
+          onClick={handleClick(metodo)}
+        />
+      </Grid>
+    </Tooltip>
   )
 
   const [tiposPedidos, setTiposPedidos] = useState<string | null>(null)

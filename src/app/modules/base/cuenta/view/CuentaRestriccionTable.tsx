@@ -41,6 +41,7 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
     queryKey: ['restriccionUsuario'],
     queryFn: async () => {
       const resp = await apiUsuarioRestriccion()
+      console.log('restriccion', resp)
       return resp.sucursales
     },
     refetchInterval: false,
