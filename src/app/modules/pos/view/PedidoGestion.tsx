@@ -20,6 +20,7 @@ import {
   Pix,
   PointOfSale,
   Print,
+  QrCode,
   Receipt,
   Redeem,
   Remove,
@@ -128,9 +129,11 @@ const ICONS = {
   'TRANSFERENCIA BANCARIA': AccountBalance,
   'TARJETA-CHEQUE': CreditCard,
   'EFECTIVO-DEPOSITO EN CUENTA': CurrencyExchange,
+  'DEBITO AUTOMATICO -  TRANSFERENCIA BANCARIA': QrCode,
   CHEQUE: Receipt,
   'GIFT-CARD': Redeem,
   OTROS: AltRoute,
+  QR: QrCode,
 }
 interface Product {
   sigla: ReactNode
@@ -539,21 +542,30 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     setOtrosAnchorEl(event.currentTarget)
   }
 
-  const renderMetodoPago = (metodo: MetodoPagoProp) => (
-    <Tooltip title={metodo.descripcion}>
-      <Grid item xs={3} key={metodo.codigoClasificador}>
-        <MetodoPagoButton
-          text={truncateName(metodo.descripcion, 10)}
-          icon={React.createElement(
-            ICONS[metodo.descripcion.toUpperCase() as keyof typeof ICONS] || Pix,
-            { fontSize: 'small' },
-          )}
-          selected={selectedId === metodo.codigoClasificador}
-          onClick={handleClick(metodo)}
-        />
-      </Grid>
-    </Tooltip>
-  )
+  const renderMetodoPago = (metodo: MetodoPagoProp) => {
+    // Condicional para reemplazar el nombre si coincide con "DEBITO AUTOMATICO - TRANSFERENCIA BANCARIA"
+    const descripcion =
+      metodo.descripcion === 'DEBITO AUTOMATICO -  TRANSFERENCIA BANCARIA'
+        ? 'QR'
+        : metodo.descripcion
+
+    console.log('descripcion', metodo.descripcion)
+    return (
+      <Tooltip title={descripcion}>
+        <Grid item xs={3} key={metodo.codigoClasificador}>
+          <MetodoPagoButton
+            text={truncateName(descripcion, 10)} // Usar la descripción actualizada
+            icon={React.createElement(
+              ICONS[descripcion.toUpperCase() as keyof typeof ICONS] || Pix,
+              { fontSize: 'small' },
+            )}
+            selected={selectedId === metodo.codigoClasificador}
+            onClick={handleClick(metodo)}
+          />
+        </Grid>
+      </Tooltip>
+    )
+  }
 
   const [tiposPedidos, setTiposPedidos] = useState<string | null>(null)
   const [openDeliveryDialog, setOpenDeliveryDialog] = useState(false)
@@ -1092,7 +1104,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       additionalDiscount,
       refetch,
       isCreatingNewClient,
-      false,
+      true,
     )
       .then((response) => {
         if (response.restPedidoFinalizar) {
@@ -1270,6 +1282,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       tiposPedidos,
       clienteSeleccionado || null,
       getValues(),
+      isCreatingNewClient,
     )
       .then((response) => {
         if (response.restPedidoExpressRegistro) {
@@ -1291,7 +1304,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             numeroPedido,
             additionalDiscount,
             refetch,
-            isCreatingNewClient,
+            false,
+            false,
           )
             .then((response) => {
               if (response.restPedidoFinalizar) {
@@ -1567,6 +1581,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  console.log('options', options)
 
   return (
     <Grid container spacing={1}>
