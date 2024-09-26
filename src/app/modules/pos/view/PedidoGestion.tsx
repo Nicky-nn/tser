@@ -468,6 +468,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       return
     }
 
+    // If pra q no puede a ver un descuento del 100% ni del valor total is hay mensaje de error
+    if (actualDiscount === product.price * product.quantity) {
+      toast.error('El descuento no puede ser igual al precio total del producto')
+      return
+    }
+
     setCart((prevCart) =>
       prevCart.map((item, i) =>
         i === index ? { ...item, discount: actualDiscount } : item,
@@ -633,6 +639,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       state: string
       cliente: ClienteProps | null
       tipoPedido: string | null
+      horaPedido?: string
     }[] = []
 
     const seenValues = new Set<string>()
@@ -647,9 +654,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           !['FINALIZADO', 'FACTURADO', 'ANULADO'].includes(pedido.state.toUpperCase())
         )
       })
-
       if (pedidoEncontrado) {
-        const { numeroPedido, numeroOrden, mesa: mesaPedido, state } = pedidoEncontrado
+        console.log('pedidoEncontrado', pedidoEncontrado)
+        const {
+          numeroPedido,
+          numeroOrden,
+          mesa: mesaPedido,
+          state,
+          updatedAt,
+        } = pedidoEncontrado
         if (!seenValues.has(mesa)) {
           result.push({
             value: mesaNumber,
@@ -659,6 +672,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             state,
             cliente: pedidoEncontrado.cliente || null,
             tipoPedido: pedidoEncontrado.tipo || null,
+            horaPedido: updatedAt.split(' ')[1],
           })
           seenValues.add(mesa)
         }
@@ -1593,7 +1607,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 <Card
                   sx={{
                     width: 110,
-                    height: 75,
+                    height: 100,
                     // backgroundColor: option.state === 'Libre' ? theme.palette.primary.main : '#EF9999',
                     backgroundColor:
                       option.state === 'Libre'
@@ -1682,15 +1696,22 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         placement="top"
                         key="tooltip"
                       >
-                        <Typography color="textSecondary">
-                          {`Ped.: ${option.nroOrden}`}
-                          <br />
-                          <span>
-                            {option.cliente
-                              ? truncateName(toCamelCase(option.cliente.razonSocial), 7)
-                              : ''}
-                          </span>
-                        </Typography>
+                        <div>
+                          {' '}
+                          {/* Wrapping the multiple children in a single parent element */}
+                          <Typography color="textSecondary">
+                            {`Ped.: ${option.nroOrden}`}
+                            <br />
+                            <span>
+                              {option.cliente
+                                ? truncateName(toCamelCase(option.cliente.razonSocial), 7)
+                                : ''}
+                            </span>
+                          </Typography>
+                          <Typography variant="caption" component="h2">
+                            {option.horaPedido}
+                          </Typography>
+                        </div>
                       </Tooltip>
                     )}
                   </CardContent>
