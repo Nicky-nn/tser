@@ -15,6 +15,7 @@ import {
   MoreHoriz,
   MoreVert,
   NineK,
+  PercentOutlined,
   PersonAdd,
   Pix,
   PointOfSale,
@@ -450,15 +451,60 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
-  const handleDiscountChange = (index: number, discount: number) => {
+  const [discountTypes, setDiscountTypes] = useState(cart.map(() => false))
+
+  const handleDiscountChange = (index: number, value: string, isPercentage: boolean) => {
     const product = cart[index]
-    if (discount > product.price * product.quantity) {
+    let numericValue = value === '' ? 0 : parseFloat(value)
+    let actualDiscount = isPercentage
+      ? (numericValue / 100) * product.price * product.quantity
+      : numericValue
+
+    if (actualDiscount > product.price * product.quantity) {
       toast.error('El descuento no puede ser mayor al precio total del producto')
       return
     }
+
     setCart((prevCart) =>
-      prevCart.map((item, i) => (i === index ? { ...item, discount } : item)),
+      prevCart.map((item, i) =>
+        i === index ? { ...item, discount: actualDiscount } : item,
+      ),
     )
+  }
+
+  const handleBlur = (index: number, value: string) => {
+    if (value === '' || isNaN(parseFloat(value))) {
+      handleDiscountChange(index, '0', discountTypes[index])
+    }
+  }
+
+  const toggleDiscountType = (index: number) => {
+    setDiscountTypes((prevTypes) => {
+      const newTypes = [...prevTypes]
+      newTypes[index] = !newTypes[index]
+      return newTypes
+    })
+
+    const product = cart[index]
+    const currentDiscount = product.discount
+    const price = product.price * product.quantity
+
+    if (discountTypes[index]) {
+      // Cambiando de porcentaje a BOB
+      handleDiscountChange(index, currentDiscount.toString(), false)
+    } else {
+      // Cambiando de BOB a porcentaje
+      handleDiscountChange(index, ((currentDiscount / price) * 100).toString(), true)
+    }
+  }
+
+  const getDisplayValue = (product: Product, index: number) => {
+    if (discountTypes[index]) {
+      const percentage = (product.discount / (product.price * product.quantity)) * 100
+      return percentage === 0 ? '' : (percentage as any)
+    } else {
+      return product.discount === 0 ? '' : product.discount.toString()
+    }
   }
 
   const handleExtraDescriptionChange = (index: number, extraDescription: string) => {
@@ -1317,6 +1363,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     setDeletedProducts([])
     setAdditionalDiscount(0)
+    // setInputValues([])
+    // setDiscountTypes([])
     setGiftCardAmount(0)
     setMontoRecibido(0)
     // setNuevoCliente(false)
@@ -1519,6 +1567,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <Grid container spacing={1}>
       {selectedView === 'mosaico' ? (
@@ -2440,21 +2489,42 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               />
                             </FormControl>
                           </Grid>
-                          <Grid item xs={5}>
+                          <Grid item xs={5} key={index}>
                             <FormControl fullWidth size="small">
-                              <InputLabel htmlFor="descuento">Descuento</InputLabel>
+                              <InputLabel htmlFor={`descuento-${index}`}>
+                                Descuento
+                              </InputLabel>
                               <OutlinedInput
-                                id="descuento"
+                                id={`descuento-${index}`}
                                 label="Descuento"
                                 size="small"
-                                value={product.discount}
+                                value={getDisplayValue(product, index)}
                                 onChange={(e) =>
-                                  handleDiscountChange(index, parseFloat(e.target.value))
+                                  handleDiscountChange(
+                                    index,
+                                    e.target.value,
+                                    discountTypes[index],
+                                  )
                                 }
-                                onBlur={() =>
-                                  handleDiscountChange(index, product.discount || 0)
-                                }
+                                onBlur={(e) => handleBlur(index, e.target.value)}
                                 inputComponent={NumeroFormat as any}
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      aria-label="toggle discount type"
+                                      onClick={() => toggleDiscountType(index)}
+                                      edge="end"
+                                    >
+                                      {discountTypes[index] ? (
+                                        <PercentOutlined />
+                                      ) : (
+                                        <Typography style={{ fontSize: '1rem' }}>
+                                          BOB
+                                        </Typography>
+                                      )}
+                                    </IconButton>
+                                  </InputAdornment>
+                                }
                               />
                             </FormControl>
                           </Grid>
