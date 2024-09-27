@@ -31,31 +31,31 @@ const CuentaPerfil: FunctionComponent = () => {
   )
   const [hasPlan, setHasPlan] = useState<boolean>(false)
 
-  const fetchQRCode = useCallback(async () => {
-    try {
-      const code = await apiGetQRCode({ username: user.miEmpresa.tienda })
+  // const fetchQRCode = useCallback(async () => {
+  //   try {
+  //     const code = await apiGetQRCode({ username: user.miEmpresa.tienda })
 
-      if (code) {
-        const qr = qrcode(0, 'L')
-        qr.addData(code)
-        qr.make()
-        setHasPlan(true) // Aquí asumimos que si se obtiene el QR, el usuario tiene un plan
-      } else {
-        throw new Error('No se pudo obtener el código QR')
-      }
-    } catch (err: any) {
-      if (err.message === 'El usuario ya está logueado en WhatsApp') {
-        setHasPlan(true) // Aquí asumimos que si ya está logueado, el usuario tiene un plan
-      }
-      setHasPlan(false) // Si ocurre un error y no es "ya está logueado", asumimos que no tiene un plan
-    }
-  }, [user.miEmpresa.tienda])
+  //     if (code) {
+  //       const qr = qrcode(0, 'L')
+  //       qr.addData(code)
+  //       qr.make()
+  //       setHasPlan(true) // Aquí asumimos que si se obtiene el QR, el usuario tiene un plan
+  //     } else {
+  //       throw new Error('No se pudo obtener el código QR')
+  //     }
+  //   } catch (err: any) {
+  //     if (err.message === 'El usuario ya está logueado en WhatsApp') {
+  //       setHasPlan(true) // Aquí asumimos que si ya está logueado, el usuario tiene un plan
+  //     }
+  //     setHasPlan(false) // Si ocurre un error y no es "ya está logueado", asumimos que no tiene un plan
+  //   }
+  // }, [user.miEmpresa.tienda])
 
-  useEffect(() => {
-    fetchQRCode()
-    const intervalId = setInterval(fetchQRCode, 30000)
-    return () => clearInterval(intervalId)
-  }, [fetchQRCode])
+  // useEffect(() => {
+  //   fetchQRCode()
+  //   const intervalId = setInterval(fetchQRCode, 30000)
+  //   return () => clearInterval(intervalId)
+  // }, [fetchQRCode])
 
   const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
