@@ -605,7 +605,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         codigoPuntoVenta: puntoVenta.codigo,
       }
       const { docs } = await obtenerListadoPedidos(fetchPagination, entidad)
-      console.log('docs', docs)
       return docs
     },
     refetchOnWindowFocus: false,
@@ -720,7 +719,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         const pedidoEncontrado = data?.find(
           (pedido) => pedido.numeroPedido === selectedOption.nroPedido,
         )
-        console.log('Ac. cliente', pedidoEncontrado?.cliente)
         setClienteSeleccionado(pedidoEncontrado?.cliente || null)
         // si el cliente es null llamamos a cliente por defecto
         setValue('cliente', pedidoEncontrado?.cliente || null)
