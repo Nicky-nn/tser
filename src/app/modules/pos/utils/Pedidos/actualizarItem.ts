@@ -12,6 +12,7 @@ export const actualizarItemPedido = async (
   dataDelete: any,
   data: any,
   onSuccess?: () => void,
+  cliente?: any,
 ) => {
   const entidad = {
     codigoSucursal: sucursal.codigo,
@@ -19,6 +20,7 @@ export const actualizarItemPedido = async (
   }
 
   const codigoMoneda = 1
+  console.log('cliente', cliente)
 
   // Filtrar los productos que cumplen con las condiciones requeridas
   const filteredData = data.filter(
@@ -53,6 +55,14 @@ export const actualizarItemPedido = async (
       }),
     )
 
+  // Extraer solo los campos necesarios de cliente
+  const clienteActualizado = {
+    codigoCliente: cliente?.codigoCliente || '',
+    email: cliente?.email || '',
+    razonSocial: cliente?.razonSocial || '',
+    telefono: cliente?.telefono || '',
+  }
+
   // Llamar a la función que registra el pedido
   try {
     Swal.fire({
@@ -65,7 +75,14 @@ export const actualizarItemPedido = async (
       },
     })
 
-    const response = await actualizarItem(nroPedido, entidad, productos, codigoMoneda)
+    const response = await actualizarItem(
+      nroPedido,
+      entidad,
+      productos,
+      codigoMoneda,
+      clienteActualizado, // Enviar el cliente con los campos requeridos
+    )
+
     Swal.fire({
       icon: 'success',
       title: 'Pedido actualizado',

@@ -64,12 +64,14 @@ const mutationActualizarItem = gql`
     $entidad: EntidadParamsInput!
     $codigoMoneda: Int!
     $productos: [RestPedidoActualizarItemInput]!
+    $cliente: ClienteOperacionInput
   ) {
     restPedidoActualizarItem(
       numeroPedido: $numeroPedido
       entidad: $entidad
       codigoMoneda: $codigoMoneda
       productos: $productos
+      cliente: $cliente
     ) {
       numeroPedido
       numeroOrden
@@ -82,6 +84,14 @@ const mutationActualizarItem = gql`
         codigoArticulo
         nombreArticulo
         nota
+      }
+      cliente {
+        codigoCliente
+        nombres
+        email
+        codigoCliente
+        razonSocial
+        telefono
       }
     }
   }
@@ -142,13 +152,14 @@ export const actualizarItem = async (
   entidad: EntidadInput,
   productos: ProductoInput[],
   codigoMoneda: number,
+  cliente?: any,
 ): Promise<MutationResponse> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const variables = { numeroPedido, entidad, productos, codigoMoneda }
+    const variables = { numeroPedido, entidad, productos, codigoMoneda, cliente }
     const data: MutationResponse = await client.request(mutationActualizarItem, variables)
     return data
   } catch (error: any) {
