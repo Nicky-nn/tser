@@ -4,10 +4,14 @@ import {
   Close,
   ContactPhone as ContactPhoneIcon,
   DateRange as DateRangeIcon,
+  ExpandMore as ExpandMoreIcon,
   LocationCity as LocationCityIcon,
   LocationOn as LocationOnIcon,
 } from '@mui/icons-material'
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   Checkbox,
   Dialog,
@@ -16,8 +20,9 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  Typography,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
 import { FormTextField } from '../../../../base/components/Form'
@@ -113,10 +118,10 @@ const DeliveryDialog = ({
   dataDelivery: DataDelivery
 }) => {
   const { setValue } = form
-
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>(() =>
     dataDelivery.fromDatabase ? parseDataDelivery(dataDelivery) : initialDeliveryInfo,
   )
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     if (Object.keys(dataDelivery).length === 0) {
@@ -126,18 +131,11 @@ const DeliveryDialog = ({
     }
   }, [dataDelivery])
 
-  const handleChange = (
-    event:
-      | React.ChangeEvent
-      | HTMLInputElement
-      | HTMLTextAreaElement
-      | { name?: string; value: unknown; checked?: boolean },
-  ) => {
-    //@ts-ignore
-    const { name, value, checked } = event.target as HTMLInputElement
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.target
     setDeliveryInfo((prev) => ({
       ...prev,
-      [name!]:
+      [name]:
         name === 'solicitarUtensilios' || name === 'entregaSinContacto' ? checked : value,
     }))
   }
@@ -201,6 +199,10 @@ const DeliveryDialog = ({
     })
   }
 
+  const handleAccordionChange = (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded)
+  }
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
@@ -221,7 +223,6 @@ const DeliveryDialog = ({
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Nombre del Repartidor */}
             <Grid item xs={12}>
               <FormTextField
                 fullWidth
@@ -234,216 +235,241 @@ const DeliveryDialog = ({
                 disabled={dataDelivery.fromDatabase}
               />
             </Grid>
-            {/* Resto de campos de dirección */}
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Calle"
-                name="calle"
-                value={deliveryInfo.calle}
-                onChange={handleChange}
-                margin="dense"
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <LocationOnIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Número"
-                name="número"
-                value={deliveryInfo.número}
-                onChange={handleChange}
-                margin="dense"
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <ApartmentIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Piso/Apartamento"
-                name="apartamento"
-                value={deliveryInfo.apartamento}
-                onChange={handleChange}
-                margin="dense"
-                placeholder='Ej: "3A"'
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Colonia/Barrio"
-                name="colonia"
-                value={deliveryInfo.colonia}
-                onChange={handleChange}
-                margin="dense"
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <LocationCityIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
             <Grid item xs={12}>
-              <FormTextField
-                fullWidth
-                label="Ciudad"
-                name="ciudad"
-                value={deliveryInfo.ciudad}
-                onChange={handleChange}
-                margin="dense"
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <LocationCityIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormTextField
-                fullWidth
-                label="Referencias Adicionales"
-                name="referenciasAdicionales"
-                value={deliveryInfo.referenciasAdicionales}
-                onChange={handleChange}
-                margin="dense"
-                multiline
-                rows={2}
-                placeholder='Ej: "Frente a la plaza principal"'
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Fecha de Entrega"
-                name="fechaEntrega"
-                type="date"
-                value={deliveryInfo.fechaEntrega}
-                onChange={handleChange}
-                margin="dense"
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <DateRangeIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormTextField
-                fullWidth
-                label="Hora Preferida"
-                name="horaPreferida"
-                type="time"
-                value={deliveryInfo.horaPreferida}
-                onChange={handleChange}
-                margin="dense"
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <AccessTimeIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormTextField
-                fullWidth
-                label="Ventana de Tiempo Aceptable"
-                name="ventanaTiempo"
-                value={deliveryInfo.ventanaTiempo}
-                onChange={handleChange}
-                margin="dense"
-                placeholder="Ej: Entre 14:00 y 16:00"
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormTextField
-                fullWidth
-                label="Instrucciones Especiales"
-                name="instruccionesEspeciales"
-                value={deliveryInfo.instruccionesEspeciales}
-                onChange={handleChange}
-                margin="dense"
-                multiline
-                rows={2}
-                placeholder='Ej: "Llamar al timbre 3 veces"'
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormTextField
-                fullWidth
-                label="Preferencias de Contacto"
-                name="preferenciasContacto"
-                value={deliveryInfo.preferenciasContacto}
-                onChange={handleChange}
-                margin="dense"
-                InputProps={{
-                  startAdornment: (
-                    <IconButton edge="start">
-                      <ContactPhoneIcon />
-                    </IconButton>
-                  ),
-                }}
-                disabled={dataDelivery.fromDatabase}
-              />
-            </Grid>
-            <Grid item container xs={12} spacing={2}>
-              <Grid item xs={6}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={deliveryInfo.solicitarUtensilios}
-                      onChange={handleChange}
-                      name="solicitarUtensilios"
-                      disabled={dataDelivery.fromDatabase}
-                    />
-                  }
-                  label="Solicitar utensilios/servilletas"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={deliveryInfo.entregaSinContacto}
-                      onChange={handleChange}
-                      name="entregaSinContacto"
-                      disabled={dataDelivery.fromDatabase}
-                    />
-                  }
-                  label="Entrega sin contacto"
-                />
-              </Grid>
+              <Accordion expanded={expanded} onChange={handleAccordionChange}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>Detalles adicionales de entrega</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Calle"
+                        name="calle"
+                        value={deliveryInfo.calle}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <LocationOnIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Número"
+                        name="número"
+                        value={deliveryInfo.número}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <ApartmentIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Piso/Apartamento"
+                        name="apartamento"
+                        value={deliveryInfo.apartamento}
+                        onChange={handleChange}
+                        margin="dense"
+                        placeholder='Ej: "3A"'
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Colonia/Barrio"
+                        name="colonia"
+                        value={deliveryInfo.colonia}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <LocationCityIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Ciudad"
+                        name="ciudad"
+                        value={deliveryInfo.ciudad}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <LocationCityIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Código Postal"
+                        name="códigoPostal"
+                        value={deliveryInfo.códigoPostal}
+                        onChange={handleChange}
+                        margin="dense"
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Referencias Adicionales"
+                        name="referenciasAdicionales"
+                        value={deliveryInfo.referenciasAdicionales}
+                        onChange={handleChange}
+                        margin="dense"
+                        multiline
+                        rows={2}
+                        placeholder='Ej: "Frente a la plaza principal"'
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Fecha de Entrega"
+                        name="fechaEntrega"
+                        type="date"
+                        value={deliveryInfo.fechaEntrega}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <DateRangeIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormTextField
+                        fullWidth
+                        label="Hora Preferida"
+                        name="horaPreferida"
+                        type="time"
+                        value={deliveryInfo.horaPreferida}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <AccessTimeIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Ventana de Tiempo Aceptable"
+                        name="ventanaTiempo"
+                        value={deliveryInfo.ventanaTiempo}
+                        onChange={handleChange}
+                        margin="dense"
+                        placeholder="Ej: Entre 14:00 y 16:00"
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Instrucciones Especiales"
+                        name="instruccionesEspeciales"
+                        value={deliveryInfo.instruccionesEspeciales}
+                        onChange={handleChange}
+                        margin="dense"
+                        multiline
+                        rows={2}
+                        placeholder='Ej: "Llamar al timbre 3 veces"'
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormTextField
+                        fullWidth
+                        label="Preferencias de Contacto"
+                        name="preferenciasContacto"
+                        value={deliveryInfo.preferenciasContacto}
+                        onChange={handleChange}
+                        margin="dense"
+                        InputProps={{
+                          startAdornment: (
+                            <IconButton edge="start">
+                              <ContactPhoneIcon />
+                            </IconButton>
+                          ),
+                        }}
+                        disabled={dataDelivery.fromDatabase}
+                      />
+                    </Grid>
+                    <Grid item container xs={12} spacing={2}>
+                      <Grid item xs={6}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={deliveryInfo.solicitarUtensilios}
+                              onChange={handleChange}
+                              name="solicitarUtensilios"
+                              disabled={dataDelivery.fromDatabase}
+                            />
+                          }
+                          label="Solicitar utensilios/servilletas"
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={deliveryInfo.entregaSinContacto}
+                              onChange={handleChange}
+                              name="entregaSinContacto"
+                              disabled={dataDelivery.fromDatabase}
+                            />
+                          }
+                          label="Entrega sin contacto"
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
             </Grid>
           </Grid>
           <Button
