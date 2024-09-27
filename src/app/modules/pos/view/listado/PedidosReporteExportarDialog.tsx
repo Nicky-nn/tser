@@ -130,7 +130,7 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
       setLoading(false)
     } catch (error) {
       console.error('Error al exportar datos:', error)
-      notDanger('Error al exportar datos.')
+      // notDanger('Error al exportar datos.')
       setLoading(false)
     }
   }

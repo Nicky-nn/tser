@@ -18,7 +18,7 @@ import Swal from 'sweetalert2'
 import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import useAuth from '../../../../base/hooks/useAuth'
 import { notDanger } from '../../../../utils/notification'
-import { restReporteVentasVsPedidosApi } from '../../api/reportesVentasVsPedido.api'
+import { restReporteVentasSimpleApi } from '../../api/reporteVentasSimple.api'
 
 // @ts-ignore
 registerLocale('es', es)
@@ -33,7 +33,7 @@ interface OwnProps {
 
 type Props = OwnProps
 
-const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) => {
+const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
   const { onClose, open, ...other } = props
   const [loading, setLoading] = useState(false)
   const [startDate, setStartDate] = useState<Date | null>(new Date())
@@ -68,18 +68,14 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
         codigoPuntoVenta: puntoVenta.codigo,
       }
 
-      const data = await restReporteVentasVsPedidosApi(
+      const data = await restReporteVentasSimpleApi(
         entidad,
         fechaInicialTurno,
         fechaFinalTurno,
         usuario,
       )
 
-      if (
-        !data ||
-        !data.restReporteVentasVsPedidos ||
-        !data.restReporteVentasVsPedidos.file
-      ) {
+      if (!data || !data.restReporteVentasSimple || !data.restReporteVentasSimple.file) {
         Swal.fire({
           icon: 'warning',
           title: 'Sin datos',
@@ -90,7 +86,7 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
       }
 
       // Descargar el archivo PDF
-      const byteCharacters = atob(data.restReporteVentasVsPedidos.file)
+      const byteCharacters = atob(data.restReporteVentasSimple.file)
       const byteNumbers = new Array(byteCharacters.length)
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i)
@@ -101,14 +97,10 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
 
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute(
-        'download',
-        `reporte_ventas_vs_pedidos_${dayjs().format('DDMMYYYY_HHmm')}.pdf`,
-      )
+      link.setAttribute('download', 'reporte_ventas_simple.pdf')
       document.body.appendChild(link)
       link.click()
 
-      // Imprimir el PDF
       const printerSettings = localStorage.getItem('printers')
       let selectedPrinter = ''
       if (printerSettings) {
@@ -117,11 +109,7 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
       }
       // Llamar a la API de Flask para imprimir el PDF
       const formData = new FormData()
-      formData.append(
-        'file',
-        blob,
-        `reporte_ventas_vs_pedidos_${dayjs().format('DDMMYYYY_HHmm')}.pdf`,
-      )
+      formData.append('file', blob, 'reporte_ventas_simple.pdf')
       formData.append('printer', selectedPrinter)
 
       const response = await fetch('http://localhost:7777/print', {
@@ -162,7 +150,7 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
         open={open}
         {...other}
       >
-        <DialogTitle>Exportar Ventas vs Pedidos</DialogTitle>
+        <DialogTitle>Exportar Reporte de Ventas Simple</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
             <Grid item sm={5}>
@@ -238,7 +226,7 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
             variant={'contained'}
             style={{ marginRight: 15 }}
           >
-            Exportar Ventas
+            Exportar
           </LoadingButton>
         </DialogActions>
       </Dialog>
@@ -246,4 +234,4 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
   )
 }
 
-export default PedidosVsVentasReporteExportarDialog
+export default PedidosReporteVentaSimpleDialog

@@ -50,12 +50,14 @@ const mutationFactura = gql`
     $cliente: ClienteOperacionInput!
     $entidad: EntidadParamsInput!
     $input: RestPedidoFacturaInput!
+    $notificacion: Boolean
   ) {
     restPedidoFacturaRegistro(
       numeroPedido: $numeroPedido
       cliente: $cliente
       entidad: $entidad
       input: $input
+      notificacion: $notificacion
     ) {
       factura {
         nitEmisor
@@ -94,11 +96,16 @@ export const restPedidoFacturaApi = async (
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
+    // Obtenemos y guardamos notofcation del local storage emailEnabled
+
+    const notificacion = localStorage.getItem('emailEnabled') === 'true' ? true : false
+
     const data = (await client.request(mutationFactura, {
       numeroPedido,
       cliente,
       entidad,
       input,
+      notificacion,
     })) as FacturaData
 
     return data.restPedidoFacturaRegistro

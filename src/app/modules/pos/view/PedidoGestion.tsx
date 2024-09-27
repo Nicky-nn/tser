@@ -201,6 +201,7 @@ interface Option {
   nroOrden: Number | null
   mesa: string
   state: string
+  tipoPedido?: string | null
 }
 interface OwnProps {
   form: UseFormReturn<any>
@@ -2587,6 +2588,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       variant="contained"
                       color="primary"
                       startIcon={<Save />}
+                      disabled={selectedOption?.tipoPedido === 'DELIVERY'}
                       onClick={
                         selectedOption?.state === 'COMPLETADO'
                           ? actualizarPedido

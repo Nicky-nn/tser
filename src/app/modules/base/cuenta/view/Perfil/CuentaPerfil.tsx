@@ -1,4 +1,4 @@
-import { Person, WhatsApp } from '@mui/icons-material'
+import { Email, Person, WhatsApp } from '@mui/icons-material'
 import {
   Badge,
   Box,
@@ -25,6 +25,9 @@ const CuentaPerfil: FunctionComponent = () => {
 
   const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
     localStorage.getItem('whatsappEnabled') === 'true',
+  )
+  const [emailEnabled, setEmailEnabled] = useState<boolean>(
+    localStorage.getItem('emailEnabled') === 'true',
   )
   const [hasPlan, setHasPlan] = useState<boolean>(false)
 
@@ -58,6 +61,12 @@ const CuentaPerfil: FunctionComponent = () => {
     const enabled = event.target.checked
     setWhatsappEnabled(enabled)
     localStorage.setItem('whatsappEnabled', String(enabled))
+  }
+
+  const handleEmailEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const enabled = event.target.checked
+    setEmailEnabled(enabled)
+    localStorage.setItem('emailEnabled', String(enabled))
   }
 
   return (
@@ -110,7 +119,7 @@ const CuentaPerfil: FunctionComponent = () => {
           </Grid>
 
           {/* Nueva sección: Habilitar Envío por WhatsApp */}
-          <Grid item lg={12} md={12} xs={12}>
+          {/* <Grid item lg={12} md={12} xs={12}>
             <Box position="relative" display="inline-block">
               <Stack direction="row" alignItems="center" gap={1}>
                 <WhatsApp color="success" />
@@ -133,6 +142,22 @@ const CuentaPerfil: FunctionComponent = () => {
                 />
               }
               label="Habilitar envío por WhatsApp"
+            />
+          </Grid> */}
+          <Grid item lg={12} md={12} xs={12}>
+            <Box position="relative" display="inline-block">
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Email color="success" />
+                <Typography style={{ fontWeight: 'bold' }}>Correo Electrónico</Typography>
+              </Stack>
+            </Box>
+          </Grid>
+          <Grid item lg={12} md={12} xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox checked={emailEnabled} onChange={handleEmailEnabledChange} />
+              }
+              label="Habilitar envío Correo Electrónico"
             />
           </Grid>
           <Grid item lg={12} md={12} xs={12}>

@@ -7,6 +7,7 @@ import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import PedidosListado from './listado/PedidosListado'
 import PedidosReporteExportarDialog from './listado/PedidosReporteExportarDialog'
+import PedidosReporteVentaSimpleDialog from './listado/PedidosReporteExportarDialog copy'
 import { pedidosRouteMap } from './listado/PedidosRoutesMap'
 import PedidosVsVentasReporteExportarDialog from './listado/PedidosVsVentasReporteExportarDialog'
 
@@ -17,6 +18,7 @@ import PedidosVsVentasReporteExportarDialog from './listado/PedidosVsVentasRepor
 const Productos = () => {
   const [openExport, setOpenExport] = useState(false)
   const [openExportVentas, setOpenExportVentas] = useState(false)
+  const [openExportVentasSimple, setOpenExportVentasSimple] = useState(false)
 
   return (
     <div
@@ -46,6 +48,16 @@ const Productos = () => {
             REPORTE DE PEDIDOS Vs VENTAS
           </Button>
         </SimpleItem>
+        <SimpleItem>
+          <Button
+            size={'small'}
+            startIcon={<ImportExport />}
+            onClick={() => setOpenExportVentasSimple(true)}
+            variant={'contained'}
+          >
+            REPORTE DE VENTAS SIMPLE
+          </Button>
+        </SimpleItem>
       </SimpleRowMenu>
 
       <Grid container spacing={2}>
@@ -68,6 +80,14 @@ const Productos = () => {
         open={openExportVentas}
         onClose={() => {
           setOpenExportVentas(false)
+        }}
+      />
+      <PedidosReporteVentaSimpleDialog
+        id={'pedidosReporteVentaSimpleDialog'}
+        keepMounted={true}
+        open={openExportVentasSimple}
+        onClose={() => {
+          setOpenExportVentasSimple(false)
         }}
       />
     </div>
