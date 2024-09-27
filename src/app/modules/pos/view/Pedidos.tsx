@@ -7,7 +7,7 @@ import SimpleRowMenu from '../../../base/components/Container/SimpleRow'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
 import PedidosListado from './listado/PedidosListado'
 import PedidosReporteExportarDialog from './listado/PedidosReporteExportarDialog'
-import PedidosReporteVentaSimpleDialog from './listado/PedidosReporteExportarDialog copy'
+import PedidosReporteVentaSimpleDialog from './listado/PedidosReporteVentaSimple'
 import { pedidosRouteMap } from './listado/PedidosRoutesMap'
 import PedidosVsVentasReporteExportarDialog from './listado/PedidosVsVentasReporteExportarDialog'
 

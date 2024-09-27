@@ -35,8 +35,6 @@ export const eliminarPedidoTodo = async (
       },
     })
 
-    console.log('confirmResp', confirmResp)
-
     if (confirmResp) {
       const response = await restPedidoEliminarApi(
         entidad,

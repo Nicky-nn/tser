@@ -18,9 +18,7 @@ export const actualizarItemPedido = async (
     codigoSucursal: sucursal.codigo,
     codigoPuntoVenta: puntoVenta.codigo,
   }
-
   const codigoMoneda = 1
-  console.log('cliente', cliente)
 
   // Filtrar los productos que cumplen con las condiciones requeridas
   const filteredData = data.filter(

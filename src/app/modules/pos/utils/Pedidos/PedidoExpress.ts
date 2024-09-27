@@ -116,8 +116,6 @@ export const restPedidoExpressRegistro = async (
     codigoPuntoVenta: puntoVenta.codigo,
   }
 
-  console.log('cliente', cliente?.email)
-
   const dataCliente = {
     codigoCliente: cliente?.codigoCliente || '',
     email: data.emailCliente || '',

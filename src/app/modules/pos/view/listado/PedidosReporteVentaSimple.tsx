@@ -1,6 +1,7 @@
 import { ImportExport } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -17,7 +18,6 @@ import Swal from 'sweetalert2'
 
 import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
 import useAuth from '../../../../base/hooks/useAuth'
-import { notDanger } from '../../../../utils/notification'
 import { restReporteVentasSimpleApi } from '../../api/reporteVentasSimple.api'
 
 // @ts-ignore
@@ -36,31 +36,24 @@ type Props = OwnProps
 const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
   const { onClose, open, ...other } = props
   const [loading, setLoading] = useState(false)
-  const [startDate, setStartDate] = useState<Date | null>(new Date())
-  const [endDate, setEndDate] = useState<Date | null>(null)
-  const [turnoInicio, setTurnoInicio] = useState<string>('06:00')
-  const [turnoFin, setTurnoFin] = useState<string>('13:00')
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
 
   const {
     user: { usuario, sucursal, puntoVenta },
   } = useAuth()
 
-  const onChange = (dates: any) => {
-    const [start, end] = dates
-    setStartDate(start)
-    setEndDate(end)
-  }
-
   const exportarDatos = async () => {
     try {
       setLoading(true)
-      const fechaInicialTurno = dayjs(startDate)
-        .hour(parseInt(turnoInicio.split(':')[0]))
-        .minute(parseInt(turnoInicio.split(':')[1]))
+
+      // Asigna 00:00 como hora de inicio y 23:59 como hora de fin
+      const fechaInicialTurno = dayjs(selectedDate)
+        .hour(0)
+        .minute(0)
         .format('DD/MM/YYYY HH:mm:ss')
-      const fechaFinalTurno = dayjs(endDate)
-        .hour(parseInt(turnoFin.split(':')[0]))
-        .minute(parseInt(turnoFin.split(':')[1]))
+      const fechaFinalTurno = dayjs(selectedDate)
+        .hour(23)
+        .minute(59)
         .format('DD/MM/YYYY HH:mm:ss')
 
       const entidad = {
@@ -79,7 +72,7 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
         Swal.fire({
           icon: 'warning',
           title: 'Sin datos',
-          text: 'No hay datos o reporte disponible en el rango seleccionado.',
+          text: 'No hay datos o reporte disponible en la fecha seleccionada.',
         })
         setLoading(false)
         return
@@ -107,6 +100,7 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
         const parsedSettings = JSON.parse(printerSettings)
         selectedPrinter = parsedSettings.comanda
       }
+
       // Llamar a la API de Flask para imprimir el PDF
       const formData = new FormData()
       formData.append('file', blob, 'reporte_ventas_simple.pdf')
@@ -130,15 +124,13 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
       setLoading(false)
     } catch (error) {
       console.error('Error al exportar datos:', error)
-      // notDanger('Error al exportar datos.')
       setLoading(false)
     }
   }
 
   useEffect(() => {
     if (open) {
-      setStartDate(new Date())
-      setEndDate(new Date())
+      setSelectedDate(new Date())
     }
   }, [open])
 
@@ -153,53 +145,28 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
         <DialogTitle>Exportar Reporte de Ventas Simple</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid item sm={5}>
-              <TextField
-                sx={{ mt: 1 }}
-                fullWidth
-                label="Inicio del turno"
-                value={turnoInicio}
-                onChange={(e) => setTurnoInicio(e.target.value)}
-                size="small"
-                type="time"
-              />
-              <TextField
-                sx={{ mt: 3 }}
-                fullWidth
-                label="Fin del turno"
-                value={turnoFin}
-                onChange={(e) => setTurnoFin(e.target.value)}
-                size="small"
-                type="time"
-              />
-              <TextField
-                sx={{ mt: 3 }}
-                fullWidth
-                label="Fecha Inicial"
-                value={dayjs(startDate).format('DD/MM/YYYY') || ''}
-                size="small"
-              />
-              <TextField
-                sx={{ mt: 3 }}
-                fullWidth
-                label="Fecha Final"
-                value={dayjs(endDate).format('DD/MM/YYYY') || ''}
-                size="small"
-              />
-            </Grid>
-            <Grid item sm={7}>
+            <Grid item sm={6}>
               <SimpleItem>
                 <DatePicker
-                  selected={startDate}
-                  onChange={onChange}
+                  selected={selectedDate}
+                  onChange={(date: Date) => setSelectedDate(date)}
                   locale={'es'}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectsRange
                   inline
-                  isClearable={true}
                 />
               </SimpleItem>
+            </Grid>
+            <Grid item sm={6}>
+              <Alert color={'info'}>
+                Seleccione el día para obtener el reporte de ventas simple. Recuerde que
+                el reporte se genera por día, desde las 00:00 hasta las 23:59.
+              </Alert>
+              <TextField
+                sx={{ mt: 3 }}
+                fullWidth
+                label="Fecha Seleccionada"
+                value={dayjs(selectedDate).format('DD/MM/YYYY') || ''}
+                size="small"
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -210,15 +177,13 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
             color={'error'}
             variant={'contained'}
             size={'small'}
-            onClick={() => {
-              onClose()
-            }}
+            onClick={() => onClose()}
           >
             Cancelar
           </Button>
           <LoadingButton
             loading={loading}
-            disabled={!dayjs(startDate).isValid() || !dayjs(endDate).isValid()}
+            disabled={!dayjs(selectedDate).isValid()}
             onClick={() => exportarDatos()}
             startIcon={<ImportExport />}
             loadingPosition="start"
