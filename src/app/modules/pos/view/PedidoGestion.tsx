@@ -468,7 +468,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       return
     }
 
-    // If pra q no puede a ver un descuento del 100% ni del valor total is hay mensaje de error
     if (actualDiscount === product.price * product.quantity) {
       toast.error('El descuento no puede ser igual al precio total del producto')
       return
@@ -555,7 +554,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         ? 'QR'
         : metodo.descripcion
 
-    console.log('descripcion', metodo.descripcion)
     return (
       <Tooltip title={descripcion}>
         <Grid item xs={3} key={metodo.codigoClasificador}>
@@ -607,6 +605,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         codigoPuntoVenta: puntoVenta.codigo,
       }
       const { docs } = await obtenerListadoPedidos(fetchPagination, entidad)
+      console.log('docs', docs)
       return docs
     },
     refetchOnWindowFocus: false,
@@ -655,7 +654,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         )
       })
       if (pedidoEncontrado) {
-        console.log('pedidoEncontrado', pedidoEncontrado)
         const {
           numeroPedido,
           numeroOrden,
@@ -722,6 +720,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         const pedidoEncontrado = data?.find(
           (pedido) => pedido.numeroPedido === selectedOption.nroPedido,
         )
+        console.log('Ac. cliente', pedidoEncontrado?.cliente)
         setClienteSeleccionado(pedidoEncontrado?.cliente || null)
         // si el cliente es null llamamos a cliente por defecto
         setValue('cliente', pedidoEncontrado?.cliente || null)
@@ -897,12 +896,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         Number(selectedOption.nroPedido),
         deletedProducts,
         cart,
+        () => {},
+        clienteSeleccionado,
       )
 
       let { numeroPedido, numeroOrden, mesa, state } =
         //@ts-ignore
         responseActualizar.restPedidoActualizarItem
 
+      refetch()
       const value = mesa.nombre.split(' ').pop()
 
       let updatedOption = {
@@ -1233,7 +1235,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         documentUrl,
                         documentFileName,
                       )
-                      console.log('Mensaje de WhatsApp enviado con éxito')
                     } catch (error) {
                       console.error('Error al enviar mensaje de WhatsApp:', error)
                     }
@@ -1595,7 +1596,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  console.log('options', options)
 
   return (
     <Grid container spacing={1}>
