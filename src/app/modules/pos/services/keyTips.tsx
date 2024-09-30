@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Button, ButtonProps, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
@@ -20,6 +21,7 @@ const KeyTipButton: React.FC<KeyTipButtonProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Control') {
         setShowKeyTip(true)
+        e.preventDefault() // Previene el comportamiento predeterminado de Ctrl
       }
     }
 
@@ -40,10 +42,12 @@ const KeyTipButton: React.FC<KeyTipButtonProps> = ({
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key.toLowerCase() === keyTip.toLowerCase()) {
-        e.preventDefault()
-        if (onClick) {
-          onClick(e as unknown as React.KeyboardEvent<HTMLButtonElement>)
+      if (e.ctrlKey) {
+        e.preventDefault() // Previene todas las acciones predeterminadas de Ctrl
+        if (e.key.toLowerCase() === keyTip.toLowerCase()) {
+          if (onClick) {
+            onClick(e as unknown as React.KeyboardEvent<HTMLButtonElement>)
+          }
         }
       }
     }
