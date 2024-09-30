@@ -49,7 +49,6 @@ import { SingleValue } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 
 import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import { FormTextField } from '../../../../base/components/Form'
@@ -57,7 +56,6 @@ import { TarjetaMask } from '../../../../base/components/Mask/TarjetaMask'
 import { MyInputLabel } from '../../../../base/components/MyInputs/MyInputLabel'
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
-import RepresentacionGraficaUrls from '../../../../base/components/RepresentacionGrafica/RepresentacionGraficaUrls'
 import useAuth from '../../../../base/hooks/useAuth'
 import { genReplaceEmpty } from '../../../../utils/helper'
 import { swalException } from '../../../../utils/swal'
@@ -160,8 +158,6 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
   const [openCliente99001, setCliente99001] = useState(false)
 
   const [printDescuentoAdicional, setPrintDescuentoAdicional] = useState<number>(0)
-
-  const mySwal = withReactContent(Swal)
 
   const fetchClientes = async (inputValue: string): Promise<any[]> => {
     try {
@@ -297,17 +293,55 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
             .then((response) => {
               if (response) {
                 const { representacionGrafica } = response.factura
-                if (tipoRepresentacionGrafica === 'pdf')
-                  printJS(representacionGrafica.pdf)
-                if (tipoRepresentacionGrafica === 'rollo')
-                  printJS(representacionGrafica.rollo)
-                mySwal.fire({
-                  title: `Documento generado correctamente`,
-                  html: (
-                    <RepresentacionGraficaUrls
-                      representacionGrafica={representacionGrafica}
-                    />
-                  ),
+                // Leer la configuración de impresión automática del local storage
+                const printerSettings = JSON.parse(
+                  localStorage.getItem('printers') || '{}',
+                )
+                const impresionAutomatica = printerSettings.impresionAutomatica || {}
+                if (impresionAutomatica.facturar) {
+                  if (tipoRepresentacionGrafica === 'pdf') {
+                    printJS(representacionGrafica.pdf)
+                  } else if (tipoRepresentacionGrafica === 'rollo') {
+                    const pdfUrl = representacionGrafica.rollo
+                    const selectedPrinter = printerSettings.facturar || ''
+
+                    if (selectedPrinter) {
+                      fetch('http://localhost:7777/printPDF', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          pdf_url: pdfUrl,
+                          printer: selectedPrinter,
+                        }),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.message) {
+                            toast.success('Impresión iniciada')
+                          } else {
+                            toast.error('Error al iniciar la impresión')
+                          }
+                        })
+                        .catch((error) => {
+                          console.error('Error al imprimir el PDF:', error)
+                          toast.error('Error al imprimir el PDF')
+                        })
+                    } else {
+                      printJS({
+                        printable: pdfUrl,
+                        type: 'pdf',
+                        style:
+                          '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
+                      })
+                    }
+                  }
+                }
+                Swal.fire({
+                  title: 'Pedido Facturado',
+                  text: 'El pedido ha sido facturado con éxito',
+                  icon: 'success',
                 })
                 setValue('cliente', null)
                 additionalDiscount !== 0 && setAdditionalDiscount(0)
@@ -335,16 +369,53 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
         .then((response) => {
           if (response) {
             const { representacionGrafica } = response.factura
-            if (tipoRepresentacionGrafica === 'pdf') printJS(representacionGrafica.pdf)
-            if (tipoRepresentacionGrafica === 'rollo')
-              printJS(representacionGrafica.rollo)
-            mySwal.fire({
-              title: `Documento generado correctamente`,
-              html: (
-                <RepresentacionGraficaUrls
-                  representacionGrafica={representacionGrafica}
-                />
-              ),
+            // Leer la configuración de impresión automática del local storage
+            const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+            const impresionAutomatica = printerSettings.impresionAutomatica || {}
+            if (impresionAutomatica.facturar) {
+              if (tipoRepresentacionGrafica === 'pdf') {
+                printJS(representacionGrafica.pdf)
+              } else if (tipoRepresentacionGrafica === 'rollo') {
+                const pdfUrl = representacionGrafica.rollo
+                const selectedPrinter = printerSettings.facturar || ''
+
+                if (selectedPrinter) {
+                  fetch('http://localhost:7777/printPDF', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      pdf_url: pdfUrl,
+                      printer: selectedPrinter,
+                    }),
+                  })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.message) {
+                        toast.success('Impresión iniciada')
+                      } else {
+                        toast.error('Error al iniciar la impresión')
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error al imprimir el PDF:', error)
+                      toast.error('Error al imprimir el PDF')
+                    })
+                } else {
+                  printJS({
+                    printable: pdfUrl,
+                    type: 'pdf',
+                    style:
+                      '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
+                  })
+                }
+              }
+            }
+            Swal.fire({
+              title: 'Pedido Facturado',
+              text: 'El pedido ha sido facturado con éxito',
+              icon: 'success',
             })
             setValue('cliente', null)
             additionalDiscount !== 0 && setAdditionalDiscount(0)

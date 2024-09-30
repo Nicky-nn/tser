@@ -263,6 +263,7 @@ const LISTADO_PEDIDOS_QUERY = gql`
           nombreArticulo
           nroItem
         }
+        nota
         tipoDocumento
         refNroDocumento
         refDocumento

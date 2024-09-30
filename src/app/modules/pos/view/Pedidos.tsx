@@ -32,6 +32,16 @@ const Productos = () => {
           <Button
             size={'small'}
             startIcon={<ImportExport />}
+            onClick={() => setOpenExportVentasSimple(true)}
+            variant={'contained'}
+          >
+            REPORTE DE VENTAS RESUMEN
+          </Button>
+        </SimpleItem>
+        <SimpleItem>
+          <Button
+            size={'small'}
+            startIcon={<ImportExport />}
             onClick={() => setOpenExport(true)}
             variant={'contained'}
           >
@@ -46,16 +56,6 @@ const Productos = () => {
             variant={'contained'}
           >
             REPORTE DE PEDIDOS Vs VENTAS
-          </Button>
-        </SimpleItem>
-        <SimpleItem>
-          <Button
-            size={'small'}
-            startIcon={<ImportExport />}
-            onClick={() => setOpenExportVentasSimple(true)}
-            variant={'contained'}
-          >
-            REPORTE DE VENTAS SIMPLE
           </Button>
         </SimpleItem>
       </SimpleRowMenu>

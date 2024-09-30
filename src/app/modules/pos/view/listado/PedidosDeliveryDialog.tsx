@@ -12,7 +12,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Button,
   Checkbox,
   Dialog,
   DialogContent,
@@ -23,9 +22,12 @@ import {
   Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import Select from 'react-select'
 import Swal from 'sweetalert2'
 
 import { FormTextField } from '../../../../base/components/Form'
+import { reactSelectStyle } from '../../../../base/components/MySelect/ReactSelect'
+import KeyTipButton from '../../services/keyTips'
 
 interface DeliveryInfo {
   calle: string
@@ -33,7 +35,8 @@ interface DeliveryInfo {
   apartamento: string
   colonia: string
   ciudad: string
-  códigoPostal: string
+  tipoPedido: { value: string; label: string } | null
+  tipoPedidoPersonalizado: string
   referenciasAdicionales: string
   fechaEntrega: string
   horaPreferida: string
@@ -57,7 +60,7 @@ interface DataDelivery {
 }
 
 const parseDataDelivery = (data: DataDelivery): DeliveryInfo => {
-  const [calle, número, apartamento, colonia, ciudad, códigoPostal] = (
+  const [calle, número, apartamento, colonia, ciudad, tipoPedidoValue] = (
     data.direccionEntrega || ''
   )
     .split('|')
@@ -67,13 +70,18 @@ const parseDataDelivery = (data: DataDelivery): DeliveryInfo => {
     data.atributo1 || ''
   ).split('|')
 
+  const tipoPedido = tipoPedidoValue
+    ? { value: tipoPedidoValue, label: tipoPedidoValue }
+    : null
+
   return {
     calle: calle || '',
     número: número || '',
     apartamento: apartamento || '',
     colonia: colonia || '',
     ciudad: ciudad || '',
-    códigoPostal: códigoPostal || '',
+    tipoPedido,
+    tipoPedidoPersonalizado: tipoPedidoValue === 'Otro' ? '' : tipoPedidoValue || '',
     referenciasAdicionales: data.atributo2 || '',
     fechaEntrega: data.fechaEntrega
       ? new Date(data.fechaEntrega).toISOString().split('T')[0]
@@ -94,7 +102,7 @@ const initialDeliveryInfo: DeliveryInfo = {
   apartamento: '',
   colonia: '',
   ciudad: '',
-  códigoPostal: '',
+  tipoPedido: null,
   referenciasAdicionales: '',
   fechaEntrega: '',
   horaPreferida: '',
@@ -104,7 +112,14 @@ const initialDeliveryInfo: DeliveryInfo = {
   solicitarUtensilios: false,
   entregaSinContacto: false,
   nombreRepartidor: '',
+  tipoPedidoPersonalizado: '',
 }
+
+const tipoPedidoOptions = [
+  { value: 'PedidosYa', label: 'PedidosYa' },
+  { value: 'Uber', label: 'Uber' },
+  { value: 'Otro', label: 'Otro' },
+]
 
 const DeliveryDialog = ({
   open,
@@ -140,7 +155,27 @@ const DeliveryDialog = ({
     }))
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSelectChange = (selectedOption: any) => {
+    setDeliveryInfo((prev) => ({
+      ...prev,
+      tipoPedido: selectedOption,
+      tipoPedidoPersonalizado:
+        selectedOption.value === 'Otro' ? prev.tipoPedidoPersonalizado : '',
+    }))
+  }
+
+  const handleCustomOrderTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    setDeliveryInfo((prev) => ({
+      ...prev,
+      tipoPedidoPersonalizado: value,
+      tipoPedido: { value: 'Otro', label: value },
+    }))
+  }
+
+  const handleSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault()
 
     const result = await Swal.fire({
@@ -157,6 +192,11 @@ const DeliveryDialog = ({
     if (result.isConfirmed) {
       Swal.fire('Guardado', 'La información de entrega ha sido guardada', 'success')
 
+      const tipoPedidoFinal =
+        deliveryInfo.tipoPedido?.value === 'Otro'
+          ? deliveryInfo.tipoPedidoPersonalizado
+          : deliveryInfo.tipoPedido?.value
+
       setValue(
         'atributo1',
         `${deliveryInfo.nombreRepartidor}|${deliveryInfo.entregaSinContacto}|${deliveryInfo.solicitarUtensilios}`,
@@ -166,7 +206,7 @@ const DeliveryDialog = ({
       setValue('atributo4', deliveryInfo.ventanaTiempo)
       setValue(
         'direccionEntrega',
-        `${deliveryInfo.calle}|${deliveryInfo.número}|${deliveryInfo.apartamento}|${deliveryInfo.colonia}|${deliveryInfo.ciudad}|${deliveryInfo.códigoPostal}`,
+        `${deliveryInfo.calle}|${deliveryInfo.número}|${deliveryInfo.apartamento}|${deliveryInfo.colonia}|${deliveryInfo.ciudad}|${tipoPedidoFinal}`,
       )
       setValue('fechaEntrega', deliveryInfo.fechaEntrega)
       setValue(
@@ -221,20 +261,46 @@ const DeliveryDialog = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormTextField
                 fullWidth
-                label="Nombre del Repartidor"
+                label="Núm. Pedido / Nombre Repartidor"
                 name="nombreRepartidor"
                 value={deliveryInfo.nombreRepartidor}
                 onChange={handleChange}
                 margin="dense"
-                placeholder='Ej: "Juan Pérez"'
+                placeholder='Ej: "1234" o "Juan"'
                 disabled={dataDelivery.fromDatabase}
               />
             </Grid>
+            <Grid item xs={12}>
+              <Select
+                styles={reactSelectStyle(
+                  Boolean(deliveryInfo.tipoPedido?.value === 'Otro'),
+                )}
+                options={tipoPedidoOptions}
+                value={deliveryInfo.tipoPedido}
+                onChange={handleSelectChange}
+                isDisabled={dataDelivery.fromDatabase}
+                placeholder="Seleccione el tipo de pedido"
+              />
+            </Grid>
+            {deliveryInfo.tipoPedido?.value === 'Otro' && (
+              <Grid item xs={12}>
+                <FormTextField
+                  fullWidth
+                  label="Especificar Tipo de Pedido"
+                  name="tipoPedidoPersonalizado"
+                  value={deliveryInfo.tipoPedidoPersonalizado}
+                  onChange={handleCustomOrderTypeChange}
+                  margin="dense"
+                  placeholder="Especifique el tipo de pedido"
+                  disabled={dataDelivery.fromDatabase}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Accordion expanded={expanded} onChange={handleAccordionChange}>
                 <AccordionSummary
@@ -242,6 +308,7 @@ const DeliveryDialog = ({
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
+                  <Typography>Detalles adicionales de entrega</Typography>
                   <Typography>Detalles adicionales de entrega</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -327,17 +394,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormTextField
-                        fullWidth
-                        label="Código Postal"
-                        name="códigoPostal"
-                        value={deliveryInfo.códigoPostal}
-                        onChange={handleChange}
-                        margin="dense"
                         disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
@@ -472,15 +528,18 @@ const DeliveryDialog = ({
               </Accordion>
             </Grid>
           </Grid>
-          <Button
-            type="submit"
+
+          <KeyTipButton
+            type="button"
             variant="contained"
             color="primary"
             style={{ marginTop: 20 }}
             disabled={dataDelivery.fromDatabase}
+            keyTip="G"
+            onClick={handleSubmit}
           >
-            Confirmar Entrega
-          </Button>
+            Guardar
+          </KeyTipButton>
         </form>
       </DialogContent>
     </Dialog>

@@ -1,9 +1,16 @@
+import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { PuntoVentaProps } from '../../../../interfaces/puntoVenta'
 import { SucursalProps } from '../../../../interfaces/sucursal'
-import { swalException } from '../../../../utils/swal'
+import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
+import { apiClienteRegistro } from '../../../clientes/api/clienteRegistro.api'
 import { actualizarItem } from '../../api/UDPedido.api'
+
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
 
 export const actualizarItemPedido = async (
   puntoVenta: PuntoVentaProps,
@@ -13,7 +20,78 @@ export const actualizarItemPedido = async (
   data: any,
   onSuccess?: () => void,
   cliente?: any,
+  isCreatingNewClient: boolean = false,
+  getClientData?: any,
 ) => {
+  if (isCreatingNewClient) {
+    if (!getClientData?.sinTipoDocumento) {
+      toast.error('No hay tipo de documento seleccionado')
+      return false
+    }
+
+    if (!getClientData?.numeroDocumento || isNaN(Number(getClientData.numeroDocumento))) {
+      toast.error('No hay número de documento')
+      return false
+    }
+
+    if (!getClientData?.emailCliente || !isValidEmail(getClientData.emailCliente)) {
+      toast.error('El email del cliente no es válido')
+      return false
+    }
+
+    if (!getClientData?.razonSocial) {
+      toast.error('No hay razón social')
+      return false
+    }
+
+    const confirmResp = await swalAsyncConfirmDialog({
+      title: 'Cliente no encontrado',
+      text: '¿Desea crear un nuevo cliente con los datos ingresados?',
+      preConfirm: async () => {
+        const input = {
+          nombres: getClientData.cliente.nombres,
+          apellidos: getClientData.cliente.apellidos,
+          codigoTipoDocumentoIdentidad: Number(
+            getClientData.sinTipoDocumento?.codigoClasificador!,
+          ),
+          numeroDocumento: getClientData.numeroDocumento,
+          complemento: getClientData.complemento,
+          email: getClientData.emailCliente,
+          razonSocial: getClientData.razonSocial,
+          telefono: getClientData.telefono,
+          codigoExcepcion: 1,
+        }
+        try {
+          const response = await apiClienteRegistro(input)
+          return response
+        } catch (error) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al crear el cliente',
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+          throw error
+        }
+      },
+    })
+
+    if (confirmResp.isConfirmed) {
+      Swal.fire({
+        title: 'Cliente creado',
+        text: 'El cliente ha sido creado con éxito',
+        icon: 'success',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      // Actualizar el objeto cliente con los datos del nuevo cliente creado
+      cliente = confirmResp.value
+    } else {
+      return false // Si el usuario cancela la creación del cliente, detener el proceso
+    }
+  }
+
   const entidad = {
     codigoSucursal: sucursal.codigo,
     codigoPuntoVenta: puntoVenta.codigo,
