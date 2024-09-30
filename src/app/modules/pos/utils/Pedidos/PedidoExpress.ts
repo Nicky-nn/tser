@@ -141,6 +141,7 @@ export const restPedidoExpressRegistro = async (
     })),
     codigoMoneda: 1,
     tipoCambio: 1,
+    nota: data.notasGenerales,
   }
 
   // Añadir atributos de delivery solo si el tipo de pedido es "DELIVERY"

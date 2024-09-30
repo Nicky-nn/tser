@@ -111,6 +111,7 @@ import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
+import KeyTipButton from '../services/keyTips'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -211,6 +212,7 @@ interface OwnProps {
 type Props = OwnProps
 
 const PedidoGestion: FunctionComponent<Props> = (props) => {
+  const [generalNotes, setGeneralNotes] = useState<string>('')
   const {
     form: {
       control,
@@ -720,6 +722,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         const pedidoEncontrado = data?.find(
           (pedido) => pedido.numeroPedido === selectedOption.nroPedido,
         )
+        setValue('notasGenerales', pedidoEncontrado?.nota || '')
         setClienteSeleccionado(pedidoEncontrado?.cliente || null)
         // si el cliente es null llamamos a cliente por defecto
         setValue('cliente', pedidoEncontrado?.cliente || null)
@@ -1461,7 +1464,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
 
     if (selectedOption?.state === 'Libre') {
+      setValue('notasGenerales', '')
       setClientePorDefecto()
+      // Metodo de pago por defecto efectivo
+      const efectivoId =
+        metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+          ?.codigoClasificador ?? 1
+      setSelectedId(efectivoId)
+      setValue('metodoPago', efectivoId)
     }
   }, [selectedOption])
 
@@ -2627,10 +2637,29 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     </Accordion>
                   </Zoom>
                 ))}
+                {/* Input NOtas Genrales */}
+                <Controller
+                  name="notasGenerales"
+                  control={control}
+                  render={({ field }) => (
+                    <FormTextField
+                      {...field}
+                      label="Notas General"
+                      placeholder="Ingrese Notas"
+                      fullWidth
+                      margin="normal"
+                      size="small"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      disabled={selectedOption?.state === 'COMPLETADO'}
+                    />
+                  )}
+                />
                 <hr />
                 <Grid container spacing={1} style={{ marginTop: '5px' }}>
                   <Grid item xs={6}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       variant="contained"
                       color="primary"
@@ -2642,14 +2671,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           : registrarPedido
                       }
                       style={{ height: '50px' }}
+                      keyTip="R"
                     >
                       {selectedOption?.state === 'COMPLETADO'
                         ? 'Actualizar'
                         : 'Registrar'}
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                   <Grid item xs={6}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       onClick={finalizarOrden}
                       variant="contained"
@@ -2657,12 +2687,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       style={{ height: '50px' }}
                       startIcon={<Done />}
                       disabled={selectedOption?.state === 'Libre'}
+                      keyTip="F"
                     >
                       Finalizar
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                   <Grid item xs={4}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       variant="contained"
                       onClick={() =>
@@ -2679,12 +2710,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       endIcon={<Print />}
                       style={{ height: '50px', backgroundColor: '#6e7b8c' }}
                       disabled={selectedOption?.state === 'Libre'}
+                      keyTip="C"
                     >
                       Comanda
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                   <Grid item xs={4}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       variant="contained"
                       style={{ height: '50px', backgroundColor: '#b69198' }}
@@ -2700,12 +2732,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           printDescuentoAdicional.toString(),
                         )
                       }
+                      keyTip="U"
                     >
                       Cuenta
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                   <Grid item xs={4}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       onClick={handleRegisterAndFinalize}
                       variant="contained"
@@ -2713,22 +2746,23 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       style={{ height: '50px' }}
                       disabled={selectedOption?.state === 'COMPLETADO'}
                       endIcon={<DoneAll />}
+                      keyTip="A"
                     >
                       Reg. y Fin.
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button
+                    <KeyTipButton
                       fullWidth
                       onClick={handleFacturar}
                       variant="contained"
                       endIcon={<Receipt />}
-                      // color="secondary"
                       disabled={selectedOption?.state !== 'COMPLETADO'}
                       style={{ height: '50px', backgroundColor: '#f0ad4e' }}
+                      keyTip="T"
                     >
                       Facturar
-                    </Button>
+                    </KeyTipButton>
                   </Grid>
                 </Grid>
               </Box>
@@ -2802,6 +2836,50 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 </Grid>
               </List>
             </List>
+            <hr />
+            {/* {selectedOption?.state === 'COMPLETADO' && ( */}
+            <Grid
+              container
+              spacing={1}
+              justifyContent={metodosPago?.length ? 'flex-start' : 'center'}
+              alignItems="center"
+              direction="row"
+            >
+              {metodosPago && metodosPago.length > 0 ? (
+                <>
+                  {metodosPago.slice(0, 3).map(renderMetodoPago)}
+                  {metodosPago.length > 3 && (
+                    <>
+                      <Grid item xs={3}>
+                        <MetodoPagoButton
+                          text="Otros"
+                          icon={<MoreHoriz fontSize="small" />}
+                          selected={false}
+                          onClick={handleOtrosClick}
+                        />
+                      </Grid>
+                      <Popover
+                        sx={{ p: 20 }}
+                        open={Boolean(otrosAnchorEl)}
+                        anchorEl={otrosAnchorEl}
+                        onClose={() => setOtrosAnchorEl(null)}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      >
+                        <Grid container spacing={1} sx={{ p: 2 }}>
+                          {metodosPago.slice(3).map(renderMetodoPago)}
+                        </Grid>
+                      </Popover>
+                    </>
+                  )}
+                </>
+              ) : (
+                <Grid item xs={12} container justifyContent="center">
+                  <Typography variant="body2" color="textSecondary">
+                    Habilite los métodos de pago en el administrador.
+                  </Typography>
+                </Grid>
+              )}
+            </Grid>
 
             <TotalBox>
               <List>
@@ -2863,50 +2941,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               </Grid>
             </Grid> */}
 
-            <hr />
-            {/* {selectedOption?.state === 'COMPLETADO' && ( */}
-            <Grid
-              container
-              spacing={1}
-              justifyContent={metodosPago?.length ? 'flex-start' : 'center'}
-              alignItems="center"
-              direction="row"
-            >
-              {metodosPago && metodosPago.length > 0 ? (
-                <>
-                  {metodosPago.slice(0, 3).map(renderMetodoPago)}
-                  {metodosPago.length > 3 && (
-                    <>
-                      <Grid item xs={3}>
-                        <MetodoPagoButton
-                          text="Otros"
-                          icon={<MoreHoriz fontSize="small" />}
-                          selected={false}
-                          onClick={handleOtrosClick}
-                        />
-                      </Grid>
-                      <Popover
-                        sx={{ p: 20 }}
-                        open={Boolean(otrosAnchorEl)}
-                        anchorEl={otrosAnchorEl}
-                        onClose={() => setOtrosAnchorEl(null)}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                      >
-                        <Grid container spacing={1} sx={{ p: 2 }}>
-                          {metodosPago.slice(3).map(renderMetodoPago)}
-                        </Grid>
-                      </Popover>
-                    </>
-                  )}
-                </>
-              ) : (
-                <Grid item xs={12} container justifyContent="center">
-                  <Typography variant="body2" color="textSecondary">
-                    Habilite los métodos de pago en el administrador.
-                  </Typography>
-                </Grid>
-              )}
-            </Grid>
             {/* )} */}
           </Grid>
         </Paper>
