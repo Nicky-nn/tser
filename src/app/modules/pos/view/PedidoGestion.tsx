@@ -551,7 +551,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const renderMetodoPago = (metodo: MetodoPagoProp) => {
     // Condicional para reemplazar el nombre si coincide con "DEBITO AUTOMATICO - TRANSFERENCIA BANCARIA"
     const descripcion =
-      metodo.descripcion === 'DEBITO AUTOMATICO -  TRANSFERENCIA BANCARIA'
+      metodo.descripcion === 'DEBITO AUTOMATICO -  TRANSFERENCIA BANCARIA QR'
         ? 'QR'
         : metodo.descripcion
 
@@ -670,7 +670,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             state,
             cliente: pedidoEncontrado.cliente || null,
             tipoPedido: pedidoEncontrado.tipo || null,
-            horaPedido: updatedAt.split(' ')[1],
+            horaPedido: updatedAt.split(' ')[1].split(':').slice(0, 2).join(':'),
           })
           seenValues.add(mesa)
         }
@@ -897,6 +897,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         cart,
         () => {},
         clienteSeleccionado,
+        isCreatingNewClient,
+        getValues(),
       )
 
       let { numeroPedido, numeroOrden, mesa, state } =
@@ -1219,28 +1221,28 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setValue('metodoPago', efectivoId)
                 setEnviaDatos(true)
 
-                if (whatsappEnabled) {
-                  const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
+                // if (whatsappEnabled) {
+                //   const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
 
-                  const telefono = cliente.telefono || ''
-                  const documentUrl = representacionGrafica.pdf
-                  const documentFileName = 'Factura.pdf'
+                //   const telefono = cliente.telefono || ''
+                //   const documentUrl = representacionGrafica.pdf
+                //   const documentFileName = 'Factura.pdf'
 
-                  if (telefono) {
-                    try {
-                      await sendWhatsappMessage(
-                        telefono,
-                        mensaje,
-                        documentUrl,
-                        documentFileName,
-                      )
-                    } catch (error) {
-                      console.error('Error al enviar mensaje de WhatsApp:', error)
-                    }
-                  } else {
-                    console.error('Número de teléfono no disponible')
-                  }
-                }
+                //   if (telefono) {
+                //     try {
+                //       await sendWhatsappMessage(
+                //         telefono,
+                //         mensaje,
+                //         documentUrl,
+                //         documentFileName,
+                //       )
+                //     } catch (error) {
+                //       console.error('Error al enviar mensaje de WhatsApp:', error)
+                //     }
+                //   } else {
+                //     console.error('Número de teléfono no disponible')
+                //   }
+                // }
               }
 
               const efectivoId =
@@ -1595,6 +1597,48 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  // Definimos estilos adicionales aquí
+  const customStyles = {
+    control: (provided: any, state: { isFocused: any }) => ({
+      ...provided,
+      backgroundColor: '#EAF3FA', // Color base
+      borderColor: state.isFocused ? '#6FA9D6' : '#B0D4F1',
+      boxShadow: state.isFocused ? '0 0 0 1px #6FA9D6' : 'none',
+      '&:hover': {
+        borderColor: '#6FA9D6',
+      },
+    }),
+    option: (provided: any, state: { isFocused: any; isSelected: any }) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? '#D6E8F5'
+        : state.isSelected
+          ? '#B0D4F1'
+          : '#EAF3FA',
+      color: '#2C3E50',
+      '&:active': {
+        backgroundColor: '#B0D4F1',
+      },
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#EAF3FA',
+      border: '1px solid #B0D4F1',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      color: '#2C3E50',
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      color: '#2C3E50',
+    }),
+  }
+  const combinedStyles = {
+    ...reactSelectStyle(Boolean(errors.cliente)),
+    ...customStyles,
+  }
 
   return (
     <Grid container spacing={1}>
@@ -1707,7 +1751,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                                 : ''}
                             </span>
                           </Typography>
-                          <Typography variant="caption" component="h2">
+                          <Typography
+                            color="textSecondary"
+                            style={{ fontWeight: 'bold', textAlign: 'center' }}
+                          >
                             {option.horaPedido}
                           </Typography>
                         </div>
@@ -2119,10 +2166,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       {...field}
                       cacheOptions={false}
                       defaultOptions={true}
-                      styles={reactSelectStyle(Boolean(errors.cliente))}
+                      styles={combinedStyles}
                       menuPosition={'fixed'}
                       name="clientes"
-                      placeholder={'Buscar Cliente'}
+                      placeholder={'Buscar Cliente NIT/CUR/CI'}
                       loadOptions={fetchClientes}
                       isClearable={true}
                       value={field.value || null}
