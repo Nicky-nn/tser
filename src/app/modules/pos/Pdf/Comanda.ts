@@ -36,6 +36,7 @@ export const generarComandaPDF = (
   productosEliminados: any[] = [],
   tipoPedido: any = 'ACA',
   cliente: any = null,
+  notasGenerales: string = '',
 ) => {
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
@@ -156,6 +157,11 @@ export const generarComandaPDF = (
           },
         },
       },
+
+      // if donde si no hay notas generales, no se muestra el espacio
+      ...(notasGenerales
+        ? [{ text: `Nota: ${notasGenerales}`, style: 'subheader' }]
+        : []),
 
       { text: 'Comentarios:', style: 'subheader' },
       { text: ' ' },

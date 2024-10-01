@@ -95,14 +95,13 @@ const parseDataDelivery = (data: DataDelivery): DeliveryInfo => {
     nombreRepartidor: nombreRepartidor || '',
   }
 }
-
 const initialDeliveryInfo: DeliveryInfo = {
   calle: '',
   número: '',
   apartamento: '',
   colonia: '',
   ciudad: '',
-  tipoPedido: null,
+  tipoPedido: { value: 'PedidosYa', label: 'PedidosYa' }, // Valor predeterminado
   referenciasAdicionales: '',
   fechaEntrega: '',
   horaPreferida: '',
@@ -308,7 +307,6 @@ const DeliveryDialog = ({
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
-                  <Typography>Detalles adicionales de entrega</Typography>
                   <Typography>Detalles adicionales de entrega</Typography>
                 </AccordionSummary>
                 <AccordionDetails>

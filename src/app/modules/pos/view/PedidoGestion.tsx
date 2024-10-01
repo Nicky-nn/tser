@@ -588,7 +588,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         break
       case 'Delivery':
         tipoPedido = 'DELIVERY'
-        setOpenDeliveryDialog(true)
+        handleButtonClick()
         break
       default:
         tipoPedido = buttonText.toUpperCase()
@@ -866,6 +866,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               itemEliminados,
               tiposPedidos,
               clienteSeleccionado,
+              getValues('notasGenerales'),
             )
           }
           setIsCreatingNewClient(false)
@@ -1080,6 +1081,72 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         console.error('Error al finalizar el pedido:', error)
       })
   }
+
+  const [clickCount, setClickCount] = useState(0)
+  const [lastClickTime, setLastClickTime] = useState(0)
+
+  useEffect(() => {
+    if (tiposPedidos === 'DELIVERY' && selectedOption?.state === 'Libre') {
+      setOpenDeliveryDialog(true)
+    } else {
+      setOpenDeliveryDialog(false)
+    }
+  }, [tiposPedidos, selectedOption])
+
+  const handleButtonClick = () => {
+    const currentTime = new Date().getTime()
+    const timeDiff = currentTime - lastClickTime
+
+    if (tiposPedidos === 'DELIVERY' && selectedOption?.state !== 'Libre') {
+      if (timeDiff < 300) {
+        // 300ms para detectar doble clic
+        setClickCount((prevCount) => prevCount + 1)
+        if (clickCount === 1) {
+          setOpenDeliveryDialog(true)
+          setClickCount(0)
+        }
+      } else {
+        setClickCount(1)
+      }
+      setLastClickTime(currentTime)
+    }
+  }
+
+  useEffect(() => {
+    const getCombinedValue = () => {
+      if (tiposPedidos === 'DELIVERY' && selectedOption?.tipoPedido === null) {
+        const direccionEntrega = getValues('direccionEntrega')
+        const atributo1 = getValues('atributo1')
+
+        let valorDireccion = ''
+        let valorAtributo = ''
+
+        if (direccionEntrega) {
+          const partesDireccion = direccionEntrega.split('|')
+          const posicionDireccion = 5 // Posición deseada para direccionEntrega
+          if (partesDireccion.length > posicionDireccion) {
+            valorDireccion = partesDireccion[posicionDireccion].trim()
+          }
+        }
+
+        if (atributo1) {
+          const partesAtributo = atributo1.split('|')
+          const posicionAtributo = 0 // Posición deseada para atributo1
+          if (partesAtributo.length > posicionAtributo) {
+            valorAtributo = partesAtributo[posicionAtributo].trim()
+          }
+        }
+
+        // Solo actualiza si el valor ha cambiado
+        const nuevoValor = `${valorDireccion} ${valorAtributo}`
+        if (getValues('notasGenerales') !== nuevoValor) {
+          setValue('notasGenerales', nuevoValor)
+        }
+      }
+    }
+
+    getCombinedValue() // Llama a la función al cargar el componente
+  }, [watch('direccionEntrega'), watch('atributo1'), cart])
 
   const eliminarCliente = () => {
     setValue('cliente', null)
@@ -1358,6 +1425,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   itemEliminados,
                   tiposPedidos,
                   clienteSeleccionado,
+                  getValues('notasGenerales'),
                 )
               }
               setSelectedCategory(categories[0].name || null)
@@ -1407,6 +1475,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
     if (selectedOption?.state === 'Libre') {
       setValue('tipoPedido', null)
+      setValue('notasGenerales', '')
       setItemEliminados([])
     }
   }, [selectedOption])
@@ -2705,6 +2774,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           itemEliminados,
                           tiposPedidos,
                           clienteSeleccionado,
+                          getValues('notasGenerales'),
                         )
                       }
                       endIcon={<Print />}
