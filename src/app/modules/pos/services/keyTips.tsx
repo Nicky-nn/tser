@@ -13,15 +13,22 @@ const KeyTipButton: React.FC<KeyTipButtonProps> = ({
   children,
   keyTip,
   onClick,
+  disabled,
   ...props
 }) => {
   const [showKeyTip, setShowKeyTip] = useState(false)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Control') {
+      if (e.ctrlKey) {
+        e.preventDefault()
         setShowKeyTip(true)
-        e.preventDefault() // Previene el comportamiento predeterminado de Ctrl
+
+        if (e.key.toLowerCase() === keyTip.toLowerCase() && !disabled) {
+          if (onClick) {
+            onClick(e as unknown as React.KeyboardEvent<HTMLButtonElement>)
+          }
+        }
       }
     }
 
@@ -38,33 +45,19 @@ const KeyTipButton: React.FC<KeyTipButtonProps> = ({
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [])
-
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey) {
-        e.preventDefault() // Previene todas las acciones predeterminadas de Ctrl
-        if (e.key.toLowerCase() === keyTip.toLowerCase()) {
-          if (onClick) {
-            onClick(e as unknown as React.KeyboardEvent<HTMLButtonElement>)
-          }
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyPress)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress)
-    }
-  }, [keyTip, onClick])
+  }, [keyTip, onClick, disabled])
 
   return (
     <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-      <Button onClick={onClick} {...props} sx={{ width: '100%', height: '100%' }}>
+      <Button
+        onClick={onClick}
+        disabled={disabled}
+        {...props}
+        sx={{ width: '100%', height: '100%' }}
+      >
         {children}
       </Button>
-      {showKeyTip && (
+      {showKeyTip && !disabled && (
         <Typography
           sx={{
             position: 'absolute',
