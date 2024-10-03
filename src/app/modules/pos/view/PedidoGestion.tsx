@@ -68,7 +68,14 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import pdfMake from 'pdfmake/build/pdfmake'
 import printJS from 'print-js'
-import { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react'
+import {
+  FunctionComponent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import Select, { SingleValue } from 'react-select'
@@ -112,6 +119,7 @@ import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
 import KeyTipButton from '../services/keyTips'
+import InputNumber from 'rc-input-number'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -991,6 +999,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           productosEliminados,
           tiposPedidos,
           clienteSeleccionado,
+          getValues('notasGenerales'),
         )
       }
     } catch (error) {
@@ -1719,6 +1728,29 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     ...customStyles,
   }
 
+  const [focusedIndex, setFocusedIndex] = useState(0)
+  const handleKeyDown = useCallback(
+    (event: any) => {
+      if (event.key === 'ArrowRight' || event.key === '>') {
+        const newIndex = (focusedIndex + 1) % options.length
+        setFocusedIndex(newIndex)
+        setSelectedOption(options[newIndex])
+      } else if (event.key === 'ArrowLeft' || event.key === '<') {
+        const newIndex = (focusedIndex - 1 + options.length) % options.length
+        setFocusedIndex(newIndex)
+        setSelectedOption(options[newIndex])
+      }
+    },
+    [options, focusedIndex, setSelectedOption],
+  )
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleKeyDown])
+
   return (
     <Grid container spacing={1}>
       {selectedView === 'mosaico' ? (
@@ -1761,7 +1793,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     },
                     overflow: 'hidden',
                   }}
-                  onClick={() => setSelectedOption(option)}
+                  onClick={() => {
+                    setFocusedIndex(index)
+                    setSelectedOption(option)
+                  }}
                 >
                   {/* Add a yellow line at the top if option.state is "DELIVERY" */}
                   {option.tipoPedido === 'DELIVERY' && (
@@ -2733,7 +2768,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       variant="contained"
                       color="primary"
                       startIcon={<Save />}
-                      disabled={selectedOption?.tipoPedido === 'DELIVERY'}
                       onClick={
                         selectedOption?.state === 'COMPLETADO'
                           ? actualizarPedido
@@ -2829,7 +2863,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       endIcon={<Receipt />}
                       disabled={selectedOption?.state !== 'COMPLETADO'}
                       style={{ height: '50px', backgroundColor: '#f0ad4e' }}
-                      keyTip="T"
+                      keyTip="I"
                     >
                       Facturar
                     </KeyTipButton>
@@ -2951,6 +2985,34 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               )}
             </Grid>
 
+            <Grid container spacing={2} alignItems="center" padding={2}>
+              <Grid item xs={6}>
+                <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
+                  <MyInputLabel shrink>Ingrese Monto</MyInputLabel>
+                  <InputNumber
+                    min={0}
+                    id={'montoPagar'}
+                    className="inputMontoPagar"
+                    value={montoRecibido ?? 0}
+                    onChange={(value) => setMontoRecibido(value ?? 0)}
+                    precision={2}
+                    formatter={numberWithCommas}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Cambio</InputLabel>
+                  <OutlinedInput
+                    label={'Cambio'}
+                    size={'small'}
+                    value={numberWithCommas(montoRecibido - total, {})}
+                    readOnly
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+
             <TotalBox>
               <List>
                 <ListItem
@@ -2983,33 +3045,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 </ListItem>
               </List>
             </TotalBox>
-            {/* <Grid container spacing={2} alignItems="center">
-              <Grid item xs={6}>
-                <FormControl fullWidth error={Boolean(errors.inputMontoPagar?.message)}>
-                  <MyInputLabel shrink>Ingrese Monto</MyInputLabel>
-                  <InputNumber
-                    min={0}
-                    id={'montoPagar'}
-                    className="inputMontoPagar"
-                    value={montoRecibido ?? 0}
-                    onChange={(value) => setMontoRecibido(value ?? 0)}
-                    precision={2}
-                    formatter={numberWithCommas}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Cambio</InputLabel>
-                  <OutlinedInput
-                    label={'Cambio'}
-                    size={'small'}
-                    value={numberWithCommas(montoRecibido - total, {})}
-                    readOnly
-                  />
-                </FormControl>
-              </Grid>
-            </Grid> */}
 
             {/* )} */}
           </Grid>
