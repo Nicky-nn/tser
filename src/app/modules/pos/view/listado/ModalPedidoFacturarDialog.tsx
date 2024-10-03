@@ -7,6 +7,7 @@ import {
   PersonAddAlt1Outlined,
   RecentActors,
   Remove,
+  Replay,
   TableChart,
 } from '@mui/icons-material'
 import {
@@ -68,6 +69,7 @@ import ClienteExplorarDialog from '../../../clientes/components/ClienteExplorarD
 import { ClienteProps } from '../../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../../clientes/view/registro/ClienteRegistroDialog'
+import { fetchFacturaListado } from '../../../ventas/api/factura.listado.api'
 import DatosCliente from '../../../ventas/view/registro/DatosCliente'
 import { obtenerListadoPedidos } from '../../api/pedidosListado.api'
 import { generarComandaPDF } from '../../Pdf/Comanda'
@@ -476,6 +478,74 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
     setValue('numeroTarjeta', props.data.numeroTarjeta)
   }, [metodosPago])
 
+  const [loading, setLoading] = useState(false)
+  const reimprimirFactura = async (cuf: string) => {
+    setLoading(true) // Activa el estado de loading
+    try {
+      const entidad = {
+        codigoSucursal: sucursal.codigo,
+        codigoPuntoVenta: puntoVenta.codigo,
+      }
+      const query = `cuf=${cuf}`
+      const fetchPagination = {
+        page: 1,
+        limit: 1,
+        reverse: false,
+        query,
+      }
+      const { docs } = await fetchFacturaListado(fetchPagination, entidad)
+      const representacionGrafica = docs[0].representacionGrafica
+
+      const printerSettings = JSON.parse(localStorage.getItem('printers') || '{}')
+      const impresionAutomatica = printerSettings.impresionAutomatica || {}
+      if (impresionAutomatica.facturar) {
+        if (tipoRepresentacionGrafica === 'pdf') {
+          printJS(representacionGrafica.pdf)
+        } else if (tipoRepresentacionGrafica === 'rollo') {
+          const pdfUrl = representacionGrafica.rollo
+          const selectedPrinter = printerSettings.facturar || ''
+
+          if (selectedPrinter) {
+            fetch('http://localhost:7777/printPDF', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                pdf_url: pdfUrl,
+                printer: selectedPrinter,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.message) {
+                  toast.success('Impresión iniciada')
+                } else {
+                  toast.error('Error al iniciar la impresión')
+                }
+              })
+              .catch((error) => {
+                console.error('Error al imprimir el PDF:', error)
+                toast.error('Error al imprimir el PDF')
+              })
+          } else {
+            printJS({
+              printable: pdfUrl,
+              type: 'pdf',
+              style:
+                '@media print { @page { size: 100%; margin: 0mm; } body { width: 100%; } }',
+            })
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error en la reimpresión de factura:', error)
+      toast.error('Error en la reimpresión de factura')
+    } finally {
+      setLoading(false) // Desactiva el loading después de la operación
+    }
+  }
+
   return (
     <Dialog open={true} onClose={handleClose} fullWidth maxWidth="lg">
       <DialogTitle>
@@ -495,6 +565,25 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
                 >
                   Facturar
                 </Button>
+              </Grid>
+              {loading && (
+                <div style={overlayStyle as React.CSSProperties}>
+                  <div style={loadingStyle}>Cargando...</div>
+                </div>
+              )}
+
+              <Grid item>
+                <Tooltip title="Reimprimir Factura">
+                  <IconButton
+                    onClick={() => {
+                      reimprimirFactura(props.data.refDocumento)
+                    }}
+                    style={{ color: '#6e7b8c' }}
+                    disabled={!(props.data.tipoDocumento === 'FACTURA')}
+                  >
+                    <Replay />
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item>
                 <Tooltip title="Generar Comanda">
@@ -1108,6 +1197,23 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
       </DialogContent>
     </Dialog>
   )
+}
+const overlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  zIndex: 9999,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}
+
+const loadingStyle = {
+  color: '#fff',
+  fontSize: '20px',
 }
 
 export default ModalPedidoFacturar
