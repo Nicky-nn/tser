@@ -1,5 +1,6 @@
 import {
   Add,
+  CheckCircle,
   Close,
   ExpandMore,
   HomeWork,
@@ -430,6 +431,34 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
     }
   }
 
+  const handleFinalizar = () => {
+    // Mensaje de cliente no seleccionado
+    if (clienteSeleccionado === null || clienteSeleccionado === undefined) {
+      toast.error('Debe seleccionar un cliente')
+      return
+    }
+    // Mensaje de mesa no seleccionada
+    if (selectedOption === null) {
+      toast.error('Debe seleccionar una mesa')
+      return
+    }
+
+    // Si el estado es COMPLETADO, finalizamos y luego facturamos
+    if (selectedOption?.state === 'COMPLETADO') {
+      finalizarPedido(
+        getValues(),
+        puntoVenta,
+        sucursal,
+        // @ts-ignore
+        selectedOption?.nroPedido ?? 0,
+        additionalDiscount,
+        () => {
+          refetch()
+        },
+      )
+    }
+  }
+
   useEffect(() => {
     const clienteSeleccionado = getValues('cliente')
     setClienteSeleccionado(clienteSeleccionado)
@@ -564,6 +593,17 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
                   disabled={props.data.tipoDocumento === 'FACTURA'}
                 >
                   Facturar
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  endIcon={<CheckCircle />}
+                  onClick={handleFinalizar}
+                  variant="contained"
+                  color="primary"
+                  disabled={selectedOption?.state === 'FINALIZADO'}
+                >
+                  Finalizar
                 </Button>
               </Grid>
               {loading && (
