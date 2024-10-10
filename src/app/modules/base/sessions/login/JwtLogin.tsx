@@ -222,7 +222,7 @@ const JwtLogin = () => {
                             isClearable
                             noOptionsMessage={() => 'No hay opciones'}
                             loadingMessage={() => 'Cargando...'}
-                            formatCreateLabel={(inputValue) => `Crear: ${inputValue}`}
+                            formatCreateLabel={(inputValue) => `Añadir: ${inputValue}`}
                           />
 
                           <FormHelperText>
