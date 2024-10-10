@@ -68,6 +68,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import pdfMake from 'pdfmake/build/pdfmake'
 import printJS from 'print-js'
+import InputNumber from 'rc-input-number'
 import {
   FunctionComponent,
   ReactNode,
@@ -109,6 +110,7 @@ import { facturarPedido } from '../Pdf/facturarPedido'
 import { finalizarPedido } from '../Pdf/finalizarPedido'
 import { generarReciboPDF } from '../Pdf/Recibo'
 import { useWhatsappSender } from '../Pdf/sendWhatsappMessage'
+import KeyTipButton from '../services/keyTips'
 import MetodoPagoButton from '../utils/MetodoPagoButton'
 import { actualizarItemPedido } from '../utils/Pedidos/actualizarItem'
 import { adicionarItemPedido } from '../utils/Pedidos/adicionarItems'
@@ -118,8 +120,6 @@ import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
-import KeyTipButton from '../services/keyTips'
-import InputNumber from 'rc-input-number'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -1751,36 +1751,69 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }, [handleKeyDown])
 
+  // Función para manejar el cambio en el campo de búsqueda
+  const handleSearchChange = (event: {
+    target: { value: React.SetStateAction<string> }
+  }) => {
+    setSearchTerm(event.target.value)
+  }
+
+  // Función para normalizar texto (eliminar acentos y convertir a minúsculas)
+  const normalizeText = (text: string) => {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+  }
+
+  // Filtrar categorías y productos basados en el término de búsqueda
+  const filteredCategories = categories
+    .map((category) => ({
+      name: category.name,
+      products: category.products.filter((product) =>
+        normalizeText(product.name).includes(normalizeText(searchTerm)),
+      ),
+    }))
+    .filter((category) => category.products.length > 0)
+
+  const [occupiedCount, setOccupiedCount] = useState(0)
+
+  useEffect(() => {
+    const count = options.filter((option) => option.state !== 'Libre').length
+    setOccupiedCount(count)
+  }, [options])
+
   return (
     <Grid container spacing={1}>
       {selectedView === 'mosaico' ? (
         <div style={{ overflowX: 'auto', padding: '1px' }}>
           <div style={{ display: 'flex' }}>
             {options.map((option, index) => (
-              <div key={index} style={{ marginRight: '8px' }}>
+              <div key={index} style={{ marginRight: '8px', marginBottom: '8px' }}>
                 <Card
                   sx={{
                     width: 110,
                     height: 100,
-                    // backgroundColor: option.state === 'Libre' ? theme.palette.primary.main : '#EF9999',
                     backgroundColor:
-                      option.state === 'Libre'
-                        ? getColorSuffix(theme.palette.primary.main, {
-                            r: 186 - 0,
-                            g: 225 - 87,
-                            b: 187 - 82,
+                      focusedIndex === index
+                        ? // ? '#5D3FD3'
+                          getColorSuffix(theme.palette.primary.main, {
+                            r: 255 - 0,
+                            g: 193 - 87,
+                            b: 7 - 82,
                           })
-                        : '#EF9999',
-                    // backgroundColor: getBackgroundColor(
-                    //   theme.palette.primary.main,
-                    //   option.state,
-                    // ),
+                        : option.state === 'Libre'
+                          ? getColorSuffix(theme.palette.primary.main, {
+                              r: 186 - 0,
+                              g: 225 - 87,
+                              b: 187 - 82,
+                            })
+                          : '#EF9999',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    position: 'relative', // Needed to osition the top line
-                    // Change background color on hover
+                    position: 'relative',
                     '&:hover': {
                       backgroundColor:
                         option.state === 'Libre'
@@ -1798,7 +1831,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     setSelectedOption(option)
                   }}
                 >
-                  {/* Add a yellow line at the top if option.state is "DELIVERY" */}
                   {option.tipoPedido === 'DELIVERY' && (
                     <div
                       style={{
@@ -1815,8 +1847,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       DELIVERY
                     </div>
                   )}
-
-                  {/* Add a green line at the top if option.state is "PARA LLEVAR" */}
                   {option.tipoPedido === 'LLEVAR' && (
                     <div
                       style={{
@@ -1854,8 +1884,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         key="tooltip"
                       >
                         <div>
-                          {' '}
-                          {/* Wrapping the multiple children in a single parent element */}
                           <Typography color="textSecondary">
                             {`Ped.: ${option.nroOrden}`}
                             <br />
@@ -1879,6 +1907,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               </div>
             ))}
           </div>
+          <Typography component="h3">Mesas ocupadas: {occupiedCount}</Typography>
         </div>
       ) : (
         <></>
@@ -1895,7 +1924,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 label="Buscar Producto por Nombre"
                 fullWidth
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 margin="normal"
                 style={{ width: '100%' }}
                 InputProps={{ endAdornment: <Search /> }}
@@ -1994,7 +2023,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           container
           spacing={1}
           sx={{
-            mb: 2,
+            mb: 1,
             flexWrap: isMobile ? 'nowrap' : 'wrap',
             overflowX: isMobile ? 'auto' : 'initial',
             '&::-webkit-scrollbar': {
@@ -2008,13 +2037,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             backgroundColor: 'F3F3F3',
           }}
         >
-          {categories.length === 0
+          {filteredCategories.length === 0
             ? [1, 2, 3, 4, 5, 6].map((item) => (
                 <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
                   <Skeleton variant="rectangular" height={60} animation="wave" />
                 </Grid>
               ))
-            : categories.map((category) => (
+            : filteredCategories.map((category) => (
                 <Grid
                   item
                   key={category.name}
@@ -2054,7 +2083,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       disableTouchListener
                     >
                       <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                        {truncateName(category.name, 15)}
+                        {truncateName(category.name, 12)}
                       </Typography>
                     </Tooltip>
                   </Card>
@@ -2063,7 +2092,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         </Grid>
 
         <Divider />
-        <Grid container spacing={2} sx={{ mt: 2, position: 'relative' }}>
+        <Grid
+          container
+          sx={{
+            mt: 2,
+            position: 'relative',
+            maxHeight: '50vh', // Ajusta esto al tamaño deseado
+            overflowY: 'auto', // Habilita el scroll vertical
+          }}
+        >
           {!selectedCategory ? (
             <IMG
               src={logo}
@@ -2080,7 +2117,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               }}
             />
           ) : (
-            categories
+            filteredCategories
               .find((category) => category.name === selectedCategory)
               ?.products.map((product) => (
                 <Grid
@@ -2089,7 +2126,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   xs={6}
                   sm={3}
                   md={2}
-                  sx={{ userSelect: 'none', textAlign: 'center' }}
+                  sx={{
+                    userSelect: 'none',
+                    textAlign: 'center',
+                    padding: '1px 5px 10px 5px',
+                  }}
                 >
                   <Card
                     onClick={() => handleAddToCart(product)}
@@ -2105,7 +2146,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     {product.imagen && product.imagen.variants ? (
                       <CardMedia
                         component="img"
-                        height="130"
+                        height="100"
                         image={product.imagen.variants.medium}
                         alt={product.name}
                         sx={{
@@ -2160,7 +2201,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 }}
               >
                 {/* Ícono de cierre */}
-                {selectedOption.state === 'ELABORADO' && (
+                {selectedOption.state === 'Libres' && (
                   <IconButton
                     sx={{
                       position: 'absolute',
@@ -2623,6 +2664,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               <Remove />
                             </IconButton>
                             <Typography variant="body2">{product.quantity}</Typography>
+                            
                             <IconButton
                               size="small"
                               color="primary"
