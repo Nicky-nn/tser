@@ -4,6 +4,7 @@ import {
   MenuOpen,
   RecentActors,
   SaveAs,
+  ThumbUpOffAlt,
 } from '@mui/icons-material'
 import {
   Box,
@@ -32,6 +33,7 @@ import { MuiTableBasicOptionsProps } from '../../../../utils/muiTable/materialRe
 import { swalException } from '../../../../utils/swal'
 import AnularDocumentoDialog from '../../../ventas/view/VentaGestion/AnularDocumentoDialog'
 import { restPedidoAnularApi } from '../../api/anularPedido.api'
+import { restPedidoFinalizarApi } from '../../api/finalizarPedido.api'
 import { generarComandaPDF } from '../../Pdf/Comanda'
 import { generarReciboPDF } from '../../Pdf/Recibo'
 
@@ -64,7 +66,7 @@ type Props = OwnProps
 const PedidosMenu: React.FC<Props> = (props) => {
   const { row, openModal, refetch } = props
   const {
-    user: { usuario },
+    user: { usuario, sucursal, puntoVenta },
   } = useAuth()
   const [cart, setCart] = useState<Product[]>([])
   const [motivo, setMotivo] = useState('')
@@ -271,6 +273,62 @@ const PedidosMenu: React.FC<Props> = (props) => {
     setCart(updatedCart)
   }
 
+  const finalizarPedido = async (row: any) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas finalizar el pedido ${row.numeroPedido}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, finalizar',
+      cancelButtonText: 'Cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const entidad = {
+          codigoSucursal: sucursal.codigo,
+          codigoPuntoVenta: puntoVenta.codigo,
+        }
+        const cliente = {
+          codigoCliente: row.cliente.codigoCliente,
+          email: row.cliente.email,
+          razonSocial: row.cliente.razonSocial,
+          telefono: row.cliente.telefono,
+        }
+        const numeroPedido = row.numeroPedido
+        const input = {
+          codigoMetodoPago: 1,
+          descuentoAdicional: row.descuentoAdicional,
+          numeroTarjeta: null,
+          montoGiftCard: 0,
+          codigoMoneda: 1,
+          otrosCostos: 0,
+          descripcionOtrosCostos: null,
+          montoTotal: 0,
+        }
+
+        const response = await restPedidoFinalizarApi(
+          entidad,
+          cliente,
+          numeroPedido,
+          input,
+        )
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Pedido Finalizado',
+            text: `El pedido ${row.numeroPedido} ha sido finalizado correctamente`,
+          })
+          refetch()
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al finalizar el pedido',
+          })
+        }
+      }
+    })
+  }
+
   return (
     <>
       <Box>
@@ -283,6 +341,12 @@ const PedidosMenu: React.FC<Props> = (props) => {
         >
           <SimpleMenuItem onClick={() => openModal(row)}>
             <SaveAs /> Facturar
+          </SimpleMenuItem>
+          <SimpleMenuItem
+            onClick={() => finalizarPedido(row)}
+            disabled={row.state === 'FINALIZADO'}
+          >
+            <ThumbUpOffAlt /> Finalizar
           </SimpleMenuItem>
           <SimpleMenuItem
             onClick={() => generarComandaPDF(cart, usuario, mesa, nroOrden)}
