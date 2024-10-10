@@ -158,12 +158,8 @@ export const generarComandaPDF = (
         },
       },
 
-      // if donde si no hay notas generales, no se muestra el espacio
-      ...(notasGenerales
-        ? [{ text: `Nota: ${notasGenerales}`, style: 'subheader' }]
-        : []),
-
       { text: 'Comentarios:', style: 'subheader' },
+      ...(notasGenerales ? [{ text: ` -${notasGenerales}`, style: 'subheader' }] : []),
       { text: ' ' },
       { text: ' ' },
       { text: ' ' },
