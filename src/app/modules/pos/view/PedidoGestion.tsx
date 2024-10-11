@@ -1745,15 +1745,31 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   // Función para manejar el cambio con el teclado
   const [focusedIndex, setFocusedIndex] = useState(0)
   const handleKeyDown = useCallback(
-    (event: any) => {
-      if (event.code === 'AltLeft') {
-        const newIndex = (focusedIndex + 1) % options.length
-        setFocusedIndex(newIndex)
-        setSelectedOption(options[newIndex])
-      } else if (event.code === 'AltRight') {
-        const newIndex = (focusedIndex - 1 + options.length) % options.length
-        setFocusedIndex(newIndex)
-        setSelectedOption(options[newIndex])
+    (event: KeyboardEvent) => {
+      if (event.ctrlKey) {
+        let shouldUpdate = false
+        let newIndex = focusedIndex
+
+        switch (event.key) {
+          case '<':
+          case ',':
+          case 'ArrowLeft':
+            shouldUpdate = true
+            newIndex = (focusedIndex - 1 + options.length) % options.length
+            break
+          case '>':
+          case '.':
+          case 'ArrowRight':
+            shouldUpdate = true
+            newIndex = (focusedIndex + 1) % options.length
+            break
+        }
+
+        if (shouldUpdate) {
+          event.preventDefault()
+          setFocusedIndex(newIndex)
+          setSelectedOption(options[newIndex])
+        }
       }
     },
     [options, focusedIndex, setSelectedOption],
