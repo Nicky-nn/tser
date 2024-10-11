@@ -5,7 +5,7 @@ import { PuntoVentaProps } from '../../../../interfaces/puntoVenta'
 import { SucursalProps } from '../../../../interfaces/sucursal'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
 import { apiClienteRegistro } from '../../../clientes/api/clienteRegistro.api'
-import { actualizarItem } from '../../api/UDPedido.api'
+import { actualizarItem, InputPedidoActualizar } from '../../api/UDPedido.api'
 
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -139,6 +139,16 @@ export const actualizarItemPedido = async (
     telefono: cliente?.telefono || '',
   }
 
+  const input = {
+    nota: getClientData.notasGenerales,
+    tipo: getClientData.tipoPedido,
+    atributo1: getClientData.atributo1,
+    atributo2: getClientData.atributo2,
+    atributo3: getClientData.atributo3,
+    direccionEntrega: getClientData.direccionEntrega,
+    fechaEntrega: getClientData.fechaEntrega,
+  } as InputPedidoActualizar
+
   // Llamar a la función que registra el pedido
   try {
     Swal.fire({
@@ -157,6 +167,7 @@ export const actualizarItemPedido = async (
       productos,
       codigoMoneda,
       clienteActualizado, // Enviar el cliente con los campos requeridos
+      input,
     )
 
     Swal.fire({

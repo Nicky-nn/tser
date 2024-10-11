@@ -31,6 +31,23 @@ interface MutationResponse {
   }[]
 }
 
+export interface InputPedidoActualizar {
+  atributo1: string
+  atributo2: string
+  atributo3: string
+  atributo4: string
+  direccionEntrega: string
+  espacioId: string
+  fechaEntrega: string
+  mesa: {
+    nombre: string
+    nroComensales: number
+    ubicacion: string
+  }
+  nota: string
+  terminos: string
+  tipo: string
+}
 // Definición de las mutaciones GraphQL
 const mutationAdicionarItems = gql`
   mutation ADICIONAR_ITEMS(
@@ -65,6 +82,7 @@ const mutationActualizarItem = gql`
     $codigoMoneda: Int!
     $productos: [RestPedidoActualizarItemInput]!
     $cliente: ClienteOperacionInput
+    $input: RestPedidoExpressActualizarInput
   ) {
     restPedidoActualizarItem(
       numeroPedido: $numeroPedido
@@ -72,6 +90,7 @@ const mutationActualizarItem = gql`
       codigoMoneda: $codigoMoneda
       productos: $productos
       cliente: $cliente
+      input: $input
     ) {
       numeroPedido
       numeroOrden
@@ -153,13 +172,14 @@ export const actualizarItem = async (
   productos: ProductoInput[],
   codigoMoneda: number,
   cliente?: any,
+  input?: InputPedidoActualizar,
 ): Promise<MutationResponse> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const variables = { numeroPedido, entidad, productos, codigoMoneda, cliente }
+    const variables = { numeroPedido, entidad, productos, codigoMoneda, cliente, input }
     const data: MutationResponse = await client.request(mutationActualizarItem, variables)
     return data
   } catch (error: any) {

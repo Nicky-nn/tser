@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   AccountBalance,
   Add,
@@ -453,14 +454,27 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     })
   }
 
-  const handleQuantityChange = (index: number, action: string) => {
-    const newQuantity =
-      action === 'add' ? cart[index].quantity + 1 : cart[index].quantity - 1
-    if (newQuantity >= 0) {
+  const handleQuantityChange = (index: number, action: string, value?: number) => {
+    // Si la acción es 'add', incrementar la cantidad
+    if (action === 'add') {
       setCart((prevCart) =>
         prevCart.map((item, i) =>
-          i === index ? { ...item, quantity: newQuantity } : item,
+          i === index ? { ...item, quantity: item.quantity + 1 } : item,
         ),
+      )
+    }
+    // Si la acción es 'subtract', reducir la cantidad, pero no permitir que sea menor a 1
+    else if (action === 'subtract') {
+      setCart((prevCart) =>
+        prevCart.map((item, i) =>
+          i === index ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item,
+        ),
+      )
+    }
+    // Si la acción es 'input', actualizar la cantidad con el valor del input
+    else if (action === 'input' && value !== undefined) {
+      setCart((prevCart) =>
+        prevCart.map((item, i) => (i === index ? { ...item, quantity: value } : item)),
       )
     }
   }
@@ -1728,14 +1742,15 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     ...customStyles,
   }
 
+  // Función para manejar el cambio con el teclado
   const [focusedIndex, setFocusedIndex] = useState(0)
   const handleKeyDown = useCallback(
     (event: any) => {
-      if (event.key === 'ArrowRight' || event.key === '>') {
+      if (event.code === 'AltLeft') {
         const newIndex = (focusedIndex + 1) % options.length
         setFocusedIndex(newIndex)
         setSelectedOption(options[newIndex])
-      } else if (event.key === 'ArrowLeft' || event.key === '<') {
+      } else if (event.code === 'AltRight') {
         const newIndex = (focusedIndex - 1 + options.length) % options.length
         setFocusedIndex(newIndex)
         setSelectedOption(options[newIndex])
@@ -2663,8 +2678,49 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             >
                               <Remove />
                             </IconButton>
-                            <Typography variant="body2">{product.quantity}</Typography>
-                            
+                            {/* Haremos cantidad modificable con NumeroFormat y OutlinedInput*/}
+                            <OutlinedInput
+                              size="small"
+                              value={product.quantity}
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  index,
+                                  'input',
+                                  parseFloat(e.target.value),
+                                )
+                              }
+                              onBlur={() =>
+                                // Si el valor si es 0 , automaticamente se vuelva 1 y si es null o nan se vuelve 1
+                                handleQuantityChange(
+                                  index,
+                                  'input',
+                                  product.quantity || 1,
+                                )
+                              }
+                              inputComponent={NumeroFormat as any}
+                              inputProps={{
+                                style: {
+                                  padding: '2px',
+                                  width: '40px',
+                                  textAlign: 'center',
+                                },
+                                min: 1,
+                              }}
+                              // Los estilos se modifican para que el input sea más pequeño no tenga borde y sea centrado
+                              sx={{
+                                width: 'auto',
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none',
+                                },
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none',
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none',
+                                },
+                                fontSize: '1rem',
+                              }}
+                            />
                             <IconButton
                               size="small"
                               color="primary"
@@ -2798,7 +2854,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      disabled={selectedOption?.state === 'COMPLETADO'}
                     />
                   )}
                 />

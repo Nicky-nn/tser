@@ -271,7 +271,6 @@ const DeliveryDialog = ({
                 onChange={handleChange}
                 margin="dense"
                 placeholder='Ej: "1234" o "Juan"'
-                disabled={dataDelivery.fromDatabase}
               />
             </Grid>
             <Grid item xs={12}>
@@ -282,7 +281,7 @@ const DeliveryDialog = ({
                 options={tipoPedidoOptions}
                 value={deliveryInfo.tipoPedido}
                 onChange={handleSelectChange}
-                isDisabled={dataDelivery.fromDatabase}
+                // // isDisabled={dataDelivery.fromDatabase}
                 placeholder="Seleccione el tipo de pedido"
               />
             </Grid>
@@ -296,7 +295,7 @@ const DeliveryDialog = ({
                   onChange={handleCustomOrderTypeChange}
                   margin="dense"
                   placeholder="Especifique el tipo de pedido"
-                  disabled={dataDelivery.fromDatabase}
+                  // disabled={dataDelivery.fromDatabase}
                 />
               </Grid>
             )}
@@ -326,7 +325,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -344,7 +343,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -356,7 +355,7 @@ const DeliveryDialog = ({
                         onChange={handleChange}
                         margin="dense"
                         placeholder='Ej: "3A"'
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -374,7 +373,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -392,7 +391,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -406,7 +405,7 @@ const DeliveryDialog = ({
                         multiline
                         rows={2}
                         placeholder='Ej: "Frente a la plaza principal"'
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -426,7 +425,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -446,7 +445,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -458,7 +457,7 @@ const DeliveryDialog = ({
                         onChange={handleChange}
                         margin="dense"
                         placeholder="Ej: Entre 14:00 y 16:00"
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -472,7 +471,7 @@ const DeliveryDialog = ({
                         multiline
                         rows={2}
                         placeholder='Ej: "Llamar al timbre 3 veces"'
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -490,7 +489,7 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        disabled={dataDelivery.fromDatabase}
+                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item container xs={12} spacing={2}>
@@ -501,7 +500,7 @@ const DeliveryDialog = ({
                               checked={deliveryInfo.solicitarUtensilios}
                               onChange={handleChange}
                               name="solicitarUtensilios"
-                              disabled={dataDelivery.fromDatabase}
+                              // disabled={dataDelivery.fromDatabase}
                             />
                           }
                           label="Solicitar utensilios/servilletas"
@@ -514,7 +513,7 @@ const DeliveryDialog = ({
                               checked={deliveryInfo.entregaSinContacto}
                               onChange={handleChange}
                               name="entregaSinContacto"
-                              disabled={dataDelivery.fromDatabase}
+                              // disabled={dataDelivery.fromDatabase}
                             />
                           }
                           label="Entrega sin contacto"
@@ -532,7 +531,7 @@ const DeliveryDialog = ({
             variant="contained"
             color="primary"
             style={{ marginTop: 20 }}
-            disabled={dataDelivery.fromDatabase}
+            // disabled={dataDelivery.fromDatabase}
             keyTip="G"
             onClick={handleSubmit}
           >
