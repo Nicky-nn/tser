@@ -1938,7 +1938,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               </div>
             ))}
           </div>
-          <Typography component="h3">Mesas ocupadas: {occupiedCount}</Typography>
+          <Typography component="h2" variant="h6" style={{ fontWeight: 'bold' }}>
+            Mesas ocupadas: {occupiedCount}
+          </Typography>
         </div>
       ) : (
         <></>
