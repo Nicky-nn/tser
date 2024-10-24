@@ -431,6 +431,15 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
     }
   }
 
+  useEffect(() => {
+    if (
+      getValues('metodoPago')?.descripcion === 'TARJETA' &&
+      getValues('numeroTarjeta') === '00000000'
+    ) {
+      toast.error('El número de tarjeta no puede ser 00000000')
+    }
+  }, [watch('metodoPago'), watch('numeroTarjeta')])
+
   const handleFinalizar = () => {
     // Mensaje de cliente no seleccionado
     if (clienteSeleccionado === null || clienteSeleccionado === undefined) {
@@ -1086,6 +1095,7 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
                         {...field}
                         styles={reactSelectStyle(Boolean(errors.moneda))}
                         name="moneda"
+                        isDisabled={true}
                         placeholder={'Seleccione la moneda de venta'}
                         value={field.value}
                         onChange={async (val: any) => {
