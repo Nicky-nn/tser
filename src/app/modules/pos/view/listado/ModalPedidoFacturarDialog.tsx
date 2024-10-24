@@ -432,13 +432,12 @@ const ModalPedidoFacturar: FunctionComponent<Props> = (props) => {
   }
 
   useEffect(() => {
-    if (
-      getValues('metodoPago')?.descripcion === 'TARJETA' &&
-      getValues('numeroTarjeta') === '00000000'
-    ) {
+    const numeroTarjeta = getValues('numeroTarjeta') || ''
+
+    if (numeroTarjeta === '00000000') {
       toast.error('El número de tarjeta no puede ser 00000000')
-    }
-  }, [watch('metodoPago'), watch('numeroTarjeta')])
+    } else return
+  }, [watch('numeroTarjeta')])
 
   const handleFinalizar = () => {
     // Mensaje de cliente no seleccionado
