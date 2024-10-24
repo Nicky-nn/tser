@@ -91,7 +91,17 @@ const CreditCardDialog = ({
       return
     }
 
-    // Tiene q ser 8 digitos para que sea válido
+    // Check if the number is "00000000"
+    if (cardNumber === '00000000') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Número de tarjeta inválido',
+        text: 'El número de tarjeta no puede ser "00000000".',
+      })
+      return
+    }
+
+    // Validate that the card number is 8 digits long
     if (cardNumber.length !== 8) {
       Swal.fire({
         icon: 'warning',
@@ -107,8 +117,6 @@ const CreditCardDialog = ({
 
   return (
     <ThemeProvider theme={useTheme()}>
-      {' '}
-      {/* Wrap your component with ThemeProvider */}
       <Dialog open={open} onClose={onClose} fullWidth>
         <DialogTitle>
           Detalles de la tarjeta
