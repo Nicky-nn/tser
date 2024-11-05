@@ -140,6 +140,7 @@ const ICONS = {
   'TARJETA-CHEQUE': CreditCard,
   'EFECTIVO-DEPOSITO EN CUENTA': CurrencyExchange,
   'DEBITO AUTOMATICO -  TRANSFERENCIA BANCARIA': QrCode,
+  'DEBITO AUTOMATICO -  PAGO ONLINE': QrCode,
   CHEQUE: Receipt,
   'GIFT-CARD': Redeem,
   OTROS: AltRoute,
@@ -624,7 +625,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const { data, refetch } = useQuery<any[]>({
     queryKey: ['pedidosListadao'],
     queryFn: async () => {
-      const fetchPagination = { page: 1, limit: 100, reverse: true, query: '' }
+      const fetchPagination = { page: 1, limit: 10000, reverse: true, query: '' }
       const entidad = {
         codigoSucursal: sucursal.codigo,
         codigoPuntoVenta: puntoVenta.codigo,
