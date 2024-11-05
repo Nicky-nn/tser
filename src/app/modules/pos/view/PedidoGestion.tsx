@@ -622,7 +622,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
   const tiposPedido = ['C. Interno', 'Para Llevar', 'Delivery']
 
-  const { data, refetch } = useQuery<any[]>({
+  const {
+    data,
+    refetch,
+    isLoading: isLoadingPedidos,
+  } = useQuery<any[]>({
     queryKey: ['pedidosListadao'],
     queryFn: async () => {
       const fetchPagination = { page: 1, limit: 10000, reverse: true, query: '' }
@@ -1820,124 +1824,142 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       {selectedView === 'mosaico' ? (
         <div style={{ overflowX: 'auto', padding: '1px' }}>
           <div style={{ display: 'flex' }}>
-            {options.map((option, index) => (
-              <div key={index} style={{ marginRight: '8px', marginBottom: '8px' }}>
-                <Card
-                  sx={{
-                    width: 110,
-                    height: 100,
-                    backgroundColor:
-                      focusedIndex === index
-                        ? // ? '#5D3FD3'
-                          getColorSuffix(theme.palette.primary.main, {
-                            r: 255 - 0,
-                            g: 193 - 87,
-                            b: 7 - 82,
-                          })
-                        : option.state === 'Libre'
-                          ? getColorSuffix(theme.palette.primary.main, {
-                              r: 186 - 0,
-                              g: 225 - 87,
-                              b: 187 - 82,
-                            })
-                          : '#EF9999',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    '&:hover': {
-                      backgroundColor:
-                        option.state === 'Libre'
-                          ? getColorSuffix(theme.palette.primary.main, {
-                              r: 140 - 5,
-                              g: 207 - 87,
-                              b: 155 - 82,
-                            })
-                          : '#E57373',
-                    },
-                    overflow: 'hidden',
-                  }}
-                  onClick={() => {
-                    setFocusedIndex(index)
-                    setSelectedOption(option)
-                  }}
-                >
-                  {option.tipoPedido === 'DELIVERY' && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: '#F4E790',
-                        color: '#333',
-                        padding: '2px 5px',
-                        fontSize: '0.7rem',
-                        transform: 'rotate(45deg) translate(15%, -50%)',
+            {isLoadingPedidos
+              ? Array.from(new Array(15)).map((_, index) => (
+                  <div key={index} style={{ marginRight: '8px', marginBottom: '8px' }}>
+                    <Skeleton
+                      variant="rectangular"
+                      width={110}
+                      height={100}
+                      sx={{
+                        borderRadius: '4px',
+                        backgroundColor: theme.palette.action.hover,
+                      }}
+                    />
+                  </div>
+                ))
+              : options.map((option, index) => (
+                  <div key={index} style={{ marginRight: '8px', marginBottom: '8px' }}>
+                    <Card
+                      sx={{
+                        width: 110,
+                        height: 100,
+                        backgroundColor:
+                          focusedIndex === index
+                            ? getColorSuffix(theme.palette.primary.main, {
+                                r: 255,
+                                g: 193,
+                                b: 7,
+                              })
+                            : option.state === 'Libre'
+                              ? getColorSuffix(theme.palette.primary.main, {
+                                  r: 186,
+                                  g: 225,
+                                  b: 187,
+                                })
+                              : '#EF9999',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        position: 'relative',
+                        '&:hover': {
+                          backgroundColor:
+                            option.state === 'Libre'
+                              ? getColorSuffix(theme.palette.primary.main, {
+                                  r: 140,
+                                  g: 207,
+                                  b: 155,
+                                })
+                              : '#E57373',
+                        },
+                        overflow: 'hidden',
+                      }}
+                      onClick={() => {
+                        setFocusedIndex(index)
+                        setSelectedOption(option)
                       }}
                     >
-                      DELIVERY
-                    </div>
-                  )}
-                  {option.tipoPedido === 'LLEVAR' && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        backgroundColor: '#C2F490',
-                        color: '#333',
-                        padding: '2px 5px',
-                        fontSize: '0.7rem',
-                        transform: 'rotate(-45deg) translate(-15%, -50%)',
-                      }}
-                    >
-                      LLEVAR
-                    </div>
-                  )}
-                  <CardContent
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="h6" component="h2">
-                        {`M.: ${option.value}`}
-                      </Typography>
-                    </div>
-                    {option.nroOrden && (
-                      <Tooltip
-                        title={
-                          option.cliente ? toCamelCase(option.cliente.razonSocial) : ''
-                        }
-                        placement="top"
-                        key="tooltip"
+                      {option.tipoPedido === 'DELIVERY' && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            backgroundColor: '#F4E790',
+                            color: '#333',
+                            padding: '2px 5px',
+                            fontSize: '0.7rem',
+                            transform: 'rotate(45deg) translate(15%, -50%)',
+                          }}
+                        >
+                          DELIVERY
+                        </div>
+                      )}
+                      {option.tipoPedido === 'LLEVAR' && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            backgroundColor: '#C2F490',
+                            color: '#333',
+                            padding: '2px 5px',
+                            fontSize: '0.7rem',
+                            transform: 'rotate(-45deg) translate(-15%, -50%)',
+                          }}
+                        >
+                          LLEVAR
+                        </div>
+                      )}
+                      <CardContent
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
                       >
-                        <div>
-                          <Typography color="textSecondary">
-                            {`Ped.: ${option.nroOrden}`}
-                            <br />
-                            <span>
-                              {option.cliente
-                                ? truncateName(toCamelCase(option.cliente.razonSocial), 7)
-                                : ''}
-                            </span>
-                          </Typography>
-                          <Typography
-                            color="textSecondary"
-                            style={{ fontWeight: 'bold', textAlign: 'center' }}
-                          >
-                            {option.horaPedido}
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <Typography variant="h6" component="h2">
+                            {`M.: ${option.value}`}
                           </Typography>
                         </div>
-                      </Tooltip>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
+                        {option.nroOrden && (
+                          <Tooltip
+                            title={
+                              option.cliente
+                                ? toCamelCase(option.cliente.razonSocial)
+                                : ''
+                            }
+                            placement="top"
+                            key="tooltip"
+                          >
+                            <div>
+                              <Typography color="textSecondary">
+                                {`Ped.: ${option.nroOrden}`}
+                                <br />
+                                <span>
+                                  {option.cliente
+                                    ? truncateName(
+                                        toCamelCase(option.cliente.razonSocial),
+                                        7,
+                                      )
+                                    : ''}
+                                </span>
+                              </Typography>
+                              <Typography
+                                color="textSecondary"
+                                style={{ fontWeight: 'bold', textAlign: 'center' }}
+                              >
+                                {option.horaPedido}
+                              </Typography>
+                            </div>
+                          </Tooltip>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
           </div>
           <Typography component="h2" variant="h6" style={{ fontWeight: 'bold' }}>
             Mesas ocupadas: {occupiedCount}
