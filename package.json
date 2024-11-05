@@ -20,6 +20,7 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
     "@hookform/resolvers": "^3.4.2",
+    "@marsidev/react-turnstile": "^1.0.2",
     "@mui/icons-material": "^5.15.18",
     "@mui/lab": "^5.0.0-alpha.165",
     "@mui/material": "^5.15.18",

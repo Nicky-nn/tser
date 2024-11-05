@@ -1,10 +1,14 @@
+// noinspection JSXNamespaceValidation,DuplicatedCode
+
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
 import {
   Box,
+  Button,
   Card,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormHelperText,
   Grid,
@@ -17,7 +21,6 @@ import {
   Typography,
 } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import ReCAPTCHA, { ReCAPTCHAProps } from 'react-google-recaptcha'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import CreatableSelect from 'react-select/creatable'
@@ -38,28 +41,28 @@ import {
 const fondo = import.meta.env.ISI_FONDO
 const logo = import.meta.env.ISI_LOGO_FULL
 
-const FlexBox = styled(Box)(() => ({
+const FlexBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
-}))
+})
 
-const JustifyBox = styled(FlexBox)(() => ({
+const JustifyBox = styled(FlexBox)({
   justifyContent: 'center',
   padding: '15px 15px 0 15px',
-}))
+})
 
-const ContentBox = styled(Box)(() => ({
+const ContentBox = styled(Box)({
   height: '100%',
   padding: '20px',
   position: 'relative',
   background: 'rgba(0, 0, 0, 0.01)',
-}))
+})
 
-const IMG = styled('img')(() => ({
+const IMG = styled('img')({
   width: '90%',
-}))
+})
 
-const JWTRoot = styled(JustifyBox)(() => ({
+const JWTRoot = styled(JustifyBox)({
   backgroundImage: `url("${fondo}")`,
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
@@ -70,7 +73,7 @@ const JWTRoot = styled(JustifyBox)(() => ({
     borderRadius: 12,
     margin: '1rem',
   },
-}))
+})
 
 const validationSchema = object({
   shop: object({
@@ -89,20 +92,14 @@ interface LoginProps {
   remember: true
 }
 
-/**
- * @description Interfaz principal para el inicio de sesión del usuario
- * @constructor
- */
 const JwtLogin = () => {
   const navigate = useNavigate()
-  const reCaptchaRef = useRef<ReCAPTCHAProps | any>()
-
+  const ref = useRef<TurnstileInstance | null>(null)
   const [loading, setLoading] = useState(false)
   const { login }: any = useAuth()
   const [message, setMessage] = useState('')
-
+  const [blockButton, setBlockButton] = useState(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
-
   const shops = storageComercioListado()
 
   const form = useForm<LoginProps>({
@@ -115,39 +112,23 @@ const JwtLogin = () => {
     resolver: yupResolver<any>(validationSchema),
   })
 
-  /**
-   * @description Login de usuario y validación de permisos
-   * @param values
-   */
   const onSubmit: SubmitHandler<LoginProps> = async (values) => {
     try {
       setLoading(true)
-      setTimeout(() => {
-        setLoading(false)
-      }, 2500)
+      setBlockButton(true)
 
-      // Verificamos el token captcha
-      const newToken = await reCaptchaRef.current.executeAsync()
-
-      if (newToken) {
-        // setLoading(true)
-        const { shop, email, password, remember } = values
-        await login(shop?.value, email, password)
-        if (remember) {
-          storageComercioActualizar(shop!.value)
-          // localStorage.setItem('shop', shop)
-        } else {
-          storageComercioEliminar(shop!.value)
-          // localStorage.removeItem('shop')
-        }
-        navigate('/')
+      const { shop, email, password, remember } = values
+      await login(shop?.value, email, password)
+      if (remember) {
+        storageComercioActualizar(shop!.value)
       } else {
-        throw new Error('Error validación Captcha, Refresque la pagina CTRL + F5')
+        storageComercioEliminar(shop!.value)
       }
+      navigate('/')
     } catch (e: any) {
       setMessage(e.message)
       setLoading(false)
-      setTimeout(() => reCaptchaRef.current.reset(), 500)
+      ref.current?.reset()
     }
   }
 
@@ -158,21 +139,12 @@ const JwtLogin = () => {
     }
   }, [])
 
-  // Ejecutamos el captcha validador
-  useEffect(() => {
-    if (reCaptchaRef) {
-      reCaptchaRef.current.reset()
-    }
-    setLoading(false)
-  }, [])
-
-  // @ts-ignore
   return (
     <JWTRoot>
       <Card className="card">
-        <Grid container rowSpacing={1}>
-          <Grid item sm={12} xs={12}>
-            <JustifyBox p={4} height="100%">
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <JustifyBox p={4}>
               <IMG src={logo} alt="Gestión de ventas y servicios" />
             </JustifyBox>
 
@@ -185,20 +157,10 @@ const JwtLogin = () => {
             </Typography>
           </Grid>
 
-          <Grid item sm={12} xs={12}>
+          <Grid item xs={12}>
             <ContentBox>
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <ReCAPTCHA
-                  size={'invisible'}
-                  sitekey={import.meta.env.ISI_CAPTCHA_KEY}
-                  ref={reCaptchaRef}
-                  onErrored={() =>
-                    setMessage(
-                      `Ocurrió un error en cargar el Captcha, contáctese con el administrador`,
-                    )
-                  }
-                />
-                <Grid container spacing={1} rowSpacing={3} sx={{ mt: 0 }}>
+                <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Controller
                       control={form.control}
@@ -295,14 +257,39 @@ const JwtLogin = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <Turnstile
+                      ref={ref}
+                      style={{ marginTop: '-10px' }}
+                      siteKey={import.meta.env.ISI_CAPTCHA_KEY}
+                      options={{
+                        action: 'submit-form',
+                        theme: 'light',
+                        size: 'flexible',
+                        language: 'es',
+                      }}
+                      onSuccess={() => {
+                        setBlockButton(false)
+                        setMessage('')
+                      }}
+                      onError={(e) => {
+                        setMessage(`Error captcha, presione CTRL + F5, código: ${e}`)
+                        setBlockButton(true)
+                      }}
+                      onExpire={() => {
+                        setMessage('Captcha Expirado, presione CTRL + F5')
+                        setBlockButton(true)
+                        ref.current?.reset()
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <FlexBox justifyContent="space-between">
-                      <FlexBox gap={0}>
+                      <FlexBox>
                         <Controller
                           control={form.control}
                           render={({ field }) => (
                             <>
                               <Checkbox
-                                size="small"
                                 name="remember"
                                 onChange={field.onChange}
                                 checked={field.value}
@@ -314,28 +301,18 @@ const JwtLogin = () => {
                           name={'remember'}
                         />
                       </FlexBox>
-                      {/*
-                        <NavLink
-                        to="/session/forgot-password"
-                        style={{ color: theme.palette.primary.main }}
-                      >
-                        ¿Olvidaste tu contraseña?
-                      </NavLink>
-                         */}
                     </FlexBox>
                   </Grid>
                   <Grid item xs={12}>
-                    <LoadingButton
+                    <Button
                       type="submit"
                       color="primary"
-                      loading={loading}
+                      disabled={blockButton}
                       variant="contained"
-                      size={'large'}
                       fullWidth
-                      sx={{ my: 2 }}
                     >
-                      Iniciar Sesión
-                    </LoadingButton>
+                      {loading ? <CircularProgress size={24} /> : 'Iniciar Sesión'}
+                    </Button>
                   </Grid>
                 </Grid>
                 {message && <Paragraph sx={{ color: 'red' }}>{message}</Paragraph>}
