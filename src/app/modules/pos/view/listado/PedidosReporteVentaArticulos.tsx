@@ -199,7 +199,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
       pageMargins: [0, 0, 0, 0],
 
       content: [
-        { text: 'Resumen de Ventas', style: 'header' },
+        { text: 'Resumen de Ventas Artículo Punto de Venta', style: 'header' },
         { text: `Fecha: ${new Date().toLocaleDateString()}`, style: 'subheader' },
         // Iteramos sobre las sucursales para agregar sus productos
         ...Object.keys(groupedBySucursal).map((sucursalKey) => ({
