@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, styled, ThemeProvider, useMediaQuery, useTheme } from '@mui/material'
 import { BoxProps } from '@mui/material/Box'
 import React, { useEffect, useRef } from 'react'
@@ -5,6 +6,7 @@ import Scrollbar from 'react-perfect-scrollbar'
 import { Outlet } from 'react-router-dom'
 
 import LayoutRestriccion from '../../../../../modules/base/components/LayoutRestriccion/LayoutRestriccion'
+import LayoutRestriccionV2 from '../../../../../modules/base/components/LayoutRestriccion/LayoutRestriccion2'
 import { sidenavCompactWidth, sideNavWidth } from '../../../../../utils/constant'
 import useSettings from '../../../../hooks/useSettings'
 import Footer from '../../Footer/Footer'
@@ -104,7 +106,7 @@ const Layout1 = () => {
           <>
             <ThemeProvider theme={topbarTheme}>
               <Layout1Topbar fixed={true} className="elevation-z8" />
-              <LayoutRestriccion />
+              <LayoutRestriccionV2 />
             </ThemeProvider>
           </>
         )}
@@ -114,7 +116,7 @@ const Layout1 = () => {
             {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
               <ThemeProvider theme={topbarTheme}>
                 <Layout1Topbar />
-                <LayoutRestriccion />
+                <LayoutRestriccionV2 />
               </ThemeProvider>
             )}
             <Box flexGrow={1} position="relative">
@@ -132,7 +134,7 @@ const Layout1 = () => {
             {layout1Settings.topbar.show && !layout1Settings.topbar.fixed && (
               <ThemeProvider theme={topbarTheme}>
                 <Layout1Topbar />
-                <LayoutRestriccion />
+                <LayoutRestriccionV2 />
               </ThemeProvider>
             )}
 

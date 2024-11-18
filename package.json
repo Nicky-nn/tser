@@ -45,6 +45,7 @@
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "material-react-table": "^2.13.0",
+    "material-ui-confirm": "^3.0.16",
     "nanoid": "^5.0.7",
     "pdfmake": "^0.2.10",
     "print-js": "^1.6.0",

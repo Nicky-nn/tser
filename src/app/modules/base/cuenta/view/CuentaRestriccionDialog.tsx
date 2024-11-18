@@ -1,4 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import React, { FunctionComponent } from 'react'
 
 import CuentaRestriccionTable from './CuentaRestriccionTable'
@@ -14,34 +15,34 @@ type Props = OwnProps
 
 const CuentaRestriccionDialog: FunctionComponent<Props> = (props) => {
   const { onClose, open, ...other } = props
-  const handleCancel = () => {
-    onClose()
-  }
 
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '90%', maxHeight: '85vh' } }}
+        sx={{ '& .MuiDialog-paper': { width: '100%', maxWidth: 'md' } }}
         maxWidth="md"
         open={open}
+        onClose={() => onClose()} // Maneja el cierre por Escape
         {...other}
       >
-        <DialogTitle>Cambiar Sucursal / Punto Venta</DialogTitle>
+        <DialogTitle>
+          Cambiar Sucursal / Punto Venta
+          <IconButton
+            aria-label="close"
+            onClick={() => onClose()} // Maneja el cierre por clic en la "X"
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent dividers>
           <CuentaRestriccionTable />
         </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            color={'error'}
-            size={'small'}
-            variant={'contained'}
-            onClick={handleCancel}
-            sx={{ mr: 2 }}
-          >
-            Cerrar
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )
