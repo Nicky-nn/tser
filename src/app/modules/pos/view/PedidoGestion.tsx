@@ -629,7 +629,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   } = useQuery<any[]>({
     queryKey: ['pedidosListadao'],
     queryFn: async () => {
-      const fetchPagination = { page: 1, limit: 10000, reverse: true, query: '' }
+      // el imit esta calculado en 1500
+      const fetchPagination = { page: 1, limit: 100, reverse: true, query: '' }
       const entidad = {
         codigoSucursal: sucursal.codigo,
         codigoPuntoVenta: puntoVenta.codigo,
@@ -1846,16 +1847,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         height: 100,
                         backgroundColor:
                           focusedIndex === index
-                            ? getColorSuffix(theme.palette.primary.main, {
-                                r: 255,
-                                g: 193,
-                                b: 7,
+                            ? // ? '#5D3FD3'
+                              getColorSuffix(theme.palette.primary.main, {
+                                r: 255 - 0,
+                                g: 193 - 87,
+                                b: 7 - 82,
                               })
                             : option.state === 'Libre'
                               ? getColorSuffix(theme.palette.primary.main, {
-                                  r: 186,
-                                  g: 225,
-                                  b: 187,
+                                  r: 186 - 0,
+                                  g: 225 - 87,
+                                  b: 187 - 82,
                                 })
                               : '#EF9999',
                         display: 'flex',
@@ -1867,9 +1869,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                           backgroundColor:
                             option.state === 'Libre'
                               ? getColorSuffix(theme.palette.primary.main, {
-                                  r: 140,
-                                  g: 207,
-                                  b: 155,
+                                  r: 140 - 5,
+                                  g: 207 - 87,
+                                  b: 155 - 82,
                                 })
                               : '#E57373',
                         },
