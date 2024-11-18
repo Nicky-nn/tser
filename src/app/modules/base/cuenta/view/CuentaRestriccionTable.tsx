@@ -1,18 +1,21 @@
-import { Storefront } from '@mui/icons-material'
+import StoreIcon from '@mui/icons-material/Store'
 import {
-  Alert,
-  Divider,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
-  MenuItem,
-  MenuList,
+  Paper,
   Typography,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import React, { FunctionComponent } from 'react'
 
-import AlertError from '../../../../base/components/Alert/AlertError'
-import AlertLoading from '../../../../base/components/Alert/AlertLoading'
 import useAuth from '../../../../base/hooks/useAuth'
 import { notSuccess } from '../../../../utils/notification'
 import { swalAsyncConfirmDialog, swalException } from '../../../../utils/swal'
@@ -20,20 +23,11 @@ import { apiUsuarioRestriccion } from '../api/usuarioRestriccion.api'
 import { apiUsuarioActualizarRestriccion } from '../api/usuarioRestriccionActualizar.api'
 import { UsuarioSucursalRestriccionProps } from '../interfaces/restriccion.interface'
 
-interface OwnProps {}
-
-type Props = OwnProps
-
-/**
- * @description Formulario para cambiar de sucursal y punto de venta activo, una vez realizado el click
- * el sistema se reinicia, cargando el nuevo perfilProps
- * @param props
- * @constructor
- */
-const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
+const CuentaRestriccionTable: FunctionComponent = () => {
   const { user } = useAuth()
+
   const {
-    data: restriccion,
+    data: restricciones,
     isError,
     error,
     isLoading,
@@ -68,52 +62,89 @@ const CuentaRestriccionTable: FunctionComponent<Props> = (props) => {
     })
   }
 
-  if (isLoading) return <AlertLoading />
-
-  if (isError) return <AlertError mensaje={error && error.message} />
+  if (isLoading)
+    return <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>Cargando...</Box>
+  if (isError) return <Box sx={{ color: 'error.main', p: 3 }}>{error?.message}</Box>
 
   return (
     <>
-      {restriccion &&
-        restriccion!.map((res) => (
-          <React.Fragment key={res.codigo}>
-            <Alert color={'info'}>
-              <Typography>
-                <strong>SUCURSAL {res.codigo}</strong> / {res.departamento.departamento} -{' '}
-                {res.municipio} / {res.direccion} / {res.telefono}
-              </Typography>
-            </Alert>
-            <Divider />
+      {restricciones?.map((sucursal) => (
+        <Card key={sucursal.codigo} sx={{ mb: 2, borderRadius: 2 }}>
+          <CardContent>
+            <Grid container alignItems="center" spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h6" color="primary">
+                  Sucursal {sucursal.codigo}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {sucursal.departamento.departamento} - {sucursal.municipio}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {sucursal.direccion} | Tel: {sucursal.telefono}
+                </Typography>
+              </Grid>
 
-            <MenuList>
-              {res.puntosVenta.length > 0 ? (
-                res.puntosVenta.map(
-                  (pv) =>
-                    !(
-                      user.sucursal.codigo === res.codigo &&
-                      user.puntoVenta.codigo === pv.codigo
-                    ) && (
-                      <MenuItem
-                        key={pv.codigo}
-                        onClick={() => changePuntoVenta(res.codigo, pv.codigo)}
-                      >
-                        <ListItemIcon>
-                          <Storefront fontSize="small" color={'info'} />
-                        </ListItemIcon>
-                        <ListItemText>
-                          <strong>Suc. {res.codigo}</strong> /{' '}
-                          <strong>PUNTO VENTA {pv.codigo}</strong> / {pv.nombre} /{' '}
-                          {pv.tipoPuntoVenta.descripcion}
-                        </ListItemText>
-                      </MenuItem>
-                    ),
-                )
+              {sucursal.puntosVenta.length > 0 ? (
+                <Grid item xs={12}>
+                  <Paper variant="outlined" sx={{ borderRadius: 2, mt: 2 }}>
+                    <List>
+                      {sucursal.puntosVenta.map((pv) => {
+                        const isCurrentPoint =
+                          user.sucursal.codigo === sucursal.codigo &&
+                          user.puntoVenta.codigo === pv.codigo
+
+                        return !isCurrentPoint ? (
+                          <ListItem key={pv.codigo} disablePadding>
+                            <ListItemButton
+                              onClick={() => changePuntoVenta(sucursal.codigo, pv.codigo)}
+                              sx={{ borderRadius: 2 }}
+                            >
+                              <ListItemIcon>
+                                <StoreIcon color="primary" />
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={
+                                  <Box
+                                    sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                                  >
+                                    <Chip
+                                      label={`Suc. ${sucursal.codigo}`}
+                                      size="small"
+                                      color="primary"
+                                      variant="outlined"
+                                    />
+                                    <Chip
+                                      label={`PV. ${pv.codigo}`}
+                                      size="small"
+                                      color="secondary"
+                                      variant="outlined"
+                                    />
+                                  </Box>
+                                }
+                                secondary={`${pv.nombre} - ${pv.tipoPuntoVenta.descripcion}`}
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ) : null
+                      })}
+                    </List>
+                  </Paper>
+                </Grid>
               ) : (
-                <Alert title={'Ya se encuentra en el punto de venta activo'} />
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ textAlign: 'center', p: 2 }}
+                  >
+                    Ya se encuentra en el punto de venta activo
+                  </Typography>
+                </Grid>
               )}
-            </MenuList>
-          </React.Fragment>
-        ))}
+            </Grid>
+          </CardContent>
+        </Card>
+      ))}
     </>
   )
 }
