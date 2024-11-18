@@ -234,7 +234,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     },
   } = props
   const {
-    user: { sucursal, puntoVenta, tipoRepresentacionGrafica, usuario, miEmpresa },
+    user: {
+      sucursal,
+      puntoVenta,
+      tipoRepresentacionGrafica,
+      usuario,
+      miEmpresa,
+      integracionSiat,
+    },
   } = useAuth()
 
   const { user } = useAuth()
@@ -1995,16 +2002,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           sx={{
             mt: 2,
             position: 'relative',
-            maxHeight: '50vh', // Ajusta esto al tamaño deseado
-            overflowY: 'auto', // Habilita el scroll vertical
+            maxHeight: '50vh',
+            overflowY: 'auto',
           }}
         >
           {!selectedCategory ? (
-            <IMG
+            <Box
+              component="img"
               src={logo}
               alt="Logo"
-              style={{
+              sx={{
                 opacity: 0.2,
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
@@ -2035,6 +2044,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     sx={{
                       cursor: 'pointer',
                       transition: 'transform 0.2s, box-shadow 0.2s',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
                       '&:hover': {
                         transform: 'scale(1.05)',
                         boxShadow: theme.shadows[4],
@@ -2044,13 +2056,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     {product.imagen && product.imagen.variants ? (
                       <CardMedia
                         component="img"
-                        height="100"
                         image={product.imagen.variants.medium}
                         alt={product.name}
                         sx={{
+                          height: '100%',
+                          width: '100%',
                           objectFit: 'cover',
-                          display: 'block',
-                          margin: '0 auto',
                         }}
                       />
                     ) : (
@@ -2065,13 +2076,36 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         }}
                       ></Box>
                     )}
-                    <CardContent>
+                    <CardContent
+                      sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        padding: '8px !important', // Padding reducido
+                        minHeight: '80px', // Altura mínima para el contenido
+                      }}
+                    >
                       <Tooltip title={product.name} placement="top">
-                        <Typography variant="body1" gutterBottom fontWeight="bold">
-                          {truncateName(product.name, 18)}
+                        <Typography
+                          variant="body2"
+                          gutterBottom
+                          sx={{
+                            fontWeight: 'bold',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            lineHeight: '1.2em',
+                            marginBottom: '4px',
+                            height: '2.4em',
+                          }}
+                        >
+                          {product.name}
                         </Typography>
                       </Tooltip>
-                      <Typography variant="body1" fontWeight="inherit">
+                      <Typography variant="body2">
                         {product.price.toFixed(2)} {product.sigla}
                       </Typography>
                     </CardContent>
@@ -2835,19 +2869,21 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                       Reg. y Fin.
                     </KeyTipButton>
                   </Grid>
-                  <Grid item xs={12}>
-                    <KeyTipButton
-                      fullWidth
-                      onClick={handleFacturar}
-                      variant="contained"
-                      endIcon={<Receipt />}
-                      disabled={selectedOption?.state !== 'COMPLETADO'}
-                      style={{ height: '50px', backgroundColor: '#f0ad4e' }}
-                      keyTip="I"
-                    >
-                      Facturar
-                    </KeyTipButton>
-                  </Grid>
+                  {integracionSiat === true && (
+                    <Grid item xs={12}>
+                      <KeyTipButton
+                        fullWidth
+                        onClick={handleFacturar}
+                        variant="contained"
+                        endIcon={<Receipt />}
+                        disabled={selectedOption?.state !== 'COMPLETADO'}
+                        style={{ height: '50px', backgroundColor: '#f0ad4e' }}
+                        keyTip="I"
+                      >
+                        Facturar
+                      </KeyTipButton>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             )}

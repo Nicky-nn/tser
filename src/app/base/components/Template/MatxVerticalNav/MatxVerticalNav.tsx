@@ -4,6 +4,7 @@ import React, { FC, Fragment } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { NavigationProps } from '../../../../navigations'
+import useAuth from '../../../hooks/useAuth'
 import useSettings from '../../../hooks/useSettings'
 import { Paragraph, Span } from '../Typography'
 import MatxVerticalNavExpansionPanel from './MatxVerticalNavExpansionPanel'
@@ -81,9 +82,21 @@ const BadgeValue = styled('div')(() => ({
 const MatxVerticalNav: FC<any> = ({ items }: any) => {
   const { settings } = useSettings()
   const { mode } = settings.layout1Settings.leftSidebar
+  const {
+    user: { integracionSiat },
+  } = useAuth()
 
   const renderLevels = (data: NavigationProps[]) => {
     return data.map((item, index: number) => {
+      console.log('item', item)
+      if (item.name === 'Gestión de Facturas' && !integracionSiat) {
+        return null
+      }
+
+      if (item.name === 'Nota Crédito Debito' && !integracionSiat) {
+        return null
+      }
+
       if (item.type === 'label')
         return (
           <ListLabel key={index} mode={mode} className="sidenavHoverShow">

@@ -16,6 +16,7 @@ export interface PerfilProps {
   ci: string
   correo: string
   rol: string
+  integracionSiat: boolean
   sigla: string
   dominio: string[]
   usuario: string
@@ -60,6 +61,7 @@ const mutation = gql`
           email
           emailFake
         }
+        integracionSiat
         usuario
         razonSocial
         nombres

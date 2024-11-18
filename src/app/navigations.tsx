@@ -82,7 +82,7 @@ export const navigations: NavigationProps[] = [
     badge: { value: '', color: 'secondary' },
     children: [
       {
-        name: 'Gestión de clientes',
+        name: 'Gestión de Clientes',
         path: '/clientes/gestion',
         iconText: 'GC',
       },

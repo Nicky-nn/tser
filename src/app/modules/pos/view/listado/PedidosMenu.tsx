@@ -66,7 +66,7 @@ type Props = OwnProps
 const PedidosMenu: React.FC<Props> = (props) => {
   const { row, openModal, refetch } = props
   const {
-    user: { usuario, sucursal, puntoVenta },
+    user: { usuario, sucursal, puntoVenta, integracionSiat },
   } = useAuth()
   const [cart, setCart] = useState<Product[]>([])
   const [motivo, setMotivo] = useState('')
@@ -339,9 +339,13 @@ const PedidosMenu: React.FC<Props> = (props) => {
             </IconButton>
           }
         >
-          <SimpleMenuItem onClick={() => openModal(row)}>
-            <SaveAs /> Facturar
-          </SimpleMenuItem>
+          {integracionSiat === true ? (
+            <SimpleMenuItem onClick={() => openModal(row)}>
+              <SaveAs /> Facturar
+            </SimpleMenuItem>
+          ) : (
+            <></>
+          )}
           <SimpleMenuItem
             onClick={() => finalizarPedido(row)}
             disabled={row.state === 'FINALIZADO'}
