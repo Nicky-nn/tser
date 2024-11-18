@@ -312,7 +312,12 @@ const LayoutRestriccionV2: FC<any> = () => {
                             ({moneda.sigla})
                           </Typography>
                         </MenuItem>
-                      ))}
+                      ))}{' '}
+                      {monedaListado.length === 0 && (
+                        <MenuItem disableRipple>
+                          <Typography variant={'body1'}>No hay monedas</Typography>
+                        </MenuItem>
+                      )}
                     </StyledMenu>
                   </TableCell>
                 </TableRow>
