@@ -2056,12 +2056,13 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     {product.imagen && product.imagen.variants ? (
                       <CardMedia
                         component="img"
+                        height="100"
                         image={product.imagen.variants.medium}
                         alt={product.name}
                         sx={{
-                          height: '100%',
-                          width: '100%',
                           objectFit: 'cover',
+                          display: 'block',
+                          margin: '0 auto',
                         }}
                       />
                     ) : (
