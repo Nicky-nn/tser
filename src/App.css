@@ -313,3 +313,14 @@ button {
 .react-datepicker-popper {
   z-index: 2;
 }
+
+
+.customDatePickerInput {
+  font-size: 5px; /* Tamaño de letra más pequeño */
+  width: 100%; /* Ocupa todo el espacio disponible */
+  text-align: center;
+}
+
+.myDatePicker {
+  width: 100%; /* Asegura que el contenedor también ocupe todo el espacio disponible */
+}
