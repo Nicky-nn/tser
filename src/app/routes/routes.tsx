@@ -11,6 +11,7 @@ import notaCreditoDebitoRoutes from '../modules/notaCreditoDebito/NotaCreditoDeb
 import pedidosRoutes from '../modules/pos/PosRoutes'
 import productosRoutes from '../modules/productos/ProductosRoutes'
 import proveedorRoutes from '../modules/proveedor/ProveedorRoutes'
+import reporteRoutes from '../modules/reporte/reporteRoutes'
 import ventasRoutes from '../modules/ventas/VentasRoutes'
 
 export const appRoutes = [
@@ -29,6 +30,7 @@ export const appRoutes = [
       ...proveedorRoutes,
       ...notaCreditoDebitoRoutes,
       ...pedidosRoutes,
+      ...reporteRoutes,
     ],
   },
   ...sessionRoutes,
