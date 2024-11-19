@@ -36,8 +36,8 @@ const queryReporteVentasPorArticuloPuntoVenta = gql`
     $fechaInicial: DateDMY!
     $fechaFinal: DateDMY!
     $codigoSucursal: Int!
-    $codigoPuntoVenta: [Int]!
-    $mostrarTodos: Boolean!
+    $codigoPuntoVenta: [Int] = []
+    $mostrarTodos: Boolean = true
   ) {
     restReportePedidoVentasPorArticuloPuntoVenta(
       fechaInicial: $fechaInicial

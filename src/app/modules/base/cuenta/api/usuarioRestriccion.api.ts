@@ -33,7 +33,16 @@ const gqlQuery = gql`
     }
   }
 `
-
+export interface RestriccionListadoProps {
+  codigo: number
+  direccion: string
+  municipio: string
+  puntosVenta: {
+    codigo: number
+    nombre: string
+    descripcion: string
+  }[]
+}
 /**
  * @description Datos de restricción del usuario activo
  */
