@@ -157,7 +157,7 @@ export const restPedidoExpressRegistro = async (
 
   try {
     const confirmResp = await swalAsyncConfirmDialog({
-      text: '¿Confirma que desea registrar el pedido?',
+      text: '¿Confirma que desea registrar y finalizar el pedido?.',
       preConfirm: async () => {
         // Llamar a la función que registra el pedido
         const response = await restPedidoExpressRegistroApi(entidad, dataCliente, input)
@@ -168,8 +168,8 @@ export const restPedidoExpressRegistro = async (
     if (confirmResp.isConfirmed) {
       Swal.fire({
         icon: 'success',
-        title: 'Pedido registrado',
-        text: `El pedido fue registrado con éxito`,
+        title: 'Pedido registrado y finalizado.',
+        text: `El pedido fue registrado y finalizado con éxito.`,
       })
 
       if (onSuccess) onSuccess()
