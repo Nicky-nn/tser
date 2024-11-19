@@ -1,6 +1,7 @@
 import { homeRoutesMap } from './modules/base/home/HomeRoutes'
 import { ncdRouteMap } from './modules/notaCreditoDebito/NotaCreditoDebitoRoutesMap'
 import { pedidosRouteMap } from './modules/pos/view/listado/PedidosRoutesMap'
+import { reporteRoutesMap } from './modules/reporte/reporteRoutes'
 
 export interface NavigationProps {
   name: string
@@ -85,6 +86,22 @@ export const navigations: NavigationProps[] = [
         name: 'Gestión de Clientes',
         path: '/clientes/gestion',
         iconText: 'GC',
+      },
+    ],
+  },
+  {
+    name: 'Reportes',
+    icon: 'assessment',
+    children: [
+      {
+        name: reporteRoutesMap.articuloPorPuntoVenta.name,
+        iconText: 'MV',
+        path: reporteRoutesMap.articuloPorPuntoVenta.path,
+      },
+      {
+        name: reporteRoutesMap.articuloPorComercio.name,
+        iconText: 'MC',
+        path: reporteRoutesMap.articuloPorComercio.path,
       },
     ],
   },
