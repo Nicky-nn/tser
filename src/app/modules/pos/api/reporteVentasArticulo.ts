@@ -4,29 +4,31 @@ import Swal from 'sweetalert2'
 import { AccessToken } from '../../../base/models/paramsModel'
 import { MyGraphQlError } from '../../../base/services/GraphqlError'
 
-interface ReporteVentasArticuloPuntoVentaData {
-  restReportePedidoVentasPorArticuloPuntoVenta: {
-    codigoArticulo: string
-    nombreArticulo: string
-    sucursal: string
-    nroVentas: number
-    montoVentas: number
-    montoDescuento: number
-    montoDescuentoAdicional: number
-  }[]
+export interface ReportePedidoVentasPorArticuloPuntoVenta {
+  codigoArticulo: string
+  moneda: string
+  montoDescuento: number
+  montoDescuentoAdicional: number
+  montoVentas: number
+  nombreArticulo: string
+  nroVentas: number
+  sucursal: string
+  tipoArticulo: string
+  unidadMedida: string
 }
 
-interface ReporteVentasArticuloComercioData {
-  restReportePedidoVentasPorArticuloComercio: {
-    codigoArticulo: string
-    nombreArticulo: string
-    sucursal: string
-    puntoVenta: string
-    nroVentas: number
-    montoVentas: number
-    montoDescuento: number
-    montoDescuentoAdicional: number
-  }[]
+export interface ReportePedidoVentasPorArticuloComercio {
+  codigoArticulo: string
+  moneda: string
+  montoDescuento: number
+  montoDescuentoAdicional: number
+  montoVentas: number
+  nombreArticulo: string
+  nroVentas: number
+  puntoVenta: string
+  sucursal: string
+  tipoArticulo: string
+  unidadMedida: string
 }
 
 const queryReporteVentasPorArticuloPuntoVenta = gql`
@@ -45,12 +47,15 @@ const queryReporteVentasPorArticuloPuntoVenta = gql`
       mostrarTodos: $mostrarTodos
     ) {
       codigoArticulo
-      nombreArticulo
-      sucursal
-      nroVentas
-      montoVentas
+      moneda
       montoDescuento
       montoDescuentoAdicional
+      montoVentas
+      nombreArticulo
+      nroVentas
+      sucursal
+      tipoArticulo
+      unidadMedida
     }
   }
 `
@@ -67,13 +72,16 @@ const queryReporteVentasPorArticuloComercio = gql`
       codigoSucursal: $codigoSucursal
     ) {
       codigoArticulo
-      nombreArticulo
-      sucursal
-      puntoVenta
-      nroVentas
-      montoVentas
+      moneda
       montoDescuento
       montoDescuentoAdicional
+      montoVentas
+      nombreArticulo
+      nroVentas
+      puntoVenta
+      sucursal
+      tipoArticulo
+      unidadMedida
     }
   }
 `
@@ -84,21 +92,22 @@ export const obtenerReporteVentasPorArticuloPuntoVenta = async (
   codigoSucursal: number,
   codigoPuntoVenta: number[],
   mostrarTodos: boolean,
-): Promise<ReporteVentasArticuloPuntoVentaData> => {
+): Promise<ReportePedidoVentasPorArticuloPuntoVenta[]> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data = await client.request(queryReporteVentasPorArticuloPuntoVenta, {
+    const data: {
+      restReportePedidoVentasPorArticuloPuntoVenta: ReportePedidoVentasPorArticuloPuntoVenta[]
+    } = await client.request(queryReporteVentasPorArticuloPuntoVenta, {
       fechaInicial,
       fechaFinal,
       codigoSucursal,
       codigoPuntoVenta,
       mostrarTodos,
     })
-
-    return data as ReporteVentasArticuloPuntoVentaData
+    return data.restReportePedidoVentasPorArticuloPuntoVenta
   } catch (error: any) {
     const errorMessage =
       error.response?.errors?.[0]?.message ||
@@ -118,19 +127,21 @@ export const obtenerReporteVentasPorArticuloComercio = async (
   fechaInicial: string,
   fechaFinal: string,
   codigoSucursal: number[],
-): Promise<ReporteVentasArticuloComercioData> => {
+): Promise<ReportePedidoVentasPorArticuloComercio[]> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data = await client.request(queryReporteVentasPorArticuloComercio, {
+    const data: {
+      restReportePedidoVentasPorArticuloComercio: ReportePedidoVentasPorArticuloComercio[]
+    } = await client.request(queryReporteVentasPorArticuloComercio, {
       fechaInicial,
       fechaFinal,
       codigoSucursal,
     })
 
-    return data as ReporteVentasArticuloComercioData
+    return data.restReportePedidoVentasPorArticuloComercio
   } catch (error: any) {
     const errorMessage =
       error.response?.errors?.[0]?.message ||
