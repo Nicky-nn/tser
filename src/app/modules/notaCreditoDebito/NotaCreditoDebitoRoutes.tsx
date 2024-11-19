@@ -7,6 +7,7 @@ import useAuth from '../../base/hooks/useAuth'
 import { ncdRouteMap } from './NotaCreditoDebitoRoutesMap'
 
 // Componente wrapper para validar acceso SIAT
+// @ts-ignore
 const SiatProtectedRoute = ({ children }) => {
   const {
     user: { integracionSiat },
