@@ -6,6 +6,7 @@ import Loadable from '../../base/components/Template/Loadable/Loadable'
 import useAuth from '../../base/hooks/useAuth'
 
 // Componente wrapper para validar acceso SIAT
+// @ts-ignore
 const SiatProtectedRoute = ({ children }) => {
   const {
     user: { integracionSiat },

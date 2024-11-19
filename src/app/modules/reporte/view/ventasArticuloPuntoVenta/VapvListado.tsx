@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Download } from '@mui/icons-material'
 import { Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
@@ -9,10 +8,9 @@ import {
   MRT_TableOptions,
   useMaterialReactTable,
 } from 'material-react-table'
-import React, { FunctionComponent, useMemo } from 'react'
+import { FunctionComponent, useMemo } from 'react'
 
 import MuiRenderTopToolbarCustomActions from '../../../../base/components/MuiTable/MuiRenderTopToolbarCustomActions'
-import useOperaciones from '../../../../base/hooks/useOperaciones'
 import { MuiToolbarAlertBannerProps } from '../../../../utils/muiTable/materialReactTableUtils'
 import { MuiTableNormalOptionsProps } from '../../../../utils/muiTable/muiTableNormalOptionsProps'
 import { notDanger } from '../../../../utils/notification'
@@ -21,10 +19,6 @@ import {
   obtenerReporteVentasPorArticuloPuntoVenta,
   ReportePedidoVentasPorArticuloPuntoVenta,
 } from '../../../pos/api/reporteVentasArticulo'
-import {
-  apiReporteArticuloPorPuntoVenta,
-  ReporteArticuloPorPuntoVentaProp,
-} from '../../api/apiReporteArticuloPorPuntoVenta'
 import { VapvListadoColumns } from './VapvListadoColumns'
 
 interface OwnProps {
