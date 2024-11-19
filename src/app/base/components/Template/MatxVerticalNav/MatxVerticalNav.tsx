@@ -88,7 +88,6 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
 
   const renderLevels = (data: NavigationProps[]) => {
     return data.map((item, index: number) => {
-      console.log('item', item)
       if (item.name === 'Gestión de Facturas' && !integracionSiat) {
         return null
       }
