@@ -32,7 +32,7 @@ const Productos = () => {
     >
       <Breadcrumb routeSegments={[pedidosRouteMap.gestion]} />
       <SimpleRowMenu>
-        {/* <SimpleItem>
+        <SimpleItem>
           <Button
             size={'small'}
             startIcon={<Inventory />}
@@ -51,7 +51,7 @@ const Productos = () => {
           >
             REPORTE DE VENTAS ARTICULOS COMERCIO
           </Button>
-        </SimpleItem> */}
+        </SimpleItem>
         <SimpleItem>
           <Button
             size={'small'}
