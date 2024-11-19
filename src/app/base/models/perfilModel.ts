@@ -19,6 +19,7 @@ const query = gql`
         email
         emailFake
       }
+      integracionSiat
       usuario
       razonSocial
       nombres
