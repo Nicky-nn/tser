@@ -55,6 +55,8 @@ const Impresoras: FunctionComponent<Props> = () => {
   const [errorIP, setErrorIP] = useState(false)
 
   const scanPrinters = async () => {
+    // console.log('Escaneando impresoras...')
+    // window.location.href = 'whatsapp:live'
     try {
       const response = await fetch('http://localhost:7777/printers')
       const data = await response.json()

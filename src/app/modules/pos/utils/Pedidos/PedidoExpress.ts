@@ -29,6 +29,11 @@ export const restPedidoExpressRegistro = async (
   cliente?: ClienteProps | null,
   data?: any,
   isCreatingNewClient: boolean = false,
+  messages?: {
+    successTitle?: string
+    successText?: string
+    successConfirm?: string
+  }, // Nuevo argumento opcional
 ) => {
   if (!cart || cart.length === 0) {
     toast.error('No hay productos para registrar')
@@ -157,7 +162,7 @@ export const restPedidoExpressRegistro = async (
 
   try {
     const confirmResp = await swalAsyncConfirmDialog({
-      text: '¿Confirma que desea registrar y finalizar el pedido?.',
+      text: messages?.successConfirm || '¿Confirma que desea registrar el pedido?',
       preConfirm: async () => {
         // Llamar a la función que registra el pedido
         const response = await restPedidoExpressRegistroApi(entidad, dataCliente, input)
@@ -168,8 +173,8 @@ export const restPedidoExpressRegistro = async (
     if (confirmResp.isConfirmed) {
       Swal.fire({
         icon: 'success',
-        title: 'Pedido registrado y finalizado.',
-        text: `El pedido fue registrado y finalizado con éxito.`,
+        title: messages?.successTitle || 'Pedido registrado.',
+        text: messages?.successText || 'El pedido fue registrado con éxito.',
       })
 
       if (onSuccess) onSuccess()

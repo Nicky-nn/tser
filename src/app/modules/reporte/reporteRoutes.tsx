@@ -11,11 +11,11 @@ const VentasArticuloComercioApp = lazy(() => import('./view/VentasArticuloComerc
 export const reporteRoutesMap = {
   articuloPorPuntoVenta: {
     path: '/reporte/ventas-articulo-punto-venta',
-    name: 'V. de Artículos por Punto de Venta',
+    name: 'Artículos por P. V.',
   },
   articuloPorComercio: {
     path: '/reporte/ventas-articulo-comercio',
-    name: 'V. de Artículos por Sucursal',
+    name: 'Artículos por Sucursal',
   },
 }
 

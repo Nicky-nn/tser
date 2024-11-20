@@ -1406,6 +1406,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       clienteSeleccionado || null,
       getValues(),
       isCreatingNewClient,
+      {
+        successTitle: 'Pedido Registrado y Finalizado',
+        successText: 'El pedido ha sido registrado y finalizado con éxito',
+        successConfirm: '¿Confirma que desea registrar y finalizar el pedido?',
+      },
     )
       .then((response) => {
         if (response.restPedidoExpressRegistro) {
