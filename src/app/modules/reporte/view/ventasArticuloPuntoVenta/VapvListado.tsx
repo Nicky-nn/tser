@@ -150,8 +150,6 @@ const VapvListado: FunctionComponent<Props> = (props) => {
       },
     })
 
-    console.log('tipoDescarga', tipoDescarga)
-
     if (!tipoDescarga) return
 
     if (!respData || respData.length === 0) {
