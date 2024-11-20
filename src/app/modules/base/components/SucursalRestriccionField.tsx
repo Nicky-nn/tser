@@ -39,6 +39,7 @@ const PuntoVentaRestriccionField: FunctionComponent<Props> = ({ onChange }) => {
     <FormMultiSelect
       isMulti={true}
       options={options}
+      placeholder="Seleccione sucursal"
       onChange={(selectedOptions) => {
         // Transform selected options to match the expected type
         const transformedValues = selectedOptions?.map((option) => ({

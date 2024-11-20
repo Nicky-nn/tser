@@ -80,8 +80,8 @@ const VentasArticuloPuntoVenta: FunctionComponent<Props> = (props) => {
         </Grid>
         <Grid item xs={12} md={8}>
           <VapvListado
-            fechaInicial={startDate}
-            fechaFinal={endDate}
+            fechaInicial={startDate ?? new Date()}
+            fechaFinal={endDate ?? new Date()}
             codigoSucursal={sucursal.codigo}
             codigoPuntoVenta={puntosVenta.map((item) => item.key)}
             mostrarTodos={false}
@@ -91,8 +91,8 @@ const VentasArticuloPuntoVenta: FunctionComponent<Props> = (props) => {
           <SimpleBox>
             <Divider sx={{ mb: 2 }}>Top 10</Divider>
             <VapvGraficoListado
-              fechaInicial={format(startDate, 'dd/MM/yyyy')}
-              fechaFinal={format(endDate, 'dd/MM/yyyy')}
+              fechaInicial={startDate ? format(new Date(startDate), 'dd/MM/yyyy') : ''}
+              fechaFinal={endDate ? format(new Date(endDate), 'dd/MM/yyyy') : ''}
               codigoSucursal={sucursal.codigo}
               codigoPuntoVenta={puntosVenta.map((item) => item.key)}
               mostrarTodos={false}

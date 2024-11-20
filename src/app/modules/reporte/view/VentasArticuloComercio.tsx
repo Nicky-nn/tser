@@ -84,8 +84,8 @@ const VentasArticuloComercio: FunctionComponent<Props> = (props) => {
         </Grid>
         <Grid item xs={12} md={8}>
           <VacListado
-            fechaInicial={startDate}
-            fechaFinal={endDate}
+            fechaInicial={startDate || new Date()}
+            fechaFinal={endDate || new Date()}
             codigoSucursal={selectedSucursales.map((item) => item.key)}
           />
         </Grid>
@@ -93,8 +93,8 @@ const VentasArticuloComercio: FunctionComponent<Props> = (props) => {
           <SimpleBox>
             <Divider sx={{ mb: 2 }}>Top 10</Divider>
             <VacGraficoListado
-              fechaInicial={format(startDate, 'dd/MM/yyyy')}
-              fechaFinal={format(endDate, 'dd/MM/yyyy')}
+              fechaInicial={startDate ? format(new Date(startDate), 'dd/MM/yyyy') : ''}
+              fechaFinal={endDate ? format(new Date(endDate), 'dd/MM/yyyy') : ''}
               codigoSucursal={selectedSucursales.map((item) => item.key)}
             />
           </SimpleBox>
