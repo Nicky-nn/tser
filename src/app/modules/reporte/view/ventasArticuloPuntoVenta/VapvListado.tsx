@@ -180,7 +180,7 @@ const VapvListado: FunctionComponent<Props> = (props) => {
     //@ts-ignore
     const pdfDocGenerator = pdfMake.createPdf(pdfDefinition)
     pdfDocGenerator.download(
-      `reporte_ventas_${format(fechaInicial, 'yyyyMMdd')}_${format(
+      `reporte_ventas_articulo${format(fechaInicial, 'yyyyMMdd')}_${format(
         fechaFinal,
         'yyyyMMdd',
       )}_${tipoDescarga}.pdf`,

@@ -163,7 +163,7 @@ const VacListado: FunctionComponent<Props> = (props) => {
     //@ts-ignore
     const pdfDocGenerator = pdfMake.createPdf(pdfDefinition)
     pdfDocGenerator.download(
-      `reporte_ventas_${format(fechaInicial, 'yyyyMMdd')}_${format(
+      `reporte_ventas_sucursal${format(fechaInicial, 'yyyyMMdd')}_${format(
         fechaFinal,
         'yyyyMMdd',
       )}_${tipoDescarga}.pdf`,
@@ -183,7 +183,7 @@ const VacListado: FunctionComponent<Props> = (props) => {
         }
       },
       content: [
-        { text: 'Reporte Detallado de Ventas por Artículo', style: 'header' },
+        { text: 'Reporte Detallado de Ventas por Sucursal', style: 'header' },
         {
           text: `Fecha de Generación: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`,
           style: 'subheader',
@@ -311,7 +311,7 @@ const VacListado: FunctionComponent<Props> = (props) => {
       pageSize: { width: 227, height: 'auto' },
       pageMargins: [10, 10, 10, 10],
       content: [
-        { text: 'Reporte Detallado de Ventas', style: 'header' },
+        { text: 'Reporte Detallado por Sucursal', style: 'header' },
         {
           text: `Fecha: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`,
           style: 'subheader',
