@@ -1,4 +1,5 @@
 import { Button, Chip } from '@mui/material'
+import { green, orange } from '@mui/material/colors'
 import { useQuery } from '@tanstack/react-query'
 import {
   MaterialReactTable,
@@ -116,8 +117,14 @@ const tableColumns: MRT_ColumnDef<any>[] = [
   {
     accessorKey: 'tipoDocumento',
     header: 'Tipo Documento',
-    id: 'tipoDocumento',
-    accessorFn: (row) => row.tipoDocumento,
+    muiTableBodyCellProps: ({ row }) => ({
+      sx: {
+        backgroundColor: () =>
+          row.original.tipoDocumento === 'NOTA_VENTA' ? orange[100] : green[100],
+      },
+    }),
+    size: 130,
+    enableSorting: false,
   },
 ]
 
