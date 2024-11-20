@@ -142,7 +142,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
     )
 
     // Si la respuesta no tiene datos, mostrar mensaje de error
-    if (resp.restReportePedidoVentasPorArticuloComercio.length === 0) {
+    if (resp.length === 0) {
       Swal.fire({
         icon: 'warning',
         title: 'Sin datos',
@@ -153,20 +153,19 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
     }
 
     // Agrupar los datos por sucursal y luego por punto de venta
-    const groupedBySucursalAndPuntoVenta =
-      resp.restReportePedidoVentasPorArticuloComercio.reduce(
-        (acc: { [key: string]: { [key: string]: any[] } }, item: any) => {
-          if (!acc[item.sucursal]) {
-            acc[item.sucursal] = {} // Si no existe la sucursal, crearla
-          }
-          if (!acc[item.sucursal][item.puntoVenta]) {
-            acc[item.sucursal][item.puntoVenta] = [] // Si no existe el punto de venta, crearlo
-          }
-          acc[item.sucursal][item.puntoVenta].push(item) // Agregar el item al punto de venta correspondiente
-          return acc
-        },
-        {},
-      )
+    const groupedBySucursalAndPuntoVenta = resp.reduce(
+      (acc: { [key: string]: { [key: string]: any[] } }, item: any) => {
+        if (!acc[item.sucursal]) {
+          acc[item.sucursal] = {} // Si no existe la sucursal, crearla
+        }
+        if (!acc[item.sucursal][item.puntoVenta]) {
+          acc[item.sucursal][item.puntoVenta] = [] // Si no existe el punto de venta, crearlo
+        }
+        acc[item.sucursal][item.puntoVenta].push(item) // Agregar el item al punto de venta correspondiente
+        return acc
+      },
+      {},
+    )
 
     // Definición del documento
     const docDefinition: any = {
@@ -328,7 +327,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
     )
 
     // Si la respuesta no tiene datos, mostrar mensaje de error
-    if (resp.restReportePedidoVentasPorArticuloComercio.length === 0) {
+    if (resp.length === 0) {
       Swal.fire({
         icon: 'warning',
         title: 'Sin datos',
@@ -339,9 +338,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
     }
 
     // Filtrar los artículos que tienen ventas
-    const ventasFiltradas = resp.restReportePedidoVentasPorArticuloComercio.filter(
-      (articulo) => articulo.nroVentas > 0,
-    )
+    const ventasFiltradas = resp.filter((articulo) => articulo.nroVentas > 0)
 
     // Agrupar por sucursal y punto de venta
     const groupedData = ventasFiltradas.reduce((acc: any, item) => {
@@ -408,8 +405,8 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
                     setStartDate(date[0])
                     setEndDate(date[1])
                   }}
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDate={startDate || undefined}
+                  endDate={endDate || undefined}
                   selectsRange={checked}
                   locale="es"
                   inline
@@ -420,7 +417,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
               <SimpleItem>
                 <DatePicker
                   selected={selectedDate}
-                  onChange={(date: Date) => setSelectedDate(date)}
+                  onChange={(date: Date | null) => setSelectedDate(date)}
                   locale={'es'}
                   inline
                 />

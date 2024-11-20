@@ -131,8 +131,8 @@ const VentaGestionExportarDialog: FunctionComponent<Props> = (props) => {
             <Grid item sm={12}>
               <DatePicker
                 selectsRange={true}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={startDate as Date}
+                endDate={endDate as Date}
                 locale={'es'}
                 dateFormat="dd/MM/yyyy"
                 onChange={(update) => {

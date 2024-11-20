@@ -205,8 +205,8 @@ const PedidosVsVentasReporteExportarDialog: FunctionComponent<Props> = (props) =
                   selected={startDate}
                   onChange={onChange}
                   locale={'es'}
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDate={startDate ?? undefined}
+                  endDate={endDate ?? undefined}
                   selectsRange
                   inline
                   isClearable={true}

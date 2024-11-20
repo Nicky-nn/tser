@@ -149,7 +149,7 @@ const PedidosReporteVentaSimpleDialog: FunctionComponent<Props> = (props) => {
               <SimpleItem>
                 <DatePicker
                   selected={selectedDate}
-                  onChange={(date: Date) => setSelectedDate(date)}
+                  onChange={(date: Date | null) => setSelectedDate(date)}
                   locale={'es'}
                   inline
                 />

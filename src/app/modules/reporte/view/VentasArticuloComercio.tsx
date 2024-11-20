@@ -2,7 +2,7 @@
 import { Box, Divider, Stack, useTheme } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { format, lastDayOfMonth, startOfMonth } from 'date-fns'
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import MyDateRangePickerField from '../../../base/components/MyInputs/MyDateRangePickerField'
 import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
@@ -12,9 +12,10 @@ import {
 } from '../../../base/components/Template/Cards/SimpleBox'
 import useAuth from '../../../base/hooks/useAuth'
 import PuntoVentaRestriccionField from '../../base/components/PuntoVentaRestriccionField'
+import SucursalRestriccionField from '../../base/components/SucursalRestriccionField'
 import { reporteRoutesMap } from '../reporteRoutes'
-import VapvGraficoListado from './ventasArticuloPuntoVenta/VapvGraficoListado'
-import VapvListado from './ventasArticuloPuntoVenta/VapvListado'
+import VacGraficoListado from './ventasArticuloComercio/VacGraficoListado'
+import VacListado from './ventasArticuloComercio/VacListado'
 
 interface OwnProps {}
 
@@ -39,9 +40,20 @@ const VentasArticuloComercio: FunctionComponent<Props> = (props) => {
     ])
   }, [sucursal, puntoVenta])
 
+  // State to store the selected sucursal codes
+  const [selectedSucursales, setSelectedSucursales] = useState<
+    { key: number; value: string }[]
+  >([])
+
+  // Handler for sucursal selection
+  const handleSucursalChange = (values?: { key: number; value: string }[]) => {
+    // Update the state with selected sucursales
+    setSelectedSucursales(values || [])
+  }
+
   return (
     <SimpleContainerBox maxWidth={'xl'}>
-      <Breadcrumb routeSegments={[reporteRoutesMap.articuloPorPuntoVenta]} />
+      <Breadcrumb routeSegments={[reporteRoutesMap.articuloPorComercio]} />
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Stack
@@ -66,36 +78,24 @@ const VentasArticuloComercio: FunctionComponent<Props> = (props) => {
                 },
               }}
             >
-              <PuntoVentaRestriccionField
-                codigoSucursal={sucursal.codigo}
-                puntosVenta={puntosVenta}
-                onChange={(value) => {
-                  if (value) {
-                    setPuntosVenta(value)
-                  }
-                }}
-              />
+              <SucursalRestriccionField onChange={handleSucursalChange} />
             </Box>
           </Stack>
         </Grid>
         <Grid item xs={12} md={8}>
-          <VapvListado
+          <VacListado
             fechaInicial={startDate}
             fechaFinal={endDate}
-            codigoSucursal={sucursal.codigo}
-            codigoPuntoVenta={puntosVenta.map((item) => item.key)}
-            mostrarTodos={false}
+            codigoSucursal={selectedSucursales.map((item) => item.key)}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <SimpleBox>
             <Divider sx={{ mb: 2 }}>Top 10</Divider>
-            <VapvGraficoListado
+            <VacGraficoListado
               fechaInicial={format(startDate, 'dd/MM/yyyy')}
               fechaFinal={format(endDate, 'dd/MM/yyyy')}
-              codigoSucursal={sucursal.codigo}
-              codigoPuntoVenta={puntosVenta.map((item) => item.key)}
-              mostrarTodos={false}
+              codigoSucursal={selectedSucursales.map((item) => item.key)}
             />
           </SimpleBox>
         </Grid>

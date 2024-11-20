@@ -310,7 +310,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
         checkedPedidos,
       )
 
-      if (resp.restReportePedidoVentasPorArticuloPuntoVenta.length === 0) {
+      if (resp.length === 0) {
         Swal.fire({
           icon: 'warning',
           title: 'Sin datos',
@@ -320,16 +320,13 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
         return
       }
 
-      const groupedBySucursal = resp.restReportePedidoVentasPorArticuloPuntoVenta.reduce(
-        (acc: { [key: string]: any[] }, item) => {
-          if (!acc[item.sucursal]) {
-            acc[item.sucursal] = []
-          }
-          acc[item.sucursal].push(item)
-          return acc
-        },
-        {},
-      )
+      const groupedBySucursal = resp.reduce((acc: { [key: string]: any[] }, item) => {
+        if (!acc[item.sucursal]) {
+          acc[item.sucursal] = []
+        }
+        acc[item.sucursal].push(item)
+        return acc
+      }, {})
 
       const docDefinition =
         type === 'roll'
@@ -416,7 +413,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
       checkedPedidos,
     )
 
-    if (resp.restReportePedidoVentasPorArticuloPuntoVenta.length === 0) {
+    if (resp.length === 0) {
       Swal.fire({
         icon: 'warning',
         title: 'Sin datos',
@@ -426,9 +423,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
       return
     }
 
-    const ventasFiltradas = resp.restReportePedidoVentasPorArticuloPuntoVenta.filter(
-      (articulo) => articulo.nroVentas > 0,
-    )
+    const ventasFiltradas = resp.filter((articulo) => articulo.nroVentas > 0)
 
     const data = ventasFiltradas.map((articulo) => ({
       nombreArticulo: truncateName(articulo.nombreArticulo, 8),
@@ -469,8 +464,8 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
                       setStartDate(date[0])
                       setEndDate(date[1])
                     }}
-                    startDate={startDate}
-                    endDate={endDate}
+                    startDate={startDate as Date}
+                    endDate={endDate as Date}
                     selectsRange={checked}
                     locale="es"
                     inline
@@ -481,7 +476,7 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
                 <SimpleItem>
                   <DatePicker
                     selected={selectedDate}
-                    onChange={(date: Date) => setSelectedDate(date)}
+                    onChange={(date: Date | null) => setSelectedDate(date)}
                     locale={'es'}
                     inline
                   />

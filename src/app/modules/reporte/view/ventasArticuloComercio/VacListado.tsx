@@ -16,17 +16,15 @@ import { MuiTableNormalOptionsProps } from '../../../../utils/muiTable/muiTableN
 import { notDanger } from '../../../../utils/notification'
 import { swalClose, swalLoading } from '../../../../utils/swal'
 import {
-  obtenerReporteVentasPorArticuloPuntoVenta,
-  ReportePedidoVentasPorArticuloPuntoVenta,
+  obtenerReporteVentasPorArticuloComercio,
+  ReportePedidoVentasPorArticuloComercio,
 } from '../../../pos/api/reporteVentasArticulo'
-import { VapvListadoColumns } from './VapvListadoColumns'
+import { VacListadoColumns } from './VacListadoColumns'
 
 interface OwnProps {
   fechaInicial: Date
   fechaFinal: Date
-  codigoSucursal: number
-  codigoPuntoVenta: number[]
-  mostrarTodos: boolean
+  codigoSucursal: number[]
 }
 
 type Props = OwnProps
@@ -36,14 +34,13 @@ type Props = OwnProps
  * @param props
  * @constructor
  */
-const VapvListado: FunctionComponent<Props> = (props) => {
-  const { fechaInicial, fechaFinal, codigoPuntoVenta, codigoSucursal, mostrarTodos } =
-    props
+const VacListado: FunctionComponent<Props> = (props) => {
+  const { fechaInicial, fechaFinal, codigoSucursal } = props
 
   const fi = format(fechaInicial, 'dd/MM/yyyy')
   const ff = format(fechaFinal, 'dd/MM/yyyy')
 
-  const columns = useMemo(() => VapvListadoColumns(), [])
+  const columns = useMemo(() => VacListadoColumns(), [])
   // API FETCH
   const {
     data: respData,
@@ -52,23 +49,10 @@ const VapvListado: FunctionComponent<Props> = (props) => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: [
-      'vapvListado',
-      fechaInicial,
-      fechaFinal,
-      codigoPuntoVenta,
-      codigoSucursal,
-      mostrarTodos,
-    ],
+    queryKey: ['vapvListado', fechaInicial, fechaFinal, codigoSucursal],
     queryFn: async () => {
       if (!fechaInicial || !fechaFinal) return []
-      return await obtenerReporteVentasPorArticuloPuntoVenta(
-        fi,
-        ff,
-        codigoSucursal,
-        codigoPuntoVenta,
-        mostrarTodos,
-      )
+      return await obtenerReporteVentasPorArticuloComercio(fi, ff, codigoSucursal)
     },
     refetchOnWindowFocus: false,
     refetchInterval: false,
@@ -86,8 +70,8 @@ const VapvListado: FunctionComponent<Props> = (props) => {
     const ff = format(fechaFinal, 'dd/MM/yyyy')
     exportFromJSON({
       data: respData.map((item) => ({
-        sucursal: codigoSucursal,
-        puntoVenta: codigoPuntoVenta.join(', '),
+        sucursal: item.sucursal,
+        puntoVenta: item.puntoVenta,
         fechaInicial: fi,
         fechaFinal: ff,
         codigoArticulo: item.codigoArticulo,
@@ -98,7 +82,7 @@ const VapvListado: FunctionComponent<Props> = (props) => {
         montoDescuentoAdicional: item.montoDescuentoAdicional,
         moneda: item.moneda,
       })),
-      fileName: `rep_articulos_punto_venta_${fi}_${ff}`,
+      fileName: `rep_articulos_comercio_${fi}_${ff}`,
       exportType,
       delimiter: ';',
       withBOM: true,
@@ -107,7 +91,7 @@ const VapvListado: FunctionComponent<Props> = (props) => {
   }
 
   const table = useMaterialReactTable({
-    ...(MuiTableNormalOptionsProps as MRT_TableOptions<ReportePedidoVentasPorArticuloPuntoVenta>),
+    ...(MuiTableNormalOptionsProps as MRT_TableOptions<ReportePedidoVentasPorArticuloComercio>),
     columns: columns,
     data: respData || [],
     muiToolbarAlertBannerProps: MuiToolbarAlertBannerProps(isError),
@@ -140,4 +124,4 @@ const VapvListado: FunctionComponent<Props> = (props) => {
   )
 }
 
-export default VapvListado
+export default VacListado
