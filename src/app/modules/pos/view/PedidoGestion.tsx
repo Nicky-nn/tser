@@ -589,8 +589,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         : metodo.descripcion
 
     return (
-      <Tooltip title={descripcion}>
-        <Grid item xs={3} key={metodo.codigoClasificador}>
+      <Tooltip title={descripcion} key={metodo.codigoClasificador}>
+        <Grid item xs={3}>
           <MetodoPagoButton
             text={truncateName(descripcion, 10)} // Usar la descripción actualizada
             icon={React.createElement(
@@ -2968,7 +2968,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             >
               {metodosPago && metodosPago.length > 0 ? (
                 <>
-                  {metodosPago.slice(0, 3).map(renderMetodoPago)}
+                  {metodosPago.slice(0, 3).map((metodo) => renderMetodoPago(metodo))}
                   {metodosPago.length > 3 && (
                     <>
                       <Grid item xs={3}>
@@ -2987,7 +2987,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                       >
                         <Grid container spacing={1} sx={{ p: 2 }}>
-                          {metodosPago.slice(3).map(renderMetodoPago)}
+                          {metodosPago.slice(3).map((metodo) => renderMetodoPago(metodo))}
                         </Grid>
                       </Popover>
                     </>
