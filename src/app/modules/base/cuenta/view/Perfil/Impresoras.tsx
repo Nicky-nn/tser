@@ -55,31 +55,54 @@ const Impresoras: FunctionComponent<Props> = () => {
   const [errorIP, setErrorIP] = useState(false)
 
   const scanPrinters = async () => {
-    // console.log('Escaneando impresoras...')
-    // window.location.href = 'whatsapp:live'
+    const serverUrl = 'http://localhost:7777/printers'
+    const fallbackUrl = 'AdePrint:live'
+
     try {
-      const response = await fetch('http://localhost:7777/printers')
-      const data = await response.json()
-      const availablePrinters = data.printers.map((printerName: string) => ({
-        name: printerName,
-      }))
+      // Verificar si el servidor local está disponible
+      const response = await fetch(serverUrl, { method: 'HEAD' })
+      console.log('response', response)
+      if (response.ok) {
+        // Continuar con la lógica de obtención de impresoras
+        const dataResponse = await fetch(serverUrl)
+        const data = await dataResponse.json()
+        const availablePrinters = data.printers.map((printerName: string) => ({
+          name: printerName,
+        }))
 
-      // Combinar las impresoras escaneadas con las manuales, eliminando duplicados
-      const combinedPrinters = [...availablePrinters, ...manualPrinters]
-      const uniquePrinters = Array.from(new Set(combinedPrinters.map((p) => p.name))).map(
-        (name) => combinedPrinters.find((p) => p.name === name)!,
-      )
+        // Combinar impresoras escaneadas con las manuales, eliminando duplicados
+        const combinedPrinters = [...availablePrinters, ...manualPrinters]
+        const uniquePrinters = Array.from(
+          new Set(combinedPrinters.map((p) => p.name)),
+        ).map((name) => combinedPrinters.find((p) => p.name === name)!)
 
-      setPrinters(uniquePrinters)
+        setPrinters(uniquePrinters)
+      } else {
+        throw new Error('Servidor local no disponible')
+      }
     } catch (error) {
       console.error('Error al escanear impresoras:', error)
-      const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
-      if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al escanear impresoras',
-          text: 'No se pudo escanear las impresoras disponibles en la red, verifique que la Aplicación de Impresión esté en ejecución.',
-        })
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al escanear impresoras',
+        text: 'No se pudo escanear las impresoras disponibles en la red, verifique que la Aplicación de Impresión esté en ejecución.',
+      })
+
+      // Intentar fallback con AdePrint:live
+      try {
+        window.location.href = fallbackUrl
+      } catch (fallbackError) {
+        console.error('Error al usar el fallback AdePrint:live:', fallbackError)
+
+        // Mostrar mensaje de error si no es un dispositivo móvil
+        const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+        if (!/android/i.test(userAgent) && !/iPad|iPhone|iPod/.test(userAgent)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al escanear impresoras',
+            text: 'No se pudo escanear las impresoras disponibles en la red, verifique que la Aplicación de Impresión esté en ejecución.',
+          })
+        }
       }
     }
   }
