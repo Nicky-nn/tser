@@ -16,11 +16,13 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import React, { FunctionComponent, useState } from 'react'
 
 import SimpleContainer from '../../../../base/components/Container/SimpleContainer'
 import Breadcrumb from '../../../../base/components/Template/Breadcrumb/Breadcrumb'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
+import { apiListadoProductos } from '../../../ventas/api/licencias.api'
 import CuentaPassword from './Perfil/CuentaPassword'
 import CuentaPerfil from './Perfil/CuentaPerfil'
 import CuentaRecargarCache from './Perfil/CuentaRecargarCache'
@@ -33,8 +35,18 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const Cuenta: FunctionComponent<Props> = (props) => {
+const Cuenta: FunctionComponent<Props> = () => {
   const [selectedIndex, setSelectedIndex] = useState(0)
+
+  const { data } = useQuery({
+    queryKey: ['licenciaProductoListado'],
+    queryFn: async () => {
+      const data = await apiListadoProductos()
+      return data || []
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
   const handleListItemClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -42,6 +54,9 @@ const Cuenta: FunctionComponent<Props> = (props) => {
   ) => {
     setSelectedIndex(index)
   }
+
+  // Buscamos en data el rraya con tipoProducto = 'IMPRESION'
+  const impresion = data?.find((item) => item.tipoProducto === 'IMPRESION')
 
   return (
     <>
@@ -123,15 +138,17 @@ const Cuenta: FunctionComponent<Props> = (props) => {
                     <ListItemText primary="Tipo Representación Gráfica" />
                   </ListItemButton>
 
-                  <ListItemButton
-                    selected={selectedIndex === 6}
-                    onClick={(event) => handleListItemClick(event, 6)}
-                  >
-                    <ListItemIcon>
-                      <Print />
-                    </ListItemIcon>
-                    <ListItemText primary="Impresoras" />
-                  </ListItemButton>
+                  {impresion && (
+                    <ListItemButton
+                      selected={selectedIndex === 6}
+                      onClick={(event) => handleListItemClick(event, 6)}
+                    >
+                      <ListItemIcon>
+                        <Print />
+                      </ListItemIcon>
+                      <ListItemText primary="Impresoras" />
+                    </ListItemButton>
+                  )}
                 </List>
               </Box>
             </SimpleCard>

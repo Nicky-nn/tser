@@ -11,17 +11,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import qrcode from 'qrcode-generator'
-import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import React, { FunctionComponent } from 'react'
 
 import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
 import { H4 } from '../../../../../base/components/Template/Typography'
 import useAuth from '../../../../../base/hooks/useAuth'
-import { apiGetQRCode } from '../../../../whatsapp/api/ObtenerQr.api'
+import { apiListadoProductos } from '../../../../ventas/api/licencias.api'
 
 const CuentaPerfil: FunctionComponent = () => {
   const { user } = useAuth()
+  // eslint-disable-next-line no-unused-vars
+  const [showWarning, setShowWarning] = useState(true)
 
   const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
     localStorage.getItem('whatsappEnabled') === 'true',
@@ -29,33 +31,29 @@ const CuentaPerfil: FunctionComponent = () => {
   const [emailEnabled, setEmailEnabled] = useState<boolean>(
     localStorage.getItem('emailEnabled') === 'true',
   )
-  const [hasPlan, setHasPlan] = useState<boolean>(false)
 
-  // const fetchQRCode = useCallback(async () => {
-  //   try {
-  //     const code = await apiGetQRCode({ username: user.miEmpresa.tienda })
+  const { data } = useQuery({
+    queryKey: ['licenciaProductoListado'],
+    queryFn: async () => {
+      const data = await apiListadoProductos()
+      return data || []
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
 
-  //     if (code) {
-  //       const qr = qrcode(0, 'L')
-  //       qr.addData(code)
-  //       qr.make()
-  //       setHasPlan(true) // Aquí asumimos que si se obtiene el QR, el usuario tiene un plan
-  //     } else {
-  //       throw new Error('No se pudo obtener el código QR')
-  //     }
-  //   } catch (err: any) {
-  //     if (err.message === 'El usuario ya está logueado en WhatsApp') {
-  //       setHasPlan(true) // Aquí asumimos que si ya está logueado, el usuario tiene un plan
-  //     }
-  //     setHasPlan(false) // Si ocurre un error y no es "ya está logueado", asumimos que no tiene un plan
-  //   }
-  // }, [user.miEmpresa.tienda])
+  const whaapi = data?.find((item) => item.tipoProducto === 'WHATSAPP')
+  const state = whaapi?.state
+  const fechaVencimiento = whaapi?.fechaVencimiento
+  const fechaActual = new Date()
 
-  // useEffect(() => {
-  //   fetchQRCode()
-  //   const intervalId = setInterval(fetchQRCode, 30000)
-  //   return () => clearInterval(intervalId)
-  // }, [fetchQRCode])
+  // Verifica si el estado no es "activado" o si la fecha ya venció
+  const mostrarAviso =
+    showWarning &&
+    (state !== 'ACTIVADO' ||
+      (fechaVencimiento && new Date(fechaVencimiento) < fechaActual))
+
+  console.log('whaapi', mostrarAviso)
 
   const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
@@ -117,33 +115,41 @@ const CuentaPerfil: FunctionComponent = () => {
               />
             </FormControl>
           </Grid>
-
-          {/* Nueva sección: Habilitar Envío por WhatsApp */}
-          {/* <Grid item lg={12} md={12} xs={12}>
-            <Box position="relative" display="inline-block">
-              <Stack direction="row" alignItems="center" gap={1}>
-                <WhatsApp color="success" />
-                <Typography style={{ fontWeight: 'bold' }}>WhatsApp</Typography>
-              </Stack>
-              <Badge
-                badgeContent="Nuevo"
-                color="secondary"
-                sx={{ position: 'absolute', top: 10, right: -30 }}
-              />
-            </Box>
-          </Grid>
-          <Grid item lg={12} md={12} xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={whatsappEnabled}
-                  onChange={handleWhatsappEnabledChange}
-                  disabled={hasPlan} // Ahora se basa en la variable hasPlan
+          {whaapi && (
+            <>
+              <Grid item lg={12} md={12} xs={12}>
+                <Box position="relative" display="inline-block">
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <WhatsApp color="success" />
+                    <Typography style={{ fontWeight: 'bold' }}>WhatsApp</Typography>
+                  </Stack>
+                  <Badge
+                    badgeContent="Nuevo"
+                    color="secondary"
+                    sx={{ position: 'absolute', top: 10, right: -30 }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item lg={12} md={12} xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={whatsappEnabled}
+                      onChange={handleWhatsappEnabledChange}
+                    />
+                  }
+                  label="Habilitar envío por WhatsApp"
                 />
-              }
-              label="Habilitar envío por WhatsApp"
-            />
-          </Grid> */}
+              </Grid>
+            </>
+          )}
+          {mostrarAviso && (
+            <Grid item lg={12} md={12} xs={12}>
+              <Typography style={{ color: 'red' }}>
+                Su licencia de WhatsApp está vencida o desactivada
+              </Typography>
+            </Grid>
+          )}
           <Grid item lg={12} md={12} xs={12}>
             <Box position="relative" display="inline-block">
               <Stack direction="row" alignItems="center" gap={1}>
