@@ -103,6 +103,7 @@ import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
 import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
+import { apiEnviarArchivo } from '../../ventas/api/waapi.api'
 import { apiListadoPorInventarioEntidad } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
 import { apiListadoEspacios } from '../api/restauranteEspacios.api'
@@ -1328,28 +1329,41 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 setValue('metodoPago', efectivoId)
                 setEnviaDatos(true)
 
-                // if (whatsappEnabled) {
-                //   const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, por favor comunícate con el remitente.\n\nAgradecemos tu preferencia.\n\nPara descargar el archivo XML de tu documento fiscal, haz clic en este link: ${representacionGrafica.xml}`
+                if (whatsappEnabled) {
+                  const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, comunícate con el remitente.\n\nAgradecemos tu preferencia.`
 
-                //   const telefono = cliente.telefono || ''
-                //   const documentUrl = representacionGrafica.pdf
-                //   const documentFileName = 'Factura.pdf'
+                  const telefono = cliente.telefono || ''
+                  const documentUrl = representacionGrafica.pdf
+                  const documentFileName = 'Factura.pdf'
 
-                //   if (telefono) {
-                //     try {
-                //       await sendWhatsappMessage(
-                //         telefono,
-                //         mensaje,
-                //         documentUrl,
-                //         documentFileName,
-                //       )
-                //     } catch (error) {
-                //       console.error('Error al enviar mensaje de WhatsApp:', error)
-                //     }
-                //   } else {
-                //     console.error('Número de teléfono no disponible')
-                //   }
-                // }
+                  if (telefono) {
+                    try {
+                      await apiEnviarArchivo({
+                        entidad: {
+                          codigoSucursal: sucursal.codigo,
+                          codigoPuntoVenta: puntoVenta.codigo,
+                        },
+                        input: {
+                          codigoArea: '591',
+                          mensaje: mensaje,
+                          nombre: documentFileName,
+                          telefono: telefono,
+                          url: documentUrl,
+                        },
+                      })
+                      toast.success('Mensaje de WhatsApp enviado con éxito a ' + telefono)
+                    } catch (error) {
+                      console.error('Error al enviar mensaje de WhatsApp:', error)
+                      Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un error al enviar el mensaje de WhatsApp',
+                        icon: 'error',
+                      })
+                    }
+                  } else {
+                    console.error('Número de teléfono no disponible')
+                  }
+                }
               }
 
               const efectivoId =
@@ -2218,7 +2232,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
           {/* Fin Visual  */}
 
-          {selectedView === 'lista' || selectedView === null || selectedView === '' ? (
+          {selectedView === 'lista' ? (
             <>
               <Grid item xs={12}>
                 <Select

@@ -55,8 +55,7 @@ const listadoWaapiQuery = gql`
 `
 
 const enviarArchivoMutation = gql`
-  mutation ENVIAR_ARCHIVO($entidad: EntidadParamsInput!, input: WaapiEnviarUrlInput!
-  ) {
+  mutation ENVIAR_ARCHIVO($entidad: EntidadParamsInput!, $input: WaapiEnviarUrlInput!) {
     waapiEnviarUrl(entidad: $entidad, input: $input) {
       ...FIELDS
     }
@@ -86,13 +85,17 @@ export const apiListadoWaapi = async (limit: number): Promise<Waapi[]> => {
  * @param params Parámetros necesarios para enviar el archivo
  */
 export const apiEnviarArchivo = async (params: {
-  codigoSucursal: number
-  codigoPuntoVenta: number
-  nombre: string
-  mensaje: string
-  url: string
-  codigoArea: string
-  telefono: string
+  entidad: {
+    codigoSucursal: number
+    codigoPuntoVenta: number
+  }
+  input: {
+    codigoArea: string
+    mensaje: string
+    nombre: string
+    telefono: string
+    url: string
+  }
 }): Promise<Waapi> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)

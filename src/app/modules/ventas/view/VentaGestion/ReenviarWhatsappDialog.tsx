@@ -16,7 +16,7 @@ import { toast } from 'react-toastify'
 import useAuth from '../../../../base/hooks/useAuth'
 import { isEmptyValue } from '../../../../utils/helper'
 import { swalException } from '../../../../utils/swal'
-import { useWhatsappSender } from '../../../pos/Pdf/sendWhatsappMessage'
+import { apiEnviarArchivo } from '../../api/waapi.api'
 import { FacturaProps } from '../../interfaces/factura'
 
 interface OwnProps {
@@ -36,14 +36,10 @@ const ReenviarWhatsAppDialog: FunctionComponent<Props> = (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<string[]>([])
 
-  const { user } = useAuth()
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
 
-  // Hook personalizado para enviar mensajes de WhatsApp
-  const sendWhatsappMessage = useWhatsappSender({
-    miEmpresa: {
-      tienda: user.miEmpresa.tienda,
-    },
-  })
   useEffect(() => {
     if (open) {
       setnumerosCelulares(factura?.cliente.telefono || '')
@@ -81,7 +77,19 @@ const ReenviarWhatsAppDialog: FunctionComponent<Props> = (props: Props) => {
       setLoading(true)
       try {
         for (const numero of tags) {
-          await sendWhatsappMessage(numero, mensaje, documentUrl, documentFileName)
+          await apiEnviarArchivo({
+            entidad: {
+              codigoSucursal: sucursal.codigo,
+              codigoPuntoVenta: puntoVenta.codigo,
+            },
+            input: {
+              codigoArea: '591',
+              mensaje: mensaje,
+              nombre: documentFileName,
+              telefono: numero,
+              url: documentUrl || '',
+            },
+          })
         }
         toast.success('Mensajes enviados correctamente')
         onClose()
