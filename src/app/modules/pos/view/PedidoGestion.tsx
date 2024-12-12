@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   AccountBalance,
   Add,
@@ -103,6 +102,7 @@ import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
 import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
+import { apiListadoProductos } from '../../ventas/api/licencias.api'
 import { apiEnviarArchivo } from '../../ventas/api/waapi.api'
 import { apiListadoPorInventarioEntidad } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
@@ -111,7 +111,6 @@ import { generarComandaPDF } from '../Pdf/Comanda'
 import { facturarPedido } from '../Pdf/facturarPedido'
 import { finalizarPedido } from '../Pdf/finalizarPedido'
 import { generarReciboPDF } from '../Pdf/Recibo'
-import { useWhatsappSender } from '../Pdf/sendWhatsappMessage'
 import KeyTipButton from '../services/keyTips'
 import MetodoPagoButton from '../utils/MetodoPagoButton'
 import { actualizarItemPedido } from '../utils/Pedidos/actualizarItem'
@@ -224,7 +223,6 @@ interface OwnProps {
 type Props = OwnProps
 
 const PedidoGestion: FunctionComponent<Props> = (props) => {
-  const [generalNotes, setGeneralNotes] = useState<string>('')
   const {
     form: {
       control,
@@ -244,9 +242,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       integracionSiat,
     },
   } = useAuth()
-
-  const { user } = useAuth()
-  const sendWhatsappMessage = useWhatsappSender(user)
 
   const form = props.form
   const logo = import.meta.env.ISI_LOGO_FULL
@@ -283,9 +278,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [selectedView, setSelectedView] = useState<string>('')
   const [selectedUbicacion, setSelectedUbicacion] = useState<string | null>(null)
   const [dialogEspacioOpen, setDialogEspacioOpen] = useState(false)
-  const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
-    localStorage.getItem('whatsappEnabled') === 'true',
-  )
 
   const theme = useTheme()
 
@@ -366,6 +358,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     refetchOnWindowFocus: false,
     refetchInterval: false,
   })
+
+  const { data: waapi } = useQuery({
+    queryKey: ['licenciaProductoListado'],
+    queryFn: async () => {
+      const data = await apiListadoProductos()
+      return data || []
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
+  })
+
+  const whaapi = waapi?.find((item) => item.tipoProducto === 'WHATSAPP')
 
   const categories = useMemo(() => {
     if (!articulosProd) return []
@@ -1320,50 +1324,59 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   title: 'Pedido Facturado',
                   text: 'El pedido ha sido facturado con éxito',
                   icon: 'success',
-                })
+                  showCancelButton: true,
+                  showConfirmButton: !!whaapi, // Mostrar el botón solo si existe el plan
+                  confirmButtonText: whaapi ? 'Enviar por WhatsApp' : '',
+                  cancelButtonText: 'Cerrar',
+                  focusCancel: true,
+                  focusDeny: true,
+                }).then(async (result) => {
+                  const efectivoId =
+                    metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
+                      ?.codigoClasificador ?? 1
+                  setSelectedId(efectivoId)
+                  setValue('metodoPago', efectivoId)
+                  setEnviaDatos(true)
 
-                const efectivoId =
-                  metodosPago?.find((m) => m.descripcion.toUpperCase() === 'EFECTIVO')
-                    ?.codigoClasificador ?? 1
-                setSelectedId(efectivoId)
-                setValue('metodoPago', efectivoId)
-                setEnviaDatos(true)
+                  if (result.isConfirmed && whaapi) {
+                    const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, comunícate con el remitente.\n\nAgradecemos tu preferencia.`
 
-                if (whatsappEnabled) {
-                  const mensaje = `Estimado Sr(a) ${cliente?.razonSocial || ''},\n\nSe ha generado el presente documento fiscal de acuerdo al siguiente detalle:\n\n*FACTURA COMPRA/VENTA*\n\n*Razón Social:* ${cliente?.razonSocial || ''}\n*NIT/CI/CEX:* ${clienteSeleccionado?.codigoCliente || ''}\n*Número Factura:* ${numeroFactura}\n*Fecha Emisión:* ${createdAt}\n\nSi recibiste este mensaje por error o tienes alguna consulta acerca de su contenido, comunícate con el remitente.\n\nAgradecemos tu preferencia.`
+                    const telefono = cliente.telefono || ''
+                    const documentUrl = representacionGrafica.pdf
+                    const documentFileName = 'Factura.pdf'
 
-                  const telefono = cliente.telefono || ''
-                  const documentUrl = representacionGrafica.pdf
-                  const documentFileName = 'Factura.pdf'
-
-                  if (telefono) {
-                    try {
-                      await apiEnviarArchivo({
-                        entidad: {
-                          codigoSucursal: sucursal.codigo,
-                          codigoPuntoVenta: puntoVenta.codigo,
-                        },
-                        input: {
-                          codigoArea: '591',
-                          mensaje: mensaje,
-                          nombre: documentFileName,
-                          telefono: telefono,
-                          url: documentUrl,
-                        },
-                      })
-                      toast.success('Mensaje de WhatsApp enviado con éxito a ' + telefono)
-                    } catch (error) {
-                      console.error('Error al enviar mensaje de WhatsApp:', error)
-                      Swal.fire({
-                        title: 'Error',
-                        text: 'Hubo un error al enviar el mensaje de WhatsApp',
-                        icon: 'error',
-                      })
+                    if (telefono) {
+                      try {
+                        toast.info('Enviando mensaje de WhatsApp...')
+                        await apiEnviarArchivo({
+                          entidad: {
+                            codigoSucursal: sucursal.codigo,
+                            codigoPuntoVenta: puntoVenta.codigo,
+                          },
+                          input: {
+                            codigoArea: '591',
+                            mensaje: mensaje,
+                            nombre: documentFileName,
+                            telefono: telefono,
+                            url: documentUrl,
+                          },
+                        })
+                        toast.success(
+                          'Mensaje de WhatsApp enviado con éxito a ' + telefono,
+                        )
+                      } catch (error) {
+                        console.error('Error al enviar mensaje de WhatsApp:', error)
+                        Swal.fire({
+                          title: 'Error',
+                          text: 'Hubo un error al enviar el mensaje de WhatsApp',
+                          icon: 'error',
+                        })
+                      }
+                    } else {
+                      console.error('Número de teléfono no disponible')
                     }
-                  } else {
-                    console.error('Número de teléfono no disponible')
                   }
-                }
+                })
               }
 
               const efectivoId =
@@ -1536,19 +1549,11 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }, [selectedOption])
 
-  const IMG = styled('img')(() => ({
-    width: '100%',
-    // maxHeight: '90px',
-  }))
-
   useEffect(() => {
     const savedView = localStorage.getItem('selectedView')
     if (savedView) {
       setSelectedView(savedView)
     }
-
-    const enabled = localStorage.getItem('whatsappEnabled') === 'true'
-    setWhatsappEnabled(enabled)
 
     const savedUbicacion = localStorage.getItem('ubicacion')
     if (savedUbicacion) {
@@ -2413,7 +2418,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     marginTop: '-15px',
                   }}
                 >
-                  {whatsappEnabled && (
+                  {whaapi && (
                     <Controller
                       name="telefono"
                       control={control}

@@ -1,6 +1,5 @@
-import { Email, Person, WhatsApp } from '@mui/icons-material'
+import { Email, Person } from '@mui/icons-material'
 import {
-  Badge,
   Box,
   Checkbox,
   Chip,
@@ -25,41 +24,41 @@ const CuentaPerfil: FunctionComponent = () => {
   // eslint-disable-next-line no-unused-vars
   const [showWarning, setShowWarning] = useState(true)
 
-  const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
-    localStorage.getItem('whatsappEnabled') === 'true',
-  )
+  // const [whatsappEnabled, setWhatsappEnabled] = useState<boolean>(
+  //   localStorage.getItem('whatsappEnabled') === 'true',
+  // )
   const [emailEnabled, setEmailEnabled] = useState<boolean>(
     localStorage.getItem('emailEnabled') === 'true',
   )
 
-  const { data } = useQuery({
-    queryKey: ['licenciaProductoListado'],
-    queryFn: async () => {
-      const data = await apiListadoProductos()
-      return data || []
-    },
-    refetchOnWindowFocus: false,
-    refetchInterval: false,
-  })
+  // const { data } = useQuery({
+  //   queryKey: ['licenciaProductoListado'],
+  //   queryFn: async () => {
+  //     const data = await apiListadoProductos()
+  //     return data || []
+  //   },
+  //   refetchOnWindowFocus: false,
+  //   refetchInterval: false,
+  // })
 
-  const whaapi = data?.find((item) => item.tipoProducto === 'WHATSAPP')
-  const state = whaapi?.state
-  const fechaVencimiento = whaapi?.fechaVencimiento
-  const fechaActual = new Date()
+  // const whaapi = data?.find((item) => item.tipoProducto === 'WHATSAPP')
+  // const state = whaapi?.state
+  // const fechaVencimiento = whaapi?.fechaVencimiento
+  // const fechaActual = new Date()
 
-  // Verifica si el estado no es "activado" o si la fecha ya venció
-  const mostrarAviso =
-    showWarning &&
-    (state !== 'ACTIVADO' ||
-      (fechaVencimiento && new Date(fechaVencimiento) < fechaActual))
+  // // Verifica si el estado no es "activado" o si la fecha ya venció
+  // const mostrarAviso =
+  //   showWarning &&
+  //   (state !== 'ACTIVADO' ||
+  //     (fechaVencimiento && new Date(fechaVencimiento) < fechaActual))
 
-  console.log('whaapi', mostrarAviso)
+  // console.log('whaapi', mostrarAviso)
 
-  const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const enabled = event.target.checked
-    setWhatsappEnabled(enabled)
-    localStorage.setItem('whatsappEnabled', String(enabled))
-  }
+  // const handleWhatsappEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const enabled = event.target.checked
+  //   setWhatsappEnabled(enabled)
+  //   localStorage.setItem('whatsappEnabled', String(enabled))
+  // }
 
   const handleEmailEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
@@ -115,7 +114,7 @@ const CuentaPerfil: FunctionComponent = () => {
               />
             </FormControl>
           </Grid>
-          {whaapi && (
+          {/* {whaapi && (
             <>
               <Grid item lg={12} md={12} xs={12}>
                 <Box position="relative" display="inline-block">
@@ -142,14 +141,14 @@ const CuentaPerfil: FunctionComponent = () => {
                 />
               </Grid>
             </>
-          )}
-          {mostrarAviso && (
+          )} */}
+          {/* {mostrarAviso && (
             <Grid item lg={12} md={12} xs={12}>
               <Typography style={{ color: 'red' }}>
                 Su licencia de WhatsApp está vencida o desactivada
               </Typography>
             </Grid>
-          )}
+          )} */}
           <Grid item lg={12} md={12} xs={12}>
             <Box position="relative" display="inline-block">
               <Stack direction="row" alignItems="center" gap={1}>
