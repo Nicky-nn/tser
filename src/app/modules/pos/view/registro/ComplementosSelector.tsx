@@ -48,7 +48,7 @@ interface Product {
   fromDatabase?: boolean
   nroItem?: number
   complemento?: boolean
-  complementos?: Complemento[]
+  listaComplemento?: Complemento[]
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -97,9 +97,7 @@ const ComplementosSelector = ({
       }
 
       const codigosQuery =
-        product?.complementos
-          ?.map((c) => `codigoArticulo=${c.codigoArticulo}`)
-          .join('&') || ''
+        product?.listaComplemento?.map((c) => `${c.codigoArticulo}`).join('&') || ''
       const resp = await articuloInventarioComplementoListadoApi(entidad, codigosQuery)
       return resp || []
     },
@@ -134,7 +132,7 @@ const ComplementosSelector = ({
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={4}>
-              <ProductCard elevation={3}>
+              <ProductCard elevation={3} onClick={() => console.log('click')}>
                 {product.imagen ? (
                   <CardMedia
                     component="img"
@@ -142,6 +140,7 @@ const ComplementosSelector = ({
                     image={product.imagen.variants.medium}
                     alt={product.name}
                     sx={{ objectFit: 'cover' }}
+                    onClick={() => console.log('click')}
                   />
                 ) : (
                   <Box
