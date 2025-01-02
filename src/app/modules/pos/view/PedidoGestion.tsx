@@ -121,6 +121,7 @@ import { eliminarPedidoTodo } from '../utils/Pedidos/pedidoTodoEliminar'
 import CreditCardDialog from './CardDialog'
 import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import Mosaico from './orden/Mosaico'
+import ComplementosSelector from './registro/ComplementosSelector'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
 ;(pdfMake as any).fonts = {
   Roboto: {
@@ -147,7 +148,15 @@ const ICONS = {
   OTROS: AltRoute,
   QR: QrCode,
 }
+
+interface Complemento {
+  id: number
+  nombre: string
+  imagen: string
+  descripcion?: string
+}
 interface Product {
+  [x: string]: any
   sigla: ReactNode
   imagen: any
   extraDetalle?: string
@@ -162,9 +171,12 @@ interface Product {
   codigoArticulo: string
   fromDatabase?: boolean
   nroItem?: number
+  complemento?: boolean
 }
 
 interface ProductoProps {
+  listaComplemento: any
+  complemento: any
   imagen: any
   articuloPrecio: any
   detalleExtra: unknown
@@ -396,6 +408,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         codigoAlmacen: '',
         codigoArticuloUnidadMedida:
           producto.articuloPrecioBase.articuloUnidadMedida.codigoUnidadMedida,
+        complemento: producto.complemento,
+        listaComplemento: producto.listaComplemento,
+        codigoLote: producto.inventario,
       }
 
       if (categoriaExistente) {
@@ -423,12 +438,32 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     return categorias
   }, [articulosProd])
 
+  const [isComplementoOpen, setIsComplementoOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [selectedComplementos, setSelectedComplementos] = useState<any | null>(null)
+
   const handleAddToCart = (product: Product) => {
     if (!selectedOption?.mesa) {
       toast.error('Debe seleccionar una mesa')
       return
     }
 
+    // Si el producto tiene complementos, mostrar el selector
+    if (product.listaComplemento.length > 0) {
+      console.log('al abrir el complemento', addToCartDirectly)
+      setSelectedProduct(product)
+      setSelectedComplementos(product.listaComplemento)
+      setIsComplementoOpen(true)
+      return
+    }
+
+    // Si no tiene complementos, continuar con la lógica normal
+    console.log('product', product)
+    addToCartDirectly(product)
+  }
+
+  const addToCartDirectly = (product: Product, complemento?: Complemento) => {
+    console.log('El complemento pertenece a:', complemento, product)
     const existingProduct = cart.find((p) => p.codigoArticulo === product.codigoArticulo)
     if (existingProduct) {
       setCart((prevCart) =>
@@ -444,8 +479,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         ...product,
         quantity: 1,
         discount: 0,
-        extraDescription: '',
-        // Asigna el número de item como el máximo encontrado + 1
+        extraDescription: complemento ? complemento.nombre : '',
         nroItem: maxNroItem + 1,
       }
 
@@ -816,6 +850,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               codigoArticuloUnidadMedida:
                 producto.articuloPrecio.articuloUnidadMedida.codigoUnidadMedida || '',
               fromDatabase: true,
+              codigoLote: producto.articuloPrecio.lote
+                ? producto.articuloPrecio.lote.codigoLote
+                : null,
+              complemento: producto.complemento,
             }),
           )
           setCart(mappedProducts)
@@ -3162,6 +3200,22 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           onClose={() => setOpenDeliveryDialog(false)}
           form={form}
           dataDelivery={dataDelivery || {}}
+        />
+      </>
+      <>
+        <ComplementosSelector
+          isOpen={isComplementoOpen}
+          onClose={() => {
+            setIsComplementoOpen(false)
+            setSelectedProduct(null)
+          }}
+          product={selectedProduct}
+          complementos={selectedComplementos}
+          onAddToCart={(product: any, complemento: any) => {
+            addToCartDirectly(product, complemento)
+            setIsComplementoOpen(false)
+            setSelectedProduct(null)
+          }}
         />
       </>
       <NuevoEspacioDialog
