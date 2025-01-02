@@ -449,21 +449,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
 
     // Si el producto tiene complementos, mostrar el selector
-    if (product.listaComplemento.length > 0) {
-      console.log('al abrir el complemento', addToCartDirectly)
+    if (product.listaComplemento !== null && product.listaComplemento.length > 0) {
       setSelectedProduct(product)
       setSelectedComplementos(product.listaComplemento)
       setIsComplementoOpen(true)
       return
     }
-
-    // Si no tiene complementos, continuar con la lógica normal
-    console.log('product', product)
     addToCartDirectly(product)
   }
 
   const addToCartDirectly = (product: Product, complemento?: Complemento) => {
-    console.log('El complemento pertenece a:', complemento, product)
+    console.log('complemento', complemento)
     const existingProduct = cart.find((p) => p.codigoArticulo === product.codigoArticulo)
     if (existingProduct) {
       setCart((prevCart) =>
@@ -481,11 +477,17 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         discount: 0,
         extraDescription: complemento ? complemento.nombre : '',
         nroItem: maxNroItem + 1,
+        // reemplazamos listaComplemto por complemento
+        listaComplemento: complemento,
       }
 
       setCart((prevCart) => [...prevCart, newItem])
     }
   }
+
+  useEffect(() => {
+    console.log('Cart', cart)
+  }, [cart])
 
   const handleRemoveFromCart = (index: number) => {
     setCart((prevCart) => {
@@ -2650,6 +2652,24 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               {product.price.toFixed(2)} {product.sigla}
                             </Typography>
                           </Box>
+                          <Box sx={{ flex: 1 }}>
+                            <Tooltip
+                              title={
+                                product.listaComplemento?.nombreArticulo ||
+                                product.listaComplemento?.derivadoArticulo ||
+                                ''
+                              }
+                              placement="top"
+                            >
+                              <Typography variant="body2">
+                                {truncateName(
+                                  product.listaComplemento?.nombreArticulo || '',
+                                  15,
+                                )}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
+
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <IconButton
                               size="small"
