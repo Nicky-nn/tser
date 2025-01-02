@@ -150,6 +150,7 @@ const ICONS = {
 }
 
 interface Complemento {
+  codigoArticulo: any
   id: number
   nombre: string
   imagen: string
@@ -459,12 +460,18 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const addToCartDirectly = (product: Product, complemento?: Complemento) => {
-    console.log('complemento', complemento)
-    const existingProduct = cart.find((p) => p.codigoArticulo === product.codigoArticulo)
+    const existingProduct = cart.find(
+      (p) =>
+        p.codigoArticulo === product.codigoArticulo &&
+        (!complemento ||
+          p.listaComplemento?.codigoArticulo === complemento.codigoArticulo),
+    )
     if (existingProduct) {
       setCart((prevCart) =>
         prevCart.map((p) =>
-          p.codigoArticulo === product.codigoArticulo
+          p.codigoArticulo === product.codigoArticulo &&
+          (!complemento ||
+            p.listaComplemento?.codigoArticulo === complemento.codigoArticulo)
             ? { ...p, quantity: p.quantity + 1 }
             : p,
         ),
@@ -485,9 +492,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
-  useEffect(() => {
-    console.log('Cart', cart)
-  }, [cart])
+  // useEffect(() => {
+  //   console.log('Cart', cart)
+  // }, [cart])
 
   const handleRemoveFromCart = (index: number) => {
     setCart((prevCart) => {
