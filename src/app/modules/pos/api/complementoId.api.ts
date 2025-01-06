@@ -192,22 +192,24 @@ const queryListado = gql`
 `
 
 export const articuloInventarioComplementoListadoApi = async (
-  cds: number,
   entidad: { codigoSucursal: number; codigoPuntoVenta: number },
   query: string,
 ): Promise<ArticuloInventarioComplementoListadoData> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
+    const cds = parseInt(import.meta.env.ISI_DOCUMENTO_SECTOR.toString(), 10)
+
     client.setHeader('authorization', `Bearer ${token}`)
 
-    const data = await client.request(queryListado, {
+    const data: {
+      articuloInventarioComplementoListado: ArticuloInventarioComplementoListadoData
+    } = await client.request(queryListado, {
       cds,
       entidad,
       query,
     })
-
-    return data as ArticuloInventarioComplementoListadoData
+    return data?.articuloInventarioComplementoListado || []
   } catch (error: any) {
     const errorMessage =
       error.response?.errors?.[0]?.message ||

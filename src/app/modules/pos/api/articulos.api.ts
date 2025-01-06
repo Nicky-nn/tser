@@ -44,6 +44,7 @@ export interface Articulo {
   imagen: ImagenCloud
   inventario: Inventario[]
   nombreArticulo: string
+  complemento: boolean
   proveedor: ProveedorProps
   sinProductoServicio: SinProductoServicioProps
   state: string
@@ -234,6 +235,12 @@ const fragmentArticuloFields = gql`
     _id
     codigoArticulo
     nombreArticulo
+    complemento
+    listaComplemento {
+      id
+      codigoArticulo
+      nombreArticulo
+    }
     descripcionArticulo
     tipoArticulo {
       codigo

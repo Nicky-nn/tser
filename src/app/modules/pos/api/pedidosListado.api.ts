@@ -148,6 +148,16 @@ const LISTADO_PEDIDOS_QUERY = gql`
             }
             articuloPrecio {
               cantidad
+              articuloUnidadMedida {
+                codigoUnidadMedida
+                nombreUnidadMedida
+              }
+              cantidadBase
+              descuento
+              descuentoAdicional
+              factorAjuste
+              impuesto
+              otrosCostos
             }
             claseArticulo
             codigoArticulo
