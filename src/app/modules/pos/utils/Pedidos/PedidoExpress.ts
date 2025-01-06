@@ -142,34 +142,37 @@ export const restPedidoExpressRegistro = async (
       },
       detalleExtra: producto.extraDetalle || '',
       codigoAlmacen: producto.codigoAlmacen,
-      nota: producto.extraDescription,
-      complementos: [
-        {
-          articuloPrecio: {
-            cantidad: 0,
-            codigoArticuloUnidadMedida:
-              producto.listaComplemento?.articuloPrecioBase?.articuloUnidadMedida
-                ?.codigoUnidadMedida || null,
-            descuento: 0,
-            impuesto: 0,
-            precio: 0,
-          },
-          codigoAlmacen:
-            producto.listaComplemento?.inventario?.[0]?.detalle[0].almacen
-              ?.codigoAlmacen || null,
-          codigoArticulo: producto.listaComplemento?.codigoArticulo || null,
-          codigoLote:
-            producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]
-              ?.codigoLote || null,
-          detalleExtra: producto.listaComplemento?.detalleExtra || '',
-          nota: '',
-        },
-      ],
+      nota: producto.extraDescription || '',
+      complementos: producto.listaComplemento
+        ? [
+            {
+              articuloPrecio: {
+                cantidad: 0,
+                codigoArticuloUnidadMedida:
+                  producto.listaComplemento?.articuloPrecioBase?.articuloUnidadMedida
+                    ?.codigoUnidadMedida || null,
+                descuento: 0,
+                impuesto: 0,
+                precio: 0,
+              },
+              codigoAlmacen:
+                producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.almacen
+                  ?.codigoAlmacen || null,
+              codigoArticulo: producto.listaComplemento?.codigoArticulo || null,
+              codigoLote:
+                producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]
+                  ?.codigoLote || null,
+              detalleExtra: producto.listaComplemento?.detalleExtra || '',
+              nota: '',
+            },
+          ]
+        : [], // Array vacío si no hay complementos
     })),
     codigoMoneda: 1,
     tipoCambio: 1,
-    nota: data.notasGenerales,
+    nota: data?.notasGenerales || '',
   }
+
   // Añadir atributos de delivery solo si el tipo de pedido es "DELIVERY"
   if (tipoPedido === 'DELIVERY' && data) {
     input.atributo1 = data.atributo1 || ''

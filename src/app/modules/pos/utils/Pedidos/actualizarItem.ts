@@ -108,6 +108,7 @@ export const actualizarItemPedido = async (
     (producto: { fromDatabase: any }) => producto.fromDatabase,
   )
 
+  console.log('filteredData', filteredData)
   // Construir el objeto productos según los productos filtrados
   const productos = filteredData
     .filter(
@@ -119,6 +120,13 @@ export const actualizarItemPedido = async (
     )
     .map(
       (producto: {
+        codigoArticulo: any
+        codigoArticuloUnidadMedida: any
+        price: any
+        discount: any
+        codigoAlmacen: any
+        codigoLote: null
+        listaComplemento: any
         nroItem: any
         quantity: any
         extraDetalle: any
@@ -128,6 +136,37 @@ export const actualizarItemPedido = async (
         cantidad: producto.quantity,
         detalleExtra: producto.extraDetalle || '',
         nota: producto.extraDescription || '',
+        producto: {
+          codigoArticulo: producto.codigoArticulo,
+          articuloPrecio: {
+            cantidad: producto.quantity,
+            codigoArticuloUnidadMedida: producto.codigoArticuloUnidadMedida,
+            precio: producto.price,
+            descuento: producto.discount,
+            impuesto: 0,
+          },
+          codigoAlmacen: producto.codigoAlmacen,
+          codigoLote: producto?.codigoLote || null,
+          complementos: producto.listaComplemento
+            ? [
+                {
+                  codigoArticulo: producto.listaComplemento.codigoArticulo || '',
+                  codigoAlmacen: producto.listaComplemento.almacen?.codigoAlmacen || '',
+                  articuloPrecio: {
+                    cantidad: producto.listaComplemento.articuloPrecio?.cantidad || 0,
+                    codigoArticuloUnidadMedida:
+                      producto.listaComplemento.articuloPrecio?.articuloUnidadMedida
+                        ?.codigoUnidadMedida || '',
+                    precio: 0,
+                    descuento: 0,
+                    impuesto: 0,
+                  },
+                },
+              ]
+            : [],
+          detalleExtra: '',
+          nota: '',
+        },
       }),
     )
 
