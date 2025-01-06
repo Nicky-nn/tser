@@ -136,6 +136,41 @@ const LISTADO_PEDIDOS_QUERY = gql`
         montoTotal
         descuentoAdicional
         productos {
+          complementos {
+            almacen {
+              codigoAlmacen
+              nombre
+              state
+              sucursal {
+                codigo
+              }
+              ubicacion
+            }
+            articuloPrecio {
+              cantidad
+            }
+            claseArticulo
+            codigoArticulo
+            codigoGrupo
+            detalleExtra
+            grupoArticulo {
+              codigoGrupoArticulo
+            }
+            lote {
+              codigoLote
+            }
+            nombreArticulo
+            nota
+            nroItem
+            sinProductoServicio {
+              descripcionProducto
+              codigoActividad
+            }
+            tipoArticulo {
+              descripcion
+            }
+            verificarStock
+          }
           nroItem
           codigoArticulo
           nombreArticulo
