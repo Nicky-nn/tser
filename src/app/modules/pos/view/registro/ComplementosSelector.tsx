@@ -1,27 +1,33 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
-  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  FormControlLabel,
   Grid,
+  Radio,
+  RadioGroup,
   Skeleton,
   Tooltip,
   Typography,
 } from '@mui/material'
 import { styled, useTheme } from '@mui/material/styles'
 import { useQuery } from '@tanstack/react-query'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import useAuth from '../../../../base/hooks/useAuth'
 import { articuloInventarioComplementoListadoApi } from '../../api/complementoId.api'
 import truncateName from '../../utils/Pedidos/truncateName'
+
+// Existing interfaces remain the same...
 
 // types/index.ts
 interface Complemento {
@@ -51,13 +57,6 @@ interface Product {
   listaComplemento?: Complemento[]
 }
 
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialog-paper': {
-    maxWidth: '800px',
-    width: '100%',
-  },
-}))
-
 interface ComplementosSelectorProps {
   isOpen: boolean
   onClose: () => void
@@ -65,6 +64,14 @@ interface ComplementosSelectorProps {
   complementos: any[]
   onAddToCart: (product: Product, complemento: Complemento) => void
 }
+
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    maxWidth: '1000px', // Increased to accommodate the characteristics panel
+    width: '100%',
+  },
+}))
 
 const ProductCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -76,6 +83,13 @@ const ProductCard = styled(Card)(({ theme }) => ({
   },
 }))
 
+const CharacteristicsPanel = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[50],
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  height: '100%',
+}))
+
 const ComplementosSelector = ({
   isOpen,
   onClose,
@@ -85,8 +99,8 @@ const ComplementosSelector = ({
   const {
     user: { sucursal, puntoVenta },
   } = useAuth()
-
   const theme = useTheme()
+  const [selectedCharacteristic, setSelectedCharacteristic] = useState('termino-medio')
 
   const { data: complementos, isLoading: isLoadingComplementos } = useQuery<any>({
     queryKey: ['complementos', product?.codigoArticulo],
@@ -103,6 +117,26 @@ const ComplementosSelector = ({
     },
     refetchOnWindowFocus: false,
   })
+
+  // Example characteristics options
+  const characteristicsOptions = {
+    terminos: [
+      { value: 'tres-cuartos', label: 'Tres cuartos' },
+      { value: 'termino-medio', label: 'Término medio' },
+      { value: 'bien-cocido', label: 'Bien cocido' },
+    ],
+    presas: [
+      { value: 'pecho', label: 'Pecho' },
+      { value: 'pierna', label: 'Pierna' },
+      { value: 'ala', label: 'Ala' },
+    ],
+  }
+
+  // Choose which options to show based on product type
+  const characteristicType = product?.name.toLowerCase().includes('carne')
+    ? 'terminos'
+    : 'presas'
+  const options = characteristicsOptions[characteristicType]
 
   if (!product) return null
 
@@ -132,7 +166,7 @@ const ComplementosSelector = ({
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={4}>
-              <ProductCard elevation={3} onClick={() => console.log('click')}>
+              <ProductCard elevation={3}>
                 {product.imagen ? (
                   <CardMedia
                     component="img"
@@ -140,7 +174,6 @@ const ComplementosSelector = ({
                     image={product.imagen.variants.medium}
                     alt={product.name}
                     sx={{ objectFit: 'cover' }}
-                    onClick={() => console.log('click')}
                   />
                 ) : (
                   <Box
@@ -160,7 +193,7 @@ const ComplementosSelector = ({
                 )}
               </ProductCard>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={4}>
               <Typography variant="h5" gutterBottom>
                 {truncateName(product.name, 40)}
               </Typography>
@@ -169,6 +202,28 @@ const ComplementosSelector = ({
                   {truncateName(product.description, 70)}
                 </Typography>
               )}
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CharacteristicsPanel>
+                <Typography variant="h6" gutterBottom>
+                  Características
+                </Typography>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    value={selectedCharacteristic}
+                    onChange={(e) => setSelectedCharacteristic(e.target.value)}
+                  >
+                    {options.map((option) => (
+                      <FormControlLabel
+                        key={option.value}
+                        value={option.value}
+                        control={<Radio />}
+                        label={option.label}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+              </CharacteristicsPanel>
             </Grid>
           </Grid>
         </Box>
@@ -181,9 +236,40 @@ const ComplementosSelector = ({
 
         {isLoadingComplementos ? (
           <LoadingSkeleton />
-        ) : complementos?.length > 0 ? (
+        ) : (
           <Grid container spacing={3}>
-            {complementos.map((complemento: any) => (
+            {/* Sin Complemento Card */}
+            <Grid item xs={12} sm={6} md={4}>
+              <ProductCard>
+                <CardActionArea
+                  onClick={() => onAddToCart(product, null)}
+                  sx={{ height: '100%' }}
+                >
+                  <Box
+                    sx={{
+                      height: 100,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: theme.palette.grey[100],
+                    }}
+                  >
+                    <Typography variant="h6" align="center">
+                      Sin Complemento
+                    </Typography>
+                  </Box>
+                  <CardContent>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Continuar sin complemento
+                    </Typography>
+                    <Typography variant="body2">0.00 {product.sigla}</Typography>
+                  </CardContent>
+                </CardActionArea>
+              </ProductCard>
+            </Grid>
+
+            {/* Regular Complementos */}
+            {complementos?.map((complemento: any) => (
               <Grid item xs={12} sm={6} md={4} key={complemento.id}>
                 <ProductCard>
                   <CardActionArea
@@ -196,23 +282,19 @@ const ComplementosSelector = ({
                         height="100"
                         image={complemento.imagen.variants.medium}
                         alt={complemento.name}
-                        sx={{
-                          objectFit: 'cover',
-                          display: 'block',
-                          margin: '0 auto',
-                        }}
+                        sx={{ objectFit: 'cover', display: 'block', margin: '0 auto' }}
                       />
                     ) : (
                       <Box
                         sx={{
-                          height: 10,
+                          height: 100,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           backgroundColor: theme.palette.primary.main,
                           color: theme.palette.common.white,
                         }}
-                      ></Box>
+                      />
                     )}
                     <CardContent
                       sx={{
@@ -220,8 +302,8 @@ const ComplementosSelector = ({
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
-                        padding: '8px !important', // Padding reducido
-                        minHeight: '80px', // Altura mínima para el contenido
+                        padding: '8px !important',
+                        minHeight: '80px',
                       }}
                     >
                       <Tooltip title={complemento.descripcionArticulo} placement="top">
@@ -250,10 +332,6 @@ const ComplementosSelector = ({
               </Grid>
             ))}
           </Grid>
-        ) : (
-          <Typography variant="body1" color="text.secondary" align="center">
-            No hay complementos disponibles
-          </Typography>
         )}
       </DialogContent>
     </StyledDialog>

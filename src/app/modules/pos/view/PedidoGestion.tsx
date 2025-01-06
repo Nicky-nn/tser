@@ -492,9 +492,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     }
   }
 
-  // useEffect(() => {
-  //   console.log('Cart', cart)
-  // }, [cart])
+  useEffect(() => {
+    console.log('Cart', cart)
+  }, [cart])
 
   const handleRemoveFromCart = (index: number) => {
     setCart((prevCart) => {
@@ -862,7 +862,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               codigoLote: producto.articuloPrecio.lote
                 ? producto.articuloPrecio.lote.codigoLote
                 : null,
-              complemento: producto.complemento,
+              listaComplemento: producto.complementos?.[0] || null,
             }),
           )
           setCart(mappedProducts)
@@ -2646,38 +2646,109 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         sx={{ backgroundColor: '#EEF5FB', borderRadius: 2 }}
                       >
                         <Box
-                          sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                          sx={{
+                            display: 'flex',
+                            flexDirection: {
+                              // xs: 'column',
+                              // sm: product.listaComplemento ? 'column' : 'row',
+                              // md: 'column',
+                              // lg: 'column',
+                              xl: 'row',
+                            },
+                            width: '100%',
+                            gap: 1,
+                          }}
                           onClick={(event) => event.stopPropagation()}
                         >
-                          <Box sx={{ flex: 1 }}>
-                            <Tooltip title={product.name} placement="top">
+                          {/* Sección información producto */}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              width: '100%',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <Box>
+                              <Tooltip title={product.name} placement="top">
+                                <Typography variant="body2">
+                                  {truncateName(product.name, 10)}
+                                </Typography>
+                              </Tooltip>
                               <Typography variant="body2">
-                                {truncateName(product.name, 15)}
+                                {product.price.toFixed(2)} {product.sigla}
                               </Typography>
-                            </Tooltip>
-                            <Typography variant="body2">
-                              {product.price.toFixed(2)} {product.sigla}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ flex: 1 }}>
-                            <Tooltip
-                              title={
-                                product.listaComplemento?.nombreArticulo ||
-                                product.listaComplemento?.derivadoArticulo ||
-                                ''
-                              }
-                              placement="top"
+                            </Box>
+
+                            {/* Solo mostrar complemento en la primera línea en pantallas md+ */}
+                            <Box
+                              sx={{
+                                display: {
+                                  xs: 'none',
+                                  sm: product.listaComplemento ? 'none' : 'block',
+                                  md: 'block',
+                                },
+                              }}
                             >
-                              <Typography variant="body2">
-                                {truncateName(
-                                  product.listaComplemento?.nombreArticulo || '',
-                                  15,
-                                )}
-                              </Typography>
-                            </Tooltip>
+                              {product.listaComplemento && (
+                                <Tooltip
+                                  title={
+                                    product.listaComplemento?.nombreArticulo ||
+                                    product.listaComplemento?.derivadoArticulo ||
+                                    ''
+                                  }
+                                  placement="top"
+                                >
+                                  <Typography variant="body2">
+                                    {truncateName(
+                                      product.listaComplemento?.nombreArticulo || '',
+                                      10,
+                                    )}
+                                  </Typography>
+                                </Tooltip>
+                              )}
+                            </Box>
                           </Box>
 
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          {/* Sección complemento en segunda línea para xs y sm */}
+                          {product.listaComplemento && (
+                            <Box
+                              sx={{
+                                display: {
+                                  xs: 'block',
+                                  sm: product.listaComplemento ? 'block' : 'none',
+                                  md: 'none',
+                                },
+                                width: '100%',
+                              }}
+                            >
+                              <Tooltip
+                                title={
+                                  product.listaComplemento?.nombreArticulo ||
+                                  product.listaComplemento?.derivadoArticulo ||
+                                  ''
+                                }
+                                placement="top"
+                              >
+                                <Typography variant="body2">
+                                  {truncateName(
+                                    product.listaComplemento?.nombreArticulo || '',
+                                    10,
+                                  )}
+                                </Typography>
+                              </Tooltip>
+                            </Box>
+                          )}
+
+                          {/* Sección controles */}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-end',
+                              width: '100%',
+                            }}
+                          >
                             <IconButton
                               size="small"
                               color="primary"
@@ -2685,7 +2756,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                             >
                               <Remove />
                             </IconButton>
-                            {/* Haremos cantidad modificable con NumeroFormat y OutlinedInput*/}
                             <OutlinedInput
                               size="small"
                               value={product.quantity}
@@ -2697,7 +2767,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                                 )
                               }
                               onBlur={() =>
-                                // Si el valor si es 0 , automaticamente se vuelva 1 y si es null o nan se vuelve 1
                                 handleQuantityChange(
                                   index,
                                   'input',
@@ -2713,7 +2782,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                                 },
                                 min: 1,
                               }}
-                              // Los estilos se modifican para que el input sea más pequeño no tenga borde y sea centrado
                               sx={{
                                 width: 'auto',
                                 '& .MuiOutlinedInput-notchedOutline': {
