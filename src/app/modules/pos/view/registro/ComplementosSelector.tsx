@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { AddCircle, AddShoppingCart, Close, Delete } from '@mui/icons-material'
+import { AddShoppingCart, Close, Delete } from '@mui/icons-material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import {
@@ -9,7 +8,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,19 +20,20 @@ import {
   MenuItem,
   Select,
   Stack,
-  TextField,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material'
 import { blue } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
+import { useQuery } from '@tanstack/react-query'
 import { ReactNode, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import NumberSpinnerInput from '../../../../base/components/NumberSpinnerInput/NumberSpinnerInput'
 import { SimpleBox } from '../../../../base/components/Template/Cards/SimpleBox'
+import useAuth from '../../../../base/hooks/useAuth'
+import { articuloInventarioComplementoListadoApi } from '../../api/complementoId.api'
 
 interface Complemento {
   codigoArticulo: any
@@ -67,6 +66,7 @@ interface ComplementosSelectorProps {
   isOpen: boolean
   onClose: () => void
   product: Product | null
+  // eslint-disable-next-line no-unused-vars
   onAddToCart: (product: Product, complementos: Complemento[]) => void
 }
 
@@ -103,30 +103,6 @@ const GroupContainer = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }))
 
-const staticComplementos: Complemento[] = [
-  {
-    id: 0,
-    codigoArticulo: 'SIN',
-    nombre: 'Sin Complemento',
-    imagen: '/images/sin-complemento.jpg',
-    descripcion: 'Sin complemento',
-  },
-  {
-    id: 1,
-    codigoArticulo: 'COMP1',
-    nombre: 'Papas Fritas',
-    imagen: '/images/papas.jpg',
-    descripcion: 'Porción de papas fritas',
-  },
-  {
-    id: 2,
-    codigoArticulo: 'COMP2',
-    nombre: 'Ensalada',
-    imagen: '/images/ensalada.jpg',
-    descripcion: 'Ensalada fresca',
-  },
-]
-
 const ComplementosSelector = ({
   isOpen,
   onClose,
@@ -135,7 +111,9 @@ const ComplementosSelector = ({
 }: ComplementosSelectorProps) => {
   if (!product) return null
 
-  const theme = useTheme()
+  const {
+    user: { sucursal, puntoVenta },
+  } = useAuth()
   const [quantity, setQuantity] = useState(1)
   const [groups, setGroups] = useState<{
     [key: string]: {
@@ -150,6 +128,24 @@ const ComplementosSelector = ({
       nombre: 'Grupo 1',
     },
   })
+
+  const { data: complementos, isLoading: isLoadingComplementos } = useQuery<any>({
+    queryKey: ['complementos', product?.codigoArticulo],
+    queryFn: async () => {
+      const entidad = {
+        codigoSucursal: sucursal.codigo,
+        codigoPuntoVenta: puntoVenta.codigo,
+      }
+
+      const codigosQuery =
+        product?.listaComplemento?.map((c) => `${c.codigoArticulo}`).join('&') || ''
+      const resp = await articuloInventarioComplementoListadoApi(entidad, codigosQuery)
+      return resp || []
+    },
+    refetchOnWindowFocus: false,
+  })
+
+  console.log('complementos', complementos)
 
   useEffect(() => {
     setGroups({
@@ -246,10 +242,11 @@ const ComplementosSelector = ({
           <Close />
         </IconButton>
       </DialogTitle>
+      {isLoadingComplementos && <DialogContent>Loading...</DialogContent>}
       <DialogContent dividers>
         <Grid container columnSpacing={3}>
           <Grid item xs={12} md={4} lg={5}>
-            <Divider textAlign={'left'} sx={{ color: 'primary.main', mb: 0.7 }}>
+            <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
               <strong>Producto</strong>
             </Divider>
             <SimpleBox>
@@ -334,12 +331,12 @@ const ComplementosSelector = ({
                   </Stack>
 
                   <Grid container spacing={2}>
-                    {staticComplementos.map((complemento) => {
+                    {complementos.map((complemento: any) => {
                       const isSelected = group.complementos.some(
                         (c) => c.id === complemento.id,
                       )
                       return (
-                        <Grid item key={complemento.id}>
+                        <Grid item key={complemento._id}>
                           <ComplementCard
                             selected={isSelected}
                             onClick={() => handleComplementToggle(groupKey, complemento)}
@@ -351,7 +348,7 @@ const ComplementosSelector = ({
                                   <Avatar
                                     sx={{ bgcolor: blue[500], width: 45, height: 45 }}
                                     alt="C"
-                                    src={complemento.imagen}
+                                    src={complemento.imagen.variants.thumbnail}
                                     aria-label="recipe"
                                   >
                                     P
@@ -359,7 +356,7 @@ const ComplementosSelector = ({
                                 }
                                 title={
                                   <Tooltip
-                                    title={complemento.nombre}
+                                    title={complemento.nombrArticulo}
                                     placement="top"
                                     disableInteractive
                                   >
@@ -375,7 +372,8 @@ const ComplementosSelector = ({
                                         mb: -0.5,
                                       }}
                                     >
-                                      {complemento.codigoArticulo} - {complemento.nombre}
+                                      {complemento.codigoArticulo} -{' '}
+                                      {complemento.nombreArticulo}
                                     </Typography>
                                   </Tooltip>
                                 }
@@ -386,8 +384,15 @@ const ComplementosSelector = ({
                                     color={'text.secondary'}
                                     sx={{ textDecoration: 'line-through' }}
                                   >
-                                    {numberWithCommas(100, {})}{' '}
-                                    {complemento.codigoArticulo}
+                                    {numberWithCommas(
+                                      complemento.articuloPrecioBase.monedaPrimaria
+                                        .precio,
+                                      {},
+                                    )}{' '}
+                                    {
+                                      complemento.articuloPrecioBase.monedaPrimaria.moneda
+                                        .sigla
+                                    }
                                   </Typography>
                                 }
                               />
@@ -420,7 +425,7 @@ const ComplementosSelector = ({
                             >
                               {Object.entries(groups).map(([key, g]) => (
                                 <MenuItem key={key} value={key}>
-                                  Mover a {g.nombre}
+                                  {g.nombre}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -448,7 +453,7 @@ const ComplementosSelector = ({
           startIcon={<AddShoppingCart />}
           onClick={() => {
             Object.values(groups).forEach((group) => {
-              group.units.forEach((unitIndex) => {
+              group.units.forEach(() => {
                 onAddToCart(product, group.complementos)
               })
             })
