@@ -19,6 +19,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -37,7 +38,7 @@ import { articuloInventarioComplementoListadoApi } from '../../api/complementoId
 
 interface Complemento {
   codigoArticulo: any
-  id: number
+  _id: number
   nombre: string
   imagen: string
   descripcion?: string
@@ -139,13 +140,91 @@ const ComplementosSelector = ({
 
       const codigosQuery =
         product?.listaComplemento?.map((c) => `${c.codigoArticulo}`).join('&') || ''
+
       const resp = await articuloInventarioComplementoListadoApi(entidad, codigosQuery)
-      return resp || []
+
+      // Crear la opción "Sin complementos"
+      const sinComplementos = {
+        _id: 'sin-complementos',
+        codigoArticulo: 'SIN',
+        nombreArticulo: 'Sin Complementos',
+        descripcionArticulo: 'Opción sin complementos adicionales',
+        verificarStock: false,
+        articuloVenta: true,
+        articuloCompra: false,
+        articuloInventario: true,
+        tipoArticulo: {
+          codigo: 'ADR',
+          descripcion: 'PORCIONES',
+        },
+        claseArticulo: 'PRODUCTO',
+        sinProductoServicio: {
+          codigoActividad: '620000',
+          codigoProducto: '83131',
+          descripcionProducto: 'SERVICIOS DE CONSULTORÍA EN TI',
+        },
+        actividadEconomica: {
+          codigoCaeb: '620000',
+          descripcion: 'CONSULTORES EN PROYECTOS DE INFORMÁTICA',
+          tipoActividad: 'P',
+        },
+        proveedor: [],
+        imagen: {
+          id: 'default-image',
+          variants: {
+            thumbnail: '/api/placeholder/100/100',
+            medium: '/api/placeholder/300/300',
+            square: '/api/placeholder/200/200',
+          },
+        },
+        grupoUnidadMedida: null,
+        articuloPrecioBase: {
+          articuloUnidadMedida: {
+            codigoUnidadMedida: '57',
+            nombreUnidadMedida: 'UNIDAD (BIENES)',
+          },
+          monedaPrimaria: {
+            moneda: {
+              codigo: 1,
+              sigla: 'BOB',
+              descripcion: 'BOLIVIANO',
+            },
+            precioBase: 0,
+            precio: 0,
+            manual: false,
+          },
+        },
+        inventario: [
+          {
+            totalStock: 999999,
+            totalDisponible: 999999,
+            totalSolicitado: 0,
+            totalComprometido: 0,
+            sucursal: {
+              codigo: 0,
+            },
+            detalle: [
+              {
+                almacen: {
+                  codigoAlmacen: '1',
+                },
+                stock: 999999,
+                comprometido: 0,
+                solicitado: 0,
+                disponible: 999999,
+                lotes: [],
+              },
+            ],
+          },
+        ],
+        listaComplemento: [],
+      }
+
+      // Agregar la opción "Sin complementos" al inicio del array
+      return [sinComplementos, ...(Array.isArray(resp) ? resp : [])]
     },
     refetchOnWindowFocus: false,
   })
-
-  console.log('complementos', complementos)
 
   useEffect(() => {
     setGroups({
@@ -179,19 +258,24 @@ const ComplementosSelector = ({
   const handleComplementToggle = (groupKey: string, complemento: Complemento) => {
     setGroups((prev) => {
       const group = prev[groupKey]
-      const exists = group.complementos.some((c) => c.id === complemento.id)
-
+      const exists = group.complementos.some((c) => c._id === complemento._id)
       return {
         ...prev,
         [groupKey]: {
           ...group,
           complementos: exists
-            ? group.complementos.filter((c) => c.id !== complemento.id)
+            ? group.complementos.filter((c) => c._id !== complemento._id)
             : [...group.complementos, complemento],
         },
       }
     })
   }
+
+  useEffect(() => {
+    console.log('Grupos:', groups)
+    const allComplementos = Object.values(groups).flatMap((group) => group.complementos)
+    console.log('Complementos:', allComplementos)
+  }, [groups])
 
   const createNewGroup = () => {
     const newGroupKey = `group_${Object.keys(groups).length + 1}`
@@ -217,15 +301,7 @@ const ComplementosSelector = ({
   }
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="lg"
-      open={isOpen}
-      onClose={onClose}
-      PaperProps={{
-        sx: { minHeight: '80vh' },
-      }}
-    >
+    <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={onClose}>
       <DialogTitle>
         {product.description}
         <IconButton
@@ -242,213 +318,234 @@ const ComplementosSelector = ({
           <Close />
         </IconButton>
       </DialogTitle>
-      {isLoadingComplementos && <DialogContent>Loading...</DialogContent>}
-      <DialogContent dividers>
-        <Grid container columnSpacing={3}>
-          <Grid item xs={12} md={4} lg={5}>
-            <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
-              <strong>Producto</strong>
-            </Divider>
-            <SimpleBox>
-              <CardHeader
-                sx={{ p: 0 }}
-                avatar={
-                  <Avatar
-                    sx={{ bgcolor: blue[500], width: 60, height: 60 }}
-                    alt="Producto"
-                    src={product.imagen?.variants.thumbnail}
-                    aria-label="recipe"
-                  >
-                    P
-                  </Avatar>
-                }
-                title={
-                  <Typography
-                    variant={'body1'}
-                    sx={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: '1',
-                      WebkitBoxOrient: 'vertical',
-                      mb: 0.6,
-                    }}
-                  >
-                    {product.codigoArticulo} - {product.description}
-                  </Typography>
-                }
-                subheader={
-                  <Typography variant={'subtitle2'} color={'primary'}>
-                    Precio: {numberWithCommas(product.price, {})} {product.sigla}
-                  </Typography>
-                }
-              />
-              <CardContent sx={{ p: 0, mt: 1.6, pb: '0px !important' }}>
-                <NumberSpinnerInput
-                  min={1}
-                  max={10}
-                  label={'Cantidad'}
-                  value={quantity}
-                  step={1}
-                  decimalScale={2}
-                  fullWidth
-                  size={'small'}
-                  slotProps={{
-                    input: {
-                      sx: { fontSize: '1.5rem', fontWeight: 400 },
-                    },
-                  }}
-                  onChange={(value) => {
-                    setQuantity(value)
-                  }}
-                />
-              </CardContent>
-            </SimpleBox>
+      {isLoadingComplementos ? (
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4} lg={5}>
+              <SimpleBox>
+                <Skeleton variant="rectangular" width="100%" height={300} />
+              </SimpleBox>
+            </Grid>
+            <Grid item xs={12} md={5} lg={7}>
+              <SimpleBox>
+                <Skeleton variant="rectangular" width="100%" height={300} />
+              </SimpleBox>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={5} lg={7}>
-            <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
-              <strong>Complementos</strong>
-            </Divider>
-            {/* <ListaComplemento lista={lista} complemento={complementos} /> */}
-            <Stack spacing={2}>
-              {Object.entries(groups).map(([groupKey, group]) => (
-                <GroupContainer key={groupKey}>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Typography variant="h6">
-                      Grupo {parseInt(groupKey.split('_')[1] || '1')} (
-                      {group.units.length} unidad{group.units.length !== 1 ? 'es' : ''})
+        </DialogContent>
+      ) : (
+        <DialogContent dividers>
+          <Grid container columnSpacing={3}>
+            <Grid item xs={12} md={4} lg={5}>
+              <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
+                <strong>Producto</strong>
+              </Divider>
+              <SimpleBox>
+                <CardHeader
+                  sx={{ p: 0 }}
+                  avatar={
+                    <Avatar
+                      sx={{ bgcolor: blue[500], width: 60, height: 60 }}
+                      alt="Producto"
+                      src={product.imagen?.variants.thumbnail}
+                      aria-label="recipe"
+                    >
+                      P
+                    </Avatar>
+                  }
+                  title={
+                    <Typography
+                      variant={'body1'}
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: '1',
+                        WebkitBoxOrient: 'vertical',
+                        mb: 0.6,
+                      }}
+                    >
+                      {product.codigoArticulo} - {product.description}
                     </Typography>
-                    {Object.keys(groups).length < quantity && (
-                      <IconButton color="primary" onClick={() => createNewGroup()}>
-                        <ContentCopyIcon />
-                      </IconButton>
-                    )}
-                    {groupKey !== 'default' && (
-                      <IconButton color="error" onClick={() => deleteGroup(groupKey)}>
-                        <Delete />
-                      </IconButton>
-                    )}
-                  </Stack>
+                  }
+                  subheader={
+                    <Typography variant={'subtitle2'} color={'primary'}>
+                      Precio: {numberWithCommas(product.price, {})} {product.sigla}
+                    </Typography>
+                  }
+                />
+                <CardContent sx={{ p: 0, mt: 1.6, pb: '0px !important' }}>
+                  <NumberSpinnerInput
+                    min={1}
+                    max={30}
+                    label={'Cantidad'}
+                    value={quantity}
+                    step={1}
+                    decimalScale={2}
+                    fullWidth
+                    size={'small'}
+                    slotProps={{
+                      input: {
+                        sx: { fontSize: '1.5rem', fontWeight: 400 },
+                      },
+                    }}
+                    onChange={(value) => {
+                      setQuantity(value)
+                    }}
+                  />
+                </CardContent>
+              </SimpleBox>
+            </Grid>
+            <Grid item xs={12} md={5} lg={7}>
+              <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
+                <strong>Complementos</strong>
+              </Divider>
+              <Stack spacing={2}>
+                {Object.entries(groups).map(([groupKey, group]) => (
+                  <GroupContainer key={groupKey}>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                      <Typography variant="h6">
+                        Grupo {parseInt(groupKey.split('_')[1] || '1')} (
+                        {group.units.length} unidad{group.units.length !== 1 ? 'es' : ''})
+                      </Typography>
+                      {Object.keys(groups).length < quantity && (
+                        <IconButton color="primary" onClick={() => createNewGroup()}>
+                          <ContentCopyIcon />
+                        </IconButton>
+                      )}
+                      {groupKey !== 'default' && (
+                        <IconButton color="error" onClick={() => deleteGroup(groupKey)}>
+                          <Delete />
+                        </IconButton>
+                      )}
+                    </Stack>
 
-                  <Grid container spacing={2}>
-                    {Array.isArray(complementos)
-                      ? complementos.map((complemento: any) => {
-                          const isSelected = group.complementos.some(
-                            (c) => c.id === complemento.id,
-                          )
-                          return (
-                            <Grid item key={complemento._id}>
-                              <ComplementCard
-                                selected={isSelected}
-                                onClick={() =>
-                                  handleComplementToggle(groupKey, complemento)
-                                }
-                              >
-                                <SimpleBox sx={{ p: 0, m: 0 }}>
-                                  <CardHeader
-                                    sx={{ p: 1 }}
-                                    avatar={
-                                      <Avatar
-                                        sx={{ bgcolor: blue[500], width: 45, height: 45 }}
-                                        alt="C"
-                                        src={complemento.imagen.variants.thumbnail}
-                                        aria-label="recipe"
-                                      >
-                                        P
-                                      </Avatar>
-                                    }
-                                    title={
-                                      <Tooltip
-                                        title={complemento.nombrArticulo}
-                                        placement="top"
-                                        disableInteractive
-                                      >
+                    <Grid container spacing={2}>
+                      {Array.isArray(complementos)
+                        ? complementos.map((complemento: any) => {
+                            const isSelected = group.complementos.some(
+                              (c) => c._id === complemento._id,
+                            )
+                            console.log('isSelected', isSelected)
+                            return (
+                              <Grid item key={complemento._id}>
+                                <ComplementCard
+                                  selected={isSelected}
+                                  onClick={() =>
+                                    handleComplementToggle(groupKey, complemento)
+                                  }
+                                >
+                                  <SimpleBox sx={{ p: 0, m: 0 }}>
+                                    <CardHeader
+                                      sx={{ p: 1 }}
+                                      avatar={
+                                        <Avatar
+                                          sx={{
+                                            bgcolor: blue[500],
+                                            width: 45,
+                                            height: 45,
+                                          }}
+                                          alt="C"
+                                          src={complemento.imagen.variants.thumbnail}
+                                          aria-label="recipe"
+                                        >
+                                          P
+                                        </Avatar>
+                                      }
+                                      title={
+                                        <Tooltip
+                                          title={complemento.nombrArticulo}
+                                          placement="top"
+                                          disableInteractive
+                                        >
+                                          <Typography
+                                            variant={'subtitle1'}
+                                            fontSize={'small'}
+                                            sx={{
+                                              overflow: 'hidden',
+                                              textOverflow: 'ellipsis',
+                                              display: '-webkit-box',
+                                              WebkitLineClamp: '1',
+                                              WebkitBoxOrient: 'vertical',
+                                              mb: -0.5,
+                                            }}
+                                          >
+                                            {complemento.codigoArticulo} -{' '}
+                                            {complemento.nombreArticulo}
+                                          </Typography>
+                                        </Tooltip>
+                                      }
+                                      subheader={
                                         <Typography
                                           variant={'subtitle1'}
                                           fontSize={'small'}
-                                          sx={{
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: '1',
-                                            WebkitBoxOrient: 'vertical',
-                                            mb: -0.5,
-                                          }}
+                                          color={'text.secondary'}
+                                          sx={{ textDecoration: 'line-through' }}
                                         >
-                                          {complemento.codigoArticulo} -{' '}
-                                          {complemento.nombreArticulo}
+                                          {numberWithCommas(
+                                            complemento.articuloPrecioBase.monedaPrimaria
+                                              .precio,
+                                            {},
+                                          )}{' '}
+                                          {
+                                            complemento.articuloPrecioBase.monedaPrimaria
+                                              .moneda.sigla
+                                          }
                                         </Typography>
-                                      </Tooltip>
-                                    }
-                                    subheader={
-                                      <Typography
-                                        variant={'subtitle1'}
-                                        fontSize={'small'}
-                                        color={'text.secondary'}
-                                        sx={{ textDecoration: 'line-through' }}
-                                      >
-                                        {numberWithCommas(
-                                          complemento.articuloPrecioBase.monedaPrimaria
-                                            .precio,
-                                          {},
-                                        )}{' '}
-                                        {
-                                          complemento.articuloPrecioBase.monedaPrimaria
-                                            .moneda.sigla
-                                        }
-                                      </Typography>
-                                    }
-                                  />
-                                </SimpleBox>
-                                {isSelected && (
-                                  <SelectionBadge>
-                                    <DoneIcon fontSize="small" />
-                                  </SelectionBadge>
-                                )}
-                              </ComplementCard>
-                            </Grid>
-                          )
-                        })
-                      : null}
-                  </Grid>
-
-                  <Box sx={{ p: 1 }}>
-                    <Typography variant="caption" sx={{ mb: 1 }}>
-                      Unidades en este grupo:
-                    </Typography>
-                    <Grid container spacing={1}>
-                      {group.units.map((unitIndex) => (
-                        <Grid item key={unitIndex} xs="auto">
-                          <FormControl size="small" sx={{ minWidth: 120 }}>
-                            <Select
-                              value={groupKey}
-                              size="small"
-                              onChange={(e) => {
-                                moveUnitToGroup(unitIndex, groupKey, e.target.value)
-                              }}
-                            >
-                              {Object.entries(groups).map(([key, g]) => (
-                                <MenuItem key={key} value={key}>
-                                  {g.nombre}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            <FormHelperText sx={{ mt: 0 }}>
-                              <Typography variant="caption">
-                                Unidad {unitIndex + 1}
-                              </Typography>
-                            </FormHelperText>
-                          </FormControl>
-                        </Grid>
-                      ))}
+                                      }
+                                    />
+                                  </SimpleBox>
+                                  {isSelected && (
+                                    <SelectionBadge>
+                                      <DoneIcon fontSize="small" />
+                                    </SelectionBadge>
+                                  )}
+                                </ComplementCard>
+                              </Grid>
+                            )
+                          })
+                        : null}
                     </Grid>
-                  </Box>
-                </GroupContainer>
-              ))}
-            </Stack>
+
+                    <Box sx={{ p: 1 }}>
+                      <Typography variant="caption" sx={{ mb: 1 }}>
+                        Unidades en este grupo:
+                      </Typography>
+                      <Grid container spacing={1}>
+                        {group.units.map((unitIndex) => (
+                          <Grid item key={unitIndex} xs="auto">
+                            <FormControl size="small" sx={{ minWidth: 120 }}>
+                              <Select
+                                value={groupKey}
+                                size="small"
+                                onChange={(e) => {
+                                  moveUnitToGroup(unitIndex, groupKey, e.target.value)
+                                }}
+                              >
+                                {Object.entries(groups).map(([key, g]) => (
+                                  <MenuItem key={key} value={key}>
+                                    {g.nombre}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              <FormHelperText sx={{ mt: 0 }}>
+                                <Typography variant="caption">
+                                  Unidad {unitIndex + 1}
+                                </Typography>
+                              </FormHelperText>
+                            </FormControl>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  </GroupContainer>
+                ))}
+              </Stack>
+            </Grid>
           </Grid>
-        </Grid>
-      </DialogContent>
+        </DialogContent>
+      )}
+
       <DialogActions sx={{ justifyContent: 'center' }}>
         <Button
           color={'primary'}
