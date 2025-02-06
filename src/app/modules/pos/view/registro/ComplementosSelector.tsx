@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { AddCircle, AddShoppingCart, Close } from '@mui/icons-material'
+import { AddCircle, AddShoppingCart, Close, Delete } from '@mui/icons-material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import {
@@ -15,8 +15,12 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  FormHelperText,
   Grid,
   IconButton,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -26,6 +30,7 @@ import {
 import { blue } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
 import { ReactNode, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
 import NumberSpinnerInput from '../../../../base/components/NumberSpinnerInput/NumberSpinnerInput'
@@ -136,11 +141,13 @@ const ComplementosSelector = ({
     [key: string]: {
       complementos: Complemento[]
       units: number[]
+      nombre: string
     }
   }>({
     default: {
       complementos: [],
       units: [0],
+      nombre: 'Grupo 1',
     },
   })
 
@@ -149,9 +156,29 @@ const ComplementosSelector = ({
       default: {
         complementos: [],
         units: Array.from({ length: quantity }, (_, i) => i),
+        nombre: 'Grupo 1',
       },
     })
   }, [quantity])
+
+  const deleteGroup = (groupKey: string) => {
+    if (groupKey === 'default') {
+      toast.error('No se puede eliminar el grupo principal')
+      return
+    }
+
+    setGroups((prev) => {
+      const { [groupKey]: deletedGroup, ...remainingGroups } = prev
+
+      // Mover unidades al grupo default
+      remainingGroups.default.units = [
+        ...remainingGroups.default.units,
+        ...deletedGroup.units,
+      ]
+
+      return remainingGroups
+    })
+  }
 
   const handleComplementToggle = (groupKey: string, complemento: Complemento) => {
     setGroups((prev) => {
@@ -171,12 +198,13 @@ const ComplementosSelector = ({
   }
 
   const createNewGroup = () => {
-    const newGroupKey = `group_${Object.keys(groups).length}`
+    const newGroupKey = `group_${Object.keys(groups).length + 1}`
     setGroups((prev) => ({
       ...prev,
       [newGroupKey]: {
         complementos: [],
         units: [],
+        nombre: `Grupo ${Object.keys(groups).length + 1}`,
       },
     }))
   }
@@ -298,6 +326,11 @@ const ComplementosSelector = ({
                         <ContentCopyIcon />
                       </IconButton>
                     )}
+                    {groupKey !== 'default' && (
+                      <IconButton color="error" onClick={() => deleteGroup(groupKey)}>
+                        <Delete />
+                      </IconButton>
+                    )}
                   </Stack>
 
                   <Grid container spacing={2}>
@@ -370,54 +403,42 @@ const ComplementosSelector = ({
                     })}
                   </Grid>
 
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="subtitle2" gutterBottom>
+                  <Box sx={{ p: 1 }}>
+                    <Typography variant="caption" sx={{ mb: 1 }}>
                       Unidades en este grupo:
                     </Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Grid container spacing={1}>
                       {group.units.map((unitIndex) => (
-                        <Button
-                          key={unitIndex}
-                          variant="outlined"
-                          size="small"
-                          onClick={() => {
-                            const availableGroups = Object.keys(groups).filter(
-                              (k) => k !== groupKey,
-                            )
-                            if (availableGroups.length > 0) {
-                              moveUnitToGroup(unitIndex, groupKey, availableGroups[0])
-                            }
-                          }}
-                        >
-                          Unidad {unitIndex + 1}
-                        </Button>
+                        <Grid item key={unitIndex} xs="auto">
+                          <FormControl size="small" sx={{ minWidth: 120 }}>
+                            <Select
+                              value={groupKey}
+                              size="small"
+                              onChange={(e) => {
+                                moveUnitToGroup(unitIndex, groupKey, e.target.value)
+                              }}
+                            >
+                              {Object.entries(groups).map(([key, g]) => (
+                                <MenuItem key={key} value={key}>
+                                  Mover a {g.nombre}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            <FormHelperText sx={{ mt: 0 }}>
+                              <Typography variant="caption">
+                                Unidad {unitIndex + 1}
+                              </Typography>
+                            </FormHelperText>
+                          </FormControl>
+                        </Grid>
                       ))}
-                    </Stack>
+                    </Grid>
                   </Box>
                 </GroupContainer>
               ))}
             </Stack>
           </Grid>
         </Grid>
-      </DialogContent>
-
-      <DialogContent>
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 3 }}>
-          <Button onClick={onClose}>Cancelar</Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              Object.values(groups).forEach((group) => {
-                group.units.forEach((unitIndex) => {
-                  onAddToCart(product, group.complementos)
-                })
-              })
-              onClose()
-            }}
-          >
-            Confirmar
-          </Button>
-        </Stack>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'center' }}>
         <Button
@@ -426,7 +447,12 @@ const ComplementosSelector = ({
           sx={{ mr: 2 }}
           startIcon={<AddShoppingCart />}
           onClick={() => {
-            console.log('entrando')
+            Object.values(groups).forEach((group) => {
+              group.units.forEach((unitIndex) => {
+                onAddToCart(product, group.complementos)
+              })
+            })
+            onClose()
           }}
         >
           Agregar al carrito
