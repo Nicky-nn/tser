@@ -331,81 +331,85 @@ const ComplementosSelector = ({
                   </Stack>
 
                   <Grid container spacing={2}>
-                    {complementos.map((complemento: any) => {
-                      const isSelected = group.complementos.some(
-                        (c) => c.id === complemento.id,
-                      )
-                      return (
-                        <Grid item key={complemento._id}>
-                          <ComplementCard
-                            selected={isSelected}
-                            onClick={() => handleComplementToggle(groupKey, complemento)}
-                          >
-                            <SimpleBox sx={{ p: 0, m: 0 }}>
-                              <CardHeader
-                                sx={{ p: 1 }}
-                                avatar={
-                                  <Avatar
-                                    sx={{ bgcolor: blue[500], width: 45, height: 45 }}
-                                    alt="C"
-                                    src={complemento.imagen.variants.thumbnail}
-                                    aria-label="recipe"
-                                  >
-                                    P
-                                  </Avatar>
+                    {Array.isArray(complementos)
+                      ? complementos.map((complemento: any) => {
+                          const isSelected = group.complementos.some(
+                            (c) => c.id === complemento.id,
+                          )
+                          return (
+                            <Grid item key={complemento._id}>
+                              <ComplementCard
+                                selected={isSelected}
+                                onClick={() =>
+                                  handleComplementToggle(groupKey, complemento)
                                 }
-                                title={
-                                  <Tooltip
-                                    title={complemento.nombrArticulo}
-                                    placement="top"
-                                    disableInteractive
-                                  >
-                                    <Typography
-                                      variant={'subtitle1'}
-                                      fontSize={'small'}
-                                      sx={{
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: '1',
-                                        WebkitBoxOrient: 'vertical',
-                                        mb: -0.5,
-                                      }}
-                                    >
-                                      {complemento.codigoArticulo} -{' '}
-                                      {complemento.nombreArticulo}
-                                    </Typography>
-                                  </Tooltip>
-                                }
-                                subheader={
-                                  <Typography
-                                    variant={'subtitle1'}
-                                    fontSize={'small'}
-                                    color={'text.secondary'}
-                                    sx={{ textDecoration: 'line-through' }}
-                                  >
-                                    {numberWithCommas(
-                                      complemento.articuloPrecioBase.monedaPrimaria
-                                        .precio,
-                                      {},
-                                    )}{' '}
-                                    {
-                                      complemento.articuloPrecioBase.monedaPrimaria.moneda
-                                        .sigla
+                              >
+                                <SimpleBox sx={{ p: 0, m: 0 }}>
+                                  <CardHeader
+                                    sx={{ p: 1 }}
+                                    avatar={
+                                      <Avatar
+                                        sx={{ bgcolor: blue[500], width: 45, height: 45 }}
+                                        alt="C"
+                                        src={complemento.imagen.variants.thumbnail}
+                                        aria-label="recipe"
+                                      >
+                                        P
+                                      </Avatar>
                                     }
-                                  </Typography>
-                                }
-                              />
-                            </SimpleBox>
-                            {isSelected && (
-                              <SelectionBadge>
-                                <DoneIcon fontSize="small" />
-                              </SelectionBadge>
-                            )}
-                          </ComplementCard>
-                        </Grid>
-                      )
-                    })}
+                                    title={
+                                      <Tooltip
+                                        title={complemento.nombrArticulo}
+                                        placement="top"
+                                        disableInteractive
+                                      >
+                                        <Typography
+                                          variant={'subtitle1'}
+                                          fontSize={'small'}
+                                          sx={{
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: '1',
+                                            WebkitBoxOrient: 'vertical',
+                                            mb: -0.5,
+                                          }}
+                                        >
+                                          {complemento.codigoArticulo} -{' '}
+                                          {complemento.nombreArticulo}
+                                        </Typography>
+                                      </Tooltip>
+                                    }
+                                    subheader={
+                                      <Typography
+                                        variant={'subtitle1'}
+                                        fontSize={'small'}
+                                        color={'text.secondary'}
+                                        sx={{ textDecoration: 'line-through' }}
+                                      >
+                                        {numberWithCommas(
+                                          complemento.articuloPrecioBase.monedaPrimaria
+                                            .precio,
+                                          {},
+                                        )}{' '}
+                                        {
+                                          complemento.articuloPrecioBase.monedaPrimaria
+                                            .moneda.sigla
+                                        }
+                                      </Typography>
+                                    }
+                                  />
+                                </SimpleBox>
+                                {isSelected && (
+                                  <SelectionBadge>
+                                    <DoneIcon fontSize="small" />
+                                  </SelectionBadge>
+                                )}
+                              </ComplementCard>
+                            </Grid>
+                          )
+                        })
+                      : null}
                   </Grid>
 
                   <Box sx={{ p: 1 }}>
