@@ -461,6 +461,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const addToCartDirectly = (product: Product, complementos?: Complemento[]) => {
+    const hasComplements = complementos && complementos.length > 0
+
     const existingProduct = cart.find((p) => {
       return (
         p.codigoArticulo === product.codigoArticulo &&
@@ -469,21 +471,26 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     })
 
     if (existingProduct) {
-      // Si ya existe con los mismos complementos, sumamos la cantidad recibida
+      // ✅ Si ya existe con los mismos complementos, sumamos la cantidad solo si tiene complementos
       setCart((prevCart) =>
         prevCart.map((p) =>
           p.codigoArticulo === product.codigoArticulo &&
           arraysAreEqual(p.listaComplemento || [], complementos || [])
-            ? { ...p, quantity: p.quantity + (product.quantity || 1) }
+            ? {
+                ...p,
+                quantity: hasComplements
+                  ? p.quantity + (product.quantity || 1)
+                  : p.quantity + 1,
+              }
             : p,
         ),
       )
     } else {
-      // Si es un nuevo producto o los complementos son diferentes, se agrega como nuevo
+      // ✅ Si no tiene complementos, aseguramos que la cantidad empiece en 1
       const maxNroItem = Math.max(...cart.map((p) => p.nroItem || 0), 0)
       const newItem = {
         ...product,
-        quantity: product.quantity || 1,
+        quantity: hasComplements ? product.quantity || 1 : 1, // 🔹 Aquí está el ajuste
         discount: 0,
         extraDescription: complementos?.map((c) => c.nombre).join(', ') || '',
         nroItem: maxNroItem + 1,
