@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   AccountBalance,
   Add,
@@ -482,7 +483,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       const maxNroItem = Math.max(...cart.map((p) => p.nroItem || 0), 0)
       const newItem = {
         ...product,
-        quantity: product.quantity || 1, // ✅ Tomamos la cantidad correcta
+        quantity: product.quantity || 1,
         discount: 0,
         extraDescription: complementos?.map((c) => c.nombre).join(', ') || '',
         nroItem: maxNroItem + 1,
