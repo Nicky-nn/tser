@@ -468,12 +468,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     })
 
     if (existingProduct) {
-      // Si ya existe con los mismos complementos, aumentamos la cantidad
+      // Si ya existe con los mismos complementos, sumamos la cantidad recibida
       setCart((prevCart) =>
         prevCart.map((p) =>
           p.codigoArticulo === product.codigoArticulo &&
           arraysAreEqual(p.listaComplemento || [], complementos || [])
-            ? { ...p, quantity: p.quantity + 1 }
+            ? { ...p, quantity: p.quantity + (product.quantity || 1) }
             : p,
         ),
       )
@@ -482,7 +482,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       const maxNroItem = Math.max(...cart.map((p) => p.nroItem || 0), 0)
       const newItem = {
         ...product,
-        quantity: 1,
+        quantity: product.quantity || 1, // ✅ Tomamos la cantidad correcta
         discount: 0,
         extraDescription: complementos?.map((c) => c.nombre).join(', ') || '',
         nroItem: maxNroItem + 1,
