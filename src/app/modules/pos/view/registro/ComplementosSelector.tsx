@@ -278,26 +278,27 @@ const ComplementosSelector = ({
   // }, [groups])
 
   const handleSendGroups = (complementsArray: any[], product: any) => {
-    const result = complementsArray.map((item) => {
+    complementsArray.forEach((item) => {
       const { complementos, units, nombre } = item
-      return {
-        producto: product,
-        complementos: complementos
-          .filter((comp: any) => comp._id !== 'sin-complementos')
-          .map((comp: any) => ({
-            ...comp,
-            cantidad: units.length,
-            nombreGrupo: nombre,
-          })),
+
+      // Create a copy of the product to avoid modifying the original
+      const productWithQuantity = {
+        ...product,
+        quantity: units.length, // Set the quantity equal to units.length
       }
+
+      const filteredComplements = complementos
+        .filter((comp: any) => comp._id !== 'sin-complementos')
+        .map((comp: any) => ({
+          ...comp,
+          cantidad: units.length,
+          nombreGrupo: nombre,
+        }))
+
+      onAddToCart(productWithQuantity, filteredComplements)
+      console.log('Enviando al carrito:', productWithQuantity)
     })
-
-    console.log('Resultado transformado:', JSON.stringify(result, null, 2))
-    console.log('Producto:', result)
-    return result
   }
-
-  console.log('Grupos:', groups)
 
   const createNewGroup = () => {
     const newGroupKey = `group_${Object.keys(groups).length + 1}`
