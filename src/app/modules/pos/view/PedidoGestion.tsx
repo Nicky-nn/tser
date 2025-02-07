@@ -878,7 +878,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
               codigoLote: producto.articuloPrecio.lote
                 ? producto.articuloPrecio.lote.codigoLote
                 : null,
-              listaComplemento: producto.complementos?.[0] || null,
+              listaComplemento: producto.complementos || null,
             }),
           )
           setCart(mappedProducts)
