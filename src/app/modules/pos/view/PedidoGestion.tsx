@@ -1889,7 +1889,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       ) : (
         <></>
       )}
-      <Grid item xs={12} md={6} lg={8}>
+      <Grid item xs={12} md={7} lg={8}>
         <Grid container spacing={2} paddingBottom={2} sx={{ userSelect: 'none' }}>
           <Grid item xs={7}>
             <Typography variant="h4">Categorías</Typography>
@@ -2188,7 +2188,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         </Grid>
       </Grid>
 
-      <Grid item xs={12} md={6} lg={4} sx={{ userSelect: 'none' }}>
+      <Grid item xs={12} md={5} lg={4} sx={{ userSelect: 'none' }}>
         <Paper elevation={3} sx={{ p: 2 }}>
           {selectedOption && (
             <Grid container justifyContent="center">
@@ -2685,28 +2685,31 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               sx={{
                                 display: {
                                   xs: 'none',
-                                  sm: product.listaComplemento ? 'none' : 'block',
+                                  sm: product.listaComplemento?.length ? 'none' : 'block',
                                   md: 'block',
                                 },
                               }}
                             >
-                              {product.listaComplemento && (
-                                <Tooltip
-                                  title={
-                                    product.listaComplemento?.nombreArticulo ||
-                                    product.listaComplemento?.derivadoArticulo ||
-                                    ''
-                                  }
-                                  placement="top"
-                                >
-                                  <Typography variant="body2">
-                                    {truncateName(
-                                      product.listaComplemento?.nombreArticulo || '',
-                                      10,
-                                    )}
-                                  </Typography>
-                                </Tooltip>
-                              )}
+                              {Array.isArray(product.listaComplemento) &&
+                                product.listaComplemento.length > 0 && (
+                                  <Tooltip
+                                    title={product.listaComplemento
+                                      .map(
+                                        (c) =>
+                                          c.nombreArticulo || c.derivadoArticulo || '',
+                                      )
+                                      .join(', ')} // Muestra todos los nombres en el Tooltip
+                                    placement="top"
+                                  >
+                                    <Typography variant="body2">
+                                      {truncateName(
+                                        product.listaComplemento[0]?.nombreArticulo || '',
+                                        10,
+                                      )}
+                                      {product.listaComplemento.length > 1 && ' +...'}
+                                    </Typography>
+                                  </Tooltip>
+                                )}
                             </Box>
                           </Box>
 
@@ -3305,9 +3308,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             setSelectedProduct(null)
           }}
           product={selectedProduct}
-          complementos={selectedComplementos}
+          // complementos={selectedComplementos}
           onAddToCart={(product: any, complemento: any) => {
             addToCartDirectly(product, complemento)
+            // console.log('Complemento:', complemento)
             setIsComplementoOpen(false)
             setSelectedProduct(null)
           }}
