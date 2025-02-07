@@ -39,7 +39,7 @@ export const adicionarItemPedido = async (
     )
     .map(
       (producto: {
-        listaComplemento: any
+        listaComplemento: any[]
         codigoArticulo: any
         codigoArticuloUnidadMedida: any
         quantity: any
@@ -55,39 +55,35 @@ export const adicionarItemPedido = async (
           cantidad: producto.quantity,
           precio: producto.price,
           descuento: producto.discount || 0,
-          impuesto: 0, // Ajusta esto si es necesario
+          impuesto: 0, // 🔹 Ajusta esto si es necesario
         },
-        complementos: producto.listaComplemento
-          ? [
-              {
-                articuloPrecio: {
-                  cantidad: 0,
-                  codigoArticuloUnidadMedida:
-                    producto.listaComplemento?.articuloPrecioBase?.articuloUnidadMedida
-                      ?.codigoUnidadMedida || null,
-                  descuento: 0,
-                  impuesto: 0,
-                  precio: 0,
-                },
-                codigoAlmacen:
-                  producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.almacen
-                    ?.codigoAlmacen || null,
-                codigoArticulo: producto.listaComplemento?.codigoArticulo || null,
-                codigoLote:
-                  producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]
-                    ?.codigoLote || null,
-                detalleExtra: producto.listaComplemento?.detalleExtra || '',
-                nota: '',
+        complementos: producto.listaComplemento?.length
+          ? producto.listaComplemento.map((complemento: any) => ({
+              articuloPrecio: {
+                cantidad: producto.quantity, // 🔹 La cantidad del complemento = cantidad del producto
+                codigoArticuloUnidadMedida:
+                  complemento?.articuloPrecioBase?.articuloUnidadMedida
+                    ?.codigoUnidadMedida || null,
+                descuento: 0,
+                impuesto: 0,
+                precio: 0,
               },
-            ]
-          : [], // Array vacío si no hay complementos
+              codigoAlmacen:
+                complemento?.inventario?.[0]?.detalle?.[0]?.almacen?.codigoAlmacen ||
+                null,
+              codigoArticulo: complemento?.codigoArticulo || null,
+              codigoLote:
+                complemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]?.codigoLote ||
+                null,
+              detalleExtra: complemento?.detalleExtra || '',
+              nota: '',
+            }))
+          : [], // 🔹 Array vacío si no hay complementos
         detalleExtra: producto.extraDetalle || '',
-        codigoAlmacen: producto.codigoAlmacen || '', // Ajusta esto si es necesario
+        codigoAlmacen: producto.codigoAlmacen || '', // 🔹 Ajusta esto si es necesario
         nota: producto.extraDescription || '',
       }),
     )
-
-  console.log('productos', productos)
 
   try {
     const response = await adicionarItems(nroPedido, entidad, productos, codigoMoneda)
