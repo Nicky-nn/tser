@@ -41,6 +41,8 @@ export const generarComandaPDF = (
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
 
+  console.log('Data', data)
+
   if (!data || data.length === 0) {
     toast.error('Debe agregar al menos un producto')
     return
@@ -115,14 +117,21 @@ export const generarComandaPDF = (
                 (p: any) => p.codigoArticulo === producto.codigoArticulo,
               )
               const cambio = compararProductos(producto, productoAnterior)
+
+              // Agregar complementos si existen
+              const complementosTexto = producto.listaComplemento?.length
+                ? `\n  * Complementos: ${producto.listaComplemento.map((c: any) => c.nombreArticulo).join(', ')}`
+                : ''
+
               return [
                 producto.quantity.toString(),
                 {
-                  text: `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}${cambio}`,
+                  text: `${producto.name} ${producto.extraDetalle}${producto.extraDescription ? ' - ' + producto.extraDescription : ''}${cambio}${complementosTexto}`,
                   style: cambio && !esPrimeraCreacion ? 'nuevos' : null,
                 },
               ]
             }),
+
             ...productosEliminados.map((producto) => [
               '0',
               {

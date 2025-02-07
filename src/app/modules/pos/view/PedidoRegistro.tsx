@@ -2,8 +2,6 @@ import { Box, Grid } from '@mui/material'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Breadcrumb from '../../../base/components/Template/Breadcrumb/Breadcrumb'
-import { pedidosRouteMap } from './listado/PedidosRoutesMap'
 import PedidoGestion from './PedidoGestion'
 
 const PedidoRegistro = () => {
