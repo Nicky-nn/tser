@@ -459,37 +459,52 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     addToCartDirectly(product)
   }
 
-  const addToCartDirectly = (product: Product, complemento?: Complemento) => {
-    const existingProduct = cart.find(
-      (p) =>
+  const addToCartDirectly = (product: Product, complementos?: Complemento[]) => {
+    const existingProduct = cart.find((p) => {
+      return (
         p.codigoArticulo === product.codigoArticulo &&
-        (!complemento ||
-          p.listaComplemento?.codigoArticulo === complemento.codigoArticulo),
-    )
+        arraysAreEqual(p.listaComplemento || [], complementos || [])
+      )
+    })
+
     if (existingProduct) {
+      // Si ya existe con los mismos complementos, aumentamos la cantidad
       setCart((prevCart) =>
         prevCart.map((p) =>
           p.codigoArticulo === product.codigoArticulo &&
-          (!complemento ||
-            p.listaComplemento?.codigoArticulo === complemento.codigoArticulo)
+          arraysAreEqual(p.listaComplemento || [], complementos || [])
             ? { ...p, quantity: p.quantity + 1 }
             : p,
         ),
       )
     } else {
+      // Si es un nuevo producto o los complementos son diferentes, se agrega como nuevo
       const maxNroItem = Math.max(...cart.map((p) => p.nroItem || 0), 0)
       const newItem = {
         ...product,
         quantity: 1,
         discount: 0,
-        extraDescription: complemento ? complemento.nombre : '',
+        extraDescription: complementos?.map((c) => c.nombre).join(', ') || '',
         nroItem: maxNroItem + 1,
-        // reemplazamos listaComplemto por complemento
-        listaComplemento: complemento,
+        listaComplemento: complementos || [],
       }
 
       setCart((prevCart) => [...prevCart, newItem])
     }
+  }
+
+  // 🔹 Función para comparar si dos arrays de complementos son exactamente iguales
+  const arraysAreEqual = (arr1: Complemento[], arr2: Complemento[]) => {
+    if (arr1.length !== arr2.length) return false
+    const sortedArr1 = [...arr1].sort((a, b) =>
+      a.codigoArticulo.localeCompare(b.codigoArticulo),
+    )
+    const sortedArr2 = [...arr2].sort((a, b) =>
+      a.codigoArticulo.localeCompare(b.codigoArticulo),
+    )
+    return sortedArr1.every(
+      (item, index) => item.codigoArticulo === sortedArr2[index].codigoArticulo,
+    )
   }
 
   useEffect(() => {
