@@ -373,8 +373,6 @@ const PedidosReporteVentaArticuloDialog: FunctionComponent<Props> = (props) => {
       })
       .flat()
 
-    console.log('chartData', chartData)
-
     return chartData
   }
 

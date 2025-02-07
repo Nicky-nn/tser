@@ -16,7 +16,7 @@ export const useWhatsappSender = (user: User) => {
     documentFileName?: string,
   ) => {
     try {
-      console.log('Enviando mensaje...', user.miEmpresa.tienda)
+      console.info('Enviando mensaje...', user.miEmpresa.tienda)
 
       // Si el número tiene más de 8 dígitos, se asume que es internacional y no se agrega el prefijo '591'
       const numeroWhatsApp = telefono.length > 8 ? telefono : '591' + telefono
@@ -29,7 +29,7 @@ export const useWhatsappSender = (user: User) => {
         mediaType: documentUrl ? 'document' : undefined,
         fileName: documentFileName,
       })
-      console.log('Mensaje enviado correctamente')
+      console.info('Mensaje enviado correctamente')
 
       // Verificar la preferencia del usuario en el localStorage
       const showAlert = localStorage.getItem('showWhatsappAlert') !== 'false'

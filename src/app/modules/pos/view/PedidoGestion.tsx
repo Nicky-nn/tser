@@ -508,9 +508,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
   }
 
-  useEffect(() => {
-    console.log('Cart', cart)
-  }, [cart])
+  // useEffect(() => {
+  //   console.log('Cart', cart)
+  // }, [cart])
 
   const handleRemoveFromCart = (index: number) => {
     setCart((prevCart) => {
