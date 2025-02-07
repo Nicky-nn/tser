@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { AddShoppingCart, Close, Delete } from '@mui/icons-material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
@@ -67,7 +68,6 @@ interface ComplementosSelectorProps {
   isOpen: boolean
   onClose: () => void
   product: Product | null
-  // eslint-disable-next-line no-unused-vars
   onAddToCart: (product: Product, complementos: Complemento[]) => void
 }
 
@@ -220,7 +220,6 @@ const ComplementosSelector = ({
         listaComplemento: [],
       }
 
-      // Agregar la opción "Sin complementos" al inicio del array
       return [sinComplementos, ...(Array.isArray(resp) ? resp : [])]
     },
     refetchOnWindowFocus: false,
@@ -235,6 +234,11 @@ const ComplementosSelector = ({
       },
     })
   }, [quantity])
+
+  const hasGroupSinComplementos = (groupComplementos: Complemento[]) => {
+    // ts-ignore
+    return groupComplementos.some((comp) => String(comp._id) === 'sin-complementos')
+  }
 
   const deleteGroup = (groupKey: string) => {
     if (groupKey === 'default') {
@@ -258,46 +262,89 @@ const ComplementosSelector = ({
   const handleComplementToggle = (groupKey: string, complemento: Complemento) => {
     setGroups((prev) => {
       const group = prev[groupKey]
+      const isSinComplementos = String(complemento._id) === 'sin-complementos'
+
+      // Si se selecciona "Sin complementos", limpiar otras selecciones solo para este grupo
+      if (isSinComplementos) {
+        // Si ya está seleccionado, lo quitamos
+        if (group.complementos.some((c) => String(c._id) === 'sin-complementos')) {
+          return {
+            ...prev,
+            [groupKey]: {
+              ...group,
+              complementos: [],
+            },
+          }
+        }
+        // Si no está seleccionado, lo agregamos y quitamos los demás solo en este grupo
+        return {
+          ...prev,
+          [groupKey]: {
+            ...group,
+            complementos: [complemento],
+          },
+        }
+      }
+
+      // Si se selecciona otro complemento mientras "Sin complementos" está seleccionado en este grupo,
+      // quitar "Sin complementos" solo de este grupo
       const exists = group.complementos.some((c) => c._id === complemento._id)
+      const filteredComplementos = group.complementos.filter(
+        (c) => String(c._id) !== 'sin-complementos',
+      )
+
       return {
         ...prev,
         [groupKey]: {
           ...group,
           complementos: exists
-            ? group.complementos.filter((c) => c._id !== complemento._id)
-            : [...group.complementos, complemento],
+            ? filteredComplementos.filter((c) => c._id !== complemento._id)
+            : [...filteredComplementos, complemento],
         },
       }
     })
   }
 
-  // useEffect(() => {
-  //   console.log('Grupos:', groups)
-  //   const allComplementos = Object.values(groups).flatMap((group) => group.complementos)
-  //   console.log('Complementos:', allComplementos)
-  // }, [groups])
-
   const handleSendGroups = (complementsArray: any[], product: any) => {
-    complementsArray.forEach((item) => {
+    // Filtrar grupos con 0 unidades
+    const validGroups = complementsArray.filter((item) => item.units.length > 0)
+
+    if (validGroups.length === 0) {
+      toast.error('No hay unidades asignadas en ningún grupo')
+      return
+    }
+
+    // Verificar si hay grupos sin complementos seleccionados
+    const hasEmptyGroups = validGroups.some((group) => group.complementos.length === 0)
+    if (hasEmptyGroups) {
+      toast.error('Hay grupos sin complementos seleccionados')
+      return
+    }
+
+    validGroups.forEach((item) => {
       const { complementos, units, nombre } = item
 
-      // Create a copy of the product to avoid modifying the original
       const productWithQuantity = {
         ...product,
-        quantity: units.length, // Set the quantity equal to units.length
+        quantity: units.length,
       }
 
-      const filteredComplements = complementos
-        .filter((comp: any) => comp._id !== 'sin-complementos')
-        .map((comp: any) => ({
-          ...comp,
-          cantidad: units.length,
-          nombreGrupo: nombre,
-        }))
+      // Solo para grupos que no tienen "Sin complementos" seleccionado
+      const hasSinComplementos = complementos.some(
+        (comp: any) => comp._id === 'sin-complementos',
+      )
+      const filteredComplements = hasSinComplementos
+        ? [] // Si tiene "Sin complementos", enviamos array vacío
+        : complementos.map((comp: any) => ({
+            ...comp,
+            cantidad: units.length,
+            nombreGrupo: nombre,
+          }))
 
       onAddToCart(productWithQuantity, filteredComplements)
-      console.log('Enviando al carrito:', productWithQuantity)
     })
+
+    onClose()
   }
 
   const createNewGroup = () => {
@@ -323,6 +370,90 @@ const ComplementosSelector = ({
     })
   }
 
+  const renderComplementCard = (complemento: any, groupKey: string, group: any) => {
+    const isSelected = group.complementos.some((c: any) => c._id === complemento._id)
+    const isDisabled =
+      hasGroupSinComplementos(group.complementos) &&
+      complemento._id !== 'sin-complementos'
+
+    return (
+      <Grid item key={complemento._id}>
+        <ComplementCard
+          selected={isSelected}
+          onClick={() => !isDisabled && handleComplementToggle(groupKey, complemento)}
+          sx={{
+            opacity: isDisabled ? 0.5 : 1,
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
+            '&:hover': {
+              transform: isDisabled ? 'none' : 'scale(1.05)',
+            },
+          }}
+        >
+          <SimpleBox sx={{ p: 0, m: 0 }}>
+            <CardHeader
+              sx={{ p: 1 }}
+              avatar={
+                <Avatar
+                  sx={{
+                    bgcolor: blue[500],
+                    width: 45,
+                    height: 45,
+                  }}
+                  alt="C"
+                  src={complemento.imagen.variants.thumbnail}
+                  aria-label="recipe"
+                >
+                  P
+                </Avatar>
+              }
+              title={
+                <Tooltip
+                  title={complemento.nombreArticulo}
+                  placement="top"
+                  disableInteractive
+                >
+                  <Typography
+                    variant={'subtitle1'}
+                    fontSize={'small'}
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: '1',
+                      WebkitBoxOrient: 'vertical',
+                      mb: -0.5,
+                    }}
+                  >
+                    {complemento.codigoArticulo} - {complemento.nombreArticulo}
+                  </Typography>
+                </Tooltip>
+              }
+              subheader={
+                <Typography
+                  variant={'subtitle1'}
+                  fontSize={'small'}
+                  color={'text.secondary'}
+                  sx={{ textDecoration: 'line-through' }}
+                >
+                  {numberWithCommas(
+                    complemento.articuloPrecioBase.monedaPrimaria.precio,
+                    {},
+                  )}{' '}
+                  {complemento.articuloPrecioBase.monedaPrimaria.moneda.sigla}
+                </Typography>
+              }
+            />
+          </SimpleBox>
+          {isSelected && (
+            <SelectionBadge>
+              <DoneIcon fontSize="small" />
+            </SelectionBadge>
+          )}
+        </ComplementCard>
+      </Grid>
+    )
+  }
+
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={onClose}>
       <DialogTitle>
@@ -330,7 +461,7 @@ const ComplementosSelector = ({
         <IconButton
           aria-label="close"
           title={'Cerrar o presione la tecla ESC'}
-          onClick={() => onClose()}
+          onClick={onClose}
           sx={{
             position: 'absolute',
             right: 8,
@@ -428,16 +559,24 @@ const ComplementosSelector = ({
                   <GroupContainer key={groupKey}>
                     <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
                       <Typography variant="h6">
-                        Grupo {parseInt(groupKey.split('_')[1] || '1')} (
-                        {group.units.length} unidad{group.units.length !== 1 ? 'es' : ''})
+                        {group.nombre} ({group.units.length} unidad
+                        {group.units.length !== 1 ? 'es' : ''})
                       </Typography>
                       {Object.keys(groups).length < quantity && (
-                        <IconButton color="primary" onClick={() => createNewGroup()}>
+                        <IconButton
+                          color="primary"
+                          onClick={() => createNewGroup()}
+                          title="Crear nuevo grupo"
+                        >
                           <ContentCopyIcon />
                         </IconButton>
                       )}
                       {groupKey !== 'default' && (
-                        <IconButton color="error" onClick={() => deleteGroup(groupKey)}>
+                        <IconButton
+                          color="error"
+                          onClick={() => deleteGroup(groupKey)}
+                          title="Eliminar grupo"
+                        >
                           <Delete />
                         </IconButton>
                       )}
@@ -445,87 +584,9 @@ const ComplementosSelector = ({
 
                     <Grid container spacing={2}>
                       {Array.isArray(complementos)
-                        ? complementos.map((complemento: any) => {
-                            const isSelected = group.complementos.some(
-                              (c) => c._id === complemento._id,
-                            )
-                            return (
-                              <Grid item key={complemento._id}>
-                                <ComplementCard
-                                  selected={isSelected}
-                                  onClick={() =>
-                                    handleComplementToggle(groupKey, complemento)
-                                  }
-                                >
-                                  <SimpleBox sx={{ p: 0, m: 0 }}>
-                                    <CardHeader
-                                      sx={{ p: 1 }}
-                                      avatar={
-                                        <Avatar
-                                          sx={{
-                                            bgcolor: blue[500],
-                                            width: 45,
-                                            height: 45,
-                                          }}
-                                          alt="C"
-                                          src={complemento.imagen.variants.thumbnail}
-                                          aria-label="recipe"
-                                        >
-                                          P
-                                        </Avatar>
-                                      }
-                                      title={
-                                        <Tooltip
-                                          title={complemento.nombrArticulo}
-                                          placement="top"
-                                          disableInteractive
-                                        >
-                                          <Typography
-                                            variant={'subtitle1'}
-                                            fontSize={'small'}
-                                            sx={{
-                                              overflow: 'hidden',
-                                              textOverflow: 'ellipsis',
-                                              display: '-webkit-box',
-                                              WebkitLineClamp: '1',
-                                              WebkitBoxOrient: 'vertical',
-                                              mb: -0.5,
-                                            }}
-                                          >
-                                            {complemento.codigoArticulo} -{' '}
-                                            {complemento.nombreArticulo}
-                                          </Typography>
-                                        </Tooltip>
-                                      }
-                                      subheader={
-                                        <Typography
-                                          variant={'subtitle1'}
-                                          fontSize={'small'}
-                                          color={'text.secondary'}
-                                          sx={{ textDecoration: 'line-through' }}
-                                        >
-                                          {numberWithCommas(
-                                            complemento.articuloPrecioBase.monedaPrimaria
-                                              .precio,
-                                            {},
-                                          )}{' '}
-                                          {
-                                            complemento.articuloPrecioBase.monedaPrimaria
-                                              .moneda.sigla
-                                          }
-                                        </Typography>
-                                      }
-                                    />
-                                  </SimpleBox>
-                                  {isSelected && (
-                                    <SelectionBadge>
-                                      <DoneIcon fontSize="small" />
-                                    </SelectionBadge>
-                                  )}
-                                </ComplementCard>
-                              </Grid>
-                            )
-                          })
+                        ? complementos.map((complemento: any) =>
+                            renderComplementCard(complemento, groupKey, group),
+                          )
                         : null}
                     </Grid>
 
@@ -574,9 +635,8 @@ const ComplementosSelector = ({
           variant={'contained'}
           sx={{ mr: 2 }}
           startIcon={<AddShoppingCart />}
-          onClick={() => {
-            handleSendGroups(Object.values(groups), product)
-          }}
+          onClick={() => handleSendGroups(Object.values(groups), product)}
+          disabled={isLoadingComplementos}
         >
           Agregar al carrito
         </Button>
