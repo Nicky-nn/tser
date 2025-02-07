@@ -108,7 +108,6 @@ export const actualizarItemPedido = async (
     (producto: { fromDatabase: any }) => producto.fromDatabase,
   )
 
-  console.log('filteredData', filteredData)
   // Construir el objeto productos según los productos filtrados
   const productos = filteredData
     .filter(
@@ -125,8 +124,8 @@ export const actualizarItemPedido = async (
         price: any
         discount: any
         codigoAlmacen: any
-        codigoLote: null
-        listaComplemento: any
+        codigoLote: any
+        listaComplemento: any[]
         nroItem: any
         quantity: any
         extraDetalle: any
@@ -147,25 +146,23 @@ export const actualizarItemPedido = async (
           },
           codigoAlmacen: producto.codigoAlmacen,
           codigoLote: producto?.codigoLote || null,
-          complementos: producto.listaComplemento
-            ? [
-                {
-                  codigoArticulo: producto.listaComplemento.codigoArticulo || '',
-                  codigoAlmacen: producto.listaComplemento.almacen?.codigoAlmacen || '',
-                  articuloPrecio: {
-                    cantidad: producto.listaComplemento.articuloPrecio?.cantidad || 0,
-                    codigoArticuloUnidadMedida:
-                      producto.listaComplemento.articuloPrecio?.articuloUnidadMedida
-                        ?.codigoUnidadMedida || '',
-                    precio: 0,
-                    descuento: 0,
-                    impuesto: 0,
-                  },
+          complementos: producto.listaComplemento?.length
+            ? producto.listaComplemento.map((complemento: any) => ({
+                codigoArticulo: complemento?.codigoArticulo || '',
+                codigoAlmacen: complemento?.almacen?.codigoAlmacen || '',
+                articuloPrecio: {
+                  cantidad: producto.quantity, // 🔹 Cantidad del complemento = cantidad del producto
+                  codigoArticuloUnidadMedida:
+                    complemento?.articuloPrecio?.articuloUnidadMedida
+                      ?.codigoUnidadMedida || '',
+                  precio: 0,
+                  descuento: 0,
+                  impuesto: 0,
                 },
-              ]
-            : [],
+              }))
+            : [], // 🔹 Si no hay complementos, el array queda vacío
           detalleExtra: '',
-          nota: '',
+          nota: producto.extraDescription || '',
         },
       }),
     )
@@ -199,7 +196,6 @@ export const actualizarItemPedido = async (
         Swal.showLoading()
       },
     })
-
     const response = await actualizarItem(
       nroPedido,
       entidad,
