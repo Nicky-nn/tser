@@ -271,11 +271,33 @@ const ComplementosSelector = ({
     })
   }
 
-  useEffect(() => {
-    console.log('Grupos:', groups)
-    const allComplementos = Object.values(groups).flatMap((group) => group.complementos)
-    console.log('Complementos:', allComplementos)
-  }, [groups])
+  // useEffect(() => {
+  //   console.log('Grupos:', groups)
+  //   const allComplementos = Object.values(groups).flatMap((group) => group.complementos)
+  //   console.log('Complementos:', allComplementos)
+  // }, [groups])
+
+  const handleSendGroups = (complementsArray: any[], product: any) => {
+    const result = complementsArray.map((item) => {
+      const { complementos, units, nombre } = item
+      return {
+        producto: product,
+        complementos: complementos
+          .filter((comp: any) => comp._id !== 'sin-complementos')
+          .map((comp: any) => ({
+            ...comp,
+            cantidad: units.length,
+            nombreGrupo: nombre,
+          })),
+      }
+    })
+
+    console.log('Resultado transformado:', JSON.stringify(result, null, 2))
+    console.log('Producto:', result)
+    return result
+  }
+
+  console.log('Grupos:', groups)
 
   const createNewGroup = () => {
     const newGroupKey = `group_${Object.keys(groups).length + 1}`
@@ -396,7 +418,7 @@ const ComplementosSelector = ({
                 </CardContent>
               </SimpleBox>
             </Grid>
-            <Grid item xs={12} md={5} lg={7}>
+            <Grid item xs={12} md={8} lg={7}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
                 <strong>Complementos</strong>
               </Divider>
@@ -426,7 +448,6 @@ const ComplementosSelector = ({
                             const isSelected = group.complementos.some(
                               (c) => c._id === complemento._id,
                             )
-                            console.log('isSelected', isSelected)
                             return (
                               <Grid item key={complemento._id}>
                                 <ComplementCard
@@ -553,12 +574,7 @@ const ComplementosSelector = ({
           sx={{ mr: 2 }}
           startIcon={<AddShoppingCart />}
           onClick={() => {
-            Object.values(groups).forEach((group) => {
-              group.units.forEach(() => {
-                onAddToCart(product, group.complementos)
-              })
-            })
-            onClose()
+            handleSendGroups(Object.values(groups), product)
           }}
         >
           Agregar al carrito
