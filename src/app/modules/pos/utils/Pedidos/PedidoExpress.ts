@@ -143,30 +143,26 @@ export const restPedidoExpressRegistro = async (
       detalleExtra: producto.extraDetalle || '',
       codigoAlmacen: producto.codigoAlmacen,
       nota: producto.extraDescription || '',
-      complementos: producto.listaComplemento
-        ? [
-            {
-              articuloPrecio: {
-                cantidad: 0,
-                codigoArticuloUnidadMedida:
-                  producto.listaComplemento?.articuloPrecioBase?.articuloUnidadMedida
-                    ?.codigoUnidadMedida || null,
-                descuento: 0,
-                impuesto: 0,
-                precio: 0,
-              },
-              codigoAlmacen:
-                producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.almacen
-                  ?.codigoAlmacen || null,
-              codigoArticulo: producto.listaComplemento?.codigoArticulo || null,
-              codigoLote:
-                producto.listaComplemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]
-                  ?.codigoLote || null,
-              detalleExtra: producto.listaComplemento?.detalleExtra || '',
-              nota: '',
+      complementos: producto.listaComplemento?.length
+        ? producto.listaComplemento.map((complemento: any) => ({
+            articuloPrecio: {
+              cantidad: producto.quantity, // 🔹 Ahora la cantidad del complemento es igual a la del producto
+              codigoArticuloUnidadMedida:
+                complemento?.articuloPrecioBase?.articuloUnidadMedida
+                  ?.codigoUnidadMedida || null,
+              descuento: 0,
+              impuesto: 0,
+              precio: 0,
             },
-          ]
-        : [], // Array vacío si no hay complementos
+            codigoAlmacen:
+              complemento?.inventario?.[0]?.detalle?.[0]?.almacen?.codigoAlmacen || null,
+            codigoArticulo: complemento?.codigoArticulo || null,
+            codigoLote:
+              complemento?.inventario?.[0]?.detalle?.[0]?.lotes?.[0]?.codigoLote || null,
+            detalleExtra: complemento?.detalleExtra || '',
+            nota: '',
+          }))
+        : [], // 🔹 Si no hay complementos, el array queda vacío
     })),
     codigoMoneda: 1,
     tipoCambio: 1,
