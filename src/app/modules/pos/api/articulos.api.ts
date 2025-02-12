@@ -371,7 +371,7 @@ const queryREST_ARTICULOS = gql`
 
 const queryLISTADO_POR_INVENTARIO_ENTIDAD = gql`
   query LISTADO_POR_INVENTARIO_ENTIDAD($cds: Int!, $entidad: EntidadParamsInput!) {
-    articuloEntidadInventarioListado(cds: $cds, entidad: $entidad) {
+    articuloInventarioListado(cds: $cds, entidad: $entidad) {
       ...ArticuloFields
     }
   }

@@ -93,8 +93,18 @@ interface ArticuloInventarioComplementoListadoData {
 }
 
 const queryListado = gql`
-  query LISTADO($cds: Int!, $entidad: EntidadParamsInput!, $query: String!) {
-    articuloInventarioComplementoListado(cds: $cds, entidad: $entidad, query: $query) {
+  query LISTADO(
+    $cds: Int!
+    $entidad: EntidadParamsInput!
+    $query: String
+    $ids: [String]
+  ) {
+    articuloInventarioComplementoListado(
+      cds: $cds
+      entidad: $entidad
+      query: $query
+      ids: $ids
+    ) {
       ...ArticuloFields
     }
   }
@@ -194,6 +204,7 @@ const queryListado = gql`
 export const articuloInventarioComplementoListadoApi = async (
   entidad: { codigoSucursal: number; codigoPuntoVenta: number },
   query: string,
+  ids: string[],
 ): Promise<ArticuloInventarioComplementoListadoData> => {
   try {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
@@ -208,6 +219,7 @@ export const articuloInventarioComplementoListadoApi = async (
       cds,
       entidad,
       query,
+      ids,
     })
     return data?.articuloInventarioComplementoListado || []
   } catch (error: any) {

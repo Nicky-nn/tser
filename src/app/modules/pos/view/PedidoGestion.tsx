@@ -346,15 +346,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         codigoSucursal: sucursal.codigo,
         codigoPuntoVenta: puntoVenta.codigo,
       }
-      const { articuloEntidadInventarioListado } =
-        await apiListadoPorInventarioEntidad(entidad)
+      const { articuloInventarioListado } = await apiListadoPorInventarioEntidad(entidad)
       // Almacenar en caché las URL de las imágenes
-      articuloEntidadInventarioListado.forEach((producto: any) => {
+      articuloInventarioListado.forEach((producto: any) => {
         const imageUrl = producto.imagen // Suponiendo que la URL de la imagen está en la propiedad 'imagen' del producto
         const codigoArticulo = producto.codigoArticulo
         imageCache[codigoArticulo] = imageUrl
       })
-      return articuloEntidadInventarioListado
+      return articuloInventarioListado
     },
     refetchOnWindowFocus: false,
   })
@@ -398,21 +397,21 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
 
       const productData = {
         imagen: producto.imagen,
-        sigla: producto.articuloPrecioBase.monedaPrimaria.moneda.sigla,
-        codigoArticulo: producto.codigoArticulo,
-        name: producto.nombreArticulo,
-        price: producto.articuloPrecioBase.monedaPrimaria.precio,
-        description: producto.descripcionArticulo,
-        quantity: producto.inventario.reduce((total, inv) => total + inv.totalStock, 0),
-        discount: producto.articuloPrecio.descuento,
+        sigla: producto.articuloPrecioBase?.monedaPrimaria?.moneda?.sigla || '',
+        codigoArticulo: producto?.codigoArticulo,
+        name: producto?.nombreArticulo,
+        price: producto?.articuloPrecioBase?.monedaPrimaria?.precio,
+        description: producto?.descripcionArticulo,
+        quantity: producto?.inventario.reduce((total, inv) => total + inv.totalStock, 0),
+        discount: producto?.articuloPrecio.descuento,
         extraDescription: '',
-        extraDetalle: producto.detalleExtra?.toString() || '',
+        extraDetalle: producto?.detalleExtra?.toString() || '',
         codigoAlmacen: '',
         codigoArticuloUnidadMedida:
-          producto.articuloPrecioBase.articuloUnidadMedida.codigoUnidadMedida,
-        complemento: producto.complemento,
-        listaComplemento: producto.listaComplemento,
-        codigoLote: producto.inventario,
+          producto.articuloPrecioBase?.articuloUnidadMedida?.codigoUnidadMedida,
+        complemento: producto?.complemento,
+        listaComplemento: producto?.listaComplemento,
+        codigoLote: producto?.inventario,
       }
 
       if (categoriaExistente) {
@@ -2201,7 +2200,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                         </Typography>
                       </Tooltip>
                       <Typography variant="body2">
-                        {product.price.toFixed(2)} {product.sigla}
+                        {product.price !== undefined
+                          ? product.price.toFixed(2)
+                          : 'Precio no disponible'}{' '}
+                        {product.sigla}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -2699,7 +2701,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                                 </Typography>
                               </Tooltip>
                               <Typography variant="body2">
-                                {product.price.toFixed(2)} {product.sigla}
+                                {product.price !== undefined
+                                  ? product.price.toFixed(2)
+                                  : 'Precio no disponible'}{' '}
+                                {product.sigla}
                               </Typography>
                             </Box>
 

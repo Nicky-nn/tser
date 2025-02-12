@@ -38,6 +38,7 @@ import useAuth from '../../../../base/hooks/useAuth'
 import { articuloInventarioComplementoListadoApi } from '../../api/complementoId.api'
 
 interface Complemento {
+  id: any
   codigoArticulo: any
   _id: number
   nombre: string
@@ -138,10 +139,14 @@ const ComplementosSelector = ({
         codigoPuntoVenta: puntoVenta.codigo,
       }
 
-      const codigosQuery =
-        product?.listaComplemento?.map((c) => `${c.codigoArticulo}`).join('&') || ''
-
-      const resp = await articuloInventarioComplementoListadoApi(entidad, codigosQuery)
+      const codigosQuery = ''
+      // para busquedas por id se hara como un jeeplo ids: ["67a6da002c7eeeca4d1abbe0","67a6d91e2c7eeeca4d1abbad"]
+      const ids = product?.listaComplemento?.map((c) => c.id) || []
+      const resp = await articuloInventarioComplementoListadoApi(
+        entidad,
+        codigosQuery,
+        ids,
+      )
 
       // Crear la opción "Sin complementos"
       const sinComplementos = {
