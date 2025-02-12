@@ -370,8 +370,20 @@ const queryREST_ARTICULOS = gql`
 `
 
 const queryLISTADO_POR_INVENTARIO_ENTIDAD = gql`
-  query LISTADO_POR_INVENTARIO_ENTIDAD($cds: Int!, $entidad: EntidadParamsInput!) {
-    articuloInventarioListado(cds: $cds, entidad: $entidad) {
+  query LISTADO_POR_INVENTARIO_ENTIDAD(
+    $cds: Int!
+    $entidad: EntidadParamsInput!
+    $verificarPrecio: Boolean
+    $verificarInventario: Boolean
+    $query: String
+  ) {
+    articuloInventarioListado(
+      cds: $cds
+      entidad: $entidad
+      verificarPrecio: $verificarPrecio
+      verificarInventario: $verificarInventario
+      query: $query
+    ) {
       ...ArticuloFields
     }
   }
@@ -414,6 +426,9 @@ export const apiListadoPorInventarioEntidad = async (entidad: EntidadParamsInput
     const data: any = await client.request(queryLISTADO_POR_INVENTARIO_ENTIDAD, {
       cds: 1,
       entidad,
+      verificarPrecio: true,
+      verificarInventario: true,
+      query: 'articuloVenta=true',
     })
     return data
   } catch (e: any) {
