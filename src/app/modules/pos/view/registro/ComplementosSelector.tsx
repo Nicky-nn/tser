@@ -116,6 +116,7 @@ const ComplementosSelector = ({
   const {
     user: { sucursal, puntoVenta },
   } = useAuth()
+  console.log('product', product)
   const [quantity, setQuantity] = useState(1)
   const [groups, setGroups] = useState<{
     [key: string]: {
@@ -524,7 +525,7 @@ const ComplementosSelector = ({
                         mb: 0.6,
                       }}
                     >
-                      {product.codigoArticulo} - {product.description}
+                      {product.codigoArticulo} - {product.description || product.name}
                     </Typography>
                   }
                   subheader={
