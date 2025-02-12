@@ -41,8 +41,6 @@ export const generarComandaPDF = (
   const fechaActual = new Date().toLocaleDateString()
   const horaActual = new Date().toLocaleTimeString()
 
-  console.log('Data', data)
-
   if (!data || data.length === 0) {
     toast.error('Debe agregar al menos un producto')
     return
