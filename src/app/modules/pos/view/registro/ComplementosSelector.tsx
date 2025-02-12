@@ -1,5 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { AddShoppingCart, Close, Delete } from '@mui/icons-material'
+import {
+  AddShoppingCart,
+  Close,
+  Delete,
+  NavigateBefore,
+  NavigateNext,
+} from '@mui/icons-material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import {
@@ -36,17 +42,27 @@ import NumberSpinnerInput from '../../../../base/components/NumberSpinnerInput/N
 import { SimpleBox } from '../../../../base/components/Template/Cards/SimpleBox'
 import useAuth from '../../../../base/hooks/useAuth'
 import { articuloInventarioComplementoListadoApi } from '../../api/complementoId.api'
+import NotaRapidaField from './notaRapida/NotaRapidaField'
 
 interface Complemento {
   id: any
   codigoArticulo: any
-  _id: number
+  _id: any
   nombre: string
   imagen: string
   descripcion?: string
 }
 
+interface GroupData {
+  complementos: Complemento[]
+  units: number[]
+  nombre: string
+  plateIndex: number
+}
+
 interface Product {
+  _id: any
+  idTipoArticulo: any
   sigla: ReactNode
   imagen: any
   name: string
@@ -119,18 +135,17 @@ const ComplementosSelector = ({
   console.log('product', product)
   const [quantity, setQuantity] = useState(1)
   const [groups, setGroups] = useState<{
-    [key: string]: {
-      complementos: Complemento[]
-      units: number[]
-      nombre: string
-    }
-  }>({
-    default: {
-      complementos: [],
-      units: [0],
-      nombre: 'Grupo 1',
-    },
-  })
+    [key: string]: GroupData
+  }>({})
+  const [currentPlateIndex, setCurrentPlateIndex] = useState(0)
+
+  const handleNext = () => {
+    setCurrentPlateIndex((prev) => Math.min(prev + 1, quantity - 1))
+  }
+
+  const handlePrevious = () => {
+    setCurrentPlateIndex((prev) => Math.max(prev - 1, 0))
+  }
 
   const { data: complementos, isLoading: isLoadingComplementos } = useQuery<any>({
     queryKey: ['complementos', product?.codigoArticulo],
@@ -141,7 +156,6 @@ const ComplementosSelector = ({
       }
 
       const codigosQuery = ''
-      // para busquedas por id se hara como un jeeplo ids: ["67a6da002c7eeeca4d1abbe0","67a6d91e2c7eeeca4d1abbad"]
       const ids = product?.listaComplemento?.map((c) => c.id) || []
       const resp = await articuloInventarioComplementoListadoApi(
         entidad,
@@ -232,18 +246,26 @@ const ComplementosSelector = ({
   })
 
   useEffect(() => {
-    setGroups({
-      default: {
+    const initialGroups: { [key: string]: GroupData } = {}
+    for (let i = 0; i < quantity; i++) {
+      initialGroups[`plate_${i}`] = {
         complementos: [],
-        units: Array.from({ length: quantity }, (_, i) => i),
-        nombre: 'Grupo 1',
-      },
-    })
+        units: [i],
+        nombre: `Grupo ${i + 1}`,
+        plateIndex: i,
+      }
+    }
+    setGroups(initialGroups)
   }, [quantity])
 
   const hasGroupSinComplementos = (groupComplementos: Complemento[]) => {
     // ts-ignore
     return groupComplementos.some((comp) => String(comp._id) === 'sin-complementos')
+  }
+  const getCurrentPlateGroups = () => {
+    return Object.entries(groups).filter(
+      ([_, group]) => group.plateIndex === currentPlateIndex,
+    )
   }
 
   const deleteGroup = (groupKey: string) => {
@@ -311,40 +333,35 @@ const ComplementosSelector = ({
     })
   }
 
-  const handleSendGroups = (complementsArray: any[], product: any) => {
-    // Filtrar grupos con 0 unidades
-    const validGroups = complementsArray.filter((item) => item.units.length > 0)
+  // Modificar el handleSendGroups
+  const handleSendGroups = () => {
+    const allPlatesValid = Array.from({ length: quantity }, (_, index) => {
+      const plateGroups = Object.values(groups).filter((g) => g.plateIndex === index)
+      return plateGroups.some((group) => group.complementos.length > 0)
+    }).every(Boolean)
 
-    if (validGroups.length === 0) {
-      toast.error('No hay unidades asignadas en ningún grupo')
+    if (!allPlatesValid) {
+      toast.error('Todos los platos deben tener complementos seleccionados')
       return
     }
 
-    // Verificar si hay grupos sin complementos seleccionados
-    const hasEmptyGroups = validGroups.some((group) => group.complementos.length === 0)
-    if (hasEmptyGroups) {
-      toast.error('Hay grupos sin complementos seleccionados')
-      return
-    }
-
-    validGroups.forEach((item) => {
-      const { complementos, units, nombre } = item
-
+    // Procesar cada plato individualmente
+    Object.values(groups).forEach((group) => {
       const productWithQuantity = {
         ...product,
-        quantity: units.length,
+        quantity: 1,
       }
 
-      // Solo para grupos que no tienen "Sin complementos" seleccionado
-      const hasSinComplementos = complementos.some(
-        (comp: any) => comp._id === 'sin-complementos',
+      const hasSinComplementos = group.complementos.some(
+        (comp) => String(comp._id) === 'sin-complementos',
       )
+
       const filteredComplements = hasSinComplementos
-        ? [] // Si tiene "Sin complementos", enviamos array vacío
-        : complementos.map((comp: any) => ({
+        ? []
+        : group.complementos.map((comp) => ({
             ...comp,
-            cantidad: units.length,
-            nombreGrupo: nombre,
+            cantidad: 1,
+            nombreGrupo: group.nombre,
           }))
 
       onAddToCart(productWithQuantity, filteredComplements)
@@ -361,6 +378,7 @@ const ComplementosSelector = ({
         complementos: [],
         units: [],
         nombre: `Grupo ${Object.keys(groups).length + 1}`,
+        plateIndex: currentPlateIndex,
       },
     }))
   }
@@ -463,20 +481,32 @@ const ComplementosSelector = ({
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={onClose}>
       <DialogTitle>
-        {product.description}
-        <IconButton
-          aria-label="close"
-          title={'Cerrar o presione la tecla ESC'}
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">
+            {product.description || product.name} - Grupo {currentPlateIndex + 1}/
+            {quantity}
+          </Typography>
+          <Box>
+            <IconButton onClick={handlePrevious} disabled={currentPlateIndex === 0}>
+              <NavigateBefore />
+            </IconButton>
+            <IconButton
+              onClick={handleNext}
+              disabled={currentPlateIndex === quantity - 1}
+            >
+              <NavigateNext />
+            </IconButton>
+            <IconButton
+              aria-label="close"
+              onClick={onClose}
+              sx={{
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <Close />
+            </IconButton>
+          </Box>
+        </Stack>
       </DialogTitle>
       {isLoadingComplementos ? (
         <DialogContent>
@@ -496,7 +526,7 @@ const ComplementosSelector = ({
       ) : (
         <DialogContent dividers>
           <Grid container columnSpacing={3}>
-            <Grid item xs={12} md={4} lg={5}>
+            <Grid item xs={12} md={3} lg={4}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
                 <strong>Producto</strong>
               </Divider>
@@ -556,12 +586,12 @@ const ComplementosSelector = ({
                 </CardContent>
               </SimpleBox>
             </Grid>
-            <Grid item xs={12} md={8} lg={7}>
+            <Grid item xs={12} md={9} lg={8}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
-                <strong>Complementos</strong>
+                <strong>Complementos del Plato {currentPlateIndex + 1}</strong>
               </Divider>
               <Stack spacing={2}>
-                {Object.entries(groups).map(([groupKey, group]) => (
+                {getCurrentPlateGroups().map(([groupKey, group]) => (
                   <GroupContainer key={groupKey}>
                     <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
                       <Typography variant="h6">
@@ -627,6 +657,19 @@ const ComplementosSelector = ({
                         ))}
                       </Grid>
                     </Box>
+
+                    <Grid container columnSpacing={3}>
+                      <Grid item xs={12}>
+                        <Divider
+                          textAlign={'left'}
+                          sx={{ color: 'primary.main', mb: 0.7 }}
+                        >
+                          <strong>Nota Rápida</strong>
+                        </Divider>
+                        {/*Adicionr el _id del tipo de articulo obtenido desde la api de listado de articulos*/}
+                        <NotaRapidaField tipoArticuloId={product.idTipoArticulo} />
+                      </Grid>
+                    </Grid>
                   </GroupContainer>
                 ))}
               </Stack>
@@ -635,16 +678,42 @@ const ComplementosSelector = ({
         </DialogContent>
       )}
 
-      <DialogActions sx={{ justifyContent: 'center' }}>
+      <DialogActions sx={{ justifyContent: 'space-between', px: 3 }}>
         <Button
-          color={'primary'}
-          variant={'contained'}
-          sx={{ mr: 2 }}
-          startIcon={<AddShoppingCart />}
-          onClick={() => handleSendGroups(Object.values(groups), product)}
-          disabled={isLoadingComplementos}
+          color="inherit"
+          onClick={handlePrevious}
+          disabled={currentPlateIndex === 0}
+          startIcon={<NavigateBefore />}
         >
-          Agregar al carrito
+          Anterior
+        </Button>
+        {currentPlateIndex === quantity - 1 ? (
+          <Button
+            color={'primary'}
+            variant={'contained'}
+            startIcon={<AddShoppingCart />}
+            onClick={handleSendGroups}
+            disabled={isLoadingComplementos}
+          >
+            Finalizar y Agregar al Carrito
+          </Button>
+        ) : (
+          <Button
+            color={'primary'}
+            variant={'contained'}
+            onClick={handleNext}
+            endIcon={<NavigateNext />}
+          >
+            Siguiente Plato
+          </Button>
+        )}
+        <Button
+          color="inherit"
+          onClick={handleNext}
+          disabled={currentPlateIndex === quantity - 1}
+          endIcon={<NavigateNext />}
+        >
+          Siguiente
         </Button>
       </DialogActions>
     </Dialog>
