@@ -400,7 +400,7 @@ const ComplementosSelector = ({
                     height: 45,
                   }}
                   alt="C"
-                  src={complemento.imagen.variants.thumbnail}
+                  src={complemento.imagen?.variants?.thumbnail || ''}
                   aria-label="recipe"
                 >
                   P
