@@ -526,7 +526,7 @@ const ComplementosSelector = ({
       ) : (
         <DialogContent dividers>
           <Grid container columnSpacing={3}>
-            <Grid item xs={12} md={3} lg={4}>
+            <Grid item xs={12} md={4} lg={4}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
                 <strong>Producto</strong>
               </Divider>
@@ -586,7 +586,7 @@ const ComplementosSelector = ({
                 </CardContent>
               </SimpleBox>
             </Grid>
-            <Grid item xs={12} md={9} lg={8}>
+            <Grid item xs={12} md={8} lg={8}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
                 <strong>Complementos del Plato {currentPlateIndex + 1}</strong>
               </Divider>
@@ -657,22 +657,20 @@ const ComplementosSelector = ({
                         ))}
                       </Grid>
                     </Box>
-
-                    <Grid container columnSpacing={3}>
-                      <Grid item xs={12}>
-                        <Divider
-                          textAlign={'left'}
-                          sx={{ color: 'primary.main', mb: 0.7 }}
-                        >
-                          <strong>Nota Rápida</strong>
-                        </Divider>
-                        {/*Adicionr el _id del tipo de articulo obtenido desde la api de listado de articulos*/}
-                        <NotaRapidaField tipoArticuloId={product.idTipoArticulo} />
-                      </Grid>
-                    </Grid>
                   </GroupContainer>
                 ))}
               </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container columnSpacing={3}>
+                <Grid item xs={12}>
+                  <Divider textAlign={'left'} sx={{ color: 'primary.main', mb: 0.7 }}>
+                    <strong>Nota Rápida</strong>
+                  </Divider>
+                  {/*Adicionr el _id del tipo de articulo obtenido desde la api de listado de articulos*/}
+                  <NotaRapidaField tipoArticuloId={product.idTipoArticulo} />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>
