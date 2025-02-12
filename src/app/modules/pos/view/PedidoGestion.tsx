@@ -2035,58 +2035,66 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
             backgroundColor: 'F3F3F3',
           }}
         >
-          {filteredCategories.length === 0
-            ? [1, 2, 3, 4, 5, 6].map((item) => (
-                <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
-                  <Skeleton variant="rectangular" height={60} animation="wave" />
-                </Grid>
-              ))
-            : filteredCategories.map((category) => (
-                <Grid
-                  item
-                  key={category.name}
-                  xs={6}
-                  sm={4}
-                  md={3}
-                  lg={2}
-                  sx={{ userSelect: 'none' }}
-                >
-                  <Card
-                    elevation={3}
-                    sx={{
-                      p: 2,
-                      textAlign: 'center',
-                      cursor: 'pointer',
+          {searchTerm && filteredCategories.length === 0 ? (
+            <Grid item xs={12}>
+              <Typography variant="body2" sx={{ textAlign: 'center', mt: 2 }}>
+                No se encontraron resultados para "{searchTerm}"
+              </Typography>
+            </Grid>
+          ) : filteredCategories.length === 0 ? (
+            [1, 2, 3, 4, 5, 6].map((item) => (
+              <Grid key={item} item xs={6} sm={4} md={3} sx={{ userSelect: 'none' }}>
+                <Skeleton variant="rectangular" height={60} animation="wave" />
+              </Grid>
+            ))
+          ) : (
+            filteredCategories.map((category) => (
+              <Grid
+                item
+                key={category.name}
+                xs={6}
+                sm={4}
+                md={3}
+                lg={2}
+                sx={{ userSelect: 'none' }}
+              >
+                <Card
+                  elevation={3}
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    backgroundColor:
+                      selectedCategory === category.name
+                        ? theme.palette.primary.main
+                        : theme.palette.common.white,
+                    color:
+                      selectedCategory === category.name ? 'common.white' : 'inherit',
+                    '&:hover': {
                       backgroundColor:
                         selectedCategory === category.name
-                          ? theme.palette.primary.main
-                          : theme.palette.common.white,
-                      color:
-                        selectedCategory === category.name ? 'common.white' : 'inherit',
-                      '&:hover': {
-                        backgroundColor:
-                          selectedCategory === category.name
-                            ? theme.palette.primary.dark
-                            : theme.palette.action.hover,
-                      },
-                    }}
-                    onClick={() => {
-                      setSelectedCategory(category.name)
-                    }}
+                          ? theme.palette.primary.dark
+                          : theme.palette.action.hover,
+                    },
+                  }}
+                  onClick={() => {
+                    setSelectedCategory(category.name)
+                  }}
+                >
+                  <Tooltip
+                    title={category.name}
+                    placement="top"
+                    disableFocusListener
+                    disableTouchListener
                   >
-                    <Tooltip
-                      title={category.name}
-                      placement="top"
-                      disableFocusListener
-                      disableTouchListener
-                    >
-                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                        {truncateName(category.name, 12)}
-                      </Typography>
-                    </Tooltip>
-                  </Card>
-                </Grid>
-              ))}
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      {truncateName(category.name, 12)}
+                    </Typography>
+                  </Tooltip>
+                </Card>
+              </Grid>
+            ))
+          )}
         </Grid>
 
         <Divider />
@@ -3339,7 +3347,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           // complementos={selectedComplementos}
           onAddToCart={(product: any, complemento: any) => {
             addToCartDirectly(product, complemento)
-            // console.log('Complemento:', complemento)
             setIsComplementoOpen(false)
             setSelectedProduct(null)
           }}
