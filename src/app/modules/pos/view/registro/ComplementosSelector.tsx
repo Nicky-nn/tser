@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import {
+  Add,
   AddShoppingCart,
   Close,
   Delete,
@@ -139,12 +140,27 @@ const ComplementosSelector = ({
   }>({})
   const [currentPlateIndex, setCurrentPlateIndex] = useState(0)
 
+  // Modificar handleNext para controlar mejor la navegación
   const handleNext = () => {
-    setCurrentPlateIndex((prev) => Math.min(prev + 1, quantity - 1))
+    const plateIndexes = [
+      ...new Set(Object.values(groups).map((g) => g.plateIndex)),
+    ].sort((a, b) => a - b)
+    const currentIndex = plateIndexes.indexOf(currentPlateIndex)
+    const isLastPlate = currentIndex === plateIndexes.length - 1
+
+    if (!isLastPlate) {
+      setCurrentPlateIndex(plateIndexes[currentIndex + 1])
+    }
   }
 
   const handlePrevious = () => {
-    setCurrentPlateIndex((prev) => Math.max(prev - 1, 0))
+    const plateIndexes = [
+      ...new Set(Object.values(groups).map((g) => g.plateIndex)),
+    ].sort((a, b) => a - b)
+    const currentIndex = plateIndexes.indexOf(currentPlateIndex)
+    if (currentIndex > 0) {
+      setCurrentPlateIndex(plateIndexes[currentIndex - 1])
+    }
   }
 
   const { data: complementos, isLoading: isLoadingComplementos } = useQuery<any>({
@@ -246,16 +262,16 @@ const ComplementosSelector = ({
   })
 
   useEffect(() => {
-    const initialGroups: { [key: string]: GroupData } = {}
-    for (let i = 0; i < quantity; i++) {
-      initialGroups[`plate_${i}`] = {
+    const initialGroups: { [key: string]: GroupData } = {
+      default: {
         complementos: [],
-        units: [i],
-        nombre: `Grupo ${i + 1}`,
-        plateIndex: i,
-      }
+        units: Array.from({ length: quantity }, (_, i) => i), // Todas las unidades en el grupo default
+        nombre: 'Grupo 1',
+        plateIndex: 0,
+      },
     }
     setGroups(initialGroups)
+    setCurrentPlateIndex(0)
   }, [quantity])
 
   const hasGroupSinComplementos = (groupComplementos: Complemento[]) => {
@@ -277,11 +293,11 @@ const ComplementosSelector = ({
     setGroups((prev) => {
       const { [groupKey]: deletedGroup, ...remainingGroups } = prev
 
-      // Mover unidades al grupo default
+      // Mover unidades al grupo default y ordenarlas
       remainingGroups.default.units = [
         ...remainingGroups.default.units,
         ...deletedGroup.units,
-      ]
+      ].sort((a, b) => a - b)
 
       return remainingGroups
     })
@@ -335,6 +351,7 @@ const ComplementosSelector = ({
 
   // Modificar el handleSendGroups
   const handleSendGroups = () => {
+    console.log('groups', groups)
     const allPlatesValid = Array.from({ length: quantity }, (_, index) => {
       const plateGroups = Object.values(groups).filter((g) => g.plateIndex === index)
       return plateGroups.some((group) => group.complementos.length > 0)
@@ -370,26 +387,51 @@ const ComplementosSelector = ({
     onClose()
   }
 
+  const isLastPlate =
+    currentPlateIndex === Math.max(...Object.values(groups).map((g) => g.plateIndex))
+
   const createNewGroup = () => {
+    const currentGroups = Object.values(groups)
+    const maxPlateIndex = Math.max(...currentGroups.map((g) => g.plateIndex))
+    const newPlateIndex = maxPlateIndex + 1
+
     const newGroupKey = `group_${Object.keys(groups).length + 1}`
     setGroups((prev) => ({
       ...prev,
       [newGroupKey]: {
         complementos: [],
-        units: [],
+        units: [], // Grupo nuevo inicia sin unidades
         nombre: `Grupo ${Object.keys(groups).length + 1}`,
-        plateIndex: currentPlateIndex,
+        plateIndex: newPlateIndex,
       },
     }))
+    setCurrentPlateIndex(newPlateIndex)
   }
 
   const moveUnitToGroup = (unitIndex: number, fromGroup: string, toGroup: string) => {
     setGroups((prev) => {
+      // Validar que la unidad existe en el grupo origen
+      if (!prev[fromGroup].units.includes(unitIndex)) {
+        toast.error('La unidad no existe en el grupo origen')
+        return prev
+      }
+
+      // Crear nuevo objeto de grupos
       const newGroups = { ...prev }
+
+      // Remover la unidad del grupo origen
       newGroups[fromGroup].units = newGroups[fromGroup].units.filter(
         (u) => u !== unitIndex,
       )
+
+      // Agregar la unidad al grupo destino
       newGroups[toGroup].units.push(unitIndex)
+
+      // Ordenar las unidades en cada grupo
+      Object.keys(newGroups).forEach((key) => {
+        newGroups[key].units.sort((a, b) => a - b)
+      })
+
       return newGroups
     })
   }
@@ -484,7 +526,7 @@ const ComplementosSelector = ({
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">
             {product.description || product.name} - Grupo {currentPlateIndex + 1}/
-            {quantity}
+            {[...new Set(Object.values(groups).map((g) => g.plateIndex))].length}
           </Typography>
           <Box>
             <IconButton onClick={handlePrevious} disabled={currentPlateIndex === 0}>
@@ -604,7 +646,7 @@ const ComplementosSelector = ({
                           onClick={() => createNewGroup()}
                           title="Crear nuevo grupo"
                         >
-                          <ContentCopyIcon />
+                          <Add />
                         </IconButton>
                       )}
                       {groupKey !== 'default' && (
@@ -617,7 +659,6 @@ const ComplementosSelector = ({
                         </IconButton>
                       )}
                     </Stack>
-
                     <Grid container spacing={2}>
                       {Array.isArray(complementos)
                         ? complementos.map((complemento: any) =>
@@ -625,10 +666,9 @@ const ComplementosSelector = ({
                           )
                         : null}
                     </Grid>
-
                     <Box sx={{ p: 1 }}>
                       <Typography variant="caption" sx={{ mb: 1 }}>
-                        Unidades en este grupo:
+                        Unidades en este grupo: ({group.units.length} de {quantity})
                       </Typography>
                       <Grid container spacing={1}>
                         {group.units.map((unitIndex) => (
@@ -675,7 +715,6 @@ const ComplementosSelector = ({
           </Grid>
         </DialogContent>
       )}
-
       <DialogActions sx={{ justifyContent: 'space-between', px: 3 }}>
         <Button
           color="inherit"
@@ -685,34 +724,23 @@ const ComplementosSelector = ({
         >
           Anterior
         </Button>
-        {currentPlateIndex === quantity - 1 ? (
-          <Button
-            color={'primary'}
-            variant={'contained'}
-            startIcon={<AddShoppingCart />}
-            onClick={handleSendGroups}
-            disabled={isLoadingComplementos}
-          >
-            Finalizar y Agregar al Carrito
-          </Button>
-        ) : (
-          <Button
-            color={'primary'}
-            variant={'contained'}
-            onClick={handleNext}
-            endIcon={<NavigateNext />}
-          >
-            Siguiente Plato
+
+        <Button
+          color={'primary'}
+          variant={'contained'}
+          startIcon={isLastPlate ? <AddShoppingCart /> : null}
+          endIcon={!isLastPlate ? <NavigateNext /> : null}
+          onClick={isLastPlate ? handleSendGroups : handleNext}
+          disabled={isLoadingComplementos}
+        >
+          {isLastPlate ? 'Finalizar y Agregar al Carrito' : 'Siguiente Plato'}
+        </Button>
+
+        {!isLastPlate && (
+          <Button color="inherit" onClick={handleNext} endIcon={<NavigateNext />}>
+            Siguiente
           </Button>
         )}
-        <Button
-          color="inherit"
-          onClick={handleNext}
-          disabled={currentPlateIndex === quantity - 1}
-          endIcon={<NavigateNext />}
-        >
-          Siguiente
-        </Button>
       </DialogActions>
     </Dialog>
   )
