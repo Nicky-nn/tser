@@ -133,7 +133,6 @@ const ComplementosSelector = ({
   const {
     user: { sucursal, puntoVenta },
   } = useAuth()
-  console.log('product', product)
   const [quantity, setQuantity] = useState(1)
   const [groups, setGroups] = useState<{
     [key: string]: GroupData
@@ -349,37 +348,30 @@ const ComplementosSelector = ({
     })
   }
 
-  // Modificar el handleSendGroups
   const handleSendGroups = () => {
     console.log('groups', groups)
-    const allPlatesValid = Array.from({ length: quantity }, (_, index) => {
-      const plateGroups = Object.values(groups).filter((g) => g.plateIndex === index)
-      return plateGroups.some((group) => group.complementos.length > 0)
-    }).every(Boolean)
-
-    if (!allPlatesValid) {
-      toast.error('Todos los platos deben tener complementos seleccionados')
-      return
-    }
-
     // Procesar cada plato individualmente
     Object.values(groups).forEach((group) => {
       const productWithQuantity = {
         ...product,
-        quantity: 1,
+        quantity: group.units.length,
       }
 
+      // Si el grupo no tiene complementos, agregar el producto sin complementos
       const hasSinComplementos = group.complementos.some(
         (comp) => String(comp._id) === 'sin-complementos',
       )
 
+      // Si el grupo no tiene complementos, agregar el producto sin complementos
       const filteredComplements = hasSinComplementos
         ? []
         : group.complementos.map((comp) => ({
             ...comp,
-            cantidad: 1,
+            cantidad: group.units.length,
             nombreGrupo: group.nombre,
           }))
+
+      console.log('productWithQuantity', productWithQuantity)
 
       onAddToCart(productWithQuantity, filteredComplements)
     })
@@ -708,7 +700,10 @@ const ComplementosSelector = ({
                     <strong>Nota Rápida</strong>
                   </Divider>
                   {/*Adicionr el _id del tipo de articulo obtenido desde la api de listado de articulos*/}
-                  <NotaRapidaField tipoArticuloId={product.idTipoArticulo} />
+                  <NotaRapidaField
+                    tipoArticuloId={product.idTipoArticulo}
+                    onNotaChange={onNotaChange}
+                  />
                 </Grid>
               </Grid>
             </Grid>
