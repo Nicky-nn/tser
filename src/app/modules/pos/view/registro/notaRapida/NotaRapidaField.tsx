@@ -28,6 +28,8 @@ const defaultValue = { cantidad: null, valor: '', nota: '' }
 
 interface OwnProps {
   tipoArticuloId: string
+  // eslint-disable-next-line no-unused-vars
+  onNotaChange: (nota: string) => void
 }
 
 type Props = OwnProps
@@ -38,8 +40,7 @@ type Props = OwnProps
  * @constructor
  */
 const NotaRapidaField: FunctionComponent<Props> = (props) => {
-  console.log('NotaRapidaField', props)
-  const { tipoArticuloId } = props
+  const { tipoArticuloId, onNotaChange } = props
   const [inputValue, setInputValue] = React.useState<{
     cantidad: number | null
     valor: string
@@ -70,7 +71,6 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
         query: `_id=${tipoArticuloId}`,
       }
       const { docs } = await apiTipoArticuloListado(fetchPagination)
-      console.log('docs', docs)
       if (docs.length === 0) return []
       return docs[0].notas
     },
@@ -81,10 +81,11 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
    * @param value
    */
   const addNota = (value: string) => {
-    // Buscamos si ya existe la nota
     const existe = nota.find((n) => n.nota === value)
+    let nuevaNota
+    let nuevasNotas
     if (existe) {
-      const filtro = nota.map((n) =>
+      nuevasNotas = nota.map((n) =>
         n.nota === value
           ? {
               cantidad: genReplaceEmpty(existe.cantidad, 0) + 1,
@@ -93,28 +94,31 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
             }
           : n,
       )
-      setNota(filtro)
+      setNota(nuevasNotas)
     } else {
-      setNota((prev) => [...prev, { cantidad: 1, valor: value, nota: value }])
+      nuevaNota = { cantidad: 1, valor: value, nota: value }
+      nuevasNotas = [...nota, nuevaNota]
+      setNota(nuevasNotas)
     }
+    const notaString = nuevasNotas.map((n) => `${n.cantidad} - ${n.valor}`).join(', ')
+    onNotaChange(notaString) // Enviar todas las notas en formato "cantidad - valor"
   }
 
-  /**
-   * @description Eliminamos una nota o restamos la cantidad de una nota existente
-   * @param value
-   */
   const deleteNota = (value: string) => {
     const existe = nota.find((n) => n.nota === value)
-    // si cantidad === 1 se realiza la eliminación de la note
     const cantidad = genReplaceEmpty(existe?.cantidad, 1)
+    let nuevasNotas
     if (cantidad === 1) {
-      setNota((prev) => prev.filter((n) => n.nota !== value))
+      nuevasNotas = nota.filter((n) => n.nota !== value)
+      setNota(nuevasNotas)
     } else {
-      const filtro = nota.map((n) =>
+      nuevasNotas = nota.map((n) =>
         n.nota === value ? { ...n, cantidad: cantidad - 1 } : n,
       )
-      setNota(filtro)
+      setNota(nuevasNotas)
     }
+    const notaString = nuevasNotas.map((n) => `${n.cantidad} - ${n.valor}`).join(', ')
+    onNotaChange(notaString) // Enviar todas las notas en formato "cantidad - valor"
   }
 
   useEffect(() => {
@@ -126,7 +130,7 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Grid container spacing={1} columnSpacing={3} sx={{ mt: -1 }}>
-        <Grid item xs={12} lg={5}>
+        <Grid item xs={12} lg={5} md={4}>
           <CreatableSelect
             components={components}
             inputValue={inputValue.valor}
@@ -146,7 +150,7 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
             getOptionValue={(option) => option.valor}
           />
         </Grid>
-        <Grid item xs={12} lg={7}>
+        <Grid item xs={12} lg={7} md={8}>
           <Stack
             spacing={{ xs: 1, sm: 1 }}
             direction="row"
@@ -155,7 +159,16 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
           >
             {data?.map((item, index) => (
               <ButtonGroup key={index} aria-label={`Item nota ${item}`}>
-                <Button sx={{ fontSize: '0.8rem', p: 0.3 }} onClick={() => addNota(item)}>
+                <Button
+                  sx={{
+                    fontSize: '0.8rem',
+                    p: 0.6,
+                    '&:hover': {
+                      bgcolor: '#f0f0f0',
+                    },
+                  }}
+                  onClick={() => addNota(item)}
+                >
                   {item}
                 </Button>
                 <Button
