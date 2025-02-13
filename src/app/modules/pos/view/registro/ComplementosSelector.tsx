@@ -405,7 +405,7 @@ const ComplementosSelector = ({
         plateIndex: newPlateIndex,
       },
     }))
-    setCurrentPlateIndex(newPlateIndex)
+    setCurrentPlateIndex(0)
   }
 
   const moveUnitToGroup = (unitIndex: number, fromGroup: string, toGroup: string) => {
