@@ -243,6 +243,7 @@ const fragmentArticuloFields = gql`
     }
     descripcionArticulo
     tipoArticulo {
+      _id
       codigo
       descripcion
     }
