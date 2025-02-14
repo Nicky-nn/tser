@@ -12,12 +12,12 @@ import {
 import es from 'date-fns/locale/es'
 import dayjs from 'dayjs'
 import { FunctionComponent, useEffect, useState } from 'react'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import { registerLocale } from 'react-datepicker'
 import Swal from 'sweetalert2'
 
 import { SimpleItem } from '../../../../base/components/Container/SimpleItem'
+import MyDateRangePickerField from '../../../../base/components/MyInputs/MyDateRangePickerField'
 import useAuth from '../../../../base/hooks/useAuth'
-import { notDanger } from '../../../../utils/notification'
 import { restReportePedidosApi } from '../../api/reportesPedidos'
 
 // @ts-ignore
@@ -145,7 +145,7 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435, height: 500 } }}
+        sx={{ '& .MuiDialog-paper': { width: '80%' } }}
         maxWidth="sm"
         open={open}
         {...other}
@@ -189,15 +189,15 @@ const PedidosReporteExportarDialog: FunctionComponent<Props> = (props) => {
             </Grid>
             <Grid item sm={7}>
               <SimpleItem>
-                <DatePicker
-                  selected={startDate}
-                  onChange={onChange}
-                  locale={'es'}
-                  startDate={startDate || new Date()}
-                  endDate={endDate || new Date()}
-                  selectsRange
-                  inline
-                  isClearable={true}
+                <MyDateRangePickerField
+                  startDate={startDate ?? undefined}
+                  endDate={endDate ?? undefined}
+                  onChange={(date) => {
+                    setStartDate(date[0])
+                    setEndDate(date[1])
+                  }}
+                  // @ts-ignore
+                  inline={true}
                 />
               </SimpleItem>
             </Grid>
