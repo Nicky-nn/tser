@@ -361,18 +361,17 @@ const ComplementosSelector = ({
   }
 
   const handleSendGroups = () => {
-    console.log('groups', groups)
-    // Procesar cada plato individualmente
     Object.values(groups).forEach((group) => {
       const productWithQuantity = {
         ...product,
         quantity: group.units.length,
         extraDescription: group.nota,
+        listaComplemento: group.complementos,
       }
 
       // Si el grupo no tiene complementos, agregar el producto sin complementos
       const hasSinComplementos = group.complementos.some(
-        (comp) => String(comp._id) === 'sin-complementos',
+        (comp) => String(comp._id) === 'sincomplementos',
       )
 
       // Si el grupo no tiene complementos, agregar el producto sin complementos
@@ -723,13 +722,14 @@ const ComplementosSelector = ({
           Cancelar
         </Button>
         <Button
-          onClick={handleSendGroups}
-          variant="contained"
-          color="primary"
-          startIcon={<AddShoppingCart />}
+          color={'primary'}
+          variant={'contained'}
+          startIcon={isLastPlate ? <AddShoppingCart /> : null}
+          endIcon={!isLastPlate ? <NavigateNext /> : null}
+          onClick={isLastPlate ? handleSendGroups : handleNext}
           disabled={isLoadingComplementos}
         >
-          Agregar al Carrito ({quantity})
+          {isLastPlate ? 'Agregar al carrito' : 'Siguiente'}
         </Button>
       </DialogActions>
     </Dialog>
