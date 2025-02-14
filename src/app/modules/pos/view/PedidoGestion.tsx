@@ -498,7 +498,6 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         ...product,
         quantity: hasComplements ? product.quantity || 1 : 1, // 🔹 Aquí está el ajuste
         discount: 0,
-        extraDescription: complementos?.map((c) => c.nombre).join(', ') || '',
         nroItem: maxNroItem + 1,
         listaComplemento: complementos || [],
       }
@@ -521,9 +520,9 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     )
   }
 
-  // useEffect(() => {
-  //   console.log('Cart', cart)
-  // }, [cart])
+  useEffect(() => {
+    console.log('Cart', cart)
+  }, [cart])
 
   const handleRemoveFromCart = (index: number) => {
     setCart((prevCart) => {
