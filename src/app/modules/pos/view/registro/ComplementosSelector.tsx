@@ -361,7 +361,7 @@ const ComplementosSelector = ({
   }
 
   const handleSendGroups = () => {
-    // console.log('groups', groups)
+    console.log('groups', groups)
     // Procesar cada plato individualmente
     Object.values(groups).forEach((group) => {
       const productWithQuantity = {
@@ -446,7 +446,7 @@ const ComplementosSelector = ({
       complemento._id !== 'sin-complementos'
 
     return (
-      <Grid item key={complemento._id}>
+      <Grid item xs={12} sm={6} md={4} key={complemento._id}>
         <ComplementCard
           selected={isSelected}
           onClick={() => !isDisabled && handleComplementToggle(groupKey, complemento)}
@@ -527,10 +527,7 @@ const ComplementosSelector = ({
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={onClose}>
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">
-            {product.description || product.name} - Grupo {currentPlateIndex + 1}/
-            {[...new Set(Object.values(groups).map((g) => g.plateIndex))].length}
-          </Typography>
+          <Typography variant="h6">{product.description || product.name}</Typography>
           <Box>
             <IconButton onClick={handlePrevious} disabled={currentPlateIndex === 0}>
               <NavigateBefore />
@@ -633,17 +630,17 @@ const ComplementosSelector = ({
             </Grid>
             <Grid item xs={12} md={8} lg={8}>
               <Divider textAlign={'left'} sx={{ color: 'primary.main', mt: -0.7 }}>
-                <strong>Complementos del Plato {currentPlateIndex + 1}</strong>
+                <strong>Complementos</strong>
               </Divider>
               <Stack spacing={2}>
                 {getCurrentPlateGroups().map(([groupKey, group]) => (
                   <GroupContainer key={groupKey}>
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                      <Typography variant="h6">
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      {/* <Typography variant="h6">
                         {group.nombre} ({group.units.length} unidad
                         {group.units.length !== 1 ? 'es' : ''})
-                      </Typography>
-                      {Object.keys(groups).length < quantity && (
+                      </Typography> */}
+                      {/* {Object.keys(groups).length < quantity && (
                         <IconButton
                           color="primary"
                           onClick={() => createNewGroup()}
@@ -660,7 +657,7 @@ const ComplementosSelector = ({
                         >
                           <Delete />
                         </IconButton>
-                      )}
+                      )} */}
                     </Stack>
                     <Grid container spacing={2}>
                       {Array.isArray(complementos)
@@ -669,7 +666,7 @@ const ComplementosSelector = ({
                           )
                         : null}
                     </Grid>
-                    <Box sx={{ p: 1 }}>
+                    {/* <Box sx={{ p: 1 }}>
                       <Typography variant="caption" sx={{ mb: 1 }}>
                         Unidades en este grupo: ({group.units.length} de {quantity})
                       </Typography>
@@ -699,7 +696,7 @@ const ComplementosSelector = ({
                           </Grid>
                         ))}
                       </Grid>
-                    </Box>
+                    </Box> */}
                   </GroupContainer>
                 ))}
               </Stack>
@@ -721,32 +718,19 @@ const ComplementosSelector = ({
           </Grid>
         </DialogContent>
       )}
-      <DialogActions sx={{ justifyContent: 'space-between', px: 3 }}>
-        <Button
-          color="inherit"
-          onClick={handlePrevious}
-          disabled={currentPlateIndex === 0}
-          startIcon={<NavigateBefore />}
-        >
-          Anterior
+      <DialogActions>
+        <Button onClick={onClose} color="inherit">
+          Cancelar
         </Button>
-
         <Button
-          color={'primary'}
-          variant={'contained'}
-          startIcon={isLastPlate ? <AddShoppingCart /> : null}
-          endIcon={!isLastPlate ? <NavigateNext /> : null}
-          onClick={isLastPlate ? handleSendGroups : handleNext}
+          onClick={handleSendGroups}
+          variant="contained"
+          color="primary"
+          startIcon={<AddShoppingCart />}
           disabled={isLoadingComplementos}
         >
-          {isLastPlate ? 'Finalizar y Agregar al Carrito' : 'Siguiente Plato'}
+          Agregar al Carrito ({quantity})
         </Button>
-
-        {!isLastPlate && (
-          <Button color="inherit" onClick={handleNext} endIcon={<NavigateNext />}>
-            Siguiente
-          </Button>
-        )}
       </DialogActions>
     </Dialog>
   )
