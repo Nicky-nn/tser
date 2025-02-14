@@ -59,6 +59,7 @@ interface GroupData {
   units: number[]
   nombre: string
   plateIndex: number
+  nota: string
 }
 
 interface Product {
@@ -160,6 +161,16 @@ const ComplementosSelector = ({
     if (currentIndex > 0) {
       setCurrentPlateIndex(plateIndexes[currentIndex - 1])
     }
+  }
+
+  const handleNotaChange = (groupKey: string, nota: string) => {
+    setGroups((prev) => ({
+      ...prev,
+      [groupKey]: {
+        ...prev[groupKey],
+        nota,
+      },
+    }))
   }
 
   const { data: complementos, isLoading: isLoadingComplementos } = useQuery<any>({
@@ -267,6 +278,7 @@ const ComplementosSelector = ({
         units: Array.from({ length: quantity }, (_, i) => i), // Todas las unidades en el grupo default
         nombre: 'Grupo 1',
         plateIndex: 0,
+        nota: '',
       },
     }
     setGroups(initialGroups)
@@ -349,12 +361,13 @@ const ComplementosSelector = ({
   }
 
   const handleSendGroups = () => {
-    console.log('groups', groups)
+    // console.log('groups', groups)
     // Procesar cada plato individualmente
     Object.values(groups).forEach((group) => {
       const productWithQuantity = {
         ...product,
         quantity: group.units.length,
+        extraDescription: group.nota,
       }
 
       // Si el grupo no tiene complementos, agregar el producto sin complementos
@@ -370,9 +383,6 @@ const ComplementosSelector = ({
             cantidad: group.units.length,
             nombreGrupo: group.nombre,
           }))
-
-      console.log('productWithQuantity', productWithQuantity)
-
       onAddToCart(productWithQuantity, filteredComplements)
     })
 
@@ -395,6 +405,7 @@ const ComplementosSelector = ({
         units: [], // Grupo nuevo inicia sin unidades
         nombre: `Grupo ${Object.keys(groups).length + 1}`,
         plateIndex: newPlateIndex,
+        nota: '',
       },
     }))
     setCurrentPlateIndex(0)
@@ -702,7 +713,7 @@ const ComplementosSelector = ({
                   {/*Adicionr el _id del tipo de articulo obtenido desde la api de listado de articulos*/}
                   <NotaRapidaField
                     tipoArticuloId={product.idTipoArticulo}
-                    onNotaChange={onNotaChange}
+                    onNotaChange={(nota) => handleNotaChange('default', nota)}
                   />
                 </Grid>
               </Grid>
