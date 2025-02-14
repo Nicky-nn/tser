@@ -272,16 +272,27 @@ const ComplementosSelector = ({
   })
 
   useEffect(() => {
-    const initialGroups: { [key: string]: GroupData } = {
-      default: {
-        complementos: [],
-        units: Array.from({ length: quantity }, (_, i) => i), // Todas las unidades en el grupo default
-        nombre: 'Grupo 1',
-        plateIndex: 0,
-        nota: '',
-      },
-    }
-    setGroups(initialGroups)
+    setGroups((prevGroups) => {
+      // Si no hay grupos previos, crear el grupo inicial
+      if (Object.keys(prevGroups).length === 0) {
+        return {
+          default: {
+            complementos: [],
+            units: Array.from({ length: quantity }, (_, i) => i),
+            nombre: 'Grupo 1',
+            plateIndex: 0,
+            nota: '',
+          },
+        }
+      }
+      // Mantener los complementos existentes y actualizar solo las unidades
+      return {
+        default: {
+          ...prevGroups.default,
+          units: Array.from({ length: quantity }, (_, i) => i),
+        },
+      }
+    })
     setCurrentPlateIndex(0)
   }, [quantity])
 
@@ -361,6 +372,16 @@ const ComplementosSelector = ({
   }
 
   const handleSendGroups = () => {
+    // Verificar si hay al menos un complemento seleccionado
+    const hasComplementos = Object.values(groups).every(
+      (group) => group.complementos.length > 0,
+    )
+
+    if (!hasComplementos) {
+      toast.error('Debe seleccionar al menos un complemento')
+      return
+    }
+
     Object.values(groups).forEach((group) => {
       const productWithQuantity = {
         ...product,
@@ -369,19 +390,12 @@ const ComplementosSelector = ({
         listaComplemento: group.complementos,
       }
 
-      // Si el grupo no tiene complementos, agregar el producto sin complementos
-      const hasSinComplementos = group.complementos.some(
-        (comp) => String(comp._id) === 'sincomplementos',
-      )
+      const filteredComplements = group.complementos.map((comp) => ({
+        ...comp,
+        cantidad: group.units.length,
+        nombreGrupo: group.nombre,
+      }))
 
-      // Si el grupo no tiene complementos, agregar el producto sin complementos
-      const filteredComplements = hasSinComplementos
-        ? []
-        : group.complementos.map((comp) => ({
-            ...comp,
-            cantidad: group.units.length,
-            nombreGrupo: group.nombre,
-          }))
       onAddToCart(productWithQuantity, filteredComplements)
     })
 
@@ -727,7 +741,7 @@ const ComplementosSelector = ({
           startIcon={isLastPlate ? <AddShoppingCart /> : null}
           endIcon={!isLastPlate ? <NavigateNext /> : null}
           onClick={isLastPlate ? handleSendGroups : handleNext}
-          disabled={isLoadingComplementos}
+          disabled={isLoadingComplementos || groups?.default?.complementos.length === 0}
         >
           {isLastPlate ? 'Agregar al carrito' : 'Siguiente'}
         </Button>
