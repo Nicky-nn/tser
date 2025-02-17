@@ -118,7 +118,12 @@ export const generarComandaPDF = (
 
               // Agregar complementos si existen
               const complementosTexto = producto.listaComplemento?.length
-                ? `\n  * Complementos: ${producto.listaComplemento.map((c: any) => c.nombreArticulo).join(', ')}`
+                ? `\n  * Complementos: ${producto.listaComplemento
+                    .map(
+                      (c: any) =>
+                        `${c.nombreArticulo} (x${c.ArticuloPrecio?.cantidad ?? 1})`,
+                    )
+                    .join(', ')}`
                 : ''
 
               return [
