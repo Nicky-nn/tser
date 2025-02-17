@@ -125,6 +125,7 @@ import Mosaico from './orden/Mosaico'
 import ComplementosSelector from './registro/ComplementosSelector'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
 import NotaRapidaField from './registro/notaRapida/NotaRapidaField'
+import NotasRapidas from './registro/notaRapida/NotasRapida'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -2975,10 +2976,12 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               fullWidth
                             />
                           </Grid>
-                          {/* <NotaRapidaField
+                          <NotasRapidas
                             tipoArticuloId={product.idTipoArticulo}
-                            onNotaChange={(nota) => console.log(nota)}
-                          /> */}
+                            onNotaChange={(nota) =>
+                              handleExtraDescriptionChange(index, nota)
+                            }
+                          />
                         </Grid>
                       </AccordionDetails>
                     </Accordion>
