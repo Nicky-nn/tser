@@ -124,6 +124,7 @@ import DeliveryDialog from './listado/PedidosDeliveryDialog'
 import Mosaico from './orden/Mosaico'
 import ComplementosSelector from './registro/ComplementosSelector'
 import NuevoEspacioDialog from './registro/DialogRegistroMesas'
+import NotaRapidaField from './registro/notaRapida/NotaRapidaField'
 ;(pdfMake as any).fonts = {
   Roboto: {
     normal:
@@ -467,41 +468,39 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   }
 
   const addToCartDirectly = (product: Product, complementos?: Complemento[]) => {
-    // 🔹 Separar "SIN-COMPLEMENTOS" antes de modificar la cantidad
     const hasSinComplementos = (complementos || []).some(
       (comp) => comp._id === 'sin-complementos',
     )
 
-    // 🔹 Filtrar la lista de complementos eliminando "SIN-COMPLEMENTOS"
     const filteredComplements = (complementos || []).filter(
       (comp) => comp._id !== 'sin-complementos',
     )
 
-    // 🔹 Determinar si hay complementos reales
     const hasRealComplements = filteredComplements.length > 0
 
-    // 🔹 Determinar la cantidad inicial correctamente
     let cantidadInicial = product.quantity || 1
     if (!hasRealComplements && hasSinComplementos) {
-      cantidadInicial = product.quantity || 1 // Si solo tenía "SIN-COMPLEMENTOS", respetamos su cantidad
+      cantidadInicial = product.quantity || 1
     } else if (!hasRealComplements) {
-      cantidadInicial = 1 // Si realmente no tiene complementos, empieza en 1
+      cantidadInicial = 1
     }
 
-    // 🔹 Buscar si el producto ya está en el carrito con los mismos complementos
+    // 🔹 Buscar si el producto ya está en el carrito con los mismos complementos y extraDescription
     const existingProduct = cart.find((p) => {
       return (
         p.codigoArticulo === product.codigoArticulo &&
-        arraysAreEqual(p.listaComplemento || [], filteredComplements)
+        arraysAreEqual(p.listaComplemento || [], filteredComplements) &&
+        p.extraDescription === product.extraDescription // 🔹 Comparación adicional
       )
     })
 
     if (existingProduct) {
-      // ✅ Si ya existe con los mismos complementos, sumamos la cantidad solo si tiene complementos reales
+      // ✅ Si ya existe con los mismos complementos y extraDescription, sumamos la cantidad
       setCart((prevCart) =>
         prevCart.map((p) =>
           p.codigoArticulo === product.codigoArticulo &&
-          arraysAreEqual(p.listaComplemento || [], filteredComplements)
+          arraysAreEqual(p.listaComplemento || [], filteredComplements) &&
+          p.extraDescription === product.extraDescription // 🔹 Comparación adicional
             ? {
                 ...p,
                 quantity: hasRealComplements
@@ -512,14 +511,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
         ),
       )
     } else {
-      // ✅ Si no existe, lo agregamos con la cantidad correcta
+      // ✅ Si no existe, lo agregamos con la cantidad correcta y extraDescription
       const maxNroItem = Math.max(...cart.map((p) => p.nroItem || 0), 0)
       const newItem = {
         ...product,
-        quantity: cantidadInicial, // 🔹 Se mantiene la cantidad correcta
+        quantity: cantidadInicial,
         discount: 0,
         nroItem: maxNroItem + 1,
-        listaComplemento: filteredComplements, // 🔹 Se asigna la lista sin "SIN-COMPLEMENTOS"
+        listaComplemento: filteredComplements,
       }
 
       setCart((prevCart) => [...prevCart, newItem])
@@ -2976,6 +2975,10 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               fullWidth
                             />
                           </Grid>
+                          {/* <NotaRapidaField
+                            tipoArticuloId={product.idTipoArticulo}
+                            onNotaChange={(nota) => console.log(nota)}
+                          /> */}
                         </Grid>
                       </AccordionDetails>
                     </Accordion>
