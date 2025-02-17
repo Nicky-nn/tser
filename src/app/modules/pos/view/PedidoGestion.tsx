@@ -2976,12 +2976,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                               fullWidth
                             />
                           </Grid>
-                          <NotasRapidas
-                            tipoArticuloId={product.idTipoArticulo}
-                            onNotaChange={(nota) =>
-                              handleExtraDescriptionChange(index, nota)
-                            }
-                          />
+                          <Grid item xs={12}>
+                            <NotasRapidas
+                              tipoArticuloId={product.idTipoArticulo}
+                              onNotaChange={(nota) =>
+                                handleExtraDescriptionChange(index, nota)
+                              }
+                            />
+                          </Grid>
                         </Grid>
                       </AccordionDetails>
                     </Accordion>

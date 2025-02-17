@@ -1,32 +1,18 @@
 /* eslint-disable no-unused-vars */
-import {
-  Add,
-  AddShoppingCart,
-  Close,
-  Delete,
-  NavigateBefore,
-  NavigateNext,
-} from '@mui/icons-material'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import { AddShoppingCart } from '@mui/icons-material'
 import DoneIcon from '@mui/icons-material/Done'
 import {
   Avatar,
   Box,
   Button,
   Card,
-  CardContent,
   CardHeader,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
-  FormHelperText,
   Grid,
-  IconButton,
-  MenuItem,
-  Select,
   Skeleton,
   Stack,
   Tooltip,
@@ -39,7 +25,6 @@ import { ReactNode, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { numberWithCommas } from '../../../../base/components/MyInputs/NumberInput'
-import NumberSpinnerInput from '../../../../base/components/NumberSpinnerInput/NumberSpinnerInput'
 import { SimpleBox } from '../../../../base/components/Template/Cards/SimpleBox'
 import useAuth from '../../../../base/hooks/useAuth'
 import { articuloInventarioComplementoListadoApi } from '../../api/complementoId.api'
@@ -541,7 +526,7 @@ const ComplementosSelector = ({
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">{product.description || product.name}</Typography>
-          <Box>
+          {/* <Box>
             <IconButton onClick={handlePrevious} disabled={currentPlateIndex === 0}>
               <NavigateBefore />
             </IconButton>
@@ -560,7 +545,7 @@ const ComplementosSelector = ({
             >
               <Close />
             </IconButton>
-          </Box>
+          </Box> */}
         </Stack>
       </DialogTitle>
       {isLoadingComplementos ? (
@@ -619,7 +604,7 @@ const ComplementosSelector = ({
                     </Typography>
                   }
                 />
-                <CardContent sx={{ p: 0, mt: 1.6, pb: '0px !important' }}>
+                {/* <CardContent sx={{ p: 0, mt: 1.6, pb: '0px !important' }}>
                   <NumberSpinnerInput
                     min={1}
                     max={30}
@@ -638,7 +623,7 @@ const ComplementosSelector = ({
                       setQuantity(value)
                     }}
                   />
-                </CardContent>
+                </CardContent> */}
               </SimpleBox>
             </Grid>
             <Grid item xs={12} md={8} lg={8}>
@@ -739,7 +724,7 @@ const ComplementosSelector = ({
           color={'primary'}
           variant={'contained'}
           startIcon={isLastPlate ? <AddShoppingCart /> : null}
-          endIcon={!isLastPlate ? <NavigateNext /> : null}
+          endIcon={!isLastPlate}
           onClick={isLastPlate ? handleSendGroups : handleNext}
           disabled={isLoadingComplementos || groups?.default?.complementos.length === 0}
         >

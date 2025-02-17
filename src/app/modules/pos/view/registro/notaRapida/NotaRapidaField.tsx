@@ -55,8 +55,10 @@ const NotaRapidaField: FunctionComponent<Props> = (props) => {
       case 'Enter':
       case 'Tab':
         setNota((prev) => [...prev, createOption(inputValue.cantidad, inputValue.valor)])
-        setInputValue(defaultValue)
         event.preventDefault()
+        addNota(inputValue.valor) // Llama a addNota para actualizar correctamente el estado
+        setInputValue(defaultValue) // Restablece el campo de entrada
+        break
     }
   }
 
