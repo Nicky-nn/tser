@@ -8,6 +8,7 @@ const pwaOptions = (env: any): Partial<VitePWAOptions> => ({
   includeAssets: [`${env.ISI_FAVICON}`],
   workbox: {
     globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp}'],
+    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
   },
   manifest: {
     name: `${env.ISI_TITLE || 'isi.invoice'}`,

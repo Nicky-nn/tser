@@ -18,7 +18,7 @@ export const swalErrorMsg = (
   Swal.fire({
     title: 'Alerta!!',
     width,
-    customClass: 'swalError',
+    customClass: { popup: 'swalError' },
     allowEscapeKey: false,
     allowOutsideClick: false,
     html: msg,
@@ -33,7 +33,7 @@ export const swalException = (e: Error | any) => {
   Swal.fire({
     title: 'Alerta!!',
     width: 700,
-    customClass: 'swalError',
+    customClass: { popup: 'swalError' },
     allowEscapeKey: false,
     allowOutsideClick: true,
     confirmButtonColor: '#d33',
