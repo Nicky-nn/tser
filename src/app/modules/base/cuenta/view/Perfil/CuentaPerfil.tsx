@@ -10,14 +10,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import React, { FunctionComponent } from 'react'
 
 import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
 import { H4 } from '../../../../../base/components/Template/Typography'
 import useAuth from '../../../../../base/hooks/useAuth'
-import { apiListadoProductos } from '../../../../ventas/api/licencias.api'
 
 const CuentaPerfil: FunctionComponent = () => {
   const { user } = useAuth()

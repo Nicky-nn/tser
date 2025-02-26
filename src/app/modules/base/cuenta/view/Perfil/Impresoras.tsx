@@ -12,13 +12,12 @@ import {
   Select,
   Typography,
 } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
 import { FunctionComponent, useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
 import { FormTextField } from '../../../../../base/components/Form'
 import SimpleCard from '../../../../../base/components/Template/Cards/SimpleCard'
-import { apiListadoProductos } from '../../../../ventas/api/licencias.api'
+import useAuth from '../../../../../base/hooks/useAuth'
 
 interface OwnProps {}
 
@@ -59,29 +58,21 @@ const Impresoras: FunctionComponent<Props> = () => {
   const [errorIP, setErrorIP] = useState(false)
   const [showWarning, setShowWarning] = useState(true)
 
-  const { data } = useQuery({
-    queryKey: ['licenciaProductoListado'],
-    queryFn: async () => {
-      const data = await apiListadoProductos()
-      return data || []
-    },
-    refetchOnWindowFocus: false,
-    refetchInterval: false,
-  })
+  const { li } = useAuth()
 
-  const impresion = data?.find((item) => item.tipoProducto === 'IMPRESION')
-  const state = impresion?.state
-  const fechaVencimiento = impresion?.fechaVencimiento
+  const impresion = li
+  const state = impresion.licencia.state
+  const fechaVencimiento = impresion.licencia.fechaVencimiento // 20/02/2026 00:00:00
   const fechaActual = new Date()
-
-  // Verifica si el estado no es "activado" o si la fecha ya venció
+  const parseFechaVencimiento = (dateStr: string): Date => {
+    const [day, month, rest] = dateStr.split('/')
+    const [year, time] = rest.split(' ')
+    return new Date(`${year}-${month}-${day}T${time}`)
+  }
+  const fechaVencimientoDate = parseFechaVencimiento(fechaVencimiento)
   const mostrarAviso =
-    showWarning &&
-    (state !== 'ACTIVADO' ||
-      (fechaVencimiento && new Date(fechaVencimiento) < fechaActual))
-
-  const showComponent =
-    state === 'ACTIVADO' && fechaVencimiento && new Date(fechaVencimiento) > fechaActual
+    showWarning && (state !== 'ACTIVADO' || fechaVencimientoDate < fechaActual)
+  const showComponent = state === 'ACTIVADO' && fechaVencimientoDate > fechaActual
 
   const scanPrinters = async () => {
     const serverUrl = 'http://localhost:7777/printers'

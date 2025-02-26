@@ -103,7 +103,6 @@ import { ClienteProps } from '../../clientes/interfaces/cliente'
 import Cliente99001RegistroDialog from '../../clientes/view/registro/Cliente99001RegistroDialog'
 import ClienteRegistroDialog from '../../clientes/view/registro/ClienteRegistroDialog'
 import useQueryTipoDocumentoIdentidad from '../../sin/hooks/useQueryTipoDocumento'
-import { apiListadoProductos } from '../../ventas/api/licencias.api'
 import { apiEnviarArchivo } from '../../ventas/api/waapi.api'
 import { apiListadoPorInventarioEntidad } from '../api/articulos.api'
 import { obtenerListadoPedidos } from '../api/pedidosListado.api'
@@ -263,6 +262,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
       integracionSiat,
     },
   } = useAuth()
+  const { lw } = useAuth()
 
   const form = props.form
   const logo = import.meta.env.ISI_LOGO_FULL
@@ -379,17 +379,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
     refetchInterval: false,
   })
 
-  const { data: waapi } = useQuery({
-    queryKey: ['licenciaProductoListado'],
-    queryFn: async () => {
-      const data = await apiListadoProductos()
-      return data || []
-    },
-    refetchOnWindowFocus: false,
-    refetchInterval: false,
-  })
-
-  const whaapi = waapi?.find((item) => item.tipoProducto === 'WHATSAPP')
+  const whaapi = lw.activo
 
   const categories = useMemo(() => {
     if (!articulosProd) return []
