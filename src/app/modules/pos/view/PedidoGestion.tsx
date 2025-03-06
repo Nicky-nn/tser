@@ -1369,8 +1369,14 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                 if (impresionAutomatica.facturar) {
                   if (tipoRepresentacionGrafica === 'pdf') {
                     printJS(representacionGrafica.pdf)
-                  } else if (tipoRepresentacionGrafica === 'rollo') {
-                    const pdfUrl = representacionGrafica.rollo
+                  } else if (
+                    tipoRepresentacionGrafica === 'rollo' ||
+                    tipoRepresentacionGrafica === 'rolloResumen'
+                  ) {
+                    const pdfUrl =
+                      tipoRepresentacionGrafica === 'rollo'
+                        ? representacionGrafica.rollo
+                        : representacionGrafica.rolloResumen
                     const selectedPrinter = printerSettings.facturar || ''
 
                     if (selectedPrinter) {
