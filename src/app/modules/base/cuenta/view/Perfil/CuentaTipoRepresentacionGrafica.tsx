@@ -3,6 +3,7 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   Grid,
   Radio,
@@ -22,7 +23,7 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const CuentaTipoRepresentacionGrafica: FunctionComponent<Props> = (props) => {
+const CuentaTipoRepresentacionGrafica: FunctionComponent<Props> = () => {
   const auth = useAuth()
   const { user } = auth
 
@@ -84,7 +85,16 @@ const CuentaTipoRepresentacionGrafica: FunctionComponent<Props> = (props) => {
                   control={<Radio />}
                   label="Pdf Formato Rollo"
                 />
+                <FormControlLabel
+                  value="rolloResumen"
+                  control={<Radio />}
+                  label="Pdf Formato Rollo Resumido"
+                />
               </RadioGroup>
+              <FormHelperText>
+                Pdf Formato Rollo Resumido solo esta disponible para Compra-Venta
+                (Restaurante)
+              </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12}>

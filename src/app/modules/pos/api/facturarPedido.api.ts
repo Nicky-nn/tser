@@ -15,6 +15,7 @@ interface FacturaInput {
 }
 
 interface RepresentacionGrafica {
+  rolloResumen: string
   pdf: string
   xml: string
   rollo: string
@@ -68,6 +69,7 @@ const mutationFactura = gql`
           xml
           rollo
           sin
+          rolloResumen
         }
         cliente {
           razonSocial

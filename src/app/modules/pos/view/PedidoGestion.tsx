@@ -1376,7 +1376,8 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                     const pdfUrl =
                       tipoRepresentacionGrafica === 'rollo'
                         ? representacionGrafica.rollo
-                        : representacionGrafica.rolloResumen
+                        : representacionGrafica.rolloResumen ||
+                          representacionGrafica.rollo
                     const selectedPrinter = printerSettings.facturar || ''
 
                     if (selectedPrinter) {
