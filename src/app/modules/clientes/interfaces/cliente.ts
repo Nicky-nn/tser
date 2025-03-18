@@ -14,6 +14,7 @@ export interface ClienteProps extends AuditoriaProps {
   tipoDocumentoIdentidad: SinTipoDocumentoIdentidadProps
   state: string
   telefono: string
+  direccion?: string
 }
 
 export interface ClienteInputProps {
@@ -29,6 +30,7 @@ export interface ClienteInputProps {
   codigoExcepcion: number
   action: ActionFormProps
   busquedaCliente?: string
+  direccion?: string
 }
 
 export interface Cliente99001InputProps {

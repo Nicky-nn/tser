@@ -120,6 +120,7 @@ const LISTADO_PEDIDOS_QUERY = gql`
           telefono
           codigoCliente
           numeroDocumento
+          direccion
         }
         moneda {
           codigo

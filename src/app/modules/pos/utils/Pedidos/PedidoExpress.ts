@@ -35,6 +35,17 @@ export const restPedidoExpressRegistro = async (
     successConfirm?: string
   }, // Nuevo argumento opcional
 ) => {
+  const direccionEntrega = data?.direccionEntrega || '' // Asegurar que no sea undefined
+  const titulos = ['CALLE', 'NUMERO', 'PISO', 'COLONIA', 'CIUDAD', 'REFERENCIA ADICIONAL']
+
+  const partes = direccionEntrega.split('|')
+
+  // Filtrar y mapear solo los valores que existen
+  const direccionFormateada = partes
+    .map((valor: any, index: any) => (valor ? `${titulos[index]}: ${valor}` : ''))
+    .filter(Boolean) // Eliminar vacíos
+    .join(', ')
+
   if (!cart || cart.length === 0) {
     toast.error('No hay productos para registrar')
     return false
@@ -126,6 +137,7 @@ export const restPedidoExpressRegistro = async (
     email: data.emailCliente || '',
     razonSocial: data.razonSocial || '',
     telefono: data.telefono || '',
+    direccion: direccionFormateada,
   } as ClienteOperacionInput
 
   const input: any = {

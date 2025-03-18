@@ -78,6 +78,10 @@ export const generarComandaPDF = (
       ...(cliente
         ? [{ text: `CLIENTE: ${cliente.razonSocial}`, style: 'subheader' }]
         : []),
+      // Añadir dirección del cliente si el tipo de pedido es DELIVERY y existe dirección
+      ...(tipoPedido === 'DELIVERY' && cliente && cliente.direccion
+        ? [{ text: `DIRECCIÓN: ${cliente.direccion}`, style: 'direccion' }]
+        : []),
       ...(tipoPedido ? [{ text: `PARA: ${tipoPedido}`, style: 'tipoPedido' }] : []),
       { text: `MESA: ${mesa} - ORDEN: ${orden}`, style: 'subheader' },
       ...(() => {
@@ -187,6 +191,11 @@ export const generarComandaPDF = (
       subheader: {
         fontSize: 8,
         margin: [0, 1, 0, 0],
+      },
+      direccion: {
+        fontSize: 8,
+        margin: [0, 1, 0, 0],
+        bold: true,
       },
       tableExample: {
         fontSize: 7,

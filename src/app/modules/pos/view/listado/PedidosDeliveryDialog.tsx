@@ -35,9 +35,10 @@ interface DeliveryInfo {
   apartamento: string
   colonia: string
   ciudad: string
+  referenciasAdicionales: string
+  tituloDireccion?: string
   tipoPedido: { value: string; label: string } | null
   tipoPedidoPersonalizado: string
-  referenciasAdicionales: string
   fechaEntrega: string
   horaPreferida: string
   ventanaTiempo: string
@@ -53,65 +54,95 @@ interface DataDelivery {
   atributo2: string | null
   atributo3: string | null
   atributo4: string | null
-  direccionEntrega: string | null
   fechaEntrega: Date | null
   terminos: string
-  fromDatabase: boolean
 }
 
-const parseDataDelivery = (data: DataDelivery): DeliveryInfo => {
-  const [calle, número, apartamento, colonia, ciudad, tipoPedidoValue] = (
-    data.direccionEntrega || ''
-  )
-    .split('|')
-    .map((item) => item.trim())
+// Función para parsear la dirección a partir del string cliente
+const parseClienteDireccion = (cliente: string) => {
+  const parts = cliente.split(',').map((item) => item.trim())
+  const direccion = {
+    calle: '',
+    número: '',
+    apartamento: '',
+    colonia: '',
+    ciudad: '',
+    referenciasAdicionales: '',
+    tituloDireccion: '',
+  }
 
-  const [nombreRepartidor, entregaSinContacto, solicitarUtensilios] = (
-    data.atributo1 || ''
+  parts.forEach((part) => {
+    const [key, ...rest] = part.split(':')
+    const value = rest.join(':').trim()
+    const keyUpper = key.toUpperCase()
+
+    if (keyUpper === 'CALLE') direccion.calle = value
+    else if (keyUpper === 'NUMERO') direccion.número = value
+    else if (['PISO', 'APARTAMENTO'].includes(keyUpper)) direccion.apartamento = value
+    else if (['COLONIA', 'BARRIO'].includes(keyUpper)) direccion.colonia = value
+    else if (keyUpper === 'CIUDAD') direccion.ciudad = value
+    else if (keyUpper === 'REFERENCIA ADICIONAL') direccion.referenciasAdicionales = value
+    else if (keyUpper === 'TITULO') direccion.tituloDireccion = value
+  })
+
+  return direccion
+}
+
+// Función para parsear los datos de entrega
+const parseDataDelivery = (data: DataDelivery, cliente: string): DeliveryInfo => {
+  // Obtener dirección del cliente
+  const address = cliente
+    ? parseClienteDireccion(cliente)
+    : {
+        calle: '',
+        número: '',
+        apartamento: '',
+        colonia: '',
+        ciudad: '',
+        referenciasAdicionales: '',
+        tituloDireccion: '',
+      }
+
+  // Parsear información adicional
+  const [
+    nombreRepartidor = '',
+    entregaSinContacto = 'false',
+    solicitarUtensilios = 'false',
+  ] = (data.atributo1 || '').split('|')
+
+  // Determinar tipo de pedido
+  let tipoPedido = { value: 'PedidosYa', label: 'PedidosYa' }
+  let tipoPedidoPersonalizado = ''
+
+  if (data.atributo2) {
+    if (['PedidosYa', 'Uber'].includes(data.atributo2)) {
+      tipoPedido = { value: data.atributo2, label: data.atributo2 }
+    } else {
+      tipoPedido = { value: 'Otro', label: 'Otro' }
+      tipoPedidoPersonalizado = data.atributo2
+    }
+  }
+
+  // Obtener instrucciones y preferencias
+  const [instruccionesEspeciales = '', preferenciasContacto = ''] = (
+    data.terminos || ''
   ).split('|')
 
-  const tipoPedido = tipoPedidoValue
-    ? { value: tipoPedidoValue, label: tipoPedidoValue }
-    : null
-
   return {
-    calle: calle || '',
-    número: número || '',
-    apartamento: apartamento || '',
-    colonia: colonia || '',
-    ciudad: ciudad || '',
+    ...address,
     tipoPedido,
-    tipoPedidoPersonalizado: tipoPedidoValue === 'Otro' ? '' : tipoPedidoValue || '',
-    referenciasAdicionales: data.atributo2 || '',
+    tipoPedidoPersonalizado,
     fechaEntrega: data.fechaEntrega
       ? new Date(data.fechaEntrega).toISOString().split('T')[0]
       : '',
     horaPreferida: data.atributo3 || '',
     ventanaTiempo: data.atributo4 || '',
-    instruccionesEspeciales: data.terminos?.split('|')[0] || '',
-    preferenciasContacto: data.terminos?.split('|')[1] || '',
+    instruccionesEspeciales,
+    preferenciasContacto,
     solicitarUtensilios: solicitarUtensilios === 'true',
     entregaSinContacto: entregaSinContacto === 'true',
-    nombreRepartidor: nombreRepartidor || '',
+    nombreRepartidor,
   }
-}
-const initialDeliveryInfo: DeliveryInfo = {
-  calle: '',
-  número: '',
-  apartamento: '',
-  colonia: '',
-  ciudad: '',
-  tipoPedido: { value: 'PedidosYa', label: 'PedidosYa' }, // Valor predeterminado
-  referenciasAdicionales: '',
-  fechaEntrega: '',
-  horaPreferida: '',
-  ventanaTiempo: '',
-  instruccionesEspeciales: '',
-  preferenciasContacto: '',
-  solicitarUtensilios: false,
-  entregaSinContacto: false,
-  nombreRepartidor: '',
-  tipoPedidoPersonalizado: '',
 }
 
 const tipoPedidoOptions = [
@@ -125,33 +156,39 @@ const DeliveryDialog = ({
   onClose,
   form,
   dataDelivery,
+  cliente,
 }: {
   open: boolean
   onClose: () => void
   form: any
   dataDelivery: DataDelivery
+  cliente: any
 }) => {
   const { setValue } = form
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>(() =>
-    dataDelivery.fromDatabase ? parseDataDelivery(dataDelivery) : initialDeliveryInfo,
+    parseDataDelivery(dataDelivery, cliente),
   )
   const [expanded, setExpanded] = useState(false)
+  const [isDataModified, setIsDataModified] = useState(false)
 
   useEffect(() => {
-    if (Object.keys(dataDelivery).length === 0) {
-      setDeliveryInfo(initialDeliveryInfo)
-    } else if (dataDelivery.fromDatabase) {
-      setDeliveryInfo(parseDataDelivery(dataDelivery))
+    // Actualizar estado cuando cambian los props
+    if (open) {
+      const parsedData = parseDataDelivery(dataDelivery, cliente)
+      setDeliveryInfo(parsedData)
+      setIsDataModified(false)
     }
-  }, [dataDelivery])
+  }, [dataDelivery, cliente, open])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.target
+    const isCheckbox = name === 'solicitarUtensilios' || name === 'entregaSinContacto'
+
     setDeliveryInfo((prev) => ({
       ...prev,
-      [name]:
-        name === 'solicitarUtensilios' || name === 'entregaSinContacto' ? checked : value,
+      [name]: isCheckbox ? checked : value,
     }))
+    setIsDataModified(true)
   }
 
   const handleSelectChange = (selectedOption: any) => {
@@ -161,6 +198,7 @@ const DeliveryDialog = ({
       tipoPedidoPersonalizado:
         selectedOption.value === 'Otro' ? prev.tipoPedidoPersonalizado : '',
     }))
+    setIsDataModified(true)
   }
 
   const handleCustomOrderTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,8 +206,9 @@ const DeliveryDialog = ({
     setDeliveryInfo((prev) => ({
       ...prev,
       tipoPedidoPersonalizado: value,
-      tipoPedido: { value: 'Otro', label: value },
+      tipoPedido: { value: 'Otro', label: 'Otro' },
     }))
+    setIsDataModified(true)
   }
 
   const handleSubmit = async (
@@ -196,17 +235,20 @@ const DeliveryDialog = ({
           ? deliveryInfo.tipoPedidoPersonalizado
           : deliveryInfo.tipoPedido?.value
 
+      // Se guarda en atributo1 la información del repartidor y opciones de contacto
       setValue(
         'atributo1',
         `${deliveryInfo.nombreRepartidor}|${deliveryInfo.entregaSinContacto}|${deliveryInfo.solicitarUtensilios}`,
       )
-      setValue('atributo2', deliveryInfo.referenciasAdicionales)
-      setValue('atributo3', deliveryInfo.horaPreferida)
-      setValue('atributo4', deliveryInfo.ventanaTiempo)
+      // La dirección de entrega ahora contiene: calle | número | apartamento | colonia | ciudad | referencias adicionales
       setValue(
         'direccionEntrega',
-        `${deliveryInfo.calle}|${deliveryInfo.número}|${deliveryInfo.apartamento}|${deliveryInfo.colonia}|${deliveryInfo.ciudad}|${tipoPedidoFinal}`,
+        `${deliveryInfo.calle}|${deliveryInfo.número}|${deliveryInfo.apartamento}|${deliveryInfo.colonia}|${deliveryInfo.ciudad}|${deliveryInfo.referenciasAdicionales}`,
       )
+      // El tipo de pedido se almacena en atributo2
+      setValue('atributo2', tipoPedidoFinal)
+      setValue('atributo3', deliveryInfo.horaPreferida)
+      setValue('atributo4', deliveryInfo.ventanaTiempo)
       setValue('fechaEntrega', deliveryInfo.fechaEntrega)
       setValue(
         'terminos',
@@ -217,10 +259,11 @@ const DeliveryDialog = ({
   }
 
   const handleClose = () => {
-    if (dataDelivery.fromDatabase) {
+    if (!isDataModified) {
       onClose()
       return
     }
+
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Los cambios no guardados se perderán',
@@ -232,7 +275,6 @@ const DeliveryDialog = ({
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        setDeliveryInfo(initialDeliveryInfo)
         onClose()
       }
     })
@@ -281,7 +323,6 @@ const DeliveryDialog = ({
                 options={tipoPedidoOptions}
                 value={deliveryInfo.tipoPedido}
                 onChange={handleSelectChange}
-                // // isDisabled={dataDelivery.fromDatabase}
                 placeholder="Seleccione el tipo de pedido"
               />
             </Grid>
@@ -295,7 +336,6 @@ const DeliveryDialog = ({
                   onChange={handleCustomOrderTypeChange}
                   margin="dense"
                   placeholder="Especifique el tipo de pedido"
-                  // disabled={dataDelivery.fromDatabase}
                 />
               </Grid>
             )}
@@ -325,7 +365,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -343,7 +382,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -355,7 +393,6 @@ const DeliveryDialog = ({
                         onChange={handleChange}
                         margin="dense"
                         placeholder='Ej: "3A"'
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -373,7 +410,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -391,7 +427,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -405,7 +440,6 @@ const DeliveryDialog = ({
                         multiline
                         rows={2}
                         placeholder='Ej: "Frente a la plaza principal"'
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -425,7 +459,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -445,7 +478,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -457,7 +489,6 @@ const DeliveryDialog = ({
                         onChange={handleChange}
                         margin="dense"
                         placeholder="Ej: Entre 14:00 y 16:00"
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -471,7 +502,6 @@ const DeliveryDialog = ({
                         multiline
                         rows={2}
                         placeholder='Ej: "Llamar al timbre 3 veces"'
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -489,7 +519,6 @@ const DeliveryDialog = ({
                             </IconButton>
                           ),
                         }}
-                        // disabled={dataDelivery.fromDatabase}
                       />
                     </Grid>
                     <Grid item container xs={12} spacing={2}>
@@ -500,7 +529,6 @@ const DeliveryDialog = ({
                               checked={deliveryInfo.solicitarUtensilios}
                               onChange={handleChange}
                               name="solicitarUtensilios"
-                              // disabled={dataDelivery.fromDatabase}
                             />
                           }
                           label="Solicitar utensilios/servilletas"
@@ -513,7 +541,6 @@ const DeliveryDialog = ({
                               checked={deliveryInfo.entregaSinContacto}
                               onChange={handleChange}
                               name="entregaSinContacto"
-                              // disabled={dataDelivery.fromDatabase}
                             />
                           }
                           label="Entrega sin contacto"
@@ -531,7 +558,6 @@ const DeliveryDialog = ({
             variant="contained"
             color="primary"
             style={{ marginTop: 20 }}
-            // disabled={dataDelivery.fromDatabase}
             keyTip="G"
             onClick={handleSubmit}
           >

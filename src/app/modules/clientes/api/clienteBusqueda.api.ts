@@ -23,6 +23,7 @@ const queryGql = gql`
         descripcion
       }
       state
+      direccion
     }
   }
 `

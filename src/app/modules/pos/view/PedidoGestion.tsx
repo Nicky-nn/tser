@@ -908,7 +908,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           setCart(mappedProducts)
         } else {
           setDataDelivery(null)
-          console.error('No se encontró el pedido')
+          console.info('No se encontró el pedido')
           setCart([])
         }
       } else {
@@ -1215,7 +1215,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   const [lastClickTime, setLastClickTime] = useState(0)
 
   useEffect(() => {
-    if (tiposPedidos === 'DELIVERY' && selectedOption?.state === 'Libre') {
+    if (selectedOption?.state === 'Libre' && tiposPedidos === 'DELIVERY') {
       setOpenDeliveryDialog(true)
     } else {
       setOpenDeliveryDialog(false)
@@ -1244,38 +1244,19 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
   useEffect(() => {
     const getCombinedValue = () => {
       if (tiposPedidos === 'DELIVERY' && selectedOption?.tipoPedido === null) {
-        const direccionEntrega = getValues('direccionEntrega')
-        const atributo1 = getValues('atributo1')
-
-        let valorDireccion = ''
-        let valorAtributo = ''
-
-        if (direccionEntrega) {
-          const partesDireccion = direccionEntrega.split('|')
-          const posicionDireccion = 5 // Posición deseada para direccionEntrega
-          if (partesDireccion.length > posicionDireccion) {
-            valorDireccion = partesDireccion[posicionDireccion].trim()
-          }
-        }
-
-        if (atributo1) {
-          const partesAtributo = atributo1.split('|')
-          const posicionAtributo = 0 // Posición deseada para atributo1
-          if (partesAtributo.length > posicionAtributo) {
-            valorAtributo = partesAtributo[posicionAtributo].trim()
-          }
-        }
-
-        // Solo actualiza si el valor ha cambiado
-        const nuevoValor = `${valorDireccion} ${valorAtributo}`
-        if (getValues('notasGenerales') !== nuevoValor) {
-          setValue('notasGenerales', nuevoValor)
-        }
+        const tipoPedido = getValues('atributo2')
+        const nombreRepartidor = getValues('atributo1')
+        // Obtener el primer bloque del nombreRepartidor antes de "|"
+        const repartidorNombre = nombreRepartidor?.split('|')[0] || ''
+        // Construir el nuevo valor
+        const nuevoValor = `${repartidorNombre} ${tipoPedido}`.trim()
+        // Asignar el nuevo valor a notasGenerales
+        setValue('notasGenerales', nuevoValor)
       }
     }
 
     getCombinedValue() // Llama a la función al cargar el componente
-  }, [watch('direccionEntrega'), watch('atributo1'), cart])
+  }, [watch('atributo1'), watch('atributo2'), cart]) // Dependencias adecuadas
 
   const eliminarCliente = () => {
     setValue('cliente', null)
@@ -2991,7 +2972,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
                   name="notasGenerales"
                   control={control}
                   render={({ field }) => (
-                    <FormTextField
+                    <TextField
                       {...field}
                       label="Notas General"
                       placeholder="Ingrese Notas"
@@ -3367,6 +3348,7 @@ const PedidoGestion: FunctionComponent<Props> = (props) => {
           onClose={() => setOpenDeliveryDialog(false)}
           form={form}
           dataDelivery={dataDelivery || {}}
+          cliente={clienteSeleccionado?.direccion}
         />
       </>
       <>
